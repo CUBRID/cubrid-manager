@@ -70,3 +70,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - JFreeChart from http://sourceforge.net/projects/jfreechart
 
 - Jexcelapi from http://sourceforge.net/projects/jexcelapi
+
+
+* Followings may be contained for this software independently (modified software)
+
+- JFreeChart from http://compstat.chonbuk.ac.kr/kshan

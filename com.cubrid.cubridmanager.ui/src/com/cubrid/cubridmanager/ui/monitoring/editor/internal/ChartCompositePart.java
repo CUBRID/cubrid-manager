@@ -438,7 +438,7 @@ public class ChartCompositePart {
 
 		dateaxis.setTickLabelFont(new Font("SansSerif", 0, 10));
 		dateaxis.setLabelFont(new Font("SansSerif", 0, 7));
-
+		
 		XYPlot xyplot = new XYPlot(timeseriescollection, dateaxis, numberaxis,
 				xylineandshaperenderer);
 
