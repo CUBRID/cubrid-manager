@@ -2582,9 +2582,18 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		QueryUtil.freeQuery(stmt, rs);
 		stmt = null;
 		rs = null;
-		allColumnList = null;
-		allDataList = null;
-		colComparatorMap = null;
+		if (!allColumnList.isEmpty()) {
+			allColumnList.clear();
+			allColumnList = null;
+		}
+		if (!allDataList.isEmpty()) {
+			allDataList.clear();
+			allDataList = null;
+		}
+		if (!colComparatorMap.isEmpty()) {
+			colComparatorMap.clear();
+			colComparatorMap = null;
+		}
 		freeResultSetCache();
 	}
 

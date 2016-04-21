@@ -29,8 +29,6 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.model;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,8 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
 
 import com.cubrid.common.core.common.model.Constraint;
 import com.cubrid.common.core.common.model.Constraint.ConstraintType;
@@ -50,16 +46,11 @@ import com.cubrid.common.core.common.model.PartitionType;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.common.model.SerialInfo;
 import com.cubrid.common.core.util.CompatibleUtil;
-import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.PartitionUtil;
 import com.cubrid.common.core.util.QuerySyntax;
-import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaChangeLog.SchemeInnerType;
-import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
-import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
 
 /**
  * This class provide a serial of methods to generate DDL of a schema or alter
@@ -69,7 +60,6 @@ import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
  * @version 1.0 - 2009-5-22 created by moulinwang
  */
 public class SchemaDDL {
-	private static final Logger LOGGER = LogUtil.getLogger(SchemaDDL.class);
 	private String endLineChar = ";";
 	private final SchemaChangeManager changeLogMgr;
 	protected final DatabaseInfo databaseInfo;
@@ -2466,28 +2456,10 @@ public class SchemaDDL {
 	public String getAlterAutoIncrementDDL(String tableName, String columnName, String startWith,
 			String incrementby, String minValue) {
 		StringBuilder ddl = new StringBuilder();
-		long max = 0;
-		Connection connection = null;
-		CUBRIDResultSetProxy rs = null;
-		CUBRIDPreparedStatementProxy pStmt = null;
-		
-		try {
-			String sql = "SELECT MAX(" + QuerySyntax.escapeKeyword(columnName) + ") + 1 "
-					+ "FROM " + QuerySyntax.escapeKeyword(tableName);
-			connection = JDBCConnectionManager.getConnection(databaseInfo, true);
-			pStmt = (CUBRIDPreparedStatementProxy)connection.prepareStatement(sql);
-			rs = (CUBRIDResultSetProxy)pStmt.executeQuery();
-			if (rs.next()) max = rs.getLong(1);
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage(), e);
-		} finally {
-			QueryUtil.freeQuery(connection, pStmt, rs);
-		}
-		if (max > 0) {
-			ddl.append("ALTER TABLE ").append(QuerySyntax.escapeKeyword(tableName)).append(" AUTO_INCREMENT=" )
-			.append(max).append(endLineChar).append(StringUtil.NEWLINE);
-		}
-
+		String escapedSerialName = QuerySyntax.escapeKeyword(tableName + "_ai_" + columnName);
+		ddl.append("ALTER SERIAL ").append(escapedSerialName);
+		ddl.append(" START WITH ").append(startWith).append(" INCREMENT BY ").append(incrementby).append(
+				" MINVALUE ").append(minValue).append(endLineChar).append(StringUtil.NEWLINE);
 		return ddl.toString();
 	}
 }

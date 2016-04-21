@@ -11,10 +11,12 @@
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Xms40M
+      <vmArgs>-Xms400M
 -Xmx800M
 -XX:PermSize=64M
--XX:MaxPermSize=256M</vmArgs>
+-XX:MaxPermSize=256M
+-XX:+UnlockExperimentalVMOptions 
+-XX:+UseG1GC</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -35,8 +37,10 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>
