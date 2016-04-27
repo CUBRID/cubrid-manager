@@ -309,10 +309,10 @@ public class StandardChartTheme implements ChartTheme, Cloneable,
          * This constructor was modified "Tahoma" to "Sansserif" 
          * because Korean font problem by Seunghun-kim. (26-Apr-2016)
          */
-		this.extraLargeFont = new Font("Sansserif", Font.BOLD, 20);
-		this.largeFont = new Font("Sansserif", Font.BOLD, 14);
-		this.regularFont = new Font("Sansserif", Font.PLAIN, 12);
-		this.smallFont = new Font("Sansserif", Font.PLAIN, 10);
+	this.extraLargeFont = new Font("Sansserif", Font.BOLD, 20);
+	this.largeFont = new Font("Sansserif", Font.BOLD, 14);
+	this.regularFont = new Font("Sansserif", Font.PLAIN, 12);
+	this.smallFont = new Font("Sansserif", Font.PLAIN, 10);
         this.titlePaint = Color.black;
         this.subtitlePaint = Color.black;
         this.legendBackgroundPaint = Color.white;
