@@ -29,6 +29,8 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.model;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,6 +38,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
 
 import com.cubrid.common.core.common.model.Constraint;
 import com.cubrid.common.core.common.model.Constraint.ConstraintType;
@@ -46,11 +50,16 @@ import com.cubrid.common.core.common.model.PartitionType;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.common.model.SerialInfo;
 import com.cubrid.common.core.util.CompatibleUtil;
+import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.PartitionUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaChangeLog.SchemeInnerType;
+import com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy;
+import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
+import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
 
 /**
  * This class provide a serial of methods to generate DDL of a schema or alter
@@ -60,6 +69,8 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaChangeLog.SchemeIn
  * @version 1.0 - 2009-5-22 created by moulinwang
  */
 public class SchemaDDL {
+	private static final Logger LOGGER = LogUtil.getLogger(SchemaDDL.class);
+	
 	private String endLineChar = ";";
 	private final SchemaChangeManager changeLogMgr;
 	protected final DatabaseInfo databaseInfo;
@@ -2455,11 +2466,65 @@ public class SchemaDDL {
 	 */
 	public String getAlterAutoIncrementDDL(String tableName, String columnName, String startWith,
 			String incrementby, String minValue) {
+		int autoIncrementSeed = getAutoIncrementSeed(tableName, columnName);
+		boolean isSupportAlterAutoIncrement = CompatibleUtil.isAfter840(databaseInfo);
+		if (isSupportAlterAutoIncrement) {
+			return generateAutoIncrementUsingAlter(tableName, columnName, autoIncrementSeed);
+		} else {
+			return generateAutoIncrementUsingSerial(tableName, columnName, autoIncrementSeed, incrementby, minValue);
+		}
+	}
+	
+	private int getAutoIncrementSeed(String tableName, String columnName) {
+		int seed = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT MAX(" + QuerySyntax.escapeKeyword(columnName) + ") + 1 ");
+		sql.append("FROM " + QuerySyntax.escapeKeyword(tableName));
+		CUBRIDConnectionProxy connection = null;
+		CUBRIDResultSetProxy rs = null;
+		CUBRIDPreparedStatementProxy pstmt = null;
+		
+		try {
+			connection = (CUBRIDConnectionProxy)JDBCConnectionManager.getConnection(databaseInfo, true);
+			pstmt = (CUBRIDPreparedStatementProxy)((Connection)connection).prepareStatement(sql.toString());
+			rs = (CUBRIDResultSetProxy)pstmt.executeQuery();
+			if (rs.next()) {
+				seed = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage(), e);
+		} finally {
+			try {
+				if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
+		
+		return seed;
+	}
+	
+	private String generateAutoIncrementUsingAlter(String tableName, String columnName, int seed) {
 		StringBuilder ddl = new StringBuilder();
-		String escapedSerialName = QuerySyntax.escapeKeyword(tableName + "_ai_" + columnName);
-		ddl.append("ALTER SERIAL ").append(escapedSerialName);
-		ddl.append(" START WITH ").append(startWith).append(" INCREMENT BY ").append(incrementby).append(
-				" MINVALUE ").append(minValue).append(endLineChar).append(StringUtil.NEWLINE);
+            ddl.append("ALTER TABLE ").append(QuerySyntax.escapeKeyword(tableName)).append(" AUTO_INCREMENT=" )
+            .append(seed).append(endLineChar).append(StringUtil.NEWLINE);
+
+        return ddl.toString();
+	}
+	
+	private String generateAutoIncrementUsingSerial(String tableName, String columnName, int startWith,
+			String incrementby, String minValue) {
+		StringBuilder ddl = new StringBuilder();
+		// TODO 1. ALTER TABLE tableName RENAME COLUMN columnName as columnName_tmp;
+		
+		// TODO 2. ALTER TABLE tableName ADD COLUMN columnName TYPE PROPERTIES AUTO_INCREMENT(1, 1) AFTER columnName_tmp;
+		
+		// TODO 3. UPDATE tableName SET columnName = tableName_ai_columnName.NEXT_VALUE;
+		
+		// TODO 4. ALTER TABLE tableName DROP COLUMN columnName_tmp;
+		
 		return ddl.toString();
 	}
 }
