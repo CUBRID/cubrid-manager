@@ -625,12 +625,17 @@ public class TableSchemaCompareInfoPart extends
 
 		Clipboard clipboard = CommonUITool.getClipboard();
 		if (clipboardDataString.length() != 0) {
-			TextTransfer textTransfer = TextTransfer.getInstance();
-			Transfer[] transfers = new Transfer[] { textTransfer };
-			Object[] data = new Object[] { clipboardDataString.toString() };
-			clipboard.setContents(data, transfers);
-			title = Messages.alterScript;
-			msg = Messages.tableSchemaAlterCopyMessage;
+			if ("--NotSupportAlterAutoIncrement".equals(clipboardDataString.toString())) {
+				title = Messages.compareStatusTip;
+				msg = Messages.alterAutoIncrementNotSupport;
+			} else {
+				TextTransfer textTransfer = TextTransfer.getInstance();
+				Transfer[] transfers = new Transfer[] { textTransfer };
+				Object[] data = new Object[] { clipboardDataString.toString() };
+				clipboard.setContents(data, transfers);
+				title = Messages.alterScript;
+				msg = Messages.tableSchemaAlterCopyMessage;
+			}
 		} else {
 			clipboard.clearContents();
 			title = Messages.emptyAlterScript;

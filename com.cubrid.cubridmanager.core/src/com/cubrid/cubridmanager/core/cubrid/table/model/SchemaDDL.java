@@ -1263,9 +1263,7 @@ public class SchemaDDL {
 		SerialInfo newAutoIncrement = newAttr.getAutoIncrement();
 
 		if (null != newAutoIncrement && !newAutoIncrement.equals(oldAutoIncrement)) {
-			String increment = getAlterAutoIncrementDDL(tableName, newColumnName,
-					newAutoIncrement.getStartedValue(), newAutoIncrement.getIncrementValue(),
-					newAutoIncrement.getMinValue());
+			String increment = getAlterAutoIncrementDDL(tableName, newColumnName);
 			ddlBuffer.append(increment);
 		}
 
@@ -1341,9 +1339,7 @@ public class SchemaDDL {
 		SerialInfo newAutoIncrement = newAttr.getAutoIncrement();
 
 		if (null != newAutoIncrement && !newAutoIncrement.equals(oldAutoIncrement)) {
-			String increment = getAlterAutoIncrementDDL(tableName, newAttr.getName(),
-					newAutoIncrement.getStartedValue(), newAutoIncrement.getIncrementValue(),
-					newAutoIncrement.getMinValue());
+			String increment = getAlterAutoIncrementDDL(tableName, newAttr.getName());
 			sb.append(increment);
 		}
 
@@ -2464,14 +2460,18 @@ public class SchemaDDL {
 	 * @param minValue String the given columnName
 	 * @return String a string that indicates the DDL of alter auto increment
 	 */
-	public String getAlterAutoIncrementDDL(String tableName, String columnName, String startWith,
-			String incrementby, String minValue) {
+	public String getAlterAutoIncrementDDL(String tableName, String columnName) {
 		int autoIncrementSeed = getAutoIncrementSeed(tableName, columnName);
 		boolean isSupportAlterAutoIncrement = CompatibleUtil.isAfter840(databaseInfo);
 		if (isSupportAlterAutoIncrement) {
-			return generateAutoIncrementUsingAlter(tableName, columnName, autoIncrementSeed);
+			StringBuilder ddl = new StringBuilder();
+			
+            ddl.append("ALTER TABLE ").append(QuerySyntax.escapeKeyword(tableName)).append(" AUTO_INCREMENT=" )
+            .append(autoIncrementSeed).append(endLineChar).append(StringUtil.NEWLINE);
+            
+            return ddl.toString();
 		} else {
-			return generateAutoIncrementUsingSerial(tableName, columnName, autoIncrementSeed, incrementby, minValue);
+			return notSupportAlterAutoIncrement();
 		}
 	}
 	
@@ -2506,26 +2506,8 @@ public class SchemaDDL {
 		return seed;
 	}
 	
-	private String generateAutoIncrementUsingAlter(String tableName, String columnName, int seed) {
-		StringBuilder ddl = new StringBuilder();
-            ddl.append("ALTER TABLE ").append(QuerySyntax.escapeKeyword(tableName)).append(" AUTO_INCREMENT=" )
-            .append(seed).append(endLineChar).append(StringUtil.NEWLINE);
-
-        return ddl.toString();
-	}
-	
-	private String generateAutoIncrementUsingSerial(String tableName, String columnName, int startWith,
-			String incrementby, String minValue) {
-		StringBuilder ddl = new StringBuilder();
-		// TODO 1. ALTER TABLE tableName RENAME COLUMN columnName as columnName_tmp;
-		
-		// TODO 2. ALTER TABLE tableName ADD COLUMN columnName TYPE PROPERTIES AUTO_INCREMENT(1, 1) AFTER columnName_tmp;
-		
-		// TODO 3. UPDATE tableName SET columnName = tableName_ai_columnName.NEXT_VALUE;
-		
-		// TODO 4. ALTER TABLE tableName DROP COLUMN columnName_tmp;
-		
-		return ddl.toString();
+	private String notSupportAlterAutoIncrement() {
+		return "--NotSupportAlterAutoIncrement";
 	}
 }
 

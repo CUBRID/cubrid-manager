@@ -437,7 +437,7 @@ public class SchemaDDLTest extends
 		partInfoList.add(partitionInfo6);
 		ddl.getSplitPartitionDDL(partInfoList, newPartInfoList);
 
-		ddl.getAlterAutoIncrementDDL("tableName", "columnName", "1", "1", "1");
+		ddl.getAlterAutoIncrementDDL("tableName", "columnName");
 		partInfoList.clear();
 		partitionInfo4 = new PartitionInfo(aclassName, partitionName,
 				partitionClassName, PartitionType.RANGE, partitionExpr,
