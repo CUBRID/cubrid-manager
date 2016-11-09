@@ -151,6 +151,7 @@ public class Messages extends NLS{
 	public static String lblCheckAllItems;
 	public static String lblUncheckAllItems;
 	public static String equalSchemaMsg;
+	public static String alterAutoIncrementNotSupport;
 
 	static {
 		NLS.initializeMessages(CommonUIPlugin.PLUGIN_ID + ".compare.Messages",
