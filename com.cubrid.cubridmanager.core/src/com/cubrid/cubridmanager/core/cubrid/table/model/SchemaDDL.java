@@ -2461,17 +2461,17 @@ public class SchemaDDL {
 	 * @return String a string that indicates the DDL of alter auto increment
 	 */
 	public String getAlterAutoIncrementDDL(String tableName, String columnName) {
+		StringBuilder ddl = new StringBuilder();
 		int autoIncrementSeed = getAutoIncrementSeed(tableName, columnName);
 		boolean isSupportAlterAutoIncrement = CompatibleUtil.isAfter840(databaseInfo);
 		if (isSupportAlterAutoIncrement) {
-			StringBuilder ddl = new StringBuilder();
-			
             ddl.append("ALTER TABLE ").append(QuerySyntax.escapeKeyword(tableName)).append(" AUTO_INCREMENT=" )
             .append(autoIncrementSeed).append(endLineChar).append(StringUtil.NEWLINE);
             
             return ddl.toString();
 		} else {
-			return notSupportAlterAutoIncrement();
+			ddl.append("--NotSupportAlterAutoIncrement");
+			return ddl.toString();
 		}
 	}
 	
@@ -2504,10 +2504,6 @@ public class SchemaDDL {
 		}
 		
 		return seed;
-	}
-	
-	private String notSupportAlterAutoIncrement() {
-		return "--NotSupportAlterAutoIncrement";
 	}
 }
 
