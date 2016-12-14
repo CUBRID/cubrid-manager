@@ -1857,29 +1857,12 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 			stmt.executeQuery();
 
 			String queryPlan = null;
-//			StringBuilder statLogs = new StringBuilder();
 
 			rs = (CUBRIDResultSetProxy) stmt.getResultSet();
 
 			endTimestamp = System.currentTimeMillis();
 			elapsedTime = (endTimestamp - beginTimestamp) * 0.001;
-			StringBuffer elapsedTimeStr = new StringBuffer(nf.format(elapsedTime));
-			String[] timeArr = elapsedTimeStr.toString().split("\\.");
-			if (timeArr != null && timeArr.length > 0) {
-				if (timeArr[0].length() == 1) {
-					elapsedTimeStr.append(" " + timeArr[0]);
-				}
-				if (timeArr.length == 1) {
-					elapsedTimeStr.append(".000");
-				} else {
-					elapsedTimeStr.append("." + timeArr[1]);
-					int i = timeArr[1].length();
-					while (i < 3) {
-						elapsedTimeStr.append("0");
-						i++;
-					}
-				}
-			}
+			String elapsedTimeStr = new String(nf.format(elapsedTime));
 
 			if (start == 1) {
 				makeResult(rs);
@@ -1889,10 +1872,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 			// collect statistics and query plan on tune mode
 			if (useTuneMode && queryEditor.isCollectExecStats()) {
-//				String statResult = CubridUtil.fetchStatisticsWithRawText(qe.getConnection());
-//				if (statResult != null) {
-//					statLogs.append(statResult);
-//				}
 				Map<String, String> stat = CubridUtil.fetchStatistics(connection.checkAndConnectQuietly());
 
 				StructQueryPlan sq = new StructQueryPlan(sql,
@@ -1902,12 +1881,9 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				tuneModeModel = new TuneModeModel(sq, stat);
 			}
 
-			queryMsg += "[ " + elapsedTimeStr.toString() + " " + Messages.second + " , " + Messages.totalRows + " : "
+			queryMsg += "[ " + elapsedTimeStr + " " + Messages.second + " , " + Messages.totalRows + " : "
 				+ cntRecord + " ]" + StringUtil.NEWLINE;
 
-//			if (useTuneMode && qe.isCollectExecStats() && statLogs.length() > 0) {
-//				queryMsg += StringUtil.NEWLINE + "Query Statistics:" + StringUtil.NEWLINE + statLogs.toString();
-//			}
 			if (useTuneMode && queryEditor.isCollectExecStats() && queryPlan != null) {
 				this.queryPlanLog = queryPlan;
 			}
