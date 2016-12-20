@@ -37,10 +37,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.PageChangedEvent;
@@ -71,7 +69,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.ConstantsUtil;
@@ -85,14 +82,12 @@ import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.cubrid.table.progress.ExportConfig;
 import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.model.ICubridNodeLoader;
 import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.persist.QueryOptions;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.TableUtil;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-import com.cubrid.cubridmanager.core.cubrid.table.model.TableColumn;
 
 /**
  * The ExportSettingForLoadDBPage
@@ -177,50 +172,9 @@ public class ExportSettingForLoadDBPage extends
 		ctv.getTree().setLayoutData(CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, -1));
 		ctv.setContentProvider(new FilterTreeContentProvider());
 
-		final Tree tableTree = ctv.getTree();
-		tableTree.setHeaderVisible(true);
-		tableTree.setLinesVisible(true);
-
 		ctv.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
-				ctv.setGrayed(event.getElement(), false);
-				ctv.setSubtreeChecked(event.getElement(), event.getChecked());
-				if (event.getElement() instanceof ICubridNode) {
-					ICubridNode node = (ICubridNode) event.getElement();
-					ICubridNode parent = node.getParent();
-					if (parent != null) {
-						changeParentNodeState(parent);
-					}
-				}
 				updateDialogStatus();
-			}
-
-			/**
-			 * Change parent node state based upon the children node state
-			 *
-			 * @param parent the parent node
-			 */
-			private void changeParentNodeState(ICubridNode parent) {
-				int checkedCount = 0;
-				Object[] objects = ctv.getCheckedElements();
-				List<ICubridNode> children = parent.getChildren();
-				for (ICubridNode child : children) {
-					for (Object obj : objects) {
-						ICubridNode checkedNode = (ICubridNode) obj;
-						if (child.getId().equals(checkedNode.getId())) {
-							checkedCount++;
-						}
-					}
-				}
-				if (checkedCount == 0) {
-					ctv.setChecked(parent, false);
-					ctv.setGrayed(parent, false);
-				} else if (!children.isEmpty() && checkedCount == children.size()) {
-					ctv.setChecked(parent, true);
-					ctv.setGrayed(parent, false);
-				} else {
-					ctv.setGrayChecked(parent, true);
-				}
 			}
 		});
 
@@ -487,15 +441,6 @@ public class ExportSettingForLoadDBPage extends
 						if (StringUtil.isNotEmpty(whereCondition)) {
 							node.setData(ExportObjectLabelProvider.CONDITION, whereCondition);
 						}
-						List<String> columnList = exportConfig.getColumnNameList(table);
-						for (ICubridNode columnNode : node.getChildren()) {
-							for (String columnName : columnList) {
-								if (columnNode.getName().equals(columnName)) {
-									ctv.setChecked(columnNode, true);
-									break;
-								}
-							}
-						}
 					}
 				}
 			}
@@ -621,69 +566,6 @@ public class ExportSettingForLoadDBPage extends
 						}
 						QueryUtil.freeQuery(rs);
 						monitor.worked(1);
-						monitor.subTask(Messages.taskLoadingColumn);
-
-						StringBuilder getColumnsSQL = new StringBuilder(
-								"SELECT attr_name, class_name, is_nullable ");
-						getColumnsSQL.append("FROM db_attribute WHERE class_name IN (");
-						for (int i = 0; i < tablesOrViewLst.size(); i++) {
-							if (i != 0) {
-								getColumnsSQL.append(" , ");
-							}
-							getColumnsSQL.append(" '").append(tablesOrViewLst.get(i).getName()).append(
-									"' ");
-						}
-						getColumnsSQL.append(") ORDER BY class_name, def_order");
-						query = getColumnsSQL.toString();
-
-						// [TOOLS-2425]Support shard broker
-						if (getDatabase() != null) {
-							query = DatabaseInfo.wrapShardQuery(getDatabase().getDatabaseInfo(),
-									query);
-						}
-
-						rs = stmt.executeQuery(query);
-
-						Map<String, List<TableColumn>> tableColumMap = new HashMap<String, List<TableColumn>>();
-						while (rs.next()) {
-							String columnName = rs.getString(1);
-							String className = rs.getString(2);
-							String nullAble = rs.getString(3);
-
-							List<TableColumn> columnList = tableColumMap.get(className);
-							if (columnList == null) {
-								columnList = new ArrayList<TableColumn>();
-								tableColumMap.put(className, columnList);
-							}
-							TableColumn dbColumn = new TableColumn();
-							dbColumn.setColumnName(columnName);
-							if ("YES".equals(nullAble)) {
-								dbColumn.setPrimaryKey(false);
-							} else {
-								dbColumn.setPrimaryKey(true);
-							}
-							columnList.add(dbColumn);
-						}
-
-						for (ICubridNode classNode : tablesOrViewLst) {
-							String tableName = classNode.getName();
-							List<TableColumn> columns = tableColumMap.get(tableName);
-							for (TableColumn column : columns) {
-								String label = column.getColumnName();
-								String columnId = tableName + ICubridNodeLoader.NODE_SEPARATOR
-										+ label;
-								ICubridNode columnNode = new DefaultSchemaNode(columnId, label,
-										"icons/navigator/table_column_item.png");
-								if (column.isPrimaryKey()) {
-									columnNode.setIconPath("icons/primary_key.png");
-								}
-								columnNode.setType(NodeType.TABLE_COLUMN);
-								columnNode.setContainer(false);
-								classNode.addChild(columnNode);
-							}
-
-						}
-						monitor.worked(1);
 					} catch (SQLException e) {
 						CommonUITool.openErrorBox(getShell(),
 								e.getErrorCode() + System.getProperty("line.separator")
@@ -800,25 +682,6 @@ public class ExportSettingForLoadDBPage extends
 				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
 				setPageComplete(false);
 				return;
-			}
-		}
-
-		Object[] objects = ctv.getCheckedElements();
-		for (Object object : objects) {
-			ICubridNode node = (ICubridNode) object;
-			if (node.getType() == NodeType.TABLE_COLUMN_FOLDER) {
-				boolean hasColumnChecked = false;
-				for (ICubridNode columnNode : node.getChildren()) {
-					if (ctv.getChecked(columnNode)) {
-						hasColumnChecked = true;
-						break;
-					}
-				}
-				if (!hasColumnChecked) {
-					setErrorMessage(Messages.bind(Messages.errorExportHistoryColumn, node.getName()));
-					setPageComplete(false);
-					return;
-				}
 			}
 		}
 
