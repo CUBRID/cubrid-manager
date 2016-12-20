@@ -75,7 +75,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.ConstantsUtil;
@@ -92,7 +91,6 @@ import com.cubrid.common.ui.spi.StatusInfo;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.model.ICubridNodeLoader;
 import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.persist.QueryOptions;
 import com.cubrid.common.ui.spi.util.CommonUITool;
@@ -698,15 +696,6 @@ public class ExportSettingPage extends
 						String whereCondition = exportConfig.getWhereCondition(table);
 						if (whereCondition != null) {
 							node.setData(ExportObjectLabelProvider.CONDITION, whereCondition);
-						}
-						List<String> columnList = exportConfig.getColumnNameList(table);
-						for (ICubridNode columnNode : node.getChildren()) {
-							for (String columnName : columnList) {
-								if (columnNode.getName().equals(columnName)) {
-									treeViewer.setChecked(columnNode, true);
-									break;
-								}
-							}
 						}
 					}
 				}
