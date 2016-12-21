@@ -120,10 +120,6 @@ public class ExprotToOBSHandler extends
 									path));
 
 							String sql = getSelectSQL(tableName);
-							String whereCondition = exportConfig.getWhereCondition(tableName);
-							if (whereCondition != null) {
-								sql += whereCondition;
-							}
 
 							// [TOOLS-2425]Support shard broker
 							sql = DatabaseInfo.wrapShardQuery(dbInfo, sql);
