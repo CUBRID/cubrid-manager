@@ -1236,21 +1236,6 @@ public class ExportSettingPage extends
 		for (ICubridNode tableOrView : selectedTableOrViews) {
 			String filePath = savedDirFile.getAbsolutePath() + File.separator
 					+ tableOrView.getName() + fileExt;
-			List<ICubridNode> columnNodes = tableOrView.getChildren();
-			ArrayList<String> columnNames = new ArrayList<String>();
-			for (ICubridNode columnNode : columnNodes) {
-				for (Object object : objects) {
-					ICubridNode node = (ICubridNode) object;
-					if (node.getType() == NodeType.TABLE_COLUMN) {
-						ICubridNode parent = node.getParent();
-						if (parent != null && parent.getId().equalsIgnoreCase(tableOrView.getId())
-								&& columnNode.getName().equalsIgnoreCase(node.getName())) {
-							columnNames.add(columnNode.getName());
-						}
-					}
-				}
-			}
-			exportConfig.setColumnNameList(tableOrView.getName(), columnNames);
 			Object whereCondition = tableOrView.getData(ExportObjectLabelProvider.CONDITION);
 			if (whereCondition != null) {
 				String sqlFilterPart = ((String) whereCondition).trim();

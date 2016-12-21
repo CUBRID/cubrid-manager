@@ -94,6 +94,10 @@ public class ExprotToSqlHandler extends
 		CUBRIDPreparedStatementProxy pStmt = null;
 		CUBRIDResultSetProxy rs = null;
 
+		if (totalRecord == 0) {
+			return;
+		}
+		
 		try {
 			conn = getConnection();
 			fs = FileUtil.getBufferedWriter(exportConfig.getDataFilePath(tableName),

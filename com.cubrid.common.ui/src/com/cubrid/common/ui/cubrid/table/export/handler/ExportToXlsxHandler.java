@@ -113,6 +113,10 @@ public class ExportToXlsxHandler extends
 		boolean hasNextPage = true;
 		long beginIndex = 1;
 		long totalRecord = exportConfig.getTotalCount(tableName);
+		if (totalRecord == 0) {
+			return;
+		}
+		
 		String whereCondition = exportConfig.getWhereCondition(tableName);
 
 		XlsxWriterHelper xlsxWriterhelper = new XlsxWriterHelper();

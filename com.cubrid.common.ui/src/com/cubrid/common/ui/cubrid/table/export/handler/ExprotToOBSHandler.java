@@ -102,6 +102,10 @@ public class ExprotToOBSHandler extends
 				}
 
 				if (exportConfig.isExportData()) { //data
+					long totalRecord = exportConfig.getTotalCount(tableName);
+					if (totalRecord == 0) {
+						return;
+					}
 					String path = exportConfig.getDataFilePath(tableName);
 					BufferedWriter fs = null;
 					Connection conn = null;
@@ -115,17 +119,7 @@ public class ExprotToOBSHandler extends
 							exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
 									path));
 
-							List<String> tableColumnList = exportConfig.getColumnNameList(tableName);
-							StringBuffer columns = new StringBuffer();
-							int size = tableColumnList.size();
-							for (int i = 0; i < tableColumnList.size(); i++) {
-								columns.append(QuerySyntax.escapeKeyword(tableColumnList.get(i)));
-								if (i != size - 1) {
-									columns.append(',');
-								}
-							}
-							String sql = "SELECT " + columns + " FROM "
-									+ QuerySyntax.escapeKeyword(tableName) + " ";
+							String sql = getSelectSQL(tableName);
 							String whereCondition = exportConfig.getWhereCondition(tableName);
 							if (whereCondition != null) {
 								sql += whereCondition;

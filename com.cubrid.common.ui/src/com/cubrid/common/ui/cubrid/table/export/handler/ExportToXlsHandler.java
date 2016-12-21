@@ -113,6 +113,10 @@ public class ExportToXlsHandler extends
 		boolean hasNextPage = true;
 		long beginIndex = 1;
 		long totalRecord = exportConfig.getTotalCount(tableName);
+		if (totalRecord == 0) {
+			return;
+		}
+		
 		int cellCharacterLimit = ImportFileConstants.XLSX_CELL_CHAR_LIMIT;
 		int rowLimit = ImportFileConstants.XLS_ROW_LIMIT; // 65536: limit xls row number.
 		boolean isInitedColumnTitles = false;

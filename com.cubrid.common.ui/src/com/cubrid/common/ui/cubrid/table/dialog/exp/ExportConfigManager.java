@@ -119,12 +119,9 @@ public class ExportConfigManager {
 					String tableName = tables[j].getString("name");
 					tableList.add(tableName);
 					String whereCondition = tables[j].getString("where");
-					String[] columns = tables[j].getString("columns").split(",");
 					if (whereCondition != null && whereCondition.trim().length() > 0) {
 						tableWhereConditionMap.put(tableName, whereCondition);
 					}
-					List<String> colList = Arrays.asList(columns);
-					exportTableColumnMap.put(tableName, colList);
 				}
 
 				ExportConfig model = new ExportConfig();
@@ -197,12 +194,8 @@ public class ExportConfigManager {
 
 				List<String> tableList = model.getTableNameList();
 				for (String tableName : tableList) {
-					List<String> colList = model.getColumnNameList(tableName);
-					String[] cols = new String[colList.size()];
-					String colNames = StringUtil.implode(",", colList.toArray(cols));
 					IXMLMemento tableMemento = configMemento.createChild("table");
 					tableMemento.putString("name", tableName);
-					tableMemento.putString("columns", colNames);
 					String whereCondition = model.getWhereCondition(tableName);
 					if (StringUtil.isNotEmpty(whereCondition)) {
 						tableMemento.putString("where", whereCondition);
