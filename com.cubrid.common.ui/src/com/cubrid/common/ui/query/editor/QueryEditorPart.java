@@ -1646,17 +1646,8 @@ public class QueryEditorPart extends
 			firstCharOffset = firstCharOffset - 1;
 		}
 
-		String query = null;
-		int sqlStartPos = -1;
-
-//		if (QueryUtil.isXml(queries)) {
-//			query = QueryUtil.findNearbyQuery(queries, cursorOffset);
-//			sqlStartPos = queries.indexOf(query);
-//		} else {
-		sqlStartPos = getQuerySQLStartPos(document, queries, firstCharOffset);
-		query = getQuery(queries, sqlStartPos);
-//		}
-
+		int sqlStartPos = getQuerySQLStartPos(document, queries, firstCharOffset);
+		String query = getQuery(queries, sqlStartPos);
 		sqlText.setSelectionRange(sqlStartPos, query.length());
 
 		runQuery(false, query.trim(), null);
