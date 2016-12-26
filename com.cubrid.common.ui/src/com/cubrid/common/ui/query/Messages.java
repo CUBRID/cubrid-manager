@@ -64,6 +64,7 @@ public class Messages extends
 	public static String changeShardId;
 	public static String run;
 	public static String btnRunThisQuery;
+	public static String btnParseThisSqlmapQuery;
 	public static String btnRunThisQueryPlan;
 	public static String runMultiQuery;
 	public static String btnYes;

@@ -94,6 +94,7 @@ import com.cubrid.common.ui.query.action.RedoAction;
 import com.cubrid.common.ui.query.action.ReformatColumnsAliasAction;
 import com.cubrid.common.ui.query.action.RunQueryAction;
 import com.cubrid.common.ui.query.action.RunQueryPlanAction;
+import com.cubrid.common.ui.query.action.ParseSqlmapQueryAction;
 import com.cubrid.common.ui.query.action.ShowSchemaAction;
 import com.cubrid.common.ui.query.action.UndoAction;
 import com.cubrid.common.ui.query.builder.quickbuilder.QuickBuilderDialog;
@@ -247,6 +248,11 @@ public class SQLEditorComposite extends Composite {
 				IAction runQueryAction = ActionManager.getInstance().getAction(RunQueryAction.ID);
 				if (runQueryAction != null) {
 					manager.add(runQueryAction);
+				}
+				
+				IAction runSqlmapQueryAction = ActionManager.getInstance().getAction(ParseSqlmapQueryAction.ID);
+				if (runSqlmapQueryAction != null) {
+					manager.add(runSqlmapQueryAction);
 				}
 
 				IAction runQueryPlanAction = ActionManager.getInstance().getAction(RunQueryPlanAction.ID);

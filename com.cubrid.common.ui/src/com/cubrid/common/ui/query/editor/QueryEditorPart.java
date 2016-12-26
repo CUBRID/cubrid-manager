@@ -1214,12 +1214,31 @@ public class QueryEditorPart extends
 	}
 
 	/**
+	 * Parse the selected query. If it has a sqlmap fashion syntax,
+	 * it will show the sqlmap parameter editor with parsed query on the right side.
+	 */
+	public void parseSqlmapQuery() {
+		runQuery(false, true);
+	}
+	
+	/**
 	 * Execute all the selected SQL script on editor, if not, execute all the
 	 * script on editor
 	 *
 	 * @param isOnlyQueryPlan boolean
 	 */
 	public void runQuery(boolean isOnlyQueryPlan) {
+		runQuery(isOnlyQueryPlan, false);
+	}
+	
+	/**
+	 * Execute all the selected SQL script on editor, if not, execute all the
+	 * script on editor
+	 *
+	 * @param isOnlyQueryPlan boolean
+	 * @parma isSqlmapQuery boolean whether or not it should handled as a sqlmap query
+	 */
+	private void runQuery(boolean isOnlyQueryPlan, boolean isSqlmapQuery) {
 		final DBConnection dbConnection = getConnection();
 		if (dbConnection != null
 				&& dbConnection.isAutoCommit()
@@ -1252,7 +1271,7 @@ public class QueryEditorPart extends
 		}
 
 		String queries = combinedQueryComposite.getSqlEditorComp().getSelectedQueries();
-		runQuery(isOnlyQueryPlan, queries, null);
+		runQuery(isOnlyQueryPlan, isSqlmapQuery, queries, null);
 	}
 
 	/**
@@ -1264,6 +1283,20 @@ public class QueryEditorPart extends
 	 * @param rowParameterList List<List<PstmtParameter>>
 	 */
 	private void runQuery(boolean isOnlyQueryPlan, String queries,
+			List<List<PstmtParameter>> rowParameterList) {
+		runQuery(isOnlyQueryPlan, false, queries, rowParameterList);
+	}
+	
+	/**
+	 * Execute all the selected SQL script on editor, if not, execute all the
+	 * script on editor
+	 *
+	 * @param isOnlyQueryPlan boolean
+	 * @param isSqlmapQuery boolean whether or not it needs parsing a sqlmap query
+	 * @param queries String
+	 * @param rowParameterList List<List<PstmtParameter>>
+	 */
+	private void runQuery(boolean isOnlyQueryPlan, boolean isSqlmapQuery, String queries,
 			List<List<PstmtParameter>> rowParameterList) { // FIXME move this logic to core module
 		if (!isConnected()) {
 			CommonUITool.openErrorBox(Messages.qedit_tip_run_query);
@@ -1290,12 +1323,14 @@ public class QueryEditorPart extends
 			return;
 		}
 
-		boolean isXmlQueries = QueryUtil.isXml(queries);
 		MapperParser mapperParser = null;
-		try {
-			mapperParser = new MapperParserImpl();
-		} catch (Exception e) {
-			isXmlQueries = false;
+		boolean isXmlQueries = isSqlmapQuery && QueryUtil.isXml(queries);
+		if (isXmlQueries) {
+			try {
+				mapperParser = new MapperParserImpl();
+			} catch (Exception ignored) {
+				isXmlQueries = false;
+			}
 		}
 
 		if (isXmlQueries) {
@@ -1614,13 +1649,13 @@ public class QueryEditorPart extends
 		String query = null;
 		int sqlStartPos = -1;
 
-		if (QueryUtil.isXml(queries)) {
-			query = QueryUtil.findNearbyQuery(queries, cursorOffset);
-			sqlStartPos = queries.indexOf(query);
-		} else {
-			sqlStartPos = getQuerySQLStartPos(document, queries, firstCharOffset);
-			query = getQuery(queries, sqlStartPos);
-		}
+//		if (QueryUtil.isXml(queries)) {
+//			query = QueryUtil.findNearbyQuery(queries, cursorOffset);
+//			sqlStartPos = queries.indexOf(query);
+//		} else {
+		sqlStartPos = getQuerySQLStartPos(document, queries, firstCharOffset);
+		query = getQuery(queries, sqlStartPos);
+//		}
 
 		sqlText.setSelectionRange(sqlStartPos, query.length());
 

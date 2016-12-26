@@ -125,6 +125,7 @@ import com.cubrid.common.ui.query.action.RedoAction;
 import com.cubrid.common.ui.query.action.ReformatColumnsAliasAction;
 import com.cubrid.common.ui.query.action.RunQueryAction;
 import com.cubrid.common.ui.query.action.RunQueryPlanAction;
+import com.cubrid.common.ui.query.action.ParseSqlmapQueryAction;
 import com.cubrid.common.ui.query.action.ShowSchemaAction;
 import com.cubrid.common.ui.query.action.SqlFormatAction;
 import com.cubrid.common.ui.query.action.SqlPstmtAction;
@@ -712,6 +713,11 @@ public class ActionBuilder {
 		action = new RunQueryAction(shell,
 				com.cubrid.common.ui.query.Messages.btnRunThisQuery,
 				loadImage("icons/queryeditor/query_run.png"));
+		registerAction(action);
+		
+		action = new ParseSqlmapQueryAction(shell,
+				com.cubrid.common.ui.query.Messages.btnParseThisSqlmapQuery,
+				loadImage("icons/navigator/sql.png"));
 		registerAction(action);
 
 		action = new RunQueryPlanAction(shell,
