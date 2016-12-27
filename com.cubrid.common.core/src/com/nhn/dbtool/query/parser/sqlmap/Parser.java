@@ -44,6 +44,7 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.xml.sax.InputSource;
 
+import com.cubrid.common.core.Messages;
 import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapCondition;
 import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapFile;
 import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapParameter;
@@ -179,44 +180,40 @@ public class Parser {
 		Document document;
 
 		if (StringUtils.isEmpty(sqlMapFile.getFileContent())) {
-			String message = "The sqlmap file object has empty content.";
-			sqlMapFile.setErrorMessage(message);
-			throw new Exception(message);
+			sqlMapFile.setErrorMessage(Messages.sqlmapEmptyContent);
+			throw new Exception(Messages.sqlmapEmptyContent);
 		}
 
-		// sqlmap 파일의 내용으로 XML Document를 생성한다.
+		// create a XML document with SQLMap document.
 		try {
 			document = createDocument(sqlMapFile.getFileContent());
 		} catch (Exception e) {
-			String message = "The sqlmap file has a content of an invalid format.";
-			sqlMapFile.setErrorMessage(message);
-			throw new Exception(message, e);
+			sqlMapFile.setErrorMessage(Messages.sqlmapInvalidFormat);
+			throw new Exception(Messages.sqlmapInvalidFormat, e);
 		}
 
-		// iBatis(sqlMap) 또는 MyBatis(mapper) 파일인지 확인
+		// determine whether iBatis(sqlMap) or MyBatis(mapper) from the document header.
 		if (!isMapperXML(document)) {
-			String message = "error.queryimport.parse.file.nonsupport";
-			sqlMapFile.setErrorMessage(message);
-			throw new Exception(message);
+			sqlMapFile.setErrorMessage(Messages.sqlmapNoMybatisFormat);
+			throw new Exception(Messages.sqlmapNoMybatisFormat);
 		}
 
-		// namespace 생성
+		// generate a namespace
 		String namespace = SqlMapParserUtil.getAttribute(document.getRootElement(), "namespace");
 		sqlMapFile.setNamespace(namespace);
 		logger.debug("namespace:" + namespace);
 
-		// 개별 쿼리를 파싱
+		// parse sqlmap document
 		try {
 			loopNode(document, sqlMapFile);
 		} catch (Exception e) {
-			String message = "The sqlmap file doesn't supported. It can be parsed particular format as ibatis, mybatis.";
-			sqlMapFile.setErrorMessage(message);
-			throw new Exception(message, e);
+			sqlMapFile.setErrorMessage(Messages.sqlmapNoMybatisFormat);
+			throw new Exception(Messages.sqlmapNoMybatisFormat, e);
 		}
 
-		// <include refid=""></include> 부분은 원본 쿼리로 대체
+		// replace <include refid=""></include> by referred sql through the refid
 		for (SqlMapQuery query : sqlMapFile.getSqlMapQueryList()) {
-			// 해당 쿼리에서 Include condition을 수집
+			// find Include condition in queries
 			for (SqlMapCondition condition : query.getConditionList()) {
 				mergeInclude(sqlMapFile, query, condition);
 			}
