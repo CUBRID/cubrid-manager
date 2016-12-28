@@ -240,7 +240,6 @@ public class ExportSettingForLoadDBPage extends
 				for (ICubridNode node : tablesOrViewLst) {
 					ctv.setGrayed(node, false);
 					ctv.setChecked(node, selection);
-					ctv.setSubtreeChecked(node, selection);
 				}
 				updateDialogStatus();
 			}
@@ -473,7 +472,6 @@ public class ExportSettingForLoadDBPage extends
 				for (ICubridNode node : tablesOrViewLst) {
 					if (table.equalsIgnoreCase(node.getName())) {
 						ctv.setChecked(node, true);
-						ctv.setSubtreeChecked(node, true);
 					}
 				}
 			}
@@ -929,7 +927,6 @@ public class ExportSettingForLoadDBPage extends
 		Object[] objects = ctv.getCheckedElements();
 		for (Object o : objects) {
 			ctv.setChecked(o, false);
-			ctv.setSubtreeChecked(o, false);
 		}
 		tablesOrViewLst.clear();
 	}

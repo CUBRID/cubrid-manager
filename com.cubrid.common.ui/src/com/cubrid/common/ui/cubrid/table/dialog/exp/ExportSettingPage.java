@@ -273,7 +273,6 @@ public class ExportSettingPage extends
 				for (ICubridNode node : tablesOrViewLst) {
 					treeViewer.setGrayed(node, false);
 					treeViewer.setChecked(node, selection);
-					treeViewer.setSubtreeChecked(node, selection);
 				}
 				updateDialogStatus(null);
 			}
@@ -1326,7 +1325,6 @@ public class ExportSettingPage extends
 		Object[] objects = treeViewer.getCheckedElements();
 		for (Object o : objects) {
 			treeViewer.setChecked(o, false);
-			treeViewer.setSubtreeChecked(o, false);
 		}
 		tablesOrViewLst.clear();
 	}
