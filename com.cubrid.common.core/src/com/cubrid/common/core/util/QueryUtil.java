@@ -636,4 +636,41 @@ public final class QueryUtil {
 
 		return m.group(2);
 	}
+	
+	public static String getSelectSQL(Connection conn, String name) {
+		String sql = null;
+		List<String> columnList = getColumnList(conn, name);
+		StringBuffer columns = new StringBuffer();
+		int size = columnList.size();
+		for (int i = 0; i < columnList.size(); i++) {
+			columns.append(QuerySyntax.escapeKeyword(columnList.get(i)));
+			if (i != size - 1) {
+				columns.append(',');
+			}
+		}
+		sql = "SELECT " + columns + " FROM " + QuerySyntax.escapeKeyword(name);
+		return sql;
+	}
+	
+	public static List<String> getColumnList(Connection conn, String tableName) {
+		List<String> columnList = new ArrayList<String>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "SELECT attr_name FROM db_attribute WHERE class_name = ?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, tableName);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				columnList.add(QuerySyntax.escapeKeyword(rs.getString(1)));
+			}
+		} catch (SQLException e) {
+			LOGGER.error(e.getLocalizedMessage());
+		} finally {
+			QueryUtil.freeQuery(pstmt, rs);
+		}
+		
+		return columnList;
+	}
 }

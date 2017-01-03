@@ -145,7 +145,7 @@ public class ExportToXlsxHandler extends
 
 		try {
 			conn = getConnection();
-			String sql = getSelectSQL(tableName);
+			String sql = QueryUtil.getSelectSQL(conn, tableName); 
 			isPaginating = isPagination(whereCondition, sql, whereCondition);
 			int exportedCount = 0;
 			while (hasNextPage) {

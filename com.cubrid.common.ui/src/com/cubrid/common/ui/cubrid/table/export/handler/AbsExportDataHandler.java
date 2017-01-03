@@ -201,44 +201,6 @@ public abstract class AbsExportDataHandler {
 		}
 	}
 
-	protected String getSelectSQL(String name) { // FIXME move this logic to core module
-		String sql = null;
-		List<String> columnList = getColumnList(name);
-		StringBuffer columns = new StringBuffer();
-		int size = columnList.size();
-		for (int i = 0; i < columnList.size(); i++) {
-			columns.append(QuerySyntax.escapeKeyword(columnList.get(i)));
-			if (i != size - 1) {
-				columns.append(',');
-			}
-		}
-		sql = "SELECT " + columns + " FROM " + QuerySyntax.escapeKeyword(name);
-		return sql;
-	}
-	
-	private List<String> getColumnList(String tableName) {
-		List<String> columnList = new ArrayList<String>();
-		CUBRIDPreparedStatementProxy pstmt = null;
-		CUBRIDResultSetProxy rs = null;
-		String sql = "SELECT attr_name FROM db_attribute WHERE class_name = ?";
-		
-		try {
-			pstmt = (CUBRIDPreparedStatementProxy) getConnection()
-					.prepareStatement(sql);
-			pstmt.setString(1, tableName);
-			rs = (CUBRIDResultSetProxy) pstmt.executeQuery();
-			while (rs.next()) {
-				columnList.add(rs.getString(1));
-			}
-		} catch (SQLException e) {
-			LOGGER.error(e.getLocalizedMessage());
-		} finally {
-			QueryUtil.freeQuery(pstmt, rs);
-		}
-		
-		return columnList;
-	}
-
 	protected Connection getConnection() throws SQLException { // FIXME move this logic to core module
 		return JDBCConnectionManager.getConnection(dbInfo, false);
 	}

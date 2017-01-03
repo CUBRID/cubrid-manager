@@ -120,7 +120,7 @@ public class ExportToTxtHandler extends
 			conn = getConnection();
 			fs = FileUtil.getBufferedWriter(exportConfig.getDataFilePath(tableName),
 					exportConfig.getFileCharset());
-			String sql = getSelectSQL(tableName);
+			String sql = QueryUtil.getSelectSQL(conn, tableName); 
 			isPaginating = isPagination(tableName, sql, whereCondition);
 			while (hasNextPage) {
 				try {

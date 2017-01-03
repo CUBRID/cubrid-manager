@@ -129,7 +129,7 @@ public class ExportToXlsHandler extends
 			WritableSheet sheet = workbook.createSheet("Sheet " + sheetNum, sheetNum);
 			sheetNum++;
 			int exportedCount = 0;
-			String sql = getSelectSQL(tableName);
+			String sql = QueryUtil.getSelectSQL(conn, tableName);
 			isPaginating = isPagination(whereCondition, sql, whereCondition);
 			while (hasNextPage) {
 				try {
