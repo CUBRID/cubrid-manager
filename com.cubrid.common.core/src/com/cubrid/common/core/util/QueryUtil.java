@@ -640,7 +640,7 @@ public final class QueryUtil {
 	public static String getSelectSQL(Connection conn, String name) {
 		String sql = null;
 		List<String> columnList = getColumnList(conn, name);
-		StringBuffer columns = new StringBuffer();
+		StringBuilder columns = new StringBuilder();
 		int size = columnList.size();
 		for (int i = 0; i < columnList.size(); i++) {
 			columns.append(QuerySyntax.escapeKeyword(columnList.get(i)));
