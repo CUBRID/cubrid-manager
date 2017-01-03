@@ -93,6 +93,11 @@ public class ExportToTxtHandler extends
 			return;
 		}
 		
+		long totalRecord = exportConfig.getTotalCount(tableName);
+		if (totalRecord == 0) {
+			return;
+		}
+		
 		if(exportConfig.isExportFromCache()){
 			exportFromCache(tableName);
 		}else{
@@ -107,10 +112,6 @@ public class ExportToTxtHandler extends
 		CUBRIDResultSetProxy rs = null;
 		boolean hasNextPage = true;
 		long totalRecord = exportConfig.getTotalCount(tableName);
-		if (totalRecord == 0) {
-			return;
-		}
-		
 		long beginIndex = 1;
 		int exportedCount = 0;
 		String whereCondition = exportConfig.getWhereCondition(tableName);

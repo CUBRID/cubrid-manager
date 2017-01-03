@@ -83,21 +83,21 @@ public class ExprotToSqlHandler extends
 		if (StringUtil.isEmpty(tableName)) {
 			return;
 		}
+		
+		long totalRecord = exportConfig.getTotalCount(tableName);
+		if (totalRecord == 0) {
+			return;
+		}
 
 		BufferedWriter fs = null;
 		String whereCondition = exportConfig.getWhereCondition(tableName);
 		boolean hasNextPage = true;
 		long beginIndex = 1;
 		int exportedCount = 0;
-		long totalRecord = exportConfig.getTotalCount(tableName);
 		Connection conn = null;
 		CUBRIDPreparedStatementProxy pStmt = null;
 		CUBRIDResultSetProxy rs = null;
 
-		if (totalRecord == 0) {
-			return;
-		}
-		
 		try {
 			conn = getConnection();
 			fs = FileUtil.getBufferedWriter(exportConfig.getDataFilePath(tableName),

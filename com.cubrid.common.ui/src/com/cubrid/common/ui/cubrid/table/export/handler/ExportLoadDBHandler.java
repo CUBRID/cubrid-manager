@@ -146,6 +146,7 @@ public class ExportLoadDBHandler extends
 				if (totalRecord == 0) {
 					continue;
 				}
+				
 				boolean hasNextPage = true;
 				int exportedCount = 0;
 				long beginIndex = 1;

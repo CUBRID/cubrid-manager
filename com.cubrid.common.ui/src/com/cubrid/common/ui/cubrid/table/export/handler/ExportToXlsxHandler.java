@@ -105,6 +105,11 @@ public class ExportToXlsxHandler extends
 		if (StringUtil.isEmpty(tableName)) {
 			return;
 		}
+		
+		long totalRecord = exportConfig.getTotalCount(tableName);
+		if (totalRecord == 0) {
+			return;
+		}
 
 		int rowLimit = ImportFileConstants.XLSX_ROW_LIMIT; // 1048576: limit xlsx row number.
 		int columnLimit = ImportFileConstants.XLSX_COLUMN_LIMIT; // 16384: limit xlsx column number.
@@ -112,10 +117,6 @@ public class ExportToXlsxHandler extends
 
 		boolean hasNextPage = true;
 		long beginIndex = 1;
-		long totalRecord = exportConfig.getTotalCount(tableName);
-		if (totalRecord == 0) {
-			return;
-		}
 		
 		String whereCondition = exportConfig.getWhereCondition(tableName);
 
