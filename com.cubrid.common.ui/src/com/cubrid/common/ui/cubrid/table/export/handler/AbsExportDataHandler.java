@@ -217,7 +217,7 @@ public abstract class AbsExportDataHandler {
 	}
 	
 	private List<String> getColumnList(String tableName) {
-		List<String> columnList = new ArrayList<>();
+		List<String> columnList = new ArrayList<String>();
 		CUBRIDPreparedStatementProxy pstmt = null;
 		CUBRIDResultSetProxy rs = null;
 		String sql = "SELECT attr_name FROM db_attribute WHERE class_name = ?";
