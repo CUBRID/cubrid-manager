@@ -40,6 +40,8 @@ import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.query.control.ColumnInfo;
+import com.cubrid.jdbc.proxy.driver.CUBRIDBlobProxy;
+import com.cubrid.jdbc.proxy.driver.CUBRIDClobProxy;
 
 /**
  * 
@@ -89,16 +91,20 @@ public class ResultSetDataCache {
 				if(value instanceof Blob){
 					Blob blob = (Blob)value;
 					try {
-						blob.free();
-						blob =null;
+						if (blob != null && ((CUBRIDBlobProxy)blob).getProxyObj() != null) {
+							blob.free();
+							blob = null;
+						}
 					} catch (SQLException e) {
 						LOGGER.error(e.getMessage(), e);
 					}
 				}else if(value instanceof Clob){
 					Clob clob = (Clob)value;
 					try {
-						clob.free();
-						clob = null;
+						if (clob != null && ((CUBRIDClobProxy)clob).getProxyObj() != null) {
+							clob.free();
+							clob = null;
+						}
 					} catch (SQLException e) {
 						LOGGER.error(e.getMessage(), e);
 					}
