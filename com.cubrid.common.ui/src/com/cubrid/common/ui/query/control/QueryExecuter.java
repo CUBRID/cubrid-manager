@@ -2548,6 +2548,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	 * dispose the object.
 	 */
 	public void dispose() {
+		disposeAll();
+		freeResultSetCache();
+	}
+	
+	private void disposeAll() {
 		try {
 			if (stmt != null) {
 				stmt.cancel();
@@ -2570,7 +2575,10 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 			colComparatorMap.clear();
 			colComparatorMap = null;
 		}
-		freeResultSetCache();
+	}
+	
+	public void initBeforeRunQuery() {
+		disposeAll();
 	}
 
 	public QueryInfo getQueryInfo() {

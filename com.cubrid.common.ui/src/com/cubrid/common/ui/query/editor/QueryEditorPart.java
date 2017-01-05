@@ -1443,9 +1443,8 @@ public class QueryEditorPart extends
 		makeProgressBar();
 		runningCount.incrementAndGet();
 		
-		// [RND-5] performance improvement about executing query
 		if (result != null) {
-			result.dispose();
+			result.initBeforeRunQuery();
 		}
 
 		queryThread = new Thread(new QueryThread(queries, this, rowParameterList, con,
