@@ -29,7 +29,7 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.task;
 
-import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -61,6 +61,7 @@ public class GetUserClassColumnsTask extends
 		JDBCTask {
 	private static final Logger LOGGER = LogUtil.getLogger(GetUserClassColumnsTask.class);
 	private boolean isInTransation;
+	private PreparedStatement pstmt;
 
 	public GetUserClassColumnsTask(DatabaseInfo dbInfo) {
 		super("getUserClassColumns", dbInfo);
@@ -82,15 +83,14 @@ public class GetUserClassColumnsTask extends
 				errorMsg = Messages.error_getConnection;
 				return columns;
 			}
-			DatabaseMetaData dbmd = connection.getMetaData();
 			columns = SchemaUtil.getTableColumn(databaseInfo, connection, tableName);
 
-			rs = dbmd.getPrimaryKeys(null, null, tableName);
+			rs = getPrimaryKeys(tableName);
 			List<String> pkColumns = new ArrayList<String>();
 			while (rs.next()) {
-				pkColumns.add(rs.getString("column_name"));
+				pkColumns.add(rs.getString(1));
 			}
-			QueryUtil.freeQuery(rs);
+			QueryUtil.freeQuery(pstmt, rs);
 
 			for (TableColumn dbColumn : columns) {
 				String columnName = dbColumn.getColumnName();
@@ -111,6 +111,17 @@ public class GetUserClassColumnsTask extends
 			finish();
 		}
 		return columns;
+	}
+	
+	private ResultSet getPrimaryKeys(String tableName) throws SQLException {
+		String sql = "SELECT key_attr_name " +
+				"FROM db_index_key " +
+				"WHERE class_name= ? AND index_name = 'pk'";
+		pstmt = connection.prepareStatement(sql);
+		pstmt.setString(1, tableName);
+		rs = pstmt.executeQuery();
+		
+		return rs;
 	}
 
 	/**
