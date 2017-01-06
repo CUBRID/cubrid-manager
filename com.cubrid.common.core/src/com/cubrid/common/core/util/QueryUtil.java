@@ -673,4 +673,28 @@ public final class QueryUtil {
 		
 		return columnList;
 	}
+	
+	public static List<String> getPrimaryKeys(Connection conn, String tableName) {
+		String sql = "SELECT key_attr_name " +
+				"FROM db_index_key " +
+				"WHERE class_name= ? AND index_name = 'pk'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> pkColumns = new ArrayList<String>();
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, tableName);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				pkColumns.add(rs.getString(1));
+			}
+		} catch (SQLException e) {
+			LOGGER.error(e.getLocalizedMessage());
+		} finally {
+			QueryUtil.freeQuery(pstmt, rs);
+		}
+		
+		return pkColumns;
+	}
 }

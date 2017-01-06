@@ -84,13 +84,7 @@ public class GetUserClassColumnsTask extends
 				return columns;
 			}
 			columns = SchemaUtil.getTableColumn(databaseInfo, connection, tableName);
-
-			rs = getPrimaryKeys(tableName);
-			List<String> pkColumns = new ArrayList<String>();
-			while (rs.next()) {
-				pkColumns.add(rs.getString(1));
-			}
-			QueryUtil.freeQuery(pstmt, rs);
+			List<String> pkColumns = QueryUtil.getPrimaryKeys(connection, tableName);
 
 			for (TableColumn dbColumn : columns) {
 				String columnName = dbColumn.getColumnName();
@@ -111,17 +105,6 @@ public class GetUserClassColumnsTask extends
 			finish();
 		}
 		return columns;
-	}
-	
-	private ResultSet getPrimaryKeys(String tableName) throws SQLException {
-		String sql = "SELECT key_attr_name " +
-				"FROM db_index_key " +
-				"WHERE class_name= ? AND index_name = 'pk'";
-		pstmt = connection.prepareStatement(sql);
-		pstmt.setString(1, tableName);
-		rs = pstmt.executeQuery();
-		
-		return rs;
 	}
 
 	/**
