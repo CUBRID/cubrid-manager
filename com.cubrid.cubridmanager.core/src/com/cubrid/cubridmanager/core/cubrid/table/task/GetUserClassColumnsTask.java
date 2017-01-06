@@ -29,7 +29,6 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.task;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -61,7 +60,6 @@ public class GetUserClassColumnsTask extends
 		JDBCTask {
 	private static final Logger LOGGER = LogUtil.getLogger(GetUserClassColumnsTask.class);
 	private boolean isInTransation;
-	private PreparedStatement pstmt;
 
 	public GetUserClassColumnsTask(DatabaseInfo dbInfo) {
 		super("getUserClassColumns", dbInfo);
