@@ -1377,4 +1377,54 @@ public final class StringUtil {
 		
 		return order;
 	}
+
+	public static StringBuilder data = new StringBuilder();
+
+	/**
+	 * Escaping single quotation or double quotation.
+	 *
+	 * @param value
+	 * @return
+	 */
+	public static String escapeQuotes(String value) {
+		if (value == null) {
+			return value;
+		}
+		data.setLength(0);
+		char quote = value.charAt(0);
+
+		eliminateQuotesAndAppendToData(value);
+		if (data.length() == 0) {
+			return value;
+		}
+
+		replaceQuotes(quote);
+		wrapQutesAndAppendToData(quote);
+
+		return data.toString();
+	}
+
+	private static void eliminateQuotesAndAppendToData(String value) {
+		data.append(value.substring(1, value.length() - 1));
+	}
+
+	private static void replaceQuotes(char quote) {
+		String quotes = quote + "" + quote;
+		String oneQuote = Character.toString(quote);
+
+		int index = data.indexOf(oneQuote);
+		if (index == -1) {
+			wrapQutesAndAppendToData(quote);
+			return;
+		}
+
+		do {
+			data.insert(index, quote);
+		} while ((index = data.indexOf(quotes, index)) != -1
+				&& (index = data.indexOf(oneQuote, index + 2)) != -1);
+	}
+
+	private static void wrapQutesAndAppendToData(char quote) {
+		data.insert(0, quote).insert(data.length(), quote);
+	}
 }
