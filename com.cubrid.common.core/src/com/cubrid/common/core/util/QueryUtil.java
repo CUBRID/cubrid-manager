@@ -697,4 +697,17 @@ public final class QueryUtil {
 		
 		return pkColumns;
 	}
+
+	public static boolean isStringDataType(String type) {
+		if (type.equals("CHAR") || type.equals("VARCHAR")
+				|| type.equals("CHARACTER") || type.equals("CHARACTER VARYING")
+				|| type.equals("STRING") || type.equals("NCHAR")
+				|| type.equals("NATIONAL CHARACTER")
+				|| type.equals("NATIONAL CHARACTER VARYING")
+				|| type.equals("NCHAR VARYING")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
