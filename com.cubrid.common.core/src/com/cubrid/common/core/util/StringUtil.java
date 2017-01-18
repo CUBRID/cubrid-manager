@@ -1414,7 +1414,6 @@ public final class StringUtil {
 
 		int index = data.indexOf(oneQuote);
 		if (index == -1) {
-			wrapQutesAndAppendToData(quote);
 			return;
 		}
 
