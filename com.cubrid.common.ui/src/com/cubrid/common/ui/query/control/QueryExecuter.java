@@ -1612,7 +1612,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				}
 			}
 
-			sql.append(" WHERE ");
 			int count = 0;
 
 			for (int i = 0; i < colCount; i++) {
@@ -1622,6 +1621,10 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 				if (!pkList.contains(colName)) {
 					continue;
+				}
+
+				if (i == 0) {
+					sql.append(" WHERE ");
 				}
 
 				if (count > 0) {
