@@ -1399,7 +1399,7 @@ public final class StringUtil {
 		}
 
 		replaceQuotes(quote);
-		wrapQutesAndAppendToData(quote);
+		wrapQuotesAndAppendToData(quote);
 
 		return data.toString();
 	}
@@ -1423,7 +1423,7 @@ public final class StringUtil {
 				&& (index = data.indexOf(oneQuote, index + 2)) != -1);
 	}
 
-	private static void wrapQutesAndAppendToData(char quote) {
+	private static void wrapQuotesAndAppendToData(char quote) {
 		data.insert(0, quote).insert(data.length(), quote);
 	}
 }
