@@ -565,7 +565,9 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 			if (loadSize > 0) {
 				char[] buf = new char[loadSize];
 				int len = reader.read(buf);
-				buffer.append(buf, 0, len);
+				if (len != -1) {
+					buffer.append(buf, 0, len);
+				}
 				if (len >= loadSize && reader.read() != -1) {
 					cellValue.setHasLoadAll(false);
 				} else {
