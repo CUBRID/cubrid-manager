@@ -1426,4 +1426,16 @@ public final class StringUtil {
 	private static void wrapQuotesAndAppendToData(char quote) {
 		data.insert(0, quote).insert(data.length(), quote);
 	}
+
+	public static char getWrappedQuote(String value) {
+		if (value != null) {
+			if (value.startsWith("'") && value.endsWith("'")) {
+				return '\'';
+			}
+			if (value.startsWith("\"") && value.endsWith("\"")) {
+				return '"';
+			}
+		}
+		return 0;
+	}
 }
