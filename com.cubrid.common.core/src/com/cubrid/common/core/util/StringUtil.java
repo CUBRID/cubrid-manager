@@ -1387,7 +1387,7 @@ public final class StringUtil {
 	 * @return
 	 */
 	public static String escapeQuotes(String value) {
-		if (value == null) {
+		if (value == null || "NULL".equals(value)) {
 			return value;
 		}
 		data.setLength(0);
