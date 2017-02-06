@@ -1427,15 +1427,21 @@ public final class StringUtil {
 		data.insert(0, quote).insert(data.length(), quote);
 	}
 
-	public static char getWrappedQuote(String value) {
+	public static String getWrappedQuote(String value) {
 		if (value != null) {
 			if (value.startsWith("'") && value.endsWith("'")) {
-				return '\'';
+				return "'";
 			}
 			if (value.startsWith("\"") && value.endsWith("\"")) {
-				return '"';
+				return "\"";
 			}
 		}
-		return 0;
+		return "";
+	}
+
+	public static String insertQuotes(String quote, String data) {
+		data = data.substring(1, data.length() - 1);
+		data = quote + data + quote;
+		return "'" + data + "'";
 	}
 }
