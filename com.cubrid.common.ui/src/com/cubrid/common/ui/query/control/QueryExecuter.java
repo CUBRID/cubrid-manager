@@ -1471,7 +1471,8 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				if (formatResult.isSuccess()
 						&& formatResult.getFormatedString() != null) {
 					if (!quote.equals("")) {
-						
+						formatResult.setFormatedString(StringUtil.insertQuotes(
+								quote, formatResult.getFormatedString()));
 					}
 					return formatResult.getFormatedString();
 				}
