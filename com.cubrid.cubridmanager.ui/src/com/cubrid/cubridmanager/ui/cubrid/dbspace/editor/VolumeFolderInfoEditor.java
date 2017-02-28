@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -91,6 +92,7 @@ import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.cubrid.database.control.PieRenderer;
@@ -111,6 +113,7 @@ public class VolumeFolderInfoEditor extends
 	public static final String ID = "com.cubrid.cubridmanager.ui.cubrid.dbspace.editor.VolumeFolderInfoEditor";
 	private CubridDatabase database = null;
 	private final List<DbSpaceInfo> dbSpaceList;
+	private final List<VolumeInfo> volumeInfoList;
 
 	private boolean isRunning = false;
 
@@ -127,9 +130,12 @@ public class VolumeFolderInfoEditor extends
 
 	private String volumeFolderName = "";
 	private String volumeType = null;
+	
+	private int majorVersion, minorVersion;
 
 	public VolumeFolderInfoEditor() {
 		dbSpaceList = new ArrayList<DbSpaceInfo>();
+		volumeInfoList = new ArrayList<VolumeInfo>();
 		color = ResourceManager.getColor(230, 230, 230);
 	}
 
@@ -145,19 +151,36 @@ public class VolumeFolderInfoEditor extends
 		super.init(site, input);
 		if (input instanceof DefaultSchemaNode) {
 			ICubridNode node = (DefaultSchemaNode) input;
+			database = ((DefaultSchemaNode) node).getDatabase();
+			String fullVersion = database.getServer().getServerInfo().getEnvInfo().getServerVersion();
+			StringTokenizer st = new StringTokenizer(fullVersion);
+			st.nextToken();
+			String versionNo = st.nextToken();
+			
+			majorVersion = Integer.parseInt(versionNo.substring(0, versionNo.indexOf('.')));
+			minorVersion = Integer.parseInt(versionNo.substring(versionNo.indexOf('.')+1));
 			String type = node.getType();
-			if ((CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)
-					|| CubridNodeType.DATA_VOLUME_FOLDER.equals(type)
-					|| CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)
-					|| CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)
-					|| CubridNodeType.ACTIVE_LOG_FOLDER.equals(type) || CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type))
-					&& (((DefaultSchemaNode) node).getChildren() != null && ((DefaultSchemaNode) node).getChildren().size() > 0)) {
-				for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
-					dbSpaceList.add((DbSpaceInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfo.class));
+			if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+				if ((CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)
+						|| CubridNodeType.DATA_VOLUME_FOLDER.equals(type)
+						|| CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)
+						|| CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)
+						|| CubridNodeType.ACTIVE_LOG_FOLDER.equals(type) || CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type))
+						&& (((DefaultSchemaNode) node).getChildren() != null && ((DefaultSchemaNode) node).getChildren().size() > 0)) {
+					for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
+						dbSpaceList.add((DbSpaceInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfo.class));
+					}
+				}
+			} else {
+				if (CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
+						CubridNodeType.PT_VOLUME_FOLDER.equals(type) ||
+						CubridNodeType.TT_VOLUME_FOLDER.equals(type)) {
+					for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
+						volumeInfoList.add((VolumeInfo) ((DefaultSchemaNode) child).getAdapter(VolumeInfo.class));
+					}
 				}
 			}
 			volumeFolderName = node.getName();
-			database = ((DefaultSchemaNode) node).getDatabase();
 			if (CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)) {
 				volumeType = VolumeType.GENERIC.toString();
 				return;
@@ -180,6 +203,18 @@ public class VolumeFolderInfoEditor extends
 			}
 			if (CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type)) {
 				volumeType = VolumeType.ARCHIVE_LOG.toString();
+				return;
+			}
+			if (CubridNodeType.PP_VOLUME_FOLDER.equals(type)){
+				volumeType = VolumeType.PP.toString();
+				return;
+			}
+			if (CubridNodeType.PT_VOLUME_FOLDER.equals(type)){
+				volumeType = VolumeType.PT.toString();
+				return;
+			}
+			if (CubridNodeType.TT_VOLUME_FOLDER.equals(type)){
+				volumeType = VolumeType.TT.toString();
 				return;
 			}
 		}
@@ -299,89 +334,175 @@ public class VolumeFolderInfoEditor extends
 					// for (int i = 0, n = Volinfo.size(); i < n; i++) {
 					// virec = (VolumeInfo) Volinfo.get(i);
 					synchronized (cubridNode) {
-
-						if (database.getDatabaseInfo().getDbSpaceInfoList() != null
-								&& database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo() != null) {
-							// calcColumnLength();
-							for (DbSpaceInfo bean : dbSpaceList) {
-								totint = bean.getTotalpage();
-								freeint = bean.getFreepage();
-								if (totint <= 0) {
-									continue;
-								}
-								event.gc.setForeground(Display.getCurrent().getSystemColor(
-										SWT.COLOR_BLACK));
-
-								alignText(bean.getSpacename(), event.gc, 50
-										+ chary * yy, 20, 50, 1);
-
-								// e.gc.drawText(bean.getSpacename(), 10, 50 +
-								// chary * yy);
-
-								usedpage = totint - freeint;
-								freeint = ((freeint * 100) / totint);
-								usedint = 100 - freeint;
-								if (usedint > 0) {
+						if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+							if (database.getDatabaseInfo().getDbSpaceInfoList() != null
+									&& database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo() != null) {
+								// calcColumnLength();
+								for (DbSpaceInfo bean : dbSpaceList) {
+									totint = bean.getTotalpage();
+									freeint = bean.getFreepage();
+									if (totint <= 0) {
+										continue;
+									}
+									event.gc.setForeground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_BLACK));
+	
+									alignText(bean.getSpacename(), event.gc, 50
+											+ chary * yy, 20, 50, 1);
+	
+									// e.gc.drawText(bean.getSpacename(), 10, 50 +
+									// chary * yy);
+	
+									usedpage = totint - freeint;
+									freeint = ((freeint * 100) / totint);
+									usedint = 100 - freeint;
+									if (usedint > 0) {
+										event.gc.setBackground(Display.getCurrent().getSystemColor(
+												SWT.COLOR_DARK_BLUE));
+										event.gc.fillRectangle(130,
+												50 + chary * yy,
+												170 * usedint / 100, chary - 2);
+									}
+									if (freeint > 0) {
+										event.gc.setBackground(Display.getCurrent().getSystemColor(
+												SWT.COLOR_DARK_YELLOW));
+										event.gc.fillRectangle(
+												130 + (170 * usedint / 100), 50
+														+ chary * yy,
+												170 - (170 * usedint / 100),
+												chary - 2);
+									}
 									event.gc.setBackground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_DARK_BLUE));
-									event.gc.fillRectangle(130,
-											50 + chary * yy,
-											170 * usedint / 100, chary - 2);
+											SWT.COLOR_WHITE));
+									event.gc.setForeground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_WHITE));
+									if (!volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString())
+											&& !volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString())) {
+										event.gc.drawText(
+												StringUtil.formatNumber(
+														usedpage
+																* database.getDatabaseInfo().getDbSpaceInfoList().getPagesize()
+																/ (1048576.0f),
+														"#,###.##")
+														+ "/"
+														+ StringUtil.formatNumber(
+																bean.getFreepage()
+																		* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+																"#,###.##"), 170,
+												50 + chary * yy, true);
+									}
+									event.gc.setForeground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_BLACK));
+									if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
+											&& (volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString()) || volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString()))) {
+										alignText(
+												StringUtil.formatNumber(
+														(bean.getTotalpage() * (database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize() / (1048576.0f))),
+														"#,###.##")
+														+ " M", event.gc, 50
+														+ chary * yy, 320, 390, 2);
+									} else {
+										alignText(
+												StringUtil.formatNumber(
+														(bean.getTotalpage() * (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f))),
+														"#,###.##")
+														+ " M", event.gc, 50
+														+ chary * yy, 320, 390, 2);
+									}
+	
+									event.gc.setForeground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_BLACK));
+									alignText(StringUtil.formatNumber(
+											bean.getTotalpage(), "#,###")
+											+ " pages", event.gc, 50 + chary * yy,
+											430, 500, 2);
+									yy++;
 								}
-								if (freeint > 0) {
+							}
+						} else {
+							if (database.getDatabaseInfo().getDbSpaceInfoListNew() != null
+									&& database.getDatabaseInfo().getDbSpaceInfoListNew().getVolumeinfo() != null) {
+								// calcColumnLength();
+								for (VolumeInfo bean : volumeInfoList) {
+									totint = bean.getTotal_size();
+									freeint = bean.getFree_size();
+									if (totint <= 0) {
+										continue;
+									}
+									event.gc.setForeground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_BLACK));
+	
+									alignText(bean.getShortVolumeName(), event.gc, 50
+											+ chary * yy, 20, 50, 1);
+	
+									// e.gc.drawText(bean.getSpacename(), 10, 50 +
+									// chary * yy);
+	
+									usedpage = totint - freeint;
+									freeint = ((freeint * 100) / totint);
+									usedint = 100 - freeint;
+									if (usedint > 0) {
+										event.gc.setBackground(Display.getCurrent().getSystemColor(
+												SWT.COLOR_DARK_BLUE));
+										event.gc.fillRectangle(130,
+												50 + chary * yy,
+												170 * usedint / 100, chary - 2);
+									}
+									if (freeint > 0) {
+										event.gc.setBackground(Display.getCurrent().getSystemColor(
+												SWT.COLOR_DARK_YELLOW));
+										event.gc.fillRectangle(
+												130 + (170 * usedint / 100), 50
+														+ chary * yy,
+												170 - (170 * usedint / 100),
+												chary - 2);
+									}
 									event.gc.setBackground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_DARK_YELLOW));
-									event.gc.fillRectangle(
-											130 + (170 * usedint / 100), 50
-													+ chary * yy,
-											170 - (170 * usedint / 100),
-											chary - 2);
+											SWT.COLOR_WHITE));
+									event.gc.setForeground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_WHITE));
+									if (!volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString())
+											&& !volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString())) {
+										event.gc.drawText(
+												StringUtil.formatNumber(
+														usedpage
+																* database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize()
+																/ (1048576.0f),
+														"#,###.##")
+														+ "/"
+														+ StringUtil.formatNumber(
+																bean.getFree_size()
+																		* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
+																"#,###.##"), 170,
+												50 + chary * yy, true);
+									}
+									event.gc.setForeground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_BLACK));
+									if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
+											&& (volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString()) || volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString()))) {
+										alignText(
+												StringUtil.formatNumber(
+														(bean.getTotal_size() * (database.getDatabaseInfo().getDbSpaceInfoListNew().getLogpagesize() / (1048576.0f))),
+														"#,###.##")
+														+ " M", event.gc, 50
+														+ chary * yy, 320, 390, 2);
+									} else {
+										alignText(
+												StringUtil.formatNumber(
+														(bean.getTotal_size() * (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f))),
+														"#,###.##")
+														+ " M", event.gc, 50
+														+ chary * yy, 320, 390, 2);
+									}
+	
+									event.gc.setForeground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_BLACK));
+									alignText(StringUtil.formatNumber(
+											bean.getTotal_size(), "#,###")
+											+ " pages", event.gc, 50 + chary * yy,
+											430, 500, 2);
+									yy++;
 								}
-								event.gc.setBackground(Display.getCurrent().getSystemColor(
-										SWT.COLOR_WHITE));
-								event.gc.setForeground(Display.getCurrent().getSystemColor(
-										SWT.COLOR_WHITE));
-								if (!volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString())
-										&& !volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString())) {
-									event.gc.drawText(
-											StringUtil.formatNumber(
-													usedpage
-															* database.getDatabaseInfo().getDbSpaceInfoList().getPagesize()
-															/ (1048576.0f),
-													"#,###.##")
-													+ "/"
-													+ StringUtil.formatNumber(
-															bean.getFreepage()
-																	* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-															"#,###.##"), 170,
-											50 + chary * yy, true);
-								}
-								event.gc.setForeground(Display.getCurrent().getSystemColor(
-										SWT.COLOR_BLACK));
-								if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
-										&& (volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString()) || volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString()))) {
-									alignText(
-											StringUtil.formatNumber(
-													(bean.getTotalpage() * (database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize() / (1048576.0f))),
-													"#,###.##")
-													+ " M", event.gc, 50
-													+ chary * yy, 320, 390, 2);
-								} else {
-									alignText(
-											StringUtil.formatNumber(
-													(bean.getTotalpage() * (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f))),
-													"#,###.##")
-													+ " M", event.gc, 50
-													+ chary * yy, 320, 390, 2);
-								}
-
-								event.gc.setForeground(Display.getCurrent().getSystemColor(
-										SWT.COLOR_BLACK));
-								alignText(StringUtil.formatNumber(
-										bean.getTotalpage(), "#,###")
-										+ " pages", event.gc, 50 + chary * yy,
-										430, 500, 2);
-								yy++;
 							}
 						}
 					}
@@ -446,10 +567,125 @@ public class VolumeFolderInfoEditor extends
 		int totalSize = 0;
 		int freeSize = 0;
 		// String volumeType = "";
-		for (DbSpaceInfo dbSpaceInfo : dbSpaceList) {
-			totalSize += dbSpaceInfo.getTotalpage();
-			freeSize += dbSpaceInfo.getFreepage();
-			volumeType = dbSpaceInfo.getType();
+		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+			for (DbSpaceInfo dbSpaceInfo : dbSpaceList) {
+				totalSize += dbSpaceInfo.getTotalpage();
+				freeSize += dbSpaceInfo.getFreepage();
+				volumeType = dbSpaceInfo.getType();
+			}
+			if (!VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(volumeType)
+					&& !VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
+							volumeType)) {
+				Map<String, String> map4 = new HashMap<String, String>();
+				map4.put("0", Messages.tblVolumeFolderFreeSize);
+				map4.put(
+						"1",
+						StringUtil.formatNumber(
+								freeSize
+										* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+								"#,###.##")
+								+ "M ("
+								+ StringUtil.formatNumber(freeSize, "#,###")
+								+ " pages)");
+				spInfoListData.add(map4);
+			}
+			Map<String, String> map5 = new HashMap<String, String>();
+			map5.put("0", Messages.tblVolumeFolderTotalSize);
+			map5.put(
+					"1",
+					StringUtil.formatNumber(
+							totalSize
+									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+							"#,###.##")
+							+ "M ("
+							+ StringUtil.formatNumber(totalSize, "#,###")
+							+ " pages)");
+			spInfoListData.add(map5);
+
+			if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
+					&& (VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(
+							volumeType) || VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
+							volumeType))) {
+				Map<String, String> map6 = new HashMap<String, String>();
+				map6.put("0", Messages.tblVolumeFolderLogPageSize);
+				map6.put(
+						"1",
+						StringUtil.formatNumber(
+								database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
+								"#,###")
+								+ " byte");
+				spInfoListData.add(map6);
+			} else {
+				Map<String, String> map6 = new HashMap<String, String>();
+				map6.put("0", Messages.tblVolumeFolderPageSize);
+				map6.put(
+						"1",
+						StringUtil.formatNumber(
+								database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
+								"#,###")
+								+ " byte");
+				spInfoListData.add(map6);
+			}
+		} else {
+			for(VolumeInfo v : volumeInfoList){
+				totalSize += v.getTotal_size();
+				freeSize += v.getFree_size();
+				volumeType = v.getType() + " " +v.getPurpose() + " DATA";
+			}
+			
+			if (!VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(volumeType)
+					&& !VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
+							volumeType)) {
+				Map<String, String> map4 = new HashMap<String, String>();
+				map4.put("0", Messages.tblVolumeFolderFreeSize);
+				map4.put(
+						"1",
+						StringUtil.formatNumber(
+								freeSize
+										* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
+								"#,###.##")
+								+ "M ("
+								+ StringUtil.formatNumber(freeSize, "#,###")
+								+ " pages)");
+				spInfoListData.add(map4);
+			}
+			Map<String, String> map5 = new HashMap<String, String>();
+			map5.put("0", Messages.tblVolumeFolderTotalSize);
+			map5.put(
+					"1",
+					StringUtil.formatNumber(
+							totalSize
+									* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
+							"#,###.##")
+							+ "M ("
+							+ StringUtil.formatNumber(totalSize, "#,###")
+							+ " pages)");
+			spInfoListData.add(map5);
+
+			if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
+					&& (VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(
+							volumeType) || VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
+							volumeType))) {
+				Map<String, String> map6 = new HashMap<String, String>();
+				map6.put("0", Messages.tblVolumeFolderLogPageSize);
+				map6.put(
+						"1",
+						StringUtil.formatNumber(
+								database.getDatabaseInfo().getDbSpaceInfoListNew().getLogpagesize(),
+								"#,###")
+								+ " byte");
+				spInfoListData.add(map6);
+			} else {
+				Map<String, String> map6 = new HashMap<String, String>();
+				map6.put("0", Messages.tblVolumeFolderPageSize);
+				map6.put(
+						"1",
+						StringUtil.formatNumber(
+								database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize(),
+								"#,###")
+								+ " byte");
+				spInfoListData.add(map6);
+			}
 		}
 
 		spaceNameLabel.setText(volumeFolderName);
@@ -463,65 +699,20 @@ public class VolumeFolderInfoEditor extends
 		map3.put("1", volumeType);
 		spInfoListData.add(map3);
 		Map<String, String> map2 = new HashMap<String, String>();
-		map2.put("0", Messages.tblVolumeFolderVolumeCount);
-		map2.put(
-				"1",
-				dbSpaceList.size()
-						+ "                                                                                   ");
-		spInfoListData.add(map2);
-
-		if (!VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(volumeType)
-				&& !VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
-						volumeType)) {
-			Map<String, String> map4 = new HashMap<String, String>();
-			map4.put("0", Messages.tblVolumeFolderFreeSize);
-			map4.put(
+		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+			map2.put("0", Messages.tblVolumeFolderVolumeCount);
+			map2.put(
 					"1",
-					StringUtil.formatNumber(
-							freeSize
-									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-							"#,###.##")
-							+ "M ("
-							+ StringUtil.formatNumber(freeSize, "#,###")
-							+ " pages)");
-			spInfoListData.add(map4);
-		}
-		Map<String, String> map5 = new HashMap<String, String>();
-		map5.put("0", Messages.tblVolumeFolderTotalSize);
-		map5.put(
-				"1",
-				StringUtil.formatNumber(
-						totalSize
-								* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-						"#,###.##")
-						+ "M ("
-						+ StringUtil.formatNumber(totalSize, "#,###")
-						+ " pages)");
-		spInfoListData.add(map5);
-
-		if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
-				&& (VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(
-						volumeType) || VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
-						volumeType))) {
-			Map<String, String> map6 = new HashMap<String, String>();
-			map6.put("0", Messages.tblVolumeFolderLogPageSize);
-			map6.put(
+					dbSpaceList.size()
+							+ "                                                                                   ");
+			spInfoListData.add(map2);
+		} else{
+			map2.put("0", Messages.tblVolumeFolderVolumeCount);
+			map2.put(
 					"1",
-					StringUtil.formatNumber(
-							database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
-							"#,###")
-							+ " byte");
-			spInfoListData.add(map6);
-		} else {
-			Map<String, String> map6 = new HashMap<String, String>();
-			map6.put("0", Messages.tblVolumeFolderPageSize);
-			map6.put(
-					"1",
-					StringUtil.formatNumber(
-							database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
-							"#,###")
-							+ " byte");
-			spInfoListData.add(map6);
+					volumeInfoList.size()
+							+ "                                                                                   ");
+			spInfoListData.add(map2);
 		}
 
 		if (spInfoTable != null && !spInfoTable.isDisposed()) {

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -93,8 +94,12 @@ import com.cubrid.cubridmanager.core.common.model.DbRunningType;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DatabaseDescription;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.FileSpaceDescription;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.cubrid.database.control.PieRenderer;
@@ -120,9 +125,25 @@ public class DatabaseStatusEditor extends
 
 	private ScrolledComposite scrolledComp = null;
 	private final List<Map<String, String>> dbInfoListData = new ArrayList<Map<String, String>>();
+	private final List<Map<String, String>> dbSpaceDescriptionData = new ArrayList<Map<String,String>>();
+	private final List<Map<String, String>> volumeDescriptionData = new ArrayList<Map<String,String>>();
+	private final List<Map<String, String>> fileSpaceDescriptionData = new ArrayList<Map<String,String>>();
+
 	private TableViewer dbInfoTableViewer;
 	private Table dbInfoTable;
+	
+	private TableViewer dbSpaceDescriptionTableViewer;
+	private Table dbSpaceDescriptionTable;
+	
+	private TableViewer volumeDescriptionTableViewer;
+	private Table volumeDescriptionTable;
+	
+	private TableViewer fileSpaceDescriptionTableViewer;
+	private Table fileSpaceDescriptionTable;
+	
 	private final Color color;
+	
+	private int majorVersion, minorVersion;
 
 	public DatabaseStatusEditor() {
 		color = ResourceManager.getColor(230, 230, 230);
@@ -147,6 +168,14 @@ public class DatabaseStatusEditor extends
 				database = ((DefaultSchemaNode) node).getDatabase();
 			}
 		}
+		
+		String versionFull = database.getServer().getServerInfo().getEnvInfo().getServerVersion();
+		StringTokenizer st = new StringTokenizer(versionFull);
+		st.nextToken();
+		String versionNo = st.nextToken();
+		
+		majorVersion = Integer.parseInt(versionNo.substring(0, versionNo.indexOf('.')));
+		minorVersion = Integer.parseInt(versionNo.substring(versionNo.indexOf('.')+1));
 	}
 
 	/**
@@ -199,6 +228,35 @@ public class DatabaseStatusEditor extends
 		dbInfoTable = dbInfoTableViewer.getTable();
 		dbInfoTable.setLinesVisible(true);
 		dbInfoTable.setHeaderVisible(false);
+		
+		if (majorVersion > 10 || (majorVersion == 10 && minorVersion >= 1)){
+			dbSpaceDescriptionTableViewer = createCommonTableViewer(descComp, null, 
+							new String[]{"type","purpose","volume_count","used_size","free_size","total_size"}, 
+							CommonUITool.createGridData(GridData.FILL_BOTH, 1,
+							1, -1, -1));
+			dbSpaceDescriptionTableViewer.setInput(dbSpaceDescriptionData);
+			dbSpaceDescriptionTable = dbSpaceDescriptionTableViewer.getTable();
+			dbSpaceDescriptionTable.setLinesVisible(true);
+			dbSpaceDescriptionTable.setHeaderVisible(true);
+			
+			volumeDescriptionTableViewer = createCommonTableViewer(descComp, null, 
+					new String[]{"volid","type","purpose","used_size","free_size","total_size","volume_name"}, 
+					CommonUITool.createGridData(GridData.FILL_BOTH, 1,
+					1, -1, -1));
+			volumeDescriptionTableViewer.setInput(volumeDescriptionData);
+			volumeDescriptionTable = volumeDescriptionTableViewer.getTable();
+			volumeDescriptionTable.setLinesVisible(true);
+			volumeDescriptionTable.setHeaderVisible(true);
+	
+			fileSpaceDescriptionTableViewer = createCommonTableViewer(descComp, null, 
+					new String[]{"data_type","file_count","used_size","file_table_size","reserved_size","total_size"}, 
+					CommonUITool.createGridData(GridData.FILL_BOTH, 1,
+					1, -1, -1));
+			fileSpaceDescriptionTableViewer.setInput(fileSpaceDescriptionData);
+			fileSpaceDescriptionTable = fileSpaceDescriptionTableViewer.getTable();
+			fileSpaceDescriptionTable.setLinesVisible(true);
+			fileSpaceDescriptionTable.setHeaderVisible(true);
+		}
 
 		//chart compostie
 		chartComp = new Composite(parentComp, SWT.NONE);
@@ -343,92 +401,247 @@ public class DatabaseStatusEditor extends
 		if (database == null || database.getDatabaseInfo() == null) {
 			return;
 		}
-		if (database.getDatabaseInfo().getDbSpaceInfoList() == null) {
-			return;
-		}
-		dbInfoListData.clear();
-		Map<String, String> map1 = new HashMap<String, String>();
-		map1.put("0", Messages.lblDataBaseVersion);
-		map1.put(
-				"1",
-				database.getServer().getServerInfo().getEnvInfo().getServerVersion()
-						+ "                                                      ");
-		dbInfoListData.add(map1);
-
-		Map<String, String> map2 = new HashMap<String, String>();
-		map2.put("0", Messages.lblDataBaseStatus);
-		map2.put(
-				"1",
-				(database.getDatabaseInfo().getRunningType() == DbRunningType.STANDALONE ? Messages.lblDataBaseStopStatus
-						: Messages.lblDataBaseStartedStatus));
-		dbInfoListData.add(map2);
-
-		Map<String, String> map3 = new HashMap<String, String>();
-		map3.put("0", Messages.lblDataBaseUserAuthority);
-		map3.put("1",
-				database.getDatabaseInfo().getAuthLoginedDbUserInfo().getName());
-		dbInfoListData.add(map3);
-
-		Map<String, String> map4 = new HashMap<String, String>();
-		map4.put("0", Messages.lblDatabasePaseSize);
-		map4.put("1", StringUtil.formatNumber(
-				database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
-				"#,###")
+		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)){
+			if (database.getDatabaseInfo().getDbSpaceInfoList() == null) {
+				return;
+			}
+			dbInfoListData.clear();
+			Map<String, String> map1 = new HashMap<String, String>();
+			map1.put("0", Messages.lblDataBaseVersion);
+			map1.put(
+					"1",
+					database.getServer().getServerInfo().getEnvInfo().getServerVersion()
+							+ "                                                      ");
+			dbInfoListData.add(map1);
+	
+			Map<String, String> map2 = new HashMap<String, String>();
+			map2.put("0", Messages.lblDataBaseStatus);
+			map2.put(
+					"1",
+					(database.getDatabaseInfo().getRunningType() == DbRunningType.STANDALONE ? Messages.lblDataBaseStopStatus
+							: Messages.lblDataBaseStartedStatus));
+			dbInfoListData.add(map2);
+	
+			Map<String, String> map3 = new HashMap<String, String>();
+			map3.put("0", Messages.lblDataBaseUserAuthority);
+			map3.put("1",
+					database.getDatabaseInfo().getAuthLoginedDbUserInfo().getName());
+			dbInfoListData.add(map3);
+	
+			Map<String, String> map4 = new HashMap<String, String>();
+			map4.put("0", Messages.lblDatabasePaseSize);
+			map4.put("1", StringUtil.formatNumber(
+					database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
+					"#,###")
 				+ " bytes");
-		dbInfoListData.add(map4);
-
-		if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())) {
-			Map<String, String> logPageSizeMap = new HashMap<String, String>();
-			logPageSizeMap.put("0", Messages.tblVolumeFolderLogPageSize);
-			logPageSizeMap.put(
+			dbInfoListData.add(map4);
+	
+			if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())) {
+				Map<String, String> logPageSizeMap = new HashMap<String, String>();
+				logPageSizeMap.put("0", Messages.tblVolumeFolderLogPageSize);
+				logPageSizeMap.put(
+						"1",
+						StringUtil.formatNumber(
+								database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
+								"#,###")
+							+ " bytes");
+				dbInfoListData.add(logPageSizeMap);
+			}
+	
+			List<DbSpaceInfo> list = database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo();
+			int totalSize = 0;
+			int freeSize = 0;
+			if (list != null) {
+				for (DbSpaceInfo bean : list) {
+					if (!bean.getType().equals("GENERIC")
+							&& !bean.getType().equals("DATA")
+							&& !bean.getType().equals("TEMP")
+							&& !bean.getType().equals("INDEX")) {
+						continue;
+					}
+					totalSize += bean.getTotalpage();
+					freeSize += bean.getFreepage();
+				}
+			}
+			Map<String, String> map5 = new HashMap<String, String>();
+			map5.put("0", Messages.lblDatabaseTotalSize);
+			map5.put(
 					"1",
 					StringUtil.formatNumber(
-							database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
-							"#,###")
-							+ " bytes");
-			dbInfoListData.add(logPageSizeMap);
-		}
-
-		List<DbSpaceInfo> list = database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo();
-		int totalSize = 0;
-		int freeSize = 0;
-		if (list != null) {
-			for (DbSpaceInfo bean : list) {
-				if (!bean.getType().equals("GENERIC")
-						&& !bean.getType().equals("DATA")
-						&& !bean.getType().equals("TEMP")
-						&& !bean.getType().equals("INDEX")) {
-					continue;
-				}
-				totalSize += bean.getTotalpage();
-				freeSize += bean.getFreepage();
+							totalSize
+									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+							"#,###.##")
+							+ "M ("
+							+ StringUtil.formatNumber(totalSize, "#,###")
+							+ " pages)");
+			dbInfoListData.add(map5);
+	
+			Map<String, String> map6 = new HashMap<String, String>();
+			map6.put("0", Messages.lblDatabaseRemainedSize);
+			map6.put(
+					"1",
+					StringUtil.formatNumber(
+							freeSize
+									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+							"#,###.##")
+							+ "M ("
+							+ StringUtil.formatNumber(freeSize, "#,###")
+							+ " pages)");
+			dbInfoListData.add(map6);
+		} else {
+			if (database.getDatabaseInfo().getDbSpaceInfoListNew() == null) {
+				return;
 			}
+			dbInfoListData.clear();
+			Map<String, String> map1 = new HashMap<String, String>();
+			map1.put("0", Messages.lblDataBaseVersion);
+			map1.put(
+					"1",
+					database.getServer().getServerInfo().getEnvInfo().getServerVersion()
+							+ "                                                      ");
+			dbInfoListData.add(map1);
+	
+			Map<String, String> map2 = new HashMap<String, String>();
+			map2.put("0", Messages.lblDataBaseStatus);
+			map2.put(
+					"1",
+					(database.getDatabaseInfo().getRunningType() == DbRunningType.STANDALONE ? Messages.lblDataBaseStopStatus
+							: Messages.lblDataBaseStartedStatus));
+			dbInfoListData.add(map2);
+	
+			Map<String, String> map3 = new HashMap<String, String>();
+			map3.put("0", Messages.lblDataBaseUserAuthority);
+			map3.put("1",
+					database.getDatabaseInfo().getAuthLoginedDbUserInfo().getName());
+			dbInfoListData.add(map3);
+	
+			Map<String, String> map4 = new HashMap<String, String>();
+			map4.put("0", Messages.lblDatabasePaseSize);
+			map4.put("1", StringUtil.formatNumber(
+					database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize(),
+					"#,###")
+					+ " byte");
+			dbInfoListData.add(map4);
+	
+			if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())) {
+				Map<String, String> logPageSizeMap = new HashMap<String, String>();
+				logPageSizeMap.put("0", Messages.tblVolumeFolderLogPageSize);
+				logPageSizeMap.put(
+						"1",
+						StringUtil.formatNumber(
+								database.getDatabaseInfo().getDbSpaceInfoListNew().getLogpagesize(),
+								"#,###")
+								+ " byte");
+				dbInfoListData.add(logPageSizeMap);
+			}
+	
+			List<DbSpaceInfo> list = database.getDatabaseInfo().getDbSpaceInfoListNew().getSpaceinfo();
+			int totalSize = 0;
+			int freeSize = 0;
+			if (list != null) {
+				for (DbSpaceInfo bean : list) {
+					if (!bean.getType().equals("GENERIC")
+							&& !bean.getType().equals("DATA")
+							&& !bean.getType().equals("TEMP")
+							&& !bean.getType().equals("INDEX")) {
+						continue;
+					}
+					totalSize += bean.getTotalpage();
+					freeSize += bean.getFreepage();
+				}
+			}
+			Map<String, String> map5 = new HashMap<String, String>();
+			map5.put("0", Messages.lblDatabaseTotalSize);
+			map5.put(
+					"1",
+					StringUtil.formatNumber(
+							totalSize
+									* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
+							"#,###.##")
+							+ "M ("
+							+ StringUtil.formatNumber(totalSize, "#,###")
+							+ " pages)");
+			dbInfoListData.add(map5);
+	
+			Map<String, String> map6 = new HashMap<String, String>();
+			map6.put("0", Messages.lblDatabaseRemainedSize);
+			map6.put(
+					"1",
+					StringUtil.formatNumber(
+							freeSize
+									* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
+							"#,###.##")
+							+ "M ("
+							+ StringUtil.formatNumber(freeSize, "#,###")
+							+ " pages)");
+			dbInfoListData.add(map6);
+			
+			dbSpaceDescriptionData.clear();
+			List<DatabaseDescription> list1 = database.getDatabaseInfo().getDbSpaceInfoListNew().getDbinfo();
+			for(DatabaseDescription d : list1){
+				Map<String, String> line = new HashMap<String, String>();
+				line.put("0", d.getType());
+				line.put("1", d.getPurpose() + " DATA");
+				line.put("2", String.valueOf(d.getVolume_count()));
+				line.put("3", String.valueOf(d.getUsed_size()));
+				line.put("4", String.valueOf(d.getFree_size()));
+				line.put("5", String.valueOf(d.getTotal_size()));
+				dbSpaceDescriptionData.add(line);
+			}
+			if (dbSpaceDescriptionTable != null && !dbSpaceDescriptionTable.isDisposed()) {
+				dbSpaceDescriptionTableViewer.refresh();
+				for (int i = 0; i < dbSpaceDescriptionTable.getColumnCount(); i++) {
+					dbSpaceDescriptionTable.getColumn(i).pack();
+				}
+				for (int i = 0; i < (1 + dbSpaceDescriptionTable.getItemCount()) / 2; i++) {
+					dbSpaceDescriptionTable.getItem(i * 2).setBackground(color);
+				}
+			}
+			
+			List<FileSpaceDescription> list2 = database.getDatabaseInfo().getDbSpaceInfoListNew().getFileinfo();
+			for(FileSpaceDescription d : list2){
+				Map<String, String> line = new HashMap<String, String>();
+				line.put("0", d.getData_type());
+				line.put("1", String.valueOf(d.getFile_count()));
+				line.put("2", String.valueOf(d.getUsed_size()));
+				line.put("3", String.valueOf(d.getFile_table_size()));
+				line.put("4", String.valueOf(d.getReserved_size()));
+				line.put("5", String.valueOf(d.getTotal_size()));
+				fileSpaceDescriptionData.add(line);
+			}
+			if (fileSpaceDescriptionTable != null && !fileSpaceDescriptionTable.isDisposed()) {
+				fileSpaceDescriptionTableViewer.refresh();
+				for (int i = 0; i < fileSpaceDescriptionTable.getColumnCount(); i++) {
+					fileSpaceDescriptionTable.getColumn(i).pack();
+				}
+				for (int i = 0; i < (1 + fileSpaceDescriptionTable.getItemCount()) / 2; i++) {
+					fileSpaceDescriptionTable.getItem(i * 2).setBackground(color);
+				}
+			}
+			
+			List<VolumeInfo> list3 = database.getDatabaseInfo().getDbSpaceInfoListNew().getVolumeinfo();
+			for(VolumeInfo d : list3){
+				Map<String, String> line = new HashMap<String, String>();
+				line.put("0", String.valueOf(d.getVolid()));
+				line.put("1", d.getType());
+				line.put("2", d.getPurpose() + " DATA");
+				line.put("3", String.valueOf(d.getUsed_size()));
+				line.put("4", String.valueOf(d.getFree_size()));
+				line.put("5", String.valueOf(d.getTotal_size()));
+				line.put("6", d.getVolume_name());
+				volumeDescriptionData.add(line);
+			}
+			if (volumeDescriptionTable != null && !volumeDescriptionTable.isDisposed()) {
+				volumeDescriptionTableViewer.refresh();
+				for (int i = 0; i < volumeDescriptionTable.getColumnCount(); i++) {
+					volumeDescriptionTable.getColumn(i).pack();
+				}
+				for (int i = 0; i < (1 + volumeDescriptionTable.getItemCount()) / 2; i++) {
+					volumeDescriptionTable.getItem(i * 2).setBackground(color);
+				}
+			}
+			
 		}
-		Map<String, String> map5 = new HashMap<String, String>();
-		map5.put("0", Messages.lblDatabaseTotalSize);
-		map5.put(
-				"1",
-				StringUtil.formatNumber(
-						totalSize
-								* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-						"#,###.##")
-						+ "M ("
-						+ StringUtil.formatNumber(totalSize, "#,###")
-						+ " pages)");
-		dbInfoListData.add(map5);
-
-		Map<String, String> map6 = new HashMap<String, String>();
-		map6.put("0", Messages.lblDatabaseRemainedSize);
-		map6.put(
-				"1",
-				StringUtil.formatNumber(
-						freeSize
-								* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-						"#,###.##")
-						+ "M ("
-						+ StringUtil.formatNumber(freeSize, "#,###")
-						+ " pages)");
-		dbInfoListData.add(map6);
 
 		if (dbInfoTable != null && !dbInfoTable.isDisposed()) {
 			dbInfoTableViewer.refresh();
@@ -469,67 +682,128 @@ public class DatabaseStatusEditor extends
 	 * @return <code>true</code> whether it is successful;<code>false</code>
 	 *         otherwise
 	 */
-	public boolean loadData() {
-		CommonQueryTask<DbSpaceInfoList> task = new CommonQueryTask<DbSpaceInfoList>(
-				database.getServer().getServerInfo(),
-				CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoList());
-		task.setDbName(database.getName());
+	public boolean loadData() {	
+		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)){
+			CommonQueryTask<DbSpaceInfoList> task = new CommonQueryTask<DbSpaceInfoList>(
+					database.getServer().getServerInfo(),
+					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoList());
+			task.setDbName(database.getName());
 
-		TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public IStatus exec(IProgressMonitor monitor) {
-
-				if (monitor.isCanceled()) {
-					return Status.CANCEL_STATUS;
-				}
-
-				for (ITask t : taskList) {
-					t.execute();
-					final String msg = t.getErrorMsg();
+			TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
+				@SuppressWarnings("unchecked")
+				@Override
+				public IStatus exec(IProgressMonitor monitor) {
 
 					if (monitor.isCanceled()) {
 						return Status.CANCEL_STATUS;
 					}
-					if (msg != null && msg.length() > 0
-							&& !monitor.isCanceled()) {
-						return new Status(IStatus.ERROR,
-								CubridManagerUIPlugin.PLUGIN_ID, msg);
-					} else {
-						final DbSpaceInfoList dbSpaceInfoList = ((CommonQueryTask<DbSpaceInfoList>) t).getResultModel();
-						Display.getDefault().syncExec(new Runnable() {
-							public void run() {
-								database.getDatabaseInfo().setDbSpaceInfoList(
-										dbSpaceInfoList);
-								if (scrolledComp == null
-										|| scrolledComp.isDisposed()) {
-									return;
+
+					for (ITask t : taskList) {
+						t.execute();
+						final String msg = t.getErrorMsg();
+
+						if (monitor.isCanceled()) {
+							return Status.CANCEL_STATUS;
+						}
+						if (msg != null && msg.length() > 0
+								&& !monitor.isCanceled()) {
+							return new Status(IStatus.ERROR,
+									CubridManagerUIPlugin.PLUGIN_ID, msg);
+						} else {
+							final DbSpaceInfoList dbSpaceInfoList = ((CommonQueryTask<DbSpaceInfoList>) t).getResultModel();
+							Display.getDefault().syncExec(new Runnable() {
+								public void run() {
+									database.getDatabaseInfo().setDbSpaceInfoList(
+											dbSpaceInfoList);
+									if (scrolledComp == null
+											|| scrolledComp.isDisposed()) {
+										return;
+									}
+									initial();
+									paintComp();
+									scrolledComp.setContent(parentComp);
+									scrolledComp.setExpandHorizontal(true);
+									scrolledComp.setExpandVertical(true);
 								}
-								initial();
-								paintComp();
-								scrolledComp.setContent(parentComp);
-								scrolledComp.setExpandHorizontal(true);
-								scrolledComp.setExpandVertical(true);
-							}
-						});
+							});
+						}
+						if (monitor.isCanceled()) {
+							return Status.CANCEL_STATUS;
+						}
 					}
+					return Status.OK_STATUS;
+				}
+
+			};
+			taskJobExecutor.addTask(task);
+
+			String serverName = database.getServer().getName();
+			String dbName = database.getName();
+			String jobName = Messages.viewDbStatusJobName + " - " + dbName + "@"
+					+ serverName;
+			taskJobExecutor.schedule(jobName, null, false, Job.SHORT);
+			return true;
+		} else {
+			CommonQueryTask<DbSpaceInfoListNew> task = new CommonQueryTask<DbSpaceInfoListNew>(
+					database.getServer().getServerInfo(),
+					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListNew());
+			task.setDbName(database.getName());
+
+			TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
+				@SuppressWarnings("unchecked")
+				@Override
+				public IStatus exec(IProgressMonitor monitor) {
+
 					if (monitor.isCanceled()) {
 						return Status.CANCEL_STATUS;
 					}
+
+					for (ITask t : taskList) {
+						t.execute();
+						final String msg = t.getErrorMsg();
+
+						if (monitor.isCanceled()) {
+							return Status.CANCEL_STATUS;
+						}
+						if (msg != null && msg.length() > 0
+								&& !monitor.isCanceled()) {
+							return new Status(IStatus.ERROR,
+									CubridManagerUIPlugin.PLUGIN_ID, msg);
+						} else {
+							final DbSpaceInfoListNew dbSpaceInfoListNew = ((CommonQueryTask<DbSpaceInfoListNew>) t).getResultModel();
+							Display.getDefault().syncExec(new Runnable() {
+								public void run() {
+									database.getDatabaseInfo().setDbSpaceInfoListNew(
+											dbSpaceInfoListNew);
+									if (scrolledComp == null
+											|| scrolledComp.isDisposed()) {
+										return;
+									}
+									initial();
+									paintComp();
+									scrolledComp.setContent(parentComp);
+									scrolledComp.setExpandHorizontal(true);
+									scrolledComp.setExpandVertical(true);
+								}
+							});
+						}
+						if (monitor.isCanceled()) {
+							return Status.CANCEL_STATUS;
+						}
+					}
+					return Status.OK_STATUS;
 				}
-				return Status.OK_STATUS;
-			}
 
-		};
-		taskJobExecutor.addTask(task);
+			};
+			taskJobExecutor.addTask(task);
 
-		String serverName = database.getServer().getName();
-		String dbName = database.getName();
-		String jobName = Messages.viewDbStatusJobName + " - " + dbName + "@"
-				+ serverName;
-		taskJobExecutor.schedule(jobName, null, false, Job.SHORT);
-		return true;
-
+			String serverName = database.getServer().getName();
+			String dbName = database.getName();
+			String jobName = Messages.viewDbStatusJobName + " - " + dbName + "@"
+					+ serverName;
+			taskJobExecutor.schedule(jobName, null, false, Job.SHORT);
+			return true;
+		}
 	}
 
 	/**
