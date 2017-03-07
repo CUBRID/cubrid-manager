@@ -45,9 +45,7 @@ import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.common.model.ConfConstants;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.BackupPlanInfo;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.QueryPlanInfo;
 import com.cubrid.cubridmanager.core.cubrid.sp.model.SPInfo;
@@ -90,7 +88,6 @@ public class DatabaseInfo implements IDatabaseSpec {
 	// all database space
 	// information(Generic,data,index,temp,archive_log,active_log)
 	private DbSpaceInfoList dbSpaceInfoList = null;
-	private DbSpaceInfoListNew dbSpaceInfoListNew = null;
 	// all database user information
 	private DbUserInfoList dbUserInfoList = null;
 	//all stored procedured
@@ -685,10 +682,6 @@ public class DatabaseInfo implements IDatabaseSpec {
 		return dbSpaceInfoList;
 	}
 	
-	public DbSpaceInfoListNew getDbSpaceInfoListNew(){
-		return dbSpaceInfoListNew;
-	}
-
 	/**
 	 * 
 	 * Set database space information list
@@ -698,10 +691,6 @@ public class DatabaseInfo implements IDatabaseSpec {
 	public void setDbSpaceInfoList(DbSpaceInfoList dbSpaceInfoList) {
 		this.dbSpaceInfoList = dbSpaceInfoList;
 	}
-
-	public void setDbSpaceInfoListNew(DbSpaceInfoListNew dbSpaceInfoListNew){
-		this.dbSpaceInfoListNew = dbSpaceInfoListNew;
-	}
 	
 	/**
 	 * 
@@ -709,7 +698,7 @@ public class DatabaseInfo implements IDatabaseSpec {
 	 * 
 	 * @param spaceInfo DbSpaceInfo The instance of DbSpaceInfo
 	 */
-	public void addSpaceInfo(DbSpaceInfo spaceInfo) {
+	public void addSpaceInfo(DbSpaceInfoList.DbSpaceInfo spaceInfo) {
 		if (dbSpaceInfoList == null) {
 			dbSpaceInfoList = new DbSpaceInfoList();
 			dbSpaceInfoList.setDbname(dbName);
@@ -723,7 +712,7 @@ public class DatabaseInfo implements IDatabaseSpec {
 	 * 
 	 * @param spaceInfo DbSpaceInfo The instance of DbSpaceInfo
 	 */
-	public void removeSpaceInfo(DbSpaceInfo spaceInfo) {
+	public void removeSpaceInfo(DbSpaceInfoList.DbSpaceInfo spaceInfo) {
 		if (dbSpaceInfoList != null) {
 			dbSpaceInfoList.removeSpaceinfo(spaceInfo);
 		}

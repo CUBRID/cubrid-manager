@@ -47,10 +47,8 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.ui.cubrid.dbspace.editor.VolumeFolderInfoEditor;
 import com.cubrid.cubridmanager.ui.cubrid.dbspace.editor.VolumeInformationEditor;
@@ -90,9 +88,9 @@ public class CubridDbSpaceFolderLoader extends
 	public static final String ACTIVE_LOG_FOLDER_ID = "Active";
 	public static final String ARCHIVE_LOG_FOLDER_ID = "Archive";
 	
-	public static final String PERMANENT_PERMANENT_DATA_FOLDER_ID = "PP";
-	public static final String PERMANENT_TEMPORARY_DATA_FOLDER_ID = "PT";
-	public static final String TEMPORARY_TEMPORARY_DATA_FOLDER_ID = "TT";
+	public static final String PERMANENT_PERMANENT_DATA_FOLDER_ID = "PERMANENT PERMANENT DATA";
+	public static final String PERMANENT_TEMPORARY_DATA_FOLDER_ID = "PERMANENT TEMPORARY DATA";
+	public static final String TEMPORARY_TEMPORARY_DATA_FOLDER_ID = "TEMPORARY TEMPORARY DATA";
 	
 	/**
 	 * 
@@ -173,10 +171,10 @@ public class CubridDbSpaceFolderLoader extends
 				activeLogFolder.removeAllChild();
 	
 				dbSpaceInfo = task.getResultModel();
-				List<DbSpaceInfo> spaceInfoList = dbSpaceInfo == null ? null
+				List<DbSpaceInfoList.DbSpaceInfo> spaceInfoList = dbSpaceInfo == null ? null
 						: dbSpaceInfo.getSpaceinfo();
 				for (int i = 0; spaceInfoList != null && i < spaceInfoList.size(); i++) {
-					DbSpaceInfo spaceInfo = spaceInfoList.get(i);
+					DbSpaceInfoList.DbSpaceInfo spaceInfo = spaceInfoList.get(i);
 					ICubridNode volumeNode = new DefaultSchemaNode("",
 							spaceInfo.getSpacename(), "");
 					volumeNode.setContainer(false);
@@ -285,10 +283,10 @@ public class CubridDbSpaceFolderLoader extends
 				TT_volume_folder.removeAllChild();
 				
 				dbSpaceInfo = task.getResultModel();
-				List<VolumeInfo> volumeInfoList = dbSpaceInfo == null ? null
+				List<DbSpaceInfoListNew.VolumeInfo> volumeInfoList = dbSpaceInfo == null ? null
 						: dbSpaceInfo.getVolumeinfo();
 				for (int i = 0; volumeInfoList != null && i < volumeInfoList.size(); i++) {
-					VolumeInfo volumeInfo = volumeInfoList.get(i);
+					DbSpaceInfoListNew.VolumeInfo volumeInfo = volumeInfoList.get(i);
 					ICubridNode volumeNode = new DefaultSchemaNode("",
 							volumeInfo.getShortVolumeName(), "");
 					volumeNode.setContainer(false);
@@ -322,7 +320,7 @@ public class CubridDbSpaceFolderLoader extends
 						TT_volume_folder.addChild(volumeNode);
 					}
 				}
-				databaseInfo.setDbSpaceInfoListNew(dbSpaceInfo);
+				databaseInfo.setDbSpaceInfoList(dbSpaceInfo);
 				setLoaded(true);
 				CubridNodeManager.getInstance().fireCubridNodeChanged(
 						new CubridNodeChangedEvent((ICubridNode) parent,

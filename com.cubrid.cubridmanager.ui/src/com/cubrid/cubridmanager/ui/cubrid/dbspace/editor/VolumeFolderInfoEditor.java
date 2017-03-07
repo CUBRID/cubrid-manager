@@ -90,9 +90,9 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeInfo;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListOld;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.cubrid.database.control.PieRenderer;
@@ -112,8 +112,8 @@ public class VolumeFolderInfoEditor extends
 	private static final Logger LOGGER = LogUtil.getLogger(VolumeFolderInfoEditor.class);
 	public static final String ID = "com.cubrid.cubridmanager.ui.cubrid.dbspace.editor.VolumeFolderInfoEditor";
 	private CubridDatabase database = null;
-	private final List<DbSpaceInfo> dbSpaceList;
-	private final List<VolumeInfo> volumeInfoList;
+	private final List<DbSpaceInfoList.DbSpaceInfo> dbSpaceList;
+	private final List<DbSpaceInfoListNew.VolumeInfo> volumeInfoList;
 
 	private boolean isRunning = false;
 
@@ -134,8 +134,8 @@ public class VolumeFolderInfoEditor extends
 	private int majorVersion, minorVersion;
 
 	public VolumeFolderInfoEditor() {
-		dbSpaceList = new ArrayList<DbSpaceInfo>();
-		volumeInfoList = new ArrayList<VolumeInfo>();
+		dbSpaceList = new ArrayList<DbSpaceInfoList.DbSpaceInfo>();
+		volumeInfoList = new ArrayList<DbSpaceInfoListNew.VolumeInfo>();
 		color = ResourceManager.getColor(230, 230, 230);
 	}
 
@@ -168,7 +168,7 @@ public class VolumeFolderInfoEditor extends
 						|| CubridNodeType.ACTIVE_LOG_FOLDER.equals(type) || CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type))
 						&& (((DefaultSchemaNode) node).getChildren() != null && ((DefaultSchemaNode) node).getChildren().size() > 0)) {
 					for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
-						dbSpaceList.add((DbSpaceInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfo.class));
+						dbSpaceList.add((DbSpaceInfoList.DbSpaceInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfoList.DbSpaceInfo.class));
 					}
 				}
 			} else {
@@ -176,7 +176,7 @@ public class VolumeFolderInfoEditor extends
 						CubridNodeType.PT_VOLUME_FOLDER.equals(type) ||
 						CubridNodeType.TT_VOLUME_FOLDER.equals(type)) {
 					for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
-						volumeInfoList.add((VolumeInfo) ((DefaultSchemaNode) child).getAdapter(VolumeInfo.class));
+						volumeInfoList.add((DbSpaceInfoListNew.VolumeInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfoListNew.VolumeInfo.class));
 					}
 				}
 			}
@@ -206,15 +206,15 @@ public class VolumeFolderInfoEditor extends
 				return;
 			}
 			if (CubridNodeType.PP_VOLUME_FOLDER.equals(type)){
-				volumeType = VolumeType.PP.toString();
+				volumeType = VolumeType.PP.getText();
 				return;
 			}
 			if (CubridNodeType.PT_VOLUME_FOLDER.equals(type)){
-				volumeType = VolumeType.PT.toString();
+				volumeType = VolumeType.PT.getText();
 				return;
 			}
 			if (CubridNodeType.TT_VOLUME_FOLDER.equals(type)){
-				volumeType = VolumeType.TT.toString();
+				volumeType = VolumeType.TT.getText();
 				return;
 			}
 		}
@@ -334,175 +334,89 @@ public class VolumeFolderInfoEditor extends
 					// for (int i = 0, n = Volinfo.size(); i < n; i++) {
 					// virec = (VolumeInfo) Volinfo.get(i);
 					synchronized (cubridNode) {
-						if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-							if (database.getDatabaseInfo().getDbSpaceInfoList() != null
-									&& database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo() != null) {
-								// calcColumnLength();
-								for (DbSpaceInfo bean : dbSpaceList) {
-									totint = bean.getTotalpage();
-									freeint = bean.getFreepage();
-									if (totint <= 0) {
-										continue;
-									}
-									event.gc.setForeground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_BLACK));
-	
-									alignText(bean.getSpacename(), event.gc, 50
-											+ chary * yy, 20, 50, 1);
-	
-									// e.gc.drawText(bean.getSpacename(), 10, 50 +
-									// chary * yy);
-	
-									usedpage = totint - freeint;
-									freeint = ((freeint * 100) / totint);
-									usedint = 100 - freeint;
-									if (usedint > 0) {
-										event.gc.setBackground(Display.getCurrent().getSystemColor(
-												SWT.COLOR_DARK_BLUE));
-										event.gc.fillRectangle(130,
-												50 + chary * yy,
-												170 * usedint / 100, chary - 2);
-									}
-									if (freeint > 0) {
-										event.gc.setBackground(Display.getCurrent().getSystemColor(
-												SWT.COLOR_DARK_YELLOW));
-										event.gc.fillRectangle(
-												130 + (170 * usedint / 100), 50
-														+ chary * yy,
-												170 - (170 * usedint / 100),
-												chary - 2);
-									}
-									event.gc.setBackground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_WHITE));
-									event.gc.setForeground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_WHITE));
-									if (!volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString())
-											&& !volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString())) {
-										event.gc.drawText(
-												StringUtil.formatNumber(
-														usedpage
-																* database.getDatabaseInfo().getDbSpaceInfoList().getPagesize()
-																/ (1048576.0f),
-														"#,###.##")
-														+ "/"
-														+ StringUtil.formatNumber(
-																bean.getFreepage()
-																		* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-																"#,###.##"), 170,
-												50 + chary * yy, true);
-									}
-									event.gc.setForeground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_BLACK));
-									if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
-											&& (volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString()) || volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString()))) {
-										alignText(
-												StringUtil.formatNumber(
-														(bean.getTotalpage() * (database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize() / (1048576.0f))),
-														"#,###.##")
-														+ " M", event.gc, 50
-														+ chary * yy, 320, 390, 2);
-									} else {
-										alignText(
-												StringUtil.formatNumber(
-														(bean.getTotalpage() * (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f))),
-														"#,###.##")
-														+ " M", event.gc, 50
-														+ chary * yy, 320, 390, 2);
-									}
-	
-									event.gc.setForeground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_BLACK));
-									alignText(StringUtil.formatNumber(
-											bean.getTotalpage(), "#,###")
-											+ " pages", event.gc, 50 + chary * yy,
-											430, 500, 2);
-									yy++;
+						if (database.getDatabaseInfo().getDbSpaceInfoList() != null
+								&& database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo() != null) {
+							// calcColumnLength();
+							ArrayList<DbSpaceInfoList.FreeTotalSizeSpacename> volumeInfos = database.getDatabaseInfo().getDbSpaceInfoList().getVolumesInfoByType(volumeType);
+							for (DbSpaceInfoList.FreeTotalSizeSpacename info : volumeInfos) {
+								totint = info.totalSize;
+								freeint = info.freeSize;
+								if (totint <= 0) {
+									continue;
 								}
-							}
-						} else {
-							if (database.getDatabaseInfo().getDbSpaceInfoListNew() != null
-									&& database.getDatabaseInfo().getDbSpaceInfoListNew().getVolumeinfo() != null) {
-								// calcColumnLength();
-								for (VolumeInfo bean : volumeInfoList) {
-									totint = bean.getTotal_size();
-									freeint = bean.getFree_size();
-									if (totint <= 0) {
-										continue;
-									}
-									event.gc.setForeground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_BLACK));
-	
-									alignText(bean.getShortVolumeName(), event.gc, 50
-											+ chary * yy, 20, 50, 1);
-	
-									// e.gc.drawText(bean.getSpacename(), 10, 50 +
-									// chary * yy);
-	
-									usedpage = totint - freeint;
-									freeint = ((freeint * 100) / totint);
-									usedint = 100 - freeint;
-									if (usedint > 0) {
-										event.gc.setBackground(Display.getCurrent().getSystemColor(
-												SWT.COLOR_DARK_BLUE));
-										event.gc.fillRectangle(130,
-												50 + chary * yy,
-												170 * usedint / 100, chary - 2);
-									}
-									if (freeint > 0) {
-										event.gc.setBackground(Display.getCurrent().getSystemColor(
-												SWT.COLOR_DARK_YELLOW));
-										event.gc.fillRectangle(
-												130 + (170 * usedint / 100), 50
-														+ chary * yy,
-												170 - (170 * usedint / 100),
-												chary - 2);
-									}
+								event.gc.setForeground(Display.getCurrent().getSystemColor(
+										SWT.COLOR_BLACK));
+
+								alignText(info.spaceName, event.gc, 50
+										+ chary * yy, 20, 50, 1);
+
+								// e.gc.drawText(bean.getSpacename(), 10, 50 +
+								// chary * yy);
+
+								usedpage = totint - freeint;
+								freeint = ((freeint * 100) / totint);
+								usedint = 100 - freeint;
+								if (usedint > 0) {
 									event.gc.setBackground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_WHITE));
-									event.gc.setForeground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_WHITE));
-									if (!volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString())
-											&& !volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString())) {
-										event.gc.drawText(
-												StringUtil.formatNumber(
-														usedpage
-																* database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize()
-																/ (1048576.0f),
-														"#,###.##")
-														+ "/"
-														+ StringUtil.formatNumber(
-																bean.getFree_size()
-																		* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
-																"#,###.##"), 170,
-												50 + chary * yy, true);
-									}
-									event.gc.setForeground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_BLACK));
-									if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
-											&& (volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString()) || volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString()))) {
-										alignText(
-												StringUtil.formatNumber(
-														(bean.getTotal_size() * (database.getDatabaseInfo().getDbSpaceInfoListNew().getLogpagesize() / (1048576.0f))),
-														"#,###.##")
-														+ " M", event.gc, 50
-														+ chary * yy, 320, 390, 2);
-									} else {
-										alignText(
-												StringUtil.formatNumber(
-														(bean.getTotal_size() * (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f))),
-														"#,###.##")
-														+ " M", event.gc, 50
-														+ chary * yy, 320, 390, 2);
-									}
-	
-									event.gc.setForeground(Display.getCurrent().getSystemColor(
-											SWT.COLOR_BLACK));
-									alignText(StringUtil.formatNumber(
-											bean.getTotal_size(), "#,###")
-											+ " pages", event.gc, 50 + chary * yy,
-											430, 500, 2);
-									yy++;
+											SWT.COLOR_DARK_BLUE));
+									event.gc.fillRectangle(130,
+											50 + chary * yy,
+											170 * usedint / 100, chary - 2);
 								}
+								if (freeint > 0) {
+									event.gc.setBackground(Display.getCurrent().getSystemColor(
+											SWT.COLOR_DARK_YELLOW));
+									event.gc.fillRectangle(
+											130 + (170 * usedint / 100), 50
+													+ chary * yy,
+											170 - (170 * usedint / 100),
+											chary - 2);
+								}
+								event.gc.setBackground(Display.getCurrent().getSystemColor(
+										SWT.COLOR_WHITE));
+								event.gc.setForeground(Display.getCurrent().getSystemColor(
+										SWT.COLOR_WHITE));
+								if (!volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString())
+										&& !volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString())) {
+									event.gc.drawText(
+											StringUtil.formatNumber(
+													usedpage
+															* database.getDatabaseInfo().getDbSpaceInfoList().getPagesize()
+															/ (1048576.0f),
+													"#,###.##")
+													+ "/"
+													+ StringUtil.formatNumber(
+															freeint
+																	* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+															"#,###.##"), 170,
+											50 + chary * yy, true);
+								}
+								event.gc.setForeground(Display.getCurrent().getSystemColor(
+										SWT.COLOR_BLACK));
+								if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
+										&& (volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString()) || volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString()))) {
+									alignText(
+											StringUtil.formatNumber(
+													(totint * (database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize() / (1048576.0f))),
+													"#,###.##")
+													+ " M", event.gc, 50
+													+ chary * yy, 320, 390, 2);
+								} else {
+									alignText(
+											StringUtil.formatNumber(
+													(totint * (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f))),
+													"#,###.##")
+													+ " M", event.gc, 50
+													+ chary * yy, 320, 390, 2);
+								}
+
+								event.gc.setForeground(Display.getCurrent().getSystemColor(
+										SWT.COLOR_BLACK));
+								alignText(StringUtil.formatNumber(
+										totint, "#,###")
+										+ " pages", event.gc, 50 + chary * yy,
+										430, 500, 2);
+								yy++;
 							}
 						}
 					}
@@ -520,7 +434,7 @@ public class VolumeFolderInfoEditor extends
 	 *
 	 */
 	public void paintComp1() {
-		for (DbSpaceInfo dbSpaceInfo : dbSpaceList) {
+		for (DbSpaceInfoList.DbSpaceInfo dbSpaceInfo : dbSpaceList) {
 			JFreeChart chart = createChart(createDataset(dbSpaceInfo),
 					dbSpaceInfo);
 
@@ -540,7 +454,7 @@ public class VolumeFolderInfoEditor extends
 	 * @param dbSpaceInfo DbSpaceInfo
 	 * @return dataset
 	 */
-	private DefaultPieDataset createDataset(DbSpaceInfo dbSpaceInfo) {
+	private DefaultPieDataset createDataset(DbSpaceInfoList.DbSpaceInfo dbSpaceInfo) {
 		int freeSize = dbSpaceInfo.getFreepage();
 		int totalSize = dbSpaceInfo.getTotalpage();
 
@@ -568,7 +482,7 @@ public class VolumeFolderInfoEditor extends
 		int freeSize = 0;
 		// String volumeType = "";
 		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			for (DbSpaceInfo dbSpaceInfo : dbSpaceList) {
+			for (DbSpaceInfoList.DbSpaceInfo dbSpaceInfo : dbSpaceList) {
 				totalSize += dbSpaceInfo.getTotalpage();
 				freeSize += dbSpaceInfo.getFreepage();
 				volumeType = dbSpaceInfo.getType();
@@ -627,7 +541,7 @@ public class VolumeFolderInfoEditor extends
 				spInfoListData.add(map6);
 			}
 		} else {
-			for(VolumeInfo v : volumeInfoList){
+			for(DbSpaceInfoListNew.VolumeInfo v : volumeInfoList){
 				totalSize += v.getTotal_size();
 				freeSize += v.getFree_size();
 				volumeType = v.getType() + " " +v.getPurpose() + " DATA";
@@ -642,7 +556,7 @@ public class VolumeFolderInfoEditor extends
 						"1",
 						StringUtil.formatNumber(
 								freeSize
-										* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
+										* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
 								"#,###.##")
 								+ "M ("
 								+ StringUtil.formatNumber(freeSize, "#,###")
@@ -655,7 +569,7 @@ public class VolumeFolderInfoEditor extends
 					"1",
 					StringUtil.formatNumber(
 							totalSize
-									* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
+									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
 							"#,###.##")
 							+ "M ("
 							+ StringUtil.formatNumber(totalSize, "#,###")
@@ -671,7 +585,7 @@ public class VolumeFolderInfoEditor extends
 				map6.put(
 						"1",
 						StringUtil.formatNumber(
-								database.getDatabaseInfo().getDbSpaceInfoListNew().getLogpagesize(),
+								database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
 								"#,###")
 								+ " byte");
 				spInfoListData.add(map6);
@@ -681,7 +595,7 @@ public class VolumeFolderInfoEditor extends
 				map6.put(
 						"1",
 						StringUtil.formatNumber(
-								database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize(),
+								database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
 								"#,###")
 								+ " byte");
 				spInfoListData.add(map6);
@@ -767,10 +681,6 @@ public class VolumeFolderInfoEditor extends
 	 * @return boolean
 	 */
 	public boolean loadData() {
-		CommonQueryTask<DbSpaceInfoList> task = new CommonQueryTask<DbSpaceInfoList>(
-				database.getServer().getServerInfo(),
-				CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoList());
-		task.setDbName(database.getName());
 
 		TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
 			@SuppressWarnings("unchecked")
@@ -793,7 +703,12 @@ public class VolumeFolderInfoEditor extends
 						return new Status(IStatus.ERROR,
 								CubridManagerUIPlugin.PLUGIN_ID, msg);
 					} else {
-						final DbSpaceInfoList model = ((CommonQueryTask<DbSpaceInfoList>) t).getResultModel();
+						final DbSpaceInfoList model;
+						if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+							model = ((CommonQueryTask<DbSpaceInfoListOld>) t).getResultModel();
+						} else {
+							model = ((CommonQueryTask<DbSpaceInfoListNew>) t).getResultModel();
+						}
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
 								database.getDatabaseInfo().setDbSpaceInfoList(
@@ -818,7 +733,20 @@ public class VolumeFolderInfoEditor extends
 			}
 
 		};
-		taskJobExecutor.addTask(task);
+		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+			CommonQueryTask<DbSpaceInfoListOld> task = new CommonQueryTask<DbSpaceInfoListOld>(
+					database.getServer().getServerInfo(),
+					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListOld());
+			task.setDbName(database.getName());
+			taskJobExecutor.addTask(task);
+		} else {
+			CommonQueryTask<DbSpaceInfoListNew> task = new CommonQueryTask<DbSpaceInfoListNew>(
+					database.getServer().getServerInfo(),
+					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListNew());
+			task.setDbName(database.getName());
+			taskJobExecutor.addTask(task);
+		}
+		
 		String serverName = database.getServer().getName();
 		String dbName = database.getName();
 		String jobName = Messages.viewVolumeInfoJobName + " - "
@@ -956,7 +884,7 @@ public class VolumeFolderInfoEditor extends
 	 * @return jFreeChart
 	 */
 	private static JFreeChart createChart(DefaultPieDataset dataset,
-			DbSpaceInfo dbSpaceInfo) {
+			DbSpaceInfoList.DbSpaceInfo dbSpaceInfo) {
 
 		JFreeChart chart = ChartFactory.createPieChart3D(
 				dbSpaceInfo.getSpacename() + " Chart", // chart

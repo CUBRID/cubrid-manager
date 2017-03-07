@@ -302,7 +302,7 @@ public abstract class SocketTask extends AbstractTask {
 		if (node == null || targetObject == null) {
 			return;
 		}
-		Method[] methods = targetObject.getClass().getDeclaredMethods();
+		Method[] methods = targetObject.getClass().getMethods();
 		for (Method m : methods) {
 			String methodname = m.getName();
 			Class<?>[] parameters = m.getParameterTypes();

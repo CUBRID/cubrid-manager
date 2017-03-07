@@ -114,7 +114,6 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.lock.LockInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.model.transaction.DbTransactionList;
 import com.cubrid.cubridmanager.core.cubrid.database.model.transaction.Transaction;
 import com.cubrid.cubridmanager.core.cubrid.database.task.CheckFileTask;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.GetAddVolumeStatusInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
@@ -1134,7 +1133,7 @@ public class DatabaseDashboardEditor extends
 				DbSpaceInfoList dbSpaceInfoList = loadVolumnTask.getResultModel();
 				if (dbSpaceInfoList != null) {
 					long archiveSize = 0;
-					for (DbSpaceInfo dbSpaceInfo : dbSpaceInfoList.getSpaceinfo()) {
+					for (DbSpaceInfoList.DbSpaceInfo dbSpaceInfo : dbSpaceInfoList.getSpaceinfo()) {
 						if (StringUtil.isEmpty(dbSpaceInfo.getType())) {
 							continue;
 						}

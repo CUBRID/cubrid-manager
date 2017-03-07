@@ -33,7 +33,6 @@ import java.util.HashMap;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.cubridmanager.core.SetupEnvTestCase;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.BackupPlanInfo;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.QueryPlanInfo;
@@ -108,8 +107,8 @@ public class DatabaseModelTest extends
 		bean.addQueryPlanInfo(new QueryPlanInfo());
 		bean.removeQueryPlanInfo(new QueryPlanInfo());
 		bean.removeAllQueryPlanInfo();
-		bean.addSpaceInfo(new DbSpaceInfo());
-		bean.removeSpaceInfo(new DbSpaceInfo());
+		bean.addSpaceInfo(new DbSpaceInfoList.DbSpaceInfo());
+		bean.removeSpaceInfo(new DbSpaceInfoList.DbSpaceInfo());
 		bean.getSpInfoList();
 		bean.getSchemaInfo("tableName");
 		bean.putSchemaInfo(new SchemaInfo());

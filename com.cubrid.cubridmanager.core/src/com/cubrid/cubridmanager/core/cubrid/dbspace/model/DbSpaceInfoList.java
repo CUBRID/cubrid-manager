@@ -50,56 +50,132 @@ import com.cubrid.cubridmanager.core.common.model.IModel;
  */
 public class DbSpaceInfoList implements
 		IModel {
+	
+	public static class FreeTotalSizeSpacename{
+		public String spaceName;
+		public int freeSize, totalSize;
+		
+		public FreeTotalSizeSpacename(String spaceName, int freeSize, int totalSize){
+			this.spaceName = spaceName;
+			this.freeSize = freeSize;
+			this.totalSize = totalSize;
+		}
+	}
+	
+	public static class DbSpaceInfo {
 
+		private String spacename = null;
+
+		/*
+		 * GENERIC,DATA,TEMP,INDEX,Active_log,Archive_log
+		 */
+		private String type = null;
+
+		private String location = null;
+
+		private int totalpage = 0;
+
+		private int freepage = 0;
+
+		private String date = null;
+
+		private int volumeCount = 0;
+
+		private String totalPageStr = null;
+		private String totalSizeStr = null;
+
+		public String getTotalPageStr() {
+			return totalPageStr;
+		}
+
+		public void setTotalPageStr(String totalPageStr) {
+			this.totalPageStr = totalPageStr;
+		}
+
+		public String getTotalSizeStr() {
+			return totalSizeStr;
+		}
+
+		public void setTotalSizeStr(String totalSizeStr) {
+			this.totalSizeStr = totalSizeStr;
+		}
+
+		public String getSpacename() {
+			return spacename;
+		}
+
+		public void setSpacename(String spacename) {
+			this.spacename = spacename;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public String getLocation() {
+			return location;
+		}
+
+		public void setLocation(String location) {
+			this.location = location;
+		}
+
+		public int getTotalpage() {
+			return totalpage;
+		}
+
+		public void setTotalpage(int totalpage) {
+			this.totalpage = totalpage;
+		}
+
+		public int getFreepage() {
+			return freepage;
+		}
+
+		public void setFreepage(int freepage) {
+			this.freepage = freepage;
+		}
+
+		public String getDate() {
+			return date;
+		}
+
+		public void setDate(String date) {
+			this.date = date;
+		}
+
+		public int getVolumeCount() {
+			return volumeCount;
+		}
+
+		/**
+		 * Get the next volume count value
+		 */
+		public void plusVolumeCount() {
+			this.volumeCount++;
+		}
+
+	}
+	
 	private static final Logger LOGGER = LogUtil.getLogger(DbSpaceInfoList.class);
-	private String dbname = null;
-
-	private int pagesize = 0;
-
-	private int logpagesize = 0;
-
-	private int freespace = 0;
-
-	/*
-	 * the volume space info list of the database
-	 */
-	private List<DbSpaceInfo> spaceinfo = null;
-
-	public String getTaskName() {
-		return "dbspaceinfo";
-	}
-
-	public String getDbname() {
-		return dbname;
-	}
-
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
-	}
-
-	public int getPagesize() {
-		return pagesize;
-	}
-
-	public void setPagesize(int pagesize) {
-		this.pagesize = pagesize;
-	}
-
-	public int getLogpagesize() {
-		return logpagesize;
-	}
-
-	public void setLogpagesize(int logpagesize) {
-		this.logpagesize = logpagesize;
-	}
-
+	protected String dbname = null;
+	protected int pagesize = 0;
+	protected int logpagesize = 0;
+	protected int freespace = 0;
+	
+	protected List<DbSpaceInfoList.DbSpaceInfo> spaceinfo = null;
+	
 	/***
 	 * Get the list that encapsulates the instances of DbSpaceInfo
 	 *
 	 * @return List<DbSpaceInfo> the list that encapsulates the instances of
 	 *         DbSpaceInfo
 	 */
-	public List<DbSpaceInfo> getSpaceinfo() {
+	public List<DbSpaceInfoList.DbSpaceInfo> getSpaceinfo() {
 		synchronized (this) {
 			return spaceinfo;
 		}
@@ -111,7 +187,7 @@ public class DbSpaceInfoList implements
 	 * @return Map<String, DbSpaceInfo> the map that encapsulates the instances
 	 *         of DbSpaceInfo
 	 */
-	public Map<String, DbSpaceInfo> getSpaceInfoMap() {
+	public Map<String, DbSpaceInfoList.DbSpaceInfo> getSpaceInfoMap() {
 		synchronized (this) {
 			Map<String, DbSpaceInfo> map = new TreeMap<String, DbSpaceInfo>();
 			if (spaceinfo == null) {
@@ -151,7 +227,7 @@ public class DbSpaceInfoList implements
 	 * @param spaceinfoList List<DbSpaceInfo> A list that encapsulates the
 	 *        instances of DbSpaceInfo
 	 */
-	public void setSpaceinfo(List<DbSpaceInfo> spaceinfoList) {
+	public void setSpaceinfo(List<DbSpaceInfoList.DbSpaceInfo> spaceinfoList) {
 		synchronized (this) {
 			this.spaceinfo = spaceinfoList;
 		}
@@ -163,7 +239,7 @@ public class DbSpaceInfoList implements
 	 *
 	 * @param info DbSpaceInfo A instance of DbSpaceInfo
 	 */
-	public void addSpaceinfo(DbSpaceInfo info) {
+	public void addSpaceinfo(DbSpaceInfoList.DbSpaceInfo info) {
 		synchronized (this) {
 			if (spaceinfo == null) {
 				spaceinfo = new ArrayList<DbSpaceInfo>();
@@ -180,7 +256,7 @@ public class DbSpaceInfoList implements
 	 *
 	 * @param info DbSpaceInfo A instance of DbSpaceInfo
 	 */
-	public void removeSpaceinfo(DbSpaceInfo info) {
+	public void removeSpaceinfo(DbSpaceInfoList.DbSpaceInfo info) {
 		synchronized (this) {
 			if (spaceinfo != null) {
 				spaceinfo.remove(info);
@@ -188,6 +264,35 @@ public class DbSpaceInfoList implements
 		}
 	}
 
+	public String getTaskName() {
+		return "dbspaceinfo";
+	}
+
+	public String getDbname() {
+		return dbname;
+	}
+
+	public void setDbname(String dbname) {
+		this.dbname = dbname;
+	}
+
+	public int getPagesize() {
+		return pagesize;
+	}
+
+	public void setPagesize(int pagesize) {
+		this.pagesize = pagesize;
+	}
+
+	public int getLogpagesize() {
+		return logpagesize;
+	}
+
+	public void setLogpagesize(int logpagesize) {
+		this.logpagesize = logpagesize;
+	}
+
+	
 	public int getFreespace() {
 		return freespace;
 	}
@@ -271,6 +376,18 @@ public class DbSpaceInfoList implements
 		} catch (InvocationTargetException e) {
 			throw e;
 		}
+	}
+	
+	public int getTotalSize(){
+		return 0;
+	}
+
+	public int getFreeSize(){
+		return 0;
+	}
+	
+	public ArrayList<FreeTotalSizeSpacename> getVolumesInfoByType(String type){
+		return null;
 	}
 
 }

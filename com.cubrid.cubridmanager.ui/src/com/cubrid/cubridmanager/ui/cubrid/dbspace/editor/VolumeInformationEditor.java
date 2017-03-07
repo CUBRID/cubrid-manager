@@ -86,10 +86,9 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeInfo;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListOld;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.cubrid.database.control.PieRenderer;
 import com.cubrid.cubridmanager.ui.cubrid.database.editor.DatabaseStatusEditor;
@@ -108,8 +107,8 @@ public class VolumeInformationEditor extends
 	private static final Logger LOGGER = LogUtil.getLogger(VolumeInformationEditor.class);
 	public static final String ID = "com.cubrid.cubridmanager.ui.cubrid.dbspace.editor.VolumeInformationEditor";
 	private CubridDatabase database = null;
-	private DbSpaceInfo dbSpaceInfo = null;
-	private VolumeInfo volumeInfo = null;
+	private DbSpaceInfoList.DbSpaceInfo dbSpaceInfo = null;
+	private DbSpaceInfoListNew.VolumeInfo volumeInfo = null;
 	public static boolean isChanged = false;
 	private boolean isRunning = false;
 
@@ -159,13 +158,13 @@ public class VolumeInformationEditor extends
 						|| CubridNodeType.TEMP_VOLUME.equals(type)
 						|| CubridNodeType.ARCHIVE_LOG.equals(type)
 						|| CubridNodeType.ACTIVE_LOG.equals(type)) {
-					dbSpaceInfo = (DbSpaceInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfo.class);
+					dbSpaceInfo = (DbSpaceInfoList.DbSpaceInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfoList.DbSpaceInfo.class);
 				}
 			} else {
 				if (CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
 					CubridNodeType.PT_VOLUME_FOLDER.equals(type) ||
 					CubridNodeType.TT_VOLUME_FOLDER.equals(type)) {
-					volumeInfo = (VolumeInfo) ((DefaultSchemaNode) node).getAdapter(VolumeInfo.class);
+					volumeInfo = (DbSpaceInfoListNew.VolumeInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfoListNew.VolumeInfo.class);
 				}
 			}
 		}
@@ -270,25 +269,14 @@ public class VolumeInformationEditor extends
 		}
 
 		DefaultPieDataset dataset = new DefaultPieDataset();
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			dataset.setValue(
-					Messages.chartMsgUsedSize,
-					(totalSize - freeSize)
-							* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)));
-			dataset.setValue(
-					Messages.chartMsgFreeSize,
-					(freeSize)
-							* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)));
-		} else {
-			dataset.setValue(
-					Messages.chartMsgUsedSize,
-					(totalSize - freeSize)
-							* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)));
-			dataset.setValue(
-					Messages.chartMsgFreeSize,
-					(freeSize)
-							* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)));
-		}
+		dataset.setValue(
+				Messages.chartMsgUsedSize,
+				(totalSize - freeSize)
+						* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)));
+		dataset.setValue(
+				Messages.chartMsgFreeSize,
+				(freeSize)
+						* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)));
 		return dataset;
 
 	}
@@ -301,154 +289,104 @@ public class VolumeInformationEditor extends
 		if (database == null || database.getDatabaseInfo() == null) {
 			return;
 		}
-
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+		if (database.getDatabaseInfo().getDbSpaceInfoList() == null) {
+			return;
+		}
 		
-			if (database.getDatabaseInfo().getDbSpaceInfoList() == null) {
-				return;
-			}
-			int totalSize = dbSpaceInfo.getTotalpage();
-			int freeSize = dbSpaceInfo.getFreepage();
+		int totalSize, freeSize;
+		String volumeLocation, volumeDate, volumeType, volumePurpose, spacename;
+		
+		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+			totalSize = dbSpaceInfo.getTotalpage();
+			freeSize = dbSpaceInfo.getFreepage();
+			volumeType = dbSpaceInfo.getType();
+			volumeDate = dbSpaceInfo.getDate();
+			spacename = dbSpaceInfo.getSpacename();
+			volumeLocation = dbSpaceInfo.getLocation();
+		} else {
+			totalSize = volumeInfo.getTotal_size();
+			freeSize = volumeInfo.getFree_size();
+			volumeType = volumeInfo.getType();
+			volumePurpose = volumeInfo.getPurpose();
+			spacename = volumeInfo.getShortVolumeName();
+			volumeLocation = volumeInfo.getVolume_name();
+		}
 	
-			spaceNameLabel.setText(dbSpaceInfo.getSpacename());
-	
-			while (!spInfoListData.isEmpty()) {
-				spInfoListData.remove(0);
-			}
-			Map<String, String> map1 = new HashMap<String, String>();
-			map1.put("0", Messages.lblSpaceLocation);
-			map1.put("1", dbSpaceInfo.getLocation());
-			spInfoListData.add(map1);
-	
-			Map<String, String> map2 = new HashMap<String, String>();
+		spaceNameLabel.setText(spacename);
+
+		while (!spInfoListData.isEmpty()) {
+			spInfoListData.remove(0);
+		}
+		Map<String, String> map1 = new HashMap<String, String>();
+		map1.put("0", Messages.lblSpaceLocation);
+		map1.put("1", volumeLocation);
+		spInfoListData.add(map1);
+
+		Map<String, String> map2 = new HashMap<String, String>();
+		Map<String, String> map3 = new HashMap<String, String>();
+		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
 			map2.put("0", Messages.lblSpaceDate);
 			map2.put("1", dbSpaceInfo.getDate());
-			spInfoListData.add(map2);
-	
-			Map<String, String> map3 = new HashMap<String, String>();
 			map3.put("0", Messages.lblSpaceType);
 			map3.put(
 					"1",
-					dbSpaceInfo.getType()
+					volumeType
 							+ "                                                                               ");
-			spInfoListData.add(map3);
-	
-			Map<String, String> map4 = new HashMap<String, String>();
-			map4.put("0", Messages.lblFreeSize);
-			map4.put(
-					"1",
-					StringUtil.formatNumber(
-							freeSize
-									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-							"#,###.##")
-							+ "M ("
-							+ StringUtil.formatNumber(freeSize, "#,###")
-							+ " pages)");
-			spInfoListData.add(map4);
-	
-			Map<String, String> map5 = new HashMap<String, String>();
-			map5.put("0", Messages.lblDatabaseTotalSize);
-			map5.put(
-					"1",
-					StringUtil.formatNumber(
-							totalSize
-									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-							"#,###.##")
-							+ "M ("
-							+ StringUtil.formatNumber(totalSize, "#,###")
-							+ " pages)");
-			spInfoListData.add(map5);
-	
-			Map<String, String> map6 = new HashMap<String, String>();
-			map6.put("0", Messages.lblDatabasePaseSize);
-			map6.put("1", StringUtil.formatNumber(
-					database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
-					"#,###")
-					+ " byte");
-			spInfoListData.add(map6);
-			if (spInfoTable != null && !spInfoTable.isDisposed()) {
-				spInfoTableViewer.refresh();
-				for (int i = 0; i < spInfoTable.getColumnCount(); i++) {
-					spInfoTable.getColumn(i).pack();
-				}
-				for (int i = 0; i < (spInfoTable.getItemCount() + 1) / 2; i++) {
-					spInfoTable.getItem(i * 2).setBackground(color);
-				}
-			}
 		} else {
-			if (database.getDatabaseInfo().getDbSpaceInfoListNew() == null) {
-				return;
-			}
-			int totalSize = volumeInfo.getTotal_size();
-			int freeSize = volumeInfo.getFree_size();
-	
-			spaceNameLabel.setText(volumeInfo.getShortVolumeName());
-	
-			while (!spInfoListData.isEmpty()) {
-				spInfoListData.remove(0);
-			}
-			Map<String, String> map1 = new HashMap<String, String>();
-			map1.put("0", Messages.lblSpaceLocation);
-			map1.put("1", volumeInfo.getVolume_name());
-			spInfoListData.add(map1);
-	
-			Map<String, String> map3 = new HashMap<String, String>();
-			map3.put("0", Messages.lblSpaceType);
-			map3.put(
+			map2.put("0", Messages.lblSpaceType);
+			map2.put(
 					"1",
 					volumeInfo.getType()
 							+ "                                                                               ");
-			spInfoListData.add(map3);
-			
-			Map<String, String> map7 = new HashMap<String, String>();
-			map7.put("0", "Purpose");
-			map7.put(
+			map3.put("0", "Purpose");
+			map3.put(
 					"1",
 					volumeInfo.getPurpose()
 							+ "                                                                               ");
-			spInfoListData.add(map7);
-	
-			Map<String, String> map4 = new HashMap<String, String>();
-			map4.put("0", Messages.lblFreeSize);
-			map4.put(
-					"1",
-					StringUtil.formatNumber(
-							freeSize
-									* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
-							"#,###.##")
-							+ "M ("
-							+ StringUtil.formatNumber(freeSize, "#,###")
-							+ " pages)");
-			spInfoListData.add(map4);
-	
-			Map<String, String> map5 = new HashMap<String, String>();
-			map5.put("0", Messages.lblDatabaseTotalSize);
-			map5.put(
-					"1",
-					StringUtil.formatNumber(
-							totalSize
-									* (database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize() / (1048576.0f)),
-							"#,###.##")
-							+ "M ("
-							+ StringUtil.formatNumber(totalSize, "#,###")
-							+ " pages)");
-			spInfoListData.add(map5);
-	
-			Map<String, String> map6 = new HashMap<String, String>();
-			map6.put("0", Messages.lblDatabasePaseSize);
-			map6.put("1", StringUtil.formatNumber(
-					database.getDatabaseInfo().getDbSpaceInfoListNew().getPagesize(),
-					"#,###")
-					+ " byte");
-			spInfoListData.add(map6);
-			if (spInfoTable != null && !spInfoTable.isDisposed()) {
-				spInfoTableViewer.refresh();
-				for (int i = 0; i < spInfoTable.getColumnCount(); i++) {
-					spInfoTable.getColumn(i).pack();
-				}
-				for (int i = 0; i < (spInfoTable.getItemCount() + 1) / 2; i++) {
-					spInfoTable.getItem(i * 2).setBackground(color);
-				}
+		}	
+		spInfoListData.add(map2);
+		spInfoListData.add(map3);
+
+		Map<String, String> map4 = new HashMap<String, String>();
+		map4.put("0", Messages.lblFreeSize);
+		map4.put(
+				"1",
+				StringUtil.formatNumber(
+						freeSize
+								* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+						"#,###.##")
+						+ "M ("
+						+ StringUtil.formatNumber(freeSize, "#,###")
+						+ " pages)");
+		spInfoListData.add(map4);
+
+		Map<String, String> map5 = new HashMap<String, String>();
+		map5.put("0", Messages.lblDatabaseTotalSize);
+		map5.put(
+				"1",
+				StringUtil.formatNumber(
+						totalSize
+								* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+						"#,###.##")
+						+ "M ("
+						+ StringUtil.formatNumber(totalSize, "#,###")
+						+ " pages)");
+		spInfoListData.add(map5);
+
+		Map<String, String> map6 = new HashMap<String, String>();
+		map6.put("0", Messages.lblDatabasePaseSize);
+		map6.put("1", StringUtil.formatNumber(
+				database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
+				"#,###")
+				+ " byte");
+		spInfoListData.add(map6);
+		if (spInfoTable != null && !spInfoTable.isDisposed()) {
+			spInfoTableViewer.refresh();
+			for (int i = 0; i < spInfoTable.getColumnCount(); i++) {
+				spInfoTable.getColumn(i).pack();
+			}
+			for (int i = 0; i < (spInfoTable.getItemCount() + 1) / 2; i++) {
+				spInfoTable.getItem(i * 2).setBackground(color);
 			}
 		}
 	}
@@ -496,125 +434,81 @@ public class VolumeInformationEditor extends
 	 * @return boolean
 	 */
 	public boolean loadData() {
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			CommonQueryTask<DbSpaceInfoList> task = new CommonQueryTask<DbSpaceInfoList>(
-					database.getServer().getServerInfo(),
-					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoList());
-			task.setDbName(database.getName());
-	
-			TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
-				@SuppressWarnings("unchecked")
-				@Override
-				public IStatus exec(IProgressMonitor monitor) {
-	
+		TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public IStatus exec(IProgressMonitor monitor) {
+
+				if (monitor.isCanceled()) {
+					return Status.CANCEL_STATUS;
+				}
+
+				for (ITask t : taskList) {
+					t.execute();
+					final String msg = t.getErrorMsg();
+
 					if (monitor.isCanceled()) {
 						return Status.CANCEL_STATUS;
 					}
-	
-					for (ITask t : taskList) {
-						t.execute();
-						final String msg = t.getErrorMsg();
-	
-						if (monitor.isCanceled()) {
-							return Status.CANCEL_STATUS;
-						}
-						if (msg != null && msg.length() > 0
-								&& !monitor.isCanceled()) {
-							return new Status(IStatus.ERROR,
-									CubridManagerUIPlugin.PLUGIN_ID, msg);
+					if (msg != null && msg.length() > 0
+							&& !monitor.isCanceled()) {
+						return new Status(IStatus.ERROR,
+								CubridManagerUIPlugin.PLUGIN_ID, msg);
+					} else {
+						final DbSpaceInfoList model;
+						if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+							model = ((CommonQueryTask<DbSpaceInfoListOld>) t).getResultModel();
 						} else {
-							final DbSpaceInfoList model = ((CommonQueryTask<DbSpaceInfoList>) t).getResultModel();
-							Display.getDefault().syncExec(new Runnable() {
-								public void run() {
-									database.getDatabaseInfo().setDbSpaceInfoList(
-											model);
-									if (scrolledComp == null
-											|| scrolledComp.isDisposed()) {
-										return;
-									}
-									initial();
-									paintComp();
-									scrolledComp.setContent(parentComp);
-									scrolledComp.setExpandHorizontal(true);
-									scrolledComp.setExpandVertical(true);
-									scrolledComp.setMinHeight(800);
-									scrolledComp.setMinWidth(800);
+							model = ((CommonQueryTask<DbSpaceInfoListNew>) t).getResultModel();
+						}
+						Display.getDefault().syncExec(new Runnable() {
+							public void run() {
+								database.getDatabaseInfo().setDbSpaceInfoList(
+										model);
+								if (scrolledComp == null
+										|| scrolledComp.isDisposed()) {
+									return;
 								}
-							});
-						}
-						if (monitor.isCanceled()) {
-							return Status.CANCEL_STATUS;
-						}
+								initial();
+								paintComp();
+								scrolledComp.setContent(parentComp);
+								scrolledComp.setExpandHorizontal(true);
+								scrolledComp.setExpandVertical(true);
+								scrolledComp.setMinHeight(800);
+								scrolledComp.setMinWidth(800);
+							}
+						});
 					}
-					return Status.OK_STATUS;
+					if (monitor.isCanceled()) {
+						return Status.CANCEL_STATUS;
+					}
 				}
-	
-			};
+				return Status.OK_STATUS;
+			}
+
+		};
+		String spacename;
+		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+			CommonQueryTask<DbSpaceInfoListOld> task = new CommonQueryTask<DbSpaceInfoListOld>(
+					database.getServer().getServerInfo(),
+					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListOld());
+			task.setDbName(database.getName());
 			taskJobExecutor.addTask(task);
-			String jobName = Messages.viewVolumeInfoJobName + " - "
-					+ dbSpaceInfo.getSpacename() + "@" + database.getName() + "@"
-					+ database.getServer().getName();
-			taskJobExecutor.schedule(jobName, null, false, Job.LONG);
+			spacename = dbSpaceInfo.getSpacename();
 		} else {
 			CommonQueryTask<DbSpaceInfoListNew> task = new CommonQueryTask<DbSpaceInfoListNew>(
 					database.getServer().getServerInfo(),
 					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListNew());
 			task.setDbName(database.getName());
-	
-			TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
-				@SuppressWarnings("unchecked")
-				@Override
-				public IStatus exec(IProgressMonitor monitor) {
-	
-					if (monitor.isCanceled()) {
-						return Status.CANCEL_STATUS;
-					}
-	
-					for (ITask t : taskList) {
-						t.execute();
-						final String msg = t.getErrorMsg();
-	
-						if (monitor.isCanceled()) {
-							return Status.CANCEL_STATUS;
-						}
-						if (msg != null && msg.length() > 0
-								&& !monitor.isCanceled()) {
-							return new Status(IStatus.ERROR,
-									CubridManagerUIPlugin.PLUGIN_ID, msg);
-						} else {
-							final DbSpaceInfoListNew model = ((CommonQueryTask<DbSpaceInfoListNew>) t).getResultModel();
-							Display.getDefault().syncExec(new Runnable() {
-								public void run() {
-									database.getDatabaseInfo().setDbSpaceInfoListNew(
-											model);
-									if (scrolledComp == null
-											|| scrolledComp.isDisposed()) {
-										return;
-									}
-									initial();
-									paintComp();
-									scrolledComp.setContent(parentComp);
-									scrolledComp.setExpandHorizontal(true);
-									scrolledComp.setExpandVertical(true);
-									scrolledComp.setMinHeight(800);
-									scrolledComp.setMinWidth(800);
-								}
-							});
-						}
-						if (monitor.isCanceled()) {
-							return Status.CANCEL_STATUS;
-						}
-					}
-					return Status.OK_STATUS;
-				}
-	
-			};
 			taskJobExecutor.addTask(task);
-			String jobName = Messages.viewVolumeInfoJobName + " - "
-					+ volumeInfo.getVolume_name() + "@" + database.getName() + "@"
-					+ database.getServer().getName();
-			taskJobExecutor.schedule(jobName, null, false, Job.LONG);
+			spacename = volumeInfo.getShortVolumeName();
 		}
+		
+		String jobName = Messages.viewVolumeInfoJobName + " - "
+				+ spacename + "@" + database.getName() + "@"
+				+ database.getServer().getName();
+		taskJobExecutor.schedule(jobName, null, false, Job.LONG);
+		
 		return true;
 
 	}

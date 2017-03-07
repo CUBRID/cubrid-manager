@@ -1,76 +1,167 @@
 package com.cubrid.cubridmanager.core.cubrid.dbspace.model;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.cubridmanager.core.common.model.IModel;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList.FreeTotalSizeSpacename;
 
-public class DbSpaceInfoListNew implements IModel{
-	private static final Logger LOGGER = LogUtil.getLogger(DbSpaceInfoListNew.class);
+public class DbSpaceInfoListNew extends DbSpaceInfoList{
+	public static class DatabaseDescription{
+		private int volume_count;
+		private int used_size;
+		private int total_size;
+		private String purpose;
+		private String type;
+		private int free_size;
+		
+		public int getVolume_count() {
+			return volume_count;
+		}
+		public void setVolume_count(int volume_count) {
+			this.volume_count = volume_count;
+		}
+		public int getUsed_size() {
+			return used_size;
+		}
+		public void setUsed_size(int used_size) {
+			this.used_size = used_size;
+		}
+		public int getTotal_size() {
+			return total_size;
+		}
+		public void setTotal_size(int total_size) {
+			this.total_size = total_size;
+		}
+		public String getPurpose() {
+			return purpose;
+		}
+		public void setPurpose(String purpose) {
+			this.purpose = purpose;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		public int getFree_size() {
+			return free_size;
+		}
+		public void setFree_size(int free_size) {
+			this.free_size = free_size;
+		}
+	}
 	
-	private String dbname = null;
+	public static class FileSpaceDescription {
+		private int used_size;
+		private int total_size;
+		private String data_type;
+		private int file_count;
+		private int reserved_size;
+		private int file_table_size;
+		
+		public int getUsed_size() {
+			return used_size;
+		}
+		public void setUsed_size(int used_size) {
+			this.used_size = used_size;
+		}
+		public int getTotal_size() {
+			return total_size;
+		}
+		public void setTotal_size(int total_size) {
+			this.total_size = total_size;
+		}
+		public String getData_type() {
+			return data_type;
+		}
+		public void setData_type(String data_type) {
+			this.data_type = data_type;
+		}
+		public int getFile_count() {
+			return file_count;
+		}
+		public void setFile_count(int file_count) {
+			this.file_count = file_count;
+		}
+		public int getReserved_size() {
+			return reserved_size;
+		}
+		public void setReserved_size(int reserved_size) {
+			this.reserved_size = reserved_size;
+		}
+		public int getFile_table_size() {
+			return file_table_size;
+		}
+		public void setFile_table_size(int file_table_size) {
+			this.file_table_size = file_table_size;
+		}
+	}
+	
+	public static class VolumeInfo {
+		private int volid;
+		private  int used_size;
+		private int total_size;
+		private String volume_name;
+		private String purpose;
+		private String type;
+		private int free_size;
+		
+		public int getVolid() {
+			return volid;
+		}
+		public void setVolid(int volid) {
+			this.volid = volid;
+		}
+		public int getUsed_size() {
+			return used_size;
+		}
+		public void setUsed_size(int used_size) {
+			this.used_size = used_size;
+		}
+		public int getTotal_size() {
+			return total_size;
+		}
+		public void setTotal_size(int total_size) {
+			this.total_size = total_size;
+		}
+		public String getVolume_name() {
+			return volume_name;
+		}
+		public void setVolume_name(String volume_name) {
+			this.volume_name = volume_name;
+		}
+		public String getPurpose() {
+			return purpose;
+		}
+		public void setPurpose(String purpose) {
+			this.purpose = purpose;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		public int getFree_size() {
+			return free_size;
+		}
+		public void setFree_size(int free_size) {
+			this.free_size = free_size;
+		}
+		public String getShortVolumeName(){
+			return volume_name.substring(volume_name.lastIndexOf('/')+1);
+		}
+	}
+	
+	private static final Logger LOGGER = LogUtil.getLogger(DbSpaceInfoListNew.class);
 
-	private int pagesize = 0;
-
-	private int logpagesize = 0;
-
-	private int freespace = 0;
-
-	/*
-	 * the volume space info list of the database
-	 */
-	private List<DbSpaceInfo> spaceinfo = null;
 	private List<DatabaseDescription> dbinfo = null;
 	private List<FileSpaceDescription> fileinfo = null;
 	private List<VolumeInfo> volumeinfo = null;
-
-	public String getTaskName() {
-		return "dbspaceinfo";
-	}
-
-	public String getDbname() {
-		return dbname;
-	}
-
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
-	}
-
-	public int getPagesize() {
-		return pagesize;
-	}
-
-	public void setPagesize(int pagesize) {
-		this.pagesize = pagesize;
-	}
-
-	public int getLogpagesize() {
-		return logpagesize;
-	}
-
-	public void setLogpagesize(int logpagesize) {
-		this.logpagesize = logpagesize;
-	}
-
-	/***
-	 * Get the list that encapsulates the instances of DbSpaceInfo
-	 *
-	 * @return List<DbSpaceInfo> the list that encapsulates the instances of
-	 *         DbSpaceInfo
-	 */
-	public List<DbSpaceInfo> getSpaceinfo() {
-		synchronized (this) {
-			return spaceinfo;
-		}
-	}
 	
 	public List<DatabaseDescription> getDbinfo() {
 		synchronized (this) {
@@ -87,89 +178,6 @@ public class DbSpaceInfoListNew implements IModel{
 	public List<VolumeInfo> getVolumeinfo(){
 		synchronized (this){
 			return volumeinfo;
-		}
-	}
-
-	/**
-	 * Get the map that encapsulates the instances of DbSpaceInfo
-	 *
-	 * @return Map<String, DbSpaceInfo> the map that encapsulates the instances
-	 *         of DbSpaceInfo
-	 */
-	public Map<String, DbSpaceInfo> getSpaceInfoMap() {
-		synchronized (this) {
-			Map<String, DbSpaceInfo> map = new TreeMap<String, DbSpaceInfo>();
-			if (spaceinfo == null) {
-				return map;
-			}
-			for (DbSpaceInfo bean : spaceinfo) {
-				String type = bean.getType().toUpperCase();
-				if (map.containsKey(type)) {
-					DbSpaceInfo model = map.get(type);
-					int free = model.getFreepage();
-					int totl = model.getTotalpage();
-					model.setFreepage(free + bean.getFreepage());
-					model.setTotalpage(totl + bean.getTotalpage());
-					model.plusVolumeCount();
-				} else {
-					DbSpaceInfo model = new DbSpaceInfo();
-					try {
-						DbSpaceInfoList.copyBean2Bean(bean, model);
-					} catch (IllegalAccessException e) {
-						LOGGER.error("", e);
-					} catch (InvocationTargetException e) {
-						LOGGER.error("", e);
-					}
-					model.setSpacename("");
-					model.plusVolumeCount();
-					map.put(type, model);
-				}
-			}
-			return map;
-		}
-	}
-
-	/**
-	 * Set a list that encapsulates the instances of DbSpaceInfo as a field of
-	 * this instance
-	 *
-	 * @param spaceinfoList List<DbSpaceInfo> A list that encapsulates the
-	 *        instances of DbSpaceInfo
-	 */
-	public void setSpaceinfo(List<DbSpaceInfo> spaceinfoList) {
-		synchronized (this) {
-			this.spaceinfo = spaceinfoList;
-		}
-	}
-
-	/**
-	 * Add a instance of DbSpaceInfo into the spaceinfo list in the current
-	 * instance
-	 *
-	 * @param info DbSpaceInfo A instance of DbSpaceInfo
-	 */
-	public void addSpaceinfo(DbSpaceInfo info) {
-		synchronized (this) {
-			if (spaceinfo == null) {
-				spaceinfo = new ArrayList<DbSpaceInfo>();
-			}
-			if (!spaceinfo.contains(info)) {
-				spaceinfo.add(info);
-			}
-		}
-	}
-
-	/**
-	 * Remove a instance of DbSpaceInfo from sapceinfo list in the current
-	 * instance
-	 *
-	 * @param info DbSpaceInfo A instance of DbSpaceInfo
-	 */
-	public void removeSpaceinfo(DbSpaceInfo info) {
-		synchronized (this) {
-			if (spaceinfo != null) {
-				spaceinfo.remove(info);
-			}
 		}
 	}
 	
@@ -247,7 +255,7 @@ public class DbSpaceInfoListNew implements IModel{
 		}
 	}
 	
-	public void setVolumeinfo(List<VolumeInfo> volumeInfoList) {
+	public void setVolumeinfo(List<DbSpaceInfoListNew.VolumeInfo> volumeInfoList) {
 		synchronized (this) {
 			this.volumeinfo = volumeInfoList;
 		}
@@ -259,7 +267,7 @@ public class DbSpaceInfoListNew implements IModel{
 	 *
 	 * @param info DbSpaceInfo A instance of DbSpaceInfo
 	 */
-	public void addVolumeinfo(VolumeInfo info) {
+	public void addVolumeinfo(DbSpaceInfoListNew.VolumeInfo info) {
 		synchronized (this) {
 			if (volumeinfo == null) {
 				volumeinfo = new ArrayList<VolumeInfo>();
@@ -276,97 +284,52 @@ public class DbSpaceInfoListNew implements IModel{
 	 *
 	 * @param info DbSpaceInfo A instance of DbSpaceInfo
 	 */
-	public void removeVolumeinfo(VolumeInfo info) {
+	public void removeVolumeinfo(DbSpaceInfoListNew.VolumeInfo info) {
 		synchronized (this) {
 			if (volumeinfo != null) {
 				volumeinfo.remove(info);
 			}
 		}
 	}
-
-	public int getFreespace() {
-		return freespace;
-	}
-
-	public void setFreespace(int freespace) {
-		this.freespace = freespace;
-	}
-
-	/**
-	 * Reflect the src field value into dest object
-	 *
-	 * @param src Object source object
-	 * @param dest Object destination object
-	 * @throws IllegalAccessException illegal access exception
-	 * @throws InvocationTargetException invocation target exception
-	 */
-	public static void copyBean2Bean(Object src, Object dest) throws IllegalAccessException,
-			InvocationTargetException {
-		try {
-			Method[] srcMtds = src.getClass().getMethods();
-			Method[] destMtds = src.getClass().getMethods();
-
-			Field[] yy = dest.getClass().getDeclaredFields();
-			String[] proname = new String[yy.length];
-			for (int j = 0; j < yy.length; j++) {
-				proname[j] = yy[j].getName();
+	
+	public int getTotalSize(){
+		int totalSize = 0;
+		for (VolumeInfo bean : volumeinfo) {
+			if (!bean.getType().equals("PERMANENT")
+					&& !bean.getType().equals("TEMPORARY")) {
+				continue;
 			}
-
-			for (int ff = 0; ff < yy.length; ff++) {
-				// get the set-method from dest object and get-method from src object
-				String fieldName = yy[ff].getName();
-				Method srcGetMethod = null;
-				Method destSetMethod = null;
-
-				for (Method m : srcMtds) {
-					if (m.getName().equalsIgnoreCase("get" + fieldName)) {
-						srcGetMethod = m;
-						break;
-					}
-				}
-
-				for (Method m : destMtds) {
-					if (m.getName().equalsIgnoreCase("set" + fieldName)) {
-						destSetMethod = m;
-						break;
-					}
-				}
-
-				if (srcGetMethod == null || destSetMethod == null) {
-					continue;
-				}
-
-				//get the value from the dest object
-				Class<?>[] descParams = destSetMethod.getParameterTypes();
-				Class<?>[] srcParams = srcGetMethod.getParameterTypes();
-
-				if (srcParams.length != 0 || descParams.length != 1) {
-					continue;
-				}
-
-				boolean flag = true;
-				Object value = srcGetMethod.invoke(src);
-				if (value == null) {
-					flag = false;
-				}
-				if (flag && value != null && value.getClass() == Integer.class && descParams[0] == int.class) {
-					flag = false;
-				}
-				if (flag && value != null && value.getClass() == Double.class && descParams[0] == double.class) {
-					flag = false;
-				}
-				if (flag && value != null && descParams[0] != value.getClass()) {
-					continue;
-				}
-				destSetMethod.invoke(dest, new Object[] { value });
-			}
-		} catch (IllegalArgumentException e) {
-			throw e;
-		} catch (IllegalAccessException e) {
-			throw e;
-		} catch (InvocationTargetException e) {
-			throw e;
+			totalSize += bean.getTotal_size();
 		}
+		
+		return totalSize;
 	}
 
+	public int getFreeSize(){
+		int freeSize = 0;
+		for (VolumeInfo bean : volumeinfo) {
+			if (!bean.getType().equals("PERMANENT")
+					&& !bean.getType().equals("TEMPORARY")) {
+				continue;
+			}
+			freeSize += bean.getFree_size();
+		}
+		
+		return freeSize;
+	}
+	
+	public ArrayList<FreeTotalSizeSpacename> getVolumesInfoByType(String fullType){
+		ArrayList<FreeTotalSizeSpacename> info = new ArrayList<FreeTotalSizeSpacename>();
+		
+		String type = fullType.substring(0, fullType.indexOf(" "));
+		String purpose = fullType.substring(fullType.indexOf(" ")+1, fullType.lastIndexOf(" "));
+		
+		for (VolumeInfo bean : volumeinfo) {
+			if (bean.getType().equals(type) && bean.getPurpose().equals(purpose)) {
+				info.add(new FreeTotalSizeSpacename(bean.getShortVolumeName(), bean.getFree_size(), bean.getTotal_size()));
+			}
+		}
+		return info;
+	}
+	
 }
