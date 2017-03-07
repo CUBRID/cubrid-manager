@@ -1,11 +1,14 @@
 package com.cubrid.cubridmanager.core.cubrid.dbspace.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList.FreeTotalSizeSpacename;
 
 public class DbSpaceInfoListNew extends DbSpaceInfoList{
@@ -101,67 +104,10 @@ public class DbSpaceInfoListNew extends DbSpaceInfoList{
 		}
 	}
 	
-	public static class VolumeInfo {
-		private int volid;
-		private  int used_size;
-		private int total_size;
-		private String volume_name;
-		private String purpose;
-		private String type;
-		private int free_size;
-		
-		public int getVolid() {
-			return volid;
-		}
-		public void setVolid(int volid) {
-			this.volid = volid;
-		}
-		public int getUsed_size() {
-			return used_size;
-		}
-		public void setUsed_size(int used_size) {
-			this.used_size = used_size;
-		}
-		public int getTotal_size() {
-			return total_size;
-		}
-		public void setTotal_size(int total_size) {
-			this.total_size = total_size;
-		}
-		public String getVolume_name() {
-			return volume_name;
-		}
-		public void setVolume_name(String volume_name) {
-			this.volume_name = volume_name;
-		}
-		public String getPurpose() {
-			return purpose;
-		}
-		public void setPurpose(String purpose) {
-			this.purpose = purpose;
-		}
-		public String getType() {
-			return type;
-		}
-		public void setType(String type) {
-			this.type = type;
-		}
-		public int getFree_size() {
-			return free_size;
-		}
-		public void setFree_size(int free_size) {
-			this.free_size = free_size;
-		}
-		public String getShortVolumeName(){
-			return volume_name.substring(volume_name.lastIndexOf('/')+1);
-		}
-	}
-	
 	private static final Logger LOGGER = LogUtil.getLogger(DbSpaceInfoListNew.class);
 
 	private List<DatabaseDescription> dbinfo = null;
 	private List<FileSpaceDescription> fileinfo = null;
-	private List<VolumeInfo> volumeinfo = null;
 	
 	public List<DatabaseDescription> getDbinfo() {
 		synchronized (this) {
@@ -172,12 +118,6 @@ public class DbSpaceInfoListNew extends DbSpaceInfoList{
 	public List<FileSpaceDescription> getFileinfo(){
 		synchronized (this){
 			return fileinfo;
-		}
-	}
-	
-	public List<VolumeInfo> getVolumeinfo(){
-		synchronized (this){
-			return volumeinfo;
 		}
 	}
 	
@@ -254,52 +194,16 @@ public class DbSpaceInfoListNew extends DbSpaceInfoList{
 			}
 		}
 	}
-	
-	public void setVolumeinfo(List<DbSpaceInfoListNew.VolumeInfo> volumeInfoList) {
-		synchronized (this) {
-			this.volumeinfo = volumeInfoList;
-		}
-	}
 
-	/**
-	 * Add a instance of DbSpaceInfo into the spaceinfo list in the current
-	 * instance
-	 *
-	 * @param info DbSpaceInfo A instance of DbSpaceInfo
-	 */
-	public void addVolumeinfo(DbSpaceInfoListNew.VolumeInfo info) {
-		synchronized (this) {
-			if (volumeinfo == null) {
-				volumeinfo = new ArrayList<VolumeInfo>();
-			}
-			if (!volumeinfo.contains(info)) {
-				volumeinfo.add(info);
-			}
-		}
-	}
-
-	/**
-	 * Remove a instance of DbSpaceInfo from sapceinfo list in the current
-	 * instance
-	 *
-	 * @param info DbSpaceInfo A instance of DbSpaceInfo
-	 */
-	public void removeVolumeinfo(DbSpaceInfoListNew.VolumeInfo info) {
-		synchronized (this) {
-			if (volumeinfo != null) {
-				volumeinfo.remove(info);
-			}
-		}
-	}
 	
 	public int getTotalSize(){
 		int totalSize = 0;
-		for (VolumeInfo bean : volumeinfo) {
+		for (DbSpaceInfo bean : spaceinfo) {
 			if (!bean.getType().equals("PERMANENT")
 					&& !bean.getType().equals("TEMPORARY")) {
 				continue;
 			}
-			totalSize += bean.getTotal_size();
+			totalSize += bean.getTotalpage();
 		}
 		
 		return totalSize;
@@ -307,29 +211,62 @@ public class DbSpaceInfoListNew extends DbSpaceInfoList{
 
 	public int getFreeSize(){
 		int freeSize = 0;
-		for (VolumeInfo bean : volumeinfo) {
+		for (DbSpaceInfo bean : spaceinfo) {
 			if (!bean.getType().equals("PERMANENT")
 					&& !bean.getType().equals("TEMPORARY")) {
 				continue;
 			}
-			freeSize += bean.getFree_size();
+			freeSize += bean.getFreepage();
 		}
 		
 		return freeSize;
 	}
 	
-	public ArrayList<FreeTotalSizeSpacename> getVolumesInfoByType(String fullType){
-		ArrayList<FreeTotalSizeSpacename> info = new ArrayList<FreeTotalSizeSpacename>();
-		
-		String type = fullType.substring(0, fullType.indexOf(" "));
-		String purpose = fullType.substring(fullType.indexOf(" ")+1, fullType.lastIndexOf(" "));
-		
-		for (VolumeInfo bean : volumeinfo) {
-			if (bean.getType().equals(type) && bean.getPurpose().equals(purpose)) {
-				info.add(new FreeTotalSizeSpacename(bean.getShortVolumeName(), bean.getFree_size(), bean.getTotal_size()));
-			}
+	
+	public void createDbSpaceDescriptionData(List<Map<String, String>> dbSpaceDescriptionData){
+		dbSpaceDescriptionData.clear();
+		for(DatabaseDescription d : dbinfo){
+			Map<String, String> line = new HashMap<String, String>();
+			line.put("0", d.getType());
+			line.put("1", d.getPurpose() + " DATA");
+			line.put("2", String.valueOf(d.getVolume_count()));
+			line.put("3", String.valueOf(d.getUsed_size()));
+			line.put("4", String.valueOf(d.getFree_size()));
+			line.put("5", String.valueOf(d.getTotal_size()));
+			dbSpaceDescriptionData.add(line);
 		}
-		return info;
+	}
+	
+	public void createFileSpaceDescriptionData(List<Map<String, String>> fileSpaceDescriptionData){
+		for(FileSpaceDescription d : fileinfo){
+			Map<String, String> line = new HashMap<String, String>();
+			line.put("0", d.getData_type());
+			line.put("1", String.valueOf(d.getFile_count()));
+			line.put("2", String.valueOf(d.getUsed_size()));
+			line.put("3", String.valueOf(d.getFile_table_size()));
+			line.put("4", String.valueOf(d.getReserved_size()));
+			line.put("5", String.valueOf(d.getTotal_size()));
+			fileSpaceDescriptionData.add(line);
+		}
+	}
+	
+	public void createVolumeDescriptionData(List<Map<String, String>> volumeDescriptionData){
+		for(DbSpaceInfo d : spaceinfo){
+			Map<String, String> line = new HashMap<String, String>();
+			line.put("0", String.valueOf(d.getVolid()));
+			line.put("1", d.getType());
+			if (d.getType().compareTo("Active_log") == 0 ||
+				d.getType().compareTo("Archive_log") == 0){
+				line.put("2", "ARCHIVE");
+			}else{
+				line.put("2", d.getPurpose() + " DATA");
+			}
+			line.put("3", String.valueOf(d.getUsedpage()));
+			line.put("4", String.valueOf(d.getFreepage()));
+			line.put("5", String.valueOf(d.getTotalpage()));
+			line.put("6", d.getSpacename());
+			volumeDescriptionData.add(line);
+		}
 	}
 	
 }

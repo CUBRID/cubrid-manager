@@ -113,7 +113,6 @@ public class VolumeFolderInfoEditor extends
 	public static final String ID = "com.cubrid.cubridmanager.ui.cubrid.dbspace.editor.VolumeFolderInfoEditor";
 	private CubridDatabase database = null;
 	private final List<DbSpaceInfoList.DbSpaceInfo> dbSpaceList;
-	private final List<DbSpaceInfoListNew.VolumeInfo> volumeInfoList;
 
 	private boolean isRunning = false;
 
@@ -135,7 +134,6 @@ public class VolumeFolderInfoEditor extends
 
 	public VolumeFolderInfoEditor() {
 		dbSpaceList = new ArrayList<DbSpaceInfoList.DbSpaceInfo>();
-		volumeInfoList = new ArrayList<DbSpaceInfoListNew.VolumeInfo>();
 		color = ResourceManager.getColor(230, 230, 230);
 	}
 
@@ -160,24 +158,17 @@ public class VolumeFolderInfoEditor extends
 			majorVersion = Integer.parseInt(versionNo.substring(0, versionNo.indexOf('.')));
 			minorVersion = Integer.parseInt(versionNo.substring(versionNo.indexOf('.')+1));
 			String type = node.getType();
-			if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-				if ((CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)
-						|| CubridNodeType.DATA_VOLUME_FOLDER.equals(type)
-						|| CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)
-						|| CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)
-						|| CubridNodeType.ACTIVE_LOG_FOLDER.equals(type) || CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type))
-						&& (((DefaultSchemaNode) node).getChildren() != null && ((DefaultSchemaNode) node).getChildren().size() > 0)) {
-					for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
-						dbSpaceList.add((DbSpaceInfoList.DbSpaceInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfoList.DbSpaceInfo.class));
-					}
-				}
-			} else {
-				if (CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
+			if ((CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.DATA_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.ACTIVE_LOG_FOLDER.equals(type) || CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type)
+					|| CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
 						CubridNodeType.PT_VOLUME_FOLDER.equals(type) ||
-						CubridNodeType.TT_VOLUME_FOLDER.equals(type)) {
-					for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
-						volumeInfoList.add((DbSpaceInfoListNew.VolumeInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfoListNew.VolumeInfo.class));
-					}
+						CubridNodeType.TT_VOLUME_FOLDER.equals(type))
+					&& (((DefaultSchemaNode) node).getChildren() != null && ((DefaultSchemaNode) node).getChildren().size() > 0)) {
+				for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
+					dbSpaceList.add((DbSpaceInfoList.DbSpaceInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfoList.DbSpaceInfo.class));
 				}
 			}
 			volumeFolderName = node.getName();
@@ -481,125 +472,62 @@ public class VolumeFolderInfoEditor extends
 		int totalSize = 0;
 		int freeSize = 0;
 		// String volumeType = "";
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			for (DbSpaceInfoList.DbSpaceInfo dbSpaceInfo : dbSpaceList) {
-				totalSize += dbSpaceInfo.getTotalpage();
-				freeSize += dbSpaceInfo.getFreepage();
-				volumeType = dbSpaceInfo.getType();
-			}
-			if (!VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(volumeType)
-					&& !VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
-							volumeType)) {
-				Map<String, String> map4 = new HashMap<String, String>();
-				map4.put("0", Messages.tblVolumeFolderFreeSize);
-				map4.put(
-						"1",
-						StringUtil.formatNumber(
-								freeSize
-										* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-								"#,###.##")
-								+ "M ("
-								+ StringUtil.formatNumber(freeSize, "#,###")
-								+ " pages)");
-				spInfoListData.add(map4);
-			}
-			Map<String, String> map5 = new HashMap<String, String>();
-			map5.put("0", Messages.tblVolumeFolderTotalSize);
-			map5.put(
+		for (DbSpaceInfoList.DbSpaceInfo dbSpaceInfo : dbSpaceList) {
+			totalSize += dbSpaceInfo.getTotalpage();
+			freeSize += dbSpaceInfo.getFreepage();
+		}
+		if (!VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(volumeType)
+				&& !VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
+						volumeType)) {
+			Map<String, String> map4 = new HashMap<String, String>();
+			map4.put("0", Messages.tblVolumeFolderFreeSize);
+			map4.put(
 					"1",
 					StringUtil.formatNumber(
-							totalSize
+							freeSize
 									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
 							"#,###.##")
 							+ "M ("
-							+ StringUtil.formatNumber(totalSize, "#,###")
+							+ StringUtil.formatNumber(freeSize, "#,###")
 							+ " pages)");
-			spInfoListData.add(map5);
+			spInfoListData.add(map4);
+		}
+		Map<String, String> map5 = new HashMap<String, String>();
+		map5.put("0", Messages.tblVolumeFolderTotalSize);
+		map5.put(
+				"1",
+				StringUtil.formatNumber(
+						totalSize
+								* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
+						"#,###.##")
+						+ "M ("
+						+ StringUtil.formatNumber(totalSize, "#,###")
+						+ " pages)");
+		spInfoListData.add(map5);
 
-			if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
-					&& (VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(
-							volumeType) || VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
-							volumeType))) {
-				Map<String, String> map6 = new HashMap<String, String>();
-				map6.put("0", Messages.tblVolumeFolderLogPageSize);
-				map6.put(
-						"1",
-						StringUtil.formatNumber(
-								database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
-								"#,###")
-								+ " byte");
-				spInfoListData.add(map6);
-			} else {
-				Map<String, String> map6 = new HashMap<String, String>();
-				map6.put("0", Messages.tblVolumeFolderPageSize);
-				map6.put(
-						"1",
-						StringUtil.formatNumber(
-								database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
-								"#,###")
-								+ " byte");
-				spInfoListData.add(map6);
-			}
+		if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
+				&& (VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(
+						volumeType) || VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
+						volumeType))) {
+			Map<String, String> map6 = new HashMap<String, String>();
+			map6.put("0", Messages.tblVolumeFolderLogPageSize);
+			map6.put(
+					"1",
+					StringUtil.formatNumber(
+							database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
+							"#,###")
+							+ " byte");
+			spInfoListData.add(map6);
 		} else {
-			for(DbSpaceInfoListNew.VolumeInfo v : volumeInfoList){
-				totalSize += v.getTotal_size();
-				freeSize += v.getFree_size();
-				volumeType = v.getType() + " " +v.getPurpose() + " DATA";
-			}
-			
-			if (!VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(volumeType)
-					&& !VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
-							volumeType)) {
-				Map<String, String> map4 = new HashMap<String, String>();
-				map4.put("0", Messages.tblVolumeFolderFreeSize);
-				map4.put(
-						"1",
-						StringUtil.formatNumber(
-								freeSize
-										* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-								"#,###.##")
-								+ "M ("
-								+ StringUtil.formatNumber(freeSize, "#,###")
-								+ " pages)");
-				spInfoListData.add(map4);
-			}
-			Map<String, String> map5 = new HashMap<String, String>();
-			map5.put("0", Messages.tblVolumeFolderTotalSize);
-			map5.put(
+			Map<String, String> map6 = new HashMap<String, String>();
+			map6.put("0", Messages.tblVolumeFolderPageSize);
+			map6.put(
 					"1",
 					StringUtil.formatNumber(
-							totalSize
-									* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
-							"#,###.##")
-							+ "M ("
-							+ StringUtil.formatNumber(totalSize, "#,###")
-							+ " pages)");
-			spInfoListData.add(map5);
-
-			if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())
-					&& (VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(
-							volumeType) || VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
-							volumeType))) {
-				Map<String, String> map6 = new HashMap<String, String>();
-				map6.put("0", Messages.tblVolumeFolderLogPageSize);
-				map6.put(
-						"1",
-						StringUtil.formatNumber(
-								database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
-								"#,###")
-								+ " byte");
-				spInfoListData.add(map6);
-			} else {
-				Map<String, String> map6 = new HashMap<String, String>();
-				map6.put("0", Messages.tblVolumeFolderPageSize);
-				map6.put(
-						"1",
-						StringUtil.formatNumber(
-								database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
-								"#,###")
-								+ " byte");
-				spInfoListData.add(map6);
-			}
+							database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
+							"#,###")
+							+ " byte");
+			spInfoListData.add(map6);
 		}
 
 		spaceNameLabel.setText(volumeFolderName);
@@ -613,21 +541,12 @@ public class VolumeFolderInfoEditor extends
 		map3.put("1", volumeType);
 		spInfoListData.add(map3);
 		Map<String, String> map2 = new HashMap<String, String>();
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			map2.put("0", Messages.tblVolumeFolderVolumeCount);
-			map2.put(
-					"1",
-					dbSpaceList.size()
-							+ "                                                                                   ");
-			spInfoListData.add(map2);
-		} else{
-			map2.put("0", Messages.tblVolumeFolderVolumeCount);
-			map2.put(
-					"1",
-					volumeInfoList.size()
-							+ "                                                                                   ");
-			spInfoListData.add(map2);
-		}
+		map2.put("0", Messages.tblVolumeFolderVolumeCount);
+		map2.put(
+				"1",
+				dbSpaceList.size()
+						+ "                                                                                   ");
+		spInfoListData.add(map2);
 
 		if (spInfoTable != null && !spInfoTable.isDisposed()) {
 			spInfoTableViewer.refresh();

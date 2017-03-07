@@ -472,18 +472,7 @@ public class DatabaseStatusEditor extends
 		
 		if (majorVersion > 10 || (majorVersion == 10 && minorVersion > 0)){
 		
-			dbSpaceDescriptionData.clear();
-			List<DbSpaceInfoListNew.DatabaseDescription> list1 = ((DbSpaceInfoListNew)(database.getDatabaseInfo().getDbSpaceInfoList())).getDbinfo();
-			for(DbSpaceInfoListNew.DatabaseDescription d : list1){
-				Map<String, String> line = new HashMap<String, String>();
-				line.put("0", d.getType());
-				line.put("1", d.getPurpose() + " DATA");
-				line.put("2", String.valueOf(d.getVolume_count()));
-				line.put("3", String.valueOf(d.getUsed_size()));
-				line.put("4", String.valueOf(d.getFree_size()));
-				line.put("5", String.valueOf(d.getTotal_size()));
-				dbSpaceDescriptionData.add(line);
-			}
+			((DbSpaceInfoListNew)database.getDatabaseInfo().getDbSpaceInfoList()).createDbSpaceDescriptionData(dbSpaceDescriptionData);
 			if (dbSpaceDescriptionTable != null && !dbSpaceDescriptionTable.isDisposed()) {
 				dbSpaceDescriptionTableViewer.refresh();
 				for (int i = 0; i < dbSpaceDescriptionTable.getColumnCount(); i++) {
@@ -494,17 +483,7 @@ public class DatabaseStatusEditor extends
 				}
 			}
 			
-			List<DbSpaceInfoListNew.FileSpaceDescription> list2 = ((DbSpaceInfoListNew)(database.getDatabaseInfo().getDbSpaceInfoList())).getFileinfo();
-			for(DbSpaceInfoListNew.FileSpaceDescription d : list2){
-				Map<String, String> line = new HashMap<String, String>();
-				line.put("0", d.getData_type());
-				line.put("1", String.valueOf(d.getFile_count()));
-				line.put("2", String.valueOf(d.getUsed_size()));
-				line.put("3", String.valueOf(d.getFile_table_size()));
-				line.put("4", String.valueOf(d.getReserved_size()));
-				line.put("5", String.valueOf(d.getTotal_size()));
-				fileSpaceDescriptionData.add(line);
-			}
+			((DbSpaceInfoListNew)database.getDatabaseInfo().getDbSpaceInfoList()).createFileSpaceDescriptionData(fileSpaceDescriptionData);
 			if (fileSpaceDescriptionTable != null && !fileSpaceDescriptionTable.isDisposed()) {
 				fileSpaceDescriptionTableViewer.refresh();
 				for (int i = 0; i < fileSpaceDescriptionTable.getColumnCount(); i++) {
@@ -515,18 +494,7 @@ public class DatabaseStatusEditor extends
 				}
 			}
 			
-			List<DbSpaceInfoListNew.VolumeInfo> list3 = ((DbSpaceInfoListNew)(database.getDatabaseInfo().getDbSpaceInfoList())).getVolumeinfo();
-			for(DbSpaceInfoListNew.VolumeInfo d : list3){
-				Map<String, String> line = new HashMap<String, String>();
-				line.put("0", String.valueOf(d.getVolid()));
-				line.put("1", d.getType());
-				line.put("2", d.getPurpose() + " DATA");
-				line.put("3", String.valueOf(d.getUsed_size()));
-				line.put("4", String.valueOf(d.getFree_size()));
-				line.put("5", String.valueOf(d.getTotal_size()));
-				line.put("6", d.getVolume_name());
-				volumeDescriptionData.add(line);
-			}
+			((DbSpaceInfoListNew)database.getDatabaseInfo().getDbSpaceInfoList()).createVolumeDescriptionData(volumeDescriptionData);
 			if (volumeDescriptionTable != null && !volumeDescriptionTable.isDisposed()) {
 				volumeDescriptionTableViewer.refresh();
 				for (int i = 0; i < volumeDescriptionTable.getColumnCount(); i++) {

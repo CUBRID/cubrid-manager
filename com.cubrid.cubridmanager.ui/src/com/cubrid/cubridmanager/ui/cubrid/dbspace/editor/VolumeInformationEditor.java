@@ -108,7 +108,6 @@ public class VolumeInformationEditor extends
 	public static final String ID = "com.cubrid.cubridmanager.ui.cubrid.dbspace.editor.VolumeInformationEditor";
 	private CubridDatabase database = null;
 	private DbSpaceInfoList.DbSpaceInfo dbSpaceInfo = null;
-	private DbSpaceInfoListNew.VolumeInfo volumeInfo = null;
 	public static boolean isChanged = false;
 	private boolean isRunning = false;
 
@@ -151,21 +150,16 @@ public class VolumeInformationEditor extends
 			majorVersion = Integer.parseInt(versionNo.substring(0, versionNo.indexOf('.')));
 			minorVersion = Integer.parseInt(versionNo.substring(versionNo.indexOf('.')+1));
 			
-			if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-				if (CubridNodeType.GENERIC_VOLUME.equals(type)
-						|| CubridNodeType.DATA_VOLUME.equals(type)
-						|| CubridNodeType.INDEX_VOLUME.equals(type)
-						|| CubridNodeType.TEMP_VOLUME.equals(type)
-						|| CubridNodeType.ARCHIVE_LOG.equals(type)
-						|| CubridNodeType.ACTIVE_LOG.equals(type)) {
-					dbSpaceInfo = (DbSpaceInfoList.DbSpaceInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfoList.DbSpaceInfo.class);
-				}
-			} else {
-				if (CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
+			if (CubridNodeType.GENERIC_VOLUME.equals(type)
+					|| CubridNodeType.DATA_VOLUME.equals(type)
+					|| CubridNodeType.INDEX_VOLUME.equals(type)
+					|| CubridNodeType.TEMP_VOLUME.equals(type)
+					|| CubridNodeType.ARCHIVE_LOG.equals(type)
+					|| CubridNodeType.ACTIVE_LOG.equals(type)
+					|| CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
 					CubridNodeType.PT_VOLUME_FOLDER.equals(type) ||
 					CubridNodeType.TT_VOLUME_FOLDER.equals(type)) {
-					volumeInfo = (DbSpaceInfoListNew.VolumeInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfoListNew.VolumeInfo.class);
-				}
+				dbSpaceInfo = (DbSpaceInfoList.DbSpaceInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfoList.DbSpaceInfo.class);
 			}
 		}
 	}
@@ -260,13 +254,8 @@ public class VolumeInformationEditor extends
 	 */
 	private DefaultPieDataset createDataset() {
 		int freeSize, totalSize;
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			freeSize = dbSpaceInfo.getFreepage();
-			totalSize = dbSpaceInfo.getTotalpage();
-		} else {
-			freeSize = volumeInfo.getFree_size();
-			totalSize = volumeInfo.getTotal_size();
-		}
+		freeSize = dbSpaceInfo.getFreepage();
+		totalSize = dbSpaceInfo.getTotalpage();
 
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		dataset.setValue(
@@ -296,21 +285,13 @@ public class VolumeInformationEditor extends
 		int totalSize, freeSize;
 		String volumeLocation, volumeDate, volumeType, volumePurpose, spacename;
 		
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			totalSize = dbSpaceInfo.getTotalpage();
-			freeSize = dbSpaceInfo.getFreepage();
-			volumeType = dbSpaceInfo.getType();
-			volumeDate = dbSpaceInfo.getDate();
-			spacename = dbSpaceInfo.getSpacename();
-			volumeLocation = dbSpaceInfo.getLocation();
-		} else {
-			totalSize = volumeInfo.getTotal_size();
-			freeSize = volumeInfo.getFree_size();
-			volumeType = volumeInfo.getType();
-			volumePurpose = volumeInfo.getPurpose();
-			spacename = volumeInfo.getShortVolumeName();
-			volumeLocation = volumeInfo.getVolume_name();
-		}
+		totalSize = dbSpaceInfo.getTotalpage();
+		freeSize = dbSpaceInfo.getFreepage();
+		volumeType = dbSpaceInfo.getType();
+		volumeDate = dbSpaceInfo.getDate();
+		spacename = dbSpaceInfo.getSpacename();
+		volumeLocation = dbSpaceInfo.getLocation();
+		volumePurpose = dbSpaceInfo.getPurpose();
 	
 		spaceNameLabel.setText(spacename);
 
@@ -336,12 +317,12 @@ public class VolumeInformationEditor extends
 			map2.put("0", Messages.lblSpaceType);
 			map2.put(
 					"1",
-					volumeInfo.getType()
+					dbSpaceInfo.getType()
 							+ "                                                                               ");
 			map3.put("0", "Purpose");
 			map3.put(
 					"1",
-					volumeInfo.getPurpose()
+					dbSpaceInfo.getPurpose()
 							+ "                                                                               ");
 		}	
 		spInfoListData.add(map2);
@@ -487,25 +468,22 @@ public class VolumeInformationEditor extends
 			}
 
 		};
-		String spacename;
 		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
 			CommonQueryTask<DbSpaceInfoListOld> task = new CommonQueryTask<DbSpaceInfoListOld>(
 					database.getServer().getServerInfo(),
 					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListOld());
 			task.setDbName(database.getName());
 			taskJobExecutor.addTask(task);
-			spacename = dbSpaceInfo.getSpacename();
 		} else {
 			CommonQueryTask<DbSpaceInfoListNew> task = new CommonQueryTask<DbSpaceInfoListNew>(
 					database.getServer().getServerInfo(),
 					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListNew());
 			task.setDbName(database.getName());
 			taskJobExecutor.addTask(task);
-			spacename = volumeInfo.getShortVolumeName();
 		}
 		
 		String jobName = Messages.viewVolumeInfoJobName + " - "
-				+ spacename + "@" + database.getName() + "@"
+				+ dbSpaceInfo.getSpacename() + "@" + database.getName() + "@"
 				+ database.getServer().getName();
 		taskJobExecutor.schedule(jobName, null, false, Job.LONG);
 		

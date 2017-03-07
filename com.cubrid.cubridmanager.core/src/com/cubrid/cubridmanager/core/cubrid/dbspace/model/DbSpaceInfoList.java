@@ -70,17 +70,14 @@ public class DbSpaceInfoList implements
 		 * GENERIC,DATA,TEMP,INDEX,Active_log,Archive_log
 		 */
 		private String type = null;
-
 		private String location = null;
-
 		private int totalpage = 0;
-
 		private int freepage = 0;
-
+		private int usedpage = 0;
+		private int volid;
 		private String date = null;
-
+		private String purpose;
 		private int volumeCount = 0;
-
 		private String totalPageStr = null;
 		private String totalSizeStr = null;
 
@@ -139,6 +136,14 @@ public class DbSpaceInfoList implements
 		public void setFreepage(int freepage) {
 			this.freepage = freepage;
 		}
+		
+		public int getUsedpage() {
+			return usedpage;
+		}
+		
+		public void setUsedpage(int usedpage){
+			this.usedpage = usedpage;
+		}
 
 		public String getDate() {
 			return date;
@@ -147,9 +152,34 @@ public class DbSpaceInfoList implements
 		public void setDate(String date) {
 			this.date = date;
 		}
+		
+		public int getVolid() {
+			return volid;
+		}
+		
+		public void setVolid(int volid) {
+			this.volid = volid;
+		}
 
 		public int getVolumeCount() {
 			return volumeCount;
+		}
+		
+		public String getPurpose() {
+			return purpose;
+		}
+		
+		public void setPurpose(String purpose) {
+			this.purpose = purpose;
+		}
+		
+		public String getShortVolumeName(){
+			int lastIndex;
+			if ((lastIndex = spacename.lastIndexOf('/')) >= 0){
+				return spacename.substring(lastIndex+1);
+			} else {
+				return spacename;
+			}
 		}
 
 		/**
@@ -386,8 +416,29 @@ public class DbSpaceInfoList implements
 		return 0;
 	}
 	
-	public ArrayList<FreeTotalSizeSpacename> getVolumesInfoByType(String type){
-		return null;
+	public ArrayList<FreeTotalSizeSpacename> getVolumesInfoByType(String fullType){
+		ArrayList<FreeTotalSizeSpacename> info = new ArrayList<FreeTotalSizeSpacename>();
+		String type = null;
+		String purpose = null;
+		
+		int index = fullType.indexOf(" ");
+		if (index >= 0) {
+			type = fullType.substring(0, fullType.indexOf(" "));
+			purpose = fullType.substring(fullType.indexOf(" ")+1, fullType.lastIndexOf(" "));
+		}
+		
+		for (DbSpaceInfo bean : spaceinfo) {
+			if (index < 0){
+				if (bean.getType().equals(fullType)){
+					info.add(new FreeTotalSizeSpacename(bean.getShortVolumeName(), bean.getFreepage(), bean.getTotalpage()));
+				}
+			} else {
+				if (bean.getType().equals(type) && bean.getPurpose().equals(purpose)) {
+					info.add(new FreeTotalSizeSpacename(bean.getShortVolumeName(), bean.getFreepage(), bean.getTotalpage()));
+				}
+			}
+		}
+		return info;
 	}
 
 }

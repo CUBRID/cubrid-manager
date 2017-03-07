@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList.FreeTotalSizeSpacename;
 
 public class DbSpaceInfoListOld extends DbSpaceInfoList{
 	private static final Logger LOGGER = LogUtil.getLogger(DbSpaceInfoListNew.class);
@@ -39,15 +38,5 @@ public class DbSpaceInfoListOld extends DbSpaceInfoList{
 		
 		return freeSize;
 	}
-	
-	public ArrayList<FreeTotalSizeSpacename> getVolumesInfoByType(String type){
-		ArrayList<FreeTotalSizeSpacename> info = new ArrayList<FreeTotalSizeSpacename>();
-		
-		for (DbSpaceInfoList.DbSpaceInfo bean : spaceinfo) {
-			if (bean.getType().equals(type)) {
-				info.add(new FreeTotalSizeSpacename(bean.getSpacename(), bean.getFreepage(), bean.getTotalpage()));
-			}
-		}
-		return info;
-	}
+
 }

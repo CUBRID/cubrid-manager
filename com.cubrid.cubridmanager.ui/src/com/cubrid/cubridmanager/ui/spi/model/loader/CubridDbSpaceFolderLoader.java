@@ -283,10 +283,10 @@ public class CubridDbSpaceFolderLoader extends
 				TT_volume_folder.removeAllChild();
 				
 				dbSpaceInfo = task.getResultModel();
-				List<DbSpaceInfoListNew.VolumeInfo> volumeInfoList = dbSpaceInfo == null ? null
-						: dbSpaceInfo.getVolumeinfo();
+				List<DbSpaceInfoList.DbSpaceInfo> volumeInfoList = dbSpaceInfo == null ? null
+						: dbSpaceInfo.getSpaceinfo();
 				for (int i = 0; volumeInfoList != null && i < volumeInfoList.size(); i++) {
-					DbSpaceInfoListNew.VolumeInfo volumeInfo = volumeInfoList.get(i);
+					DbSpaceInfoList.DbSpaceInfo volumeInfo = volumeInfoList.get(i);
 					ICubridNode volumeNode = new DefaultSchemaNode("",
 							volumeInfo.getShortVolumeName(), "");
 					volumeNode.setContainer(false);
