@@ -27,6 +27,8 @@
  */
 package com.cubrid.cubridmanager.core.common.model;
 
+import java.util.StringTokenizer;
+
 /**
  * 
  * This entity class is responsible to cache CUBRID Server environment
@@ -40,12 +42,11 @@ public class EnvInfo {
 	private String rootDir;
 	private String databaseDir;
 	private String cmServerDir;
-	private String serverVersion;
+	private ServerVersion serverVersion = null;
 	private String brokerVersion;
 	private String[] hostMonTabStatus;
 	// os(NT,LINUX,UNIX)
 	private String osInfo;
-
 	/**
 	 * 
 	 * Get CUBRID database root dir
@@ -92,7 +93,7 @@ public class EnvInfo {
 	 * @return String
 	 */
 	public String getServerVersion() {
-		return serverVersion;
+		return serverVersion.getServerVersion();
 	}
 
 	/**
@@ -100,8 +101,14 @@ public class EnvInfo {
 	 * 
 	 * @param serverVersion String The server version
 	 */
-	public void setServerVersion(String serverVersion) {
-		this.serverVersion = serverVersion;
+	public void setServerVersion(String version) {
+		if (serverVersion == null){
+			serverVersion = new ServerVersion();
+		}
+		serverVersion.setVersion(version);
+	}
+	public ServerVersion getServerDetails(){
+		return serverVersion;
 	}
 
 	/**

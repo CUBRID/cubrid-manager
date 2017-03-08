@@ -38,7 +38,10 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.cubridmanager.core.common.model.EnvInfo;
 import com.cubrid.cubridmanager.core.common.model.IModel;
+import com.cubrid.cubridmanager.core.common.model.ServerVersion;
+import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 
 /**
  *
@@ -198,6 +201,7 @@ public class DbSpaceInfoList implements
 	protected int freespace = 0;
 	
 	protected List<DbSpaceInfoList.DbSpaceInfo> spaceinfo = null;
+	private static final ServerVersion changedFormatVersion = new ServerVersion(10, 1);
 	
 	/***
 	 * Get the list that encapsulates the instances of DbSpaceInfo
@@ -439,6 +443,10 @@ public class DbSpaceInfoList implements
 			}
 		}
 		return info;
+	}
+
+	public static boolean useOld(EnvInfo envInfo) {
+		return envInfo.getServerDetails().isSmallerThan(changedFormatVersion);
 	}
 
 }

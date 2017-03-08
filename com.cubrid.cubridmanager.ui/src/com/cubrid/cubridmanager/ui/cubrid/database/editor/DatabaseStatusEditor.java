@@ -91,6 +91,7 @@ import com.cubrid.common.ui.spi.part.CubridEditorPart;
 import com.cubrid.common.ui.spi.progress.TaskJobExecutor;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
+import com.cubrid.cubridmanager.core.common.model.ServerVersion;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
@@ -140,8 +141,6 @@ public class DatabaseStatusEditor extends
 	
 	private final Color color;
 	
-	private int majorVersion, minorVersion;
-
 	public DatabaseStatusEditor() {
 		color = ResourceManager.getColor(230, 230, 230);
 	}
@@ -165,14 +164,6 @@ public class DatabaseStatusEditor extends
 				database = ((DefaultSchemaNode) node).getDatabase();
 			}
 		}
-		
-		String versionFull = database.getServer().getServerInfo().getEnvInfo().getServerVersion();
-		StringTokenizer st = new StringTokenizer(versionFull);
-		st.nextToken();
-		String versionNo = st.nextToken();
-		
-		majorVersion = Integer.parseInt(versionNo.substring(0, versionNo.indexOf('.')));
-		minorVersion = Integer.parseInt(versionNo.substring(versionNo.indexOf('.')+1));
 	}
 
 	/**
@@ -226,7 +217,7 @@ public class DatabaseStatusEditor extends
 		dbInfoTable.setLinesVisible(true);
 		dbInfoTable.setHeaderVisible(false);
 		
-		if (majorVersion > 10 || (majorVersion == 10 && minorVersion >= 1)){
+		if (!DbSpaceInfoList.useOld(database.getDatabaseInfo().getServerInfo().getEnvInfo())){
 			dbSpaceDescriptionTableViewer = createCommonTableViewer(descComp, null, 
 							new String[]{"type","purpose","volume_count","used_size","free_size","total_size"}, 
 							CommonUITool.createGridData(GridData.FILL_BOTH, 1,
@@ -470,10 +461,10 @@ public class DatabaseStatusEditor extends
 						+ " pages)");
 		dbInfoListData.add(map6);
 		
-		if (majorVersion > 10 || (majorVersion == 10 && minorVersion > 0)){
+		if (!DbSpaceInfoList.useOld(database.getDatabaseInfo().getServerInfo().getEnvInfo())){
 		
-			((DbSpaceInfoListNew)database.getDatabaseInfo().getDbSpaceInfoList()).createDbSpaceDescriptionData(dbSpaceDescriptionData);
 			if (dbSpaceDescriptionTable != null && !dbSpaceDescriptionTable.isDisposed()) {
+				((DbSpaceInfoListNew)database.getDatabaseInfo().getDbSpaceInfoList()).createDbSpaceDescriptionData(dbSpaceDescriptionData);
 				dbSpaceDescriptionTableViewer.refresh();
 				for (int i = 0; i < dbSpaceDescriptionTable.getColumnCount(); i++) {
 					dbSpaceDescriptionTable.getColumn(i).pack();
@@ -568,12 +559,7 @@ public class DatabaseStatusEditor extends
 						return new Status(IStatus.ERROR,
 								CubridManagerUIPlugin.PLUGIN_ID, msg);
 					} else {
-						final DbSpaceInfoList dbSpaceInfoList;
-						if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-							dbSpaceInfoList = ((CommonQueryTask<DbSpaceInfoListOld>) t).getResultModel();
-						} else {
-							dbSpaceInfoList = ((CommonQueryTask<DbSpaceInfoListNew>) t).getResultModel();
-						}
+						final DbSpaceInfoList dbSpaceInfoList = ((CommonQueryTask<? extends DbSpaceInfoList>)t).getResultModel();
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
 								database.getDatabaseInfo().setDbSpaceInfoList(
@@ -598,19 +584,15 @@ public class DatabaseStatusEditor extends
 			}
 
 		};
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			CommonQueryTask<DbSpaceInfoListOld> task = new CommonQueryTask<DbSpaceInfoListOld>(
-					database.getServer().getServerInfo(),
-					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListOld());
-			task.setDbName(database.getName());
-			taskJobExecutor.addTask(task);
-		} else {
-			CommonQueryTask<DbSpaceInfoListNew> task = new CommonQueryTask<DbSpaceInfoListNew>(
-					database.getServer().getServerInfo(),
-					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListNew());
-			task.setDbName(database.getName());
-			taskJobExecutor.addTask(task);
-		}
+		CommonQueryTask<? extends DbSpaceInfoList> task = DbSpaceInfoList.useOld(database.getServer().getServerInfo().getEnvInfo()) ?
+															new CommonQueryTask<DbSpaceInfoListOld>(database.getServer().getServerInfo(),
+																									CommonSendMsg.getCommonDatabaseSendMsg(),
+																									new DbSpaceInfoListOld()) :
+															new CommonQueryTask<DbSpaceInfoListNew>(database.getServer().getServerInfo(),
+																									CommonSendMsg.getCommonDatabaseSendMsg(),
+																									new DbSpaceInfoListNew());
+		task.setDbName(database.getName());
+		taskJobExecutor.addTask(task);
 
 		String serverName = database.getServer().getName();
 		String dbName = database.getName();

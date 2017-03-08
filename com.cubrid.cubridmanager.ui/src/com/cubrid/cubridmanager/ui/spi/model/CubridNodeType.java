@@ -53,6 +53,9 @@ public class CubridNodeType extends
 	public static final String INDEX_VOLUME = "INDEX_VOLUME";
 	public static final String TEMP_VOLUME_FOLDER = "TEMP_VOLUME_FOLDER";
 	public static final String TEMP_VOLUME = "TEMP_VOLUME";
+	public static final String PP_VOLUME = "PP_VOLUME";
+	public static final String PT_VOLUME = "PT_VOLUME";
+	public static final String TT_VOLUME = "TT_VOLUME";
 	public static final String PP_VOLUME_FOLDER = "PP_VOLUME_FOLDER";
 	public static final String PT_VOLUME_FOLDER = "PT_VOLUME_FOLDER";
 	public static final String TT_VOLUME_FOLDER = "TT_VOLUME_FOLDER";

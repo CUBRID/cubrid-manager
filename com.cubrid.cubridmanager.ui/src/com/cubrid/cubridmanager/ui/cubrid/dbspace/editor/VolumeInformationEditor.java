@@ -118,8 +118,6 @@ public class VolumeInformationEditor extends
 	private Composite parentComp;
 	private Composite chartComp;
 	
-	private int majorVersion, minorVersion;
-
 	private ScrolledComposite scrolledComp = null;
 	private final org.eclipse.swt.graphics.Color color;
 
@@ -142,13 +140,6 @@ public class VolumeInformationEditor extends
 			String type = node.getType();
 			
 			database = ((DefaultSchemaNode) node).getDatabase();
-			String fullVersion = database.getServer().getServerInfo().getEnvInfo().getServerVersion();
-			StringTokenizer st = new StringTokenizer(fullVersion);
-			st.nextToken();
-			String versionNo = st.nextToken();
-			
-			majorVersion = Integer.parseInt(versionNo.substring(0, versionNo.indexOf('.')));
-			minorVersion = Integer.parseInt(versionNo.substring(versionNo.indexOf('.')+1));
 			
 			if (CubridNodeType.GENERIC_VOLUME.equals(type)
 					|| CubridNodeType.DATA_VOLUME.equals(type)
@@ -156,9 +147,9 @@ public class VolumeInformationEditor extends
 					|| CubridNodeType.TEMP_VOLUME.equals(type)
 					|| CubridNodeType.ARCHIVE_LOG.equals(type)
 					|| CubridNodeType.ACTIVE_LOG.equals(type)
-					|| CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
-					CubridNodeType.PT_VOLUME_FOLDER.equals(type) ||
-					CubridNodeType.TT_VOLUME_FOLDER.equals(type)) {
+					|| CubridNodeType.PP_VOLUME.equals(type) ||
+					CubridNodeType.PT_VOLUME.equals(type) ||
+					CubridNodeType.TT_VOLUME.equals(type)) {
 				dbSpaceInfo = (DbSpaceInfoList.DbSpaceInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfoList.DbSpaceInfo.class);
 			}
 		}
@@ -305,9 +296,9 @@ public class VolumeInformationEditor extends
 
 		Map<String, String> map2 = new HashMap<String, String>();
 		Map<String, String> map3 = new HashMap<String, String>();
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
+		if (DbSpaceInfoList.useOld(database.getDatabaseInfo().getServerInfo().getEnvInfo())) {
 			map2.put("0", Messages.lblSpaceDate);
-			map2.put("1", dbSpaceInfo.getDate());
+			map2.put("1", volumeDate);
 			map3.put("0", Messages.lblSpaceType);
 			map3.put(
 					"1",
@@ -322,7 +313,7 @@ public class VolumeInformationEditor extends
 			map3.put("0", "Purpose");
 			map3.put(
 					"1",
-					dbSpaceInfo.getPurpose()
+					volumePurpose
 							+ "                                                                               ");
 		}	
 		spInfoListData.add(map2);
@@ -436,12 +427,7 @@ public class VolumeInformationEditor extends
 						return new Status(IStatus.ERROR,
 								CubridManagerUIPlugin.PLUGIN_ID, msg);
 					} else {
-						final DbSpaceInfoList model;
-						if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-							model = ((CommonQueryTask<DbSpaceInfoListOld>) t).getResultModel();
-						} else {
-							model = ((CommonQueryTask<DbSpaceInfoListNew>) t).getResultModel();
-						}
+						final DbSpaceInfoList model = ((CommonQueryTask<? extends DbSpaceInfoList>)t).getResultModel();
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
 								database.getDatabaseInfo().setDbSpaceInfoList(
@@ -468,19 +454,15 @@ public class VolumeInformationEditor extends
 			}
 
 		};
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			CommonQueryTask<DbSpaceInfoListOld> task = new CommonQueryTask<DbSpaceInfoListOld>(
-					database.getServer().getServerInfo(),
-					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListOld());
-			task.setDbName(database.getName());
-			taskJobExecutor.addTask(task);
-		} else {
-			CommonQueryTask<DbSpaceInfoListNew> task = new CommonQueryTask<DbSpaceInfoListNew>(
-					database.getServer().getServerInfo(),
-					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListNew());
-			task.setDbName(database.getName());
-			taskJobExecutor.addTask(task);
-		}
+		CommonQueryTask<? extends DbSpaceInfoList> task = DbSpaceInfoList.useOld(database.getServer().getServerInfo().getEnvInfo()) ?
+				new CommonQueryTask<DbSpaceInfoListOld>(database.getServer().getServerInfo(),
+														CommonSendMsg.getCommonDatabaseSendMsg(),
+														new DbSpaceInfoListOld()) :
+				new CommonQueryTask<DbSpaceInfoListNew>(database.getServer().getServerInfo(),
+														CommonSendMsg.getCommonDatabaseSendMsg(),
+														new DbSpaceInfoListNew());
+		task.setDbName(database.getName());
+		taskJobExecutor.addTask(task);
 		
 		String jobName = Messages.viewVolumeInfoJobName + " - "
 				+ dbSpaceInfo.getSpacename() + "@" + database.getName() + "@"

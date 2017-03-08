@@ -622,12 +622,7 @@ public class VolumeFolderInfoEditor extends
 						return new Status(IStatus.ERROR,
 								CubridManagerUIPlugin.PLUGIN_ID, msg);
 					} else {
-						final DbSpaceInfoList model;
-						if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-							model = ((CommonQueryTask<DbSpaceInfoListOld>) t).getResultModel();
-						} else {
-							model = ((CommonQueryTask<DbSpaceInfoListNew>) t).getResultModel();
-						}
+						final DbSpaceInfoList model = ((CommonQueryTask<? extends DbSpaceInfoList>)t).getResultModel();
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
 								database.getDatabaseInfo().setDbSpaceInfoList(
@@ -652,19 +647,15 @@ public class VolumeFolderInfoEditor extends
 			}
 
 		};
-		if (majorVersion < 10 || (majorVersion == 10 && minorVersion == 0)) {
-			CommonQueryTask<DbSpaceInfoListOld> task = new CommonQueryTask<DbSpaceInfoListOld>(
-					database.getServer().getServerInfo(),
-					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListOld());
-			task.setDbName(database.getName());
-			taskJobExecutor.addTask(task);
-		} else {
-			CommonQueryTask<DbSpaceInfoListNew> task = new CommonQueryTask<DbSpaceInfoListNew>(
-					database.getServer().getServerInfo(),
-					CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListNew());
-			task.setDbName(database.getName());
-			taskJobExecutor.addTask(task);
-		}
+		CommonQueryTask<? extends DbSpaceInfoList> task = DbSpaceInfoList.useOld(database.getServer().getServerInfo().getEnvInfo()) ?
+				new CommonQueryTask<DbSpaceInfoListOld>(database.getServer().getServerInfo(),
+														CommonSendMsg.getCommonDatabaseSendMsg(),
+														new DbSpaceInfoListOld()) :
+				new CommonQueryTask<DbSpaceInfoListNew>(database.getServer().getServerInfo(),
+														CommonSendMsg.getCommonDatabaseSendMsg(),
+														new DbSpaceInfoListNew());
+		task.setDbName(database.getName());
+		taskJobExecutor.addTask(task);
 		
 		String serverName = database.getServer().getName();
 		String dbName = database.getName();
