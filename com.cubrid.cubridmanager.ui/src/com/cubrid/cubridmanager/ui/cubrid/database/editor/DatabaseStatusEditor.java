@@ -141,7 +141,6 @@ public class DatabaseStatusEditor extends
 	private Table fileSpaceDescriptionTable;
 	
 	private final Color color;
-	
 	public DatabaseStatusEditor() {
 		color = ResourceManager.getColor(230, 230, 230);
 	}
