@@ -130,7 +130,20 @@ public class VolumeFolderInfoEditor extends
 	private String volumeFolderName = "";
 	private String volumeType = null;
 	
-	private int majorVersion, minorVersion;
+	private static HashMap<String, String> folderTypeMap;
+
+	static {
+		folderTypeMap = new HashMap<String, String>();
+		folderTypeMap.put(CubridNodeType.GENERIC_VOLUME_FOLDER, VolumeType.GENERIC.toString());
+		folderTypeMap.put(CubridNodeType.DATA_VOLUME_FOLDER, VolumeType.DATA.toString());
+		folderTypeMap.put(CubridNodeType.INDEX_VOLUME_FOLDER, VolumeType.INDEX.toString());
+		folderTypeMap.put(CubridNodeType.TEMP_VOLUME_FOLDER, VolumeType.TEMP.toString());
+		folderTypeMap.put(CubridNodeType.ARCHIVE_LOG_FOLDER, VolumeType.ARCHIVE_LOG.toString());
+		folderTypeMap.put(CubridNodeType.ACTIVE_LOG_FOLDER, VolumeType.ACTIVE_LOG.toString());
+		folderTypeMap.put(CubridNodeType.PP_VOLUME_FOLDER, VolumeType.PP.getText());
+		folderTypeMap.put(CubridNodeType.PT_VOLUME_FOLDER, VolumeType.PT.getText());
+		folderTypeMap.put(CubridNodeType.TT_VOLUME_FOLDER, VolumeType.TT.getText());
+	}
 
 	public VolumeFolderInfoEditor() {
 		dbSpaceList = new ArrayList<DbSpaceInfoList.DbSpaceInfo>();
@@ -150,13 +163,7 @@ public class VolumeFolderInfoEditor extends
 		if (input instanceof DefaultSchemaNode) {
 			ICubridNode node = (DefaultSchemaNode) input;
 			database = ((DefaultSchemaNode) node).getDatabase();
-			String fullVersion = database.getServer().getServerInfo().getEnvInfo().getServerVersion();
-			StringTokenizer st = new StringTokenizer(fullVersion);
-			st.nextToken();
-			String versionNo = st.nextToken();
 			
-			majorVersion = Integer.parseInt(versionNo.substring(0, versionNo.indexOf('.')));
-			minorVersion = Integer.parseInt(versionNo.substring(versionNo.indexOf('.')+1));
 			String type = node.getType();
 			if ((CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)
 					|| CubridNodeType.DATA_VOLUME_FOLDER.equals(type)
@@ -172,42 +179,7 @@ public class VolumeFolderInfoEditor extends
 				}
 			}
 			volumeFolderName = node.getName();
-			if (CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)) {
-				volumeType = VolumeType.GENERIC.toString();
-				return;
-			}
-			if (CubridNodeType.DATA_VOLUME_FOLDER.equals(type)) {
-				volumeType = VolumeType.DATA.toString();
-				return;
-			}
-			if (CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)) {
-				volumeType = VolumeType.INDEX.toString();
-				return;
-			}
-			if (CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)) {
-				volumeType = VolumeType.TEMP.toString();
-				return;
-			}
-			if (CubridNodeType.ACTIVE_LOG_FOLDER.equals(type)) {
-				volumeType = VolumeType.ACTIVE_LOG.toString();
-				return;
-			}
-			if (CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type)) {
-				volumeType = VolumeType.ARCHIVE_LOG.toString();
-				return;
-			}
-			if (CubridNodeType.PP_VOLUME_FOLDER.equals(type)){
-				volumeType = VolumeType.PP.getText();
-				return;
-			}
-			if (CubridNodeType.PT_VOLUME_FOLDER.equals(type)){
-				volumeType = VolumeType.PT.getText();
-				return;
-			}
-			if (CubridNodeType.TT_VOLUME_FOLDER.equals(type)){
-				volumeType = VolumeType.TT.getText();
-				return;
-			}
+			volumeType = folderTypeMap.get(type);
 		}
 	}
 

@@ -119,17 +119,17 @@ public class CubridDbSpaceFolderLoader extends
 																								 CubridNodeType.GENERIC_VOLUME,
 																								 VolumeType.GENERIC.getText()));
 		foldersInformationOldFormat.put(DATA_VOLUME_FOLDER_ID, new FolderInformationContainer(DATA_VOLUME_FOLDER_NAME, 
-				CubridNodeType.DATA_VOLUME_FOLDER, 
-				CubridNodeType.DATA_VOLUME,
-				 VolumeType.DATA.getText()));
+																							CubridNodeType.DATA_VOLUME_FOLDER, 
+																							CubridNodeType.DATA_VOLUME,
+																							VolumeType.DATA.getText()));
 		foldersInformationOldFormat.put(INDEX_VOLUME_FOLDER_ID, new FolderInformationContainer(INDEX_VOLUME_FOLDER_NAME, 
-										 CubridNodeType.INDEX_VOLUME_FOLDER, 
-										 CubridNodeType.INDEX_VOLUME,
-										 VolumeType.INDEX.getText()));
+																							 CubridNodeType.INDEX_VOLUME_FOLDER, 
+																							 CubridNodeType.INDEX_VOLUME,
+																							 VolumeType.INDEX.getText()));
 		foldersInformationOldFormat.put(TEMP_VOLUME_FOLDER_ID, new FolderInformationContainer(TEMP_VOLUME_FOLDER_NAME, 
-				 CubridNodeType.TEMP_VOLUME_FOLDER, 
-				 CubridNodeType.TEMP_VOLUME,
-				 VolumeType.TEMP.getText()));
+																							 CubridNodeType.TEMP_VOLUME_FOLDER, 
+																							 CubridNodeType.TEMP_VOLUME,
+																							 VolumeType.TEMP.getText()));
 		
 		foldersInformationNewFormat.put(PERMANENT_PERMANENT_DATA_FOLDER_ID, new FolderInformationContainer(PERMANENT_PERMANENT_DATA_FOLDER_NAME, 
 																											CubridNodeType.PP_VOLUME_FOLDER, 

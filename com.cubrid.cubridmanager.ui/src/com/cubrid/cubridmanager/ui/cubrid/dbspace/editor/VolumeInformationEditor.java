@@ -317,7 +317,9 @@ public class VolumeInformationEditor extends
 							+ "                                                                               ");
 		}	
 		spInfoListData.add(map2);
-		spInfoListData.add(map3);
+		if (volumePurpose != null){
+			spInfoListData.add(map3);
+		}
 
 		Map<String, String> map4 = new HashMap<String, String>();
 		map4.put("0", Messages.lblFreeSize);
