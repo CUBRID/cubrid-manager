@@ -682,7 +682,7 @@ public class DatabaseInfo implements IDatabaseSpec {
 	public DbSpaceInfoList getDbSpaceInfoList() {
 		return dbSpaceInfoList;
 	}
-	
+
 	/**
 	 * 
 	 * Set database space information list
@@ -692,7 +692,7 @@ public class DatabaseInfo implements IDatabaseSpec {
 	public void setDbSpaceInfoList(DbSpaceInfoList dbSpaceInfoList) {
 		this.dbSpaceInfoList = dbSpaceInfoList;
 	}
-	
+
 	/**
 	 * 
 	 * Add database space information
