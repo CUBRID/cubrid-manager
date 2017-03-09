@@ -63,6 +63,7 @@ import com.cubrid.cubridmanager.core.common.task.CommonTaskName;
 import com.cubrid.cubridmanager.core.common.task.CommonUpdateTask;
 import com.cubrid.cubridmanager.core.common.task.GetCubridConfParameterTask;
 import com.cubrid.cubridmanager.core.common.task.SetCubridConfParameterTask;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.replication.task.GetReplAgentStatusTask;
 import com.cubrid.cubridmanager.core.replication.task.GetReplServerStatusTask;
@@ -204,7 +205,7 @@ public class DeleteDatabaseDialog extends
 
 		dbNameText.setText(database.getName());
 		List<Map<String, Object>> volumeTableListData = new ArrayList<Map<String, Object>>();
-		for (DbSpaceInfoList.DbSpaceInfo bean : dbSpaceInfo.getSpaceinfo()) {
+		for (DbSpaceInfo bean : dbSpaceInfo.getSpaceinfo()) {
 			if (!bean.getType().equals("GENERIC")
 					&& !bean.getType().equals("DATA")
 					&& !bean.getType().equals("TEMP")

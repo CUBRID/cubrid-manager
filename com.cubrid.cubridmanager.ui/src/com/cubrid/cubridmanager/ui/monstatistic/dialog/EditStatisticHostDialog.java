@@ -58,6 +58,7 @@ import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.task.GetDatabaseListTask;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticChartHost;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil;
@@ -544,7 +545,7 @@ public class EditStatisticHostDialog extends
 				dbSpaceInfo = dbSpaceInfoTask.getResultModel();
 				if (dbSpaceInfo.getSpaceinfo() != null
 						&& dbSpaceInfo.getSpaceinfo().size() > 0) {
-					List<DbSpaceInfoList.DbSpaceInfo> spaceInfoList = dbSpaceInfo.getSpaceinfo();
+					List<DbSpaceInfo> spaceInfoList = dbSpaceInfo.getSpaceinfo();
 					itemsVolName = new String[spaceInfoList.size()];
 					for (int i = 0; i < spaceInfoList.size(); i++) {
 						itemsVolName[i] = spaceInfoList.get(i).getSpacename();

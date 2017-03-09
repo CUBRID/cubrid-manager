@@ -8,7 +8,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList.FreeTotalSizeSpacename;
 
 public class DbSpaceInfoListNew extends DbSpaceInfoList{

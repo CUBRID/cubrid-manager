@@ -97,6 +97,7 @@ import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.common.task.GetEnvInfoTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.task.GetDatabaseListTask;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.core.monitoring.model.HostStatData;
@@ -833,7 +834,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
 			DbSpaceInfoList dbSpaceInfoList = task.getResultModel();
 			if (dbSpaceInfoList != null && task.getErrorMsg()== null) {
 				freespaceOnStorage = ((long) dbSpaceInfoList.getFreespace()) * 1024l * 1024l;
-				for (DbSpaceInfoList.DbSpaceInfo spaceInfo : dbSpaceInfoList.getSpaceinfo()) {
+				for (DbSpaceInfo spaceInfo : dbSpaceInfoList.getSpaceinfo()) {
 					String type = spaceInfo.getType();
 					if (type.equals(VolumeType.DATA.getText())) {
 						totalPageData += spaceInfo.getTotalpage();

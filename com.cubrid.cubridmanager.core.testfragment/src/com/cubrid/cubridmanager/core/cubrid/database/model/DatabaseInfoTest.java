@@ -45,6 +45,7 @@ import com.cubrid.cubridmanager.core.Tool;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.BackupPlanInfo;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.QueryPlanInfo;
@@ -355,9 +356,9 @@ public class DatabaseInfoTest extends
 	 * .
 	 */
 	public void testAddSpaceInfo() {
-		bean.addSpaceInfo(new DbSpaceInfoList.DbSpaceInfo());
-		bean.addSpaceInfo(new DbSpaceInfoList.DbSpaceInfo());
-		bean.removeSpaceInfo(new DbSpaceInfoList.DbSpaceInfo());
+		bean.addSpaceInfo(new DbSpaceInfo());
+		bean.addSpaceInfo(new DbSpaceInfo());
+		bean.removeSpaceInfo(new DbSpaceInfo());
 	}
 
 	/**
@@ -366,7 +367,7 @@ public class DatabaseInfoTest extends
 	 * .
 	 */
 	public void testRemoveSpaceInfo() {
-		bean.removeSpaceInfo(new DbSpaceInfoList.DbSpaceInfo());
+		bean.removeSpaceInfo(new DbSpaceInfo());
 	}
 
 	/**

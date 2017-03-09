@@ -90,6 +90,7 @@ import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.task.CheckDirTask;
 import com.cubrid.cubridmanager.core.cubrid.database.task.CopyDbTask;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.utils.ModelUtil.YesNoType;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
@@ -121,7 +122,7 @@ public class CopyDatabaseDialog extends
 	private Button moveButton;
 	private String[] newDirectories = null;
 	static boolean isIndividChanged = false;
-	private List<DbSpaceInfoList.DbSpaceInfo> volumeList = null;
+	private List<DbSpaceInfo> volumeList = null;
 	private boolean isRunning = false;
 	private boolean isDefaultChanged = false;
 	private int dbSize;
@@ -575,7 +576,7 @@ public class CopyDatabaseDialog extends
 		String srcLogDir = "";
 		if (spaceInfoList == null) {
 			spaceInfoList = new ArrayList<Map<String, String>>();
-			for (DbSpaceInfoList.DbSpaceInfo bean : volumeList) {
+			for (DbSpaceInfo bean : volumeList) {
 				Map<String, String> map = new HashMap<String, String>();
 				if (bean.getType().equals("Active_log")) {
 					srcLogDir = bean.getLocation();
@@ -697,7 +698,7 @@ public class CopyDatabaseDialog extends
 			StringBuffer openStr = new StringBuffer("volume");
 			for (int i = 0; i < copyDBVolList.getItemCount(); i++) {
 				TableItem ti = copyDBVolList.getItem(i);
-				for (DbSpaceInfoList.DbSpaceInfo bean : volumeList) {
+				for (DbSpaceInfo bean : volumeList) {
 					if (bean.getSpacename().equals(ti.getText(0))) {
 						oldVolDir = bean.getLocation();
 						break;

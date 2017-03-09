@@ -86,6 +86,7 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListOld;
@@ -107,7 +108,7 @@ public class VolumeInformationEditor extends
 	private static final Logger LOGGER = LogUtil.getLogger(VolumeInformationEditor.class);
 	public static final String ID = "com.cubrid.cubridmanager.ui.cubrid.dbspace.editor.VolumeInformationEditor";
 	private CubridDatabase database = null;
-	private DbSpaceInfoList.DbSpaceInfo dbSpaceInfo = null;
+	private DbSpaceInfo dbSpaceInfo = null;
 	public static boolean isChanged = false;
 	private boolean isRunning = false;
 
@@ -141,16 +142,16 @@ public class VolumeInformationEditor extends
 			
 			database = ((DefaultSchemaNode) node).getDatabase();
 			
-			if (CubridNodeType.GENERIC_VOLUME.equals(type)
-					|| CubridNodeType.DATA_VOLUME.equals(type)
-					|| CubridNodeType.INDEX_VOLUME.equals(type)
-					|| CubridNodeType.TEMP_VOLUME.equals(type)
-					|| CubridNodeType.ARCHIVE_LOG.equals(type)
-					|| CubridNodeType.ACTIVE_LOG.equals(type)
-					|| CubridNodeType.PP_VOLUME.equals(type) ||
-					CubridNodeType.PT_VOLUME.equals(type) ||
-					CubridNodeType.TT_VOLUME.equals(type)) {
-				dbSpaceInfo = (DbSpaceInfoList.DbSpaceInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfoList.DbSpaceInfo.class);
+			if (CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.DATA_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type)
+					|| CubridNodeType.ACTIVE_LOG_FOLDER.equals(type)
+					|| CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
+					CubridNodeType.PT_VOLUME_FOLDER.equals(type) ||
+					CubridNodeType.TT_VOLUME_FOLDER.equals(type)) {
+				dbSpaceInfo = (DbSpaceInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfo.class);
 			}
 		}
 	}
@@ -280,7 +281,7 @@ public class VolumeInformationEditor extends
 		freeSize = dbSpaceInfo.getFreepage();
 		volumeType = dbSpaceInfo.getType();
 		volumeDate = dbSpaceInfo.getDate();
-		spacename = dbSpaceInfo.getSpacename();
+		spacename = dbSpaceInfo.getShortVolumeName();
 		volumeLocation = dbSpaceInfo.getLocation();
 		volumePurpose = dbSpaceInfo.getPurpose();
 	

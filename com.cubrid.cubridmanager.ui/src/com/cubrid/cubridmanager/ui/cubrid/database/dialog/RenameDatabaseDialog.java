@@ -80,6 +80,7 @@ import com.cubrid.cubridmanager.core.common.task.SetCubridConfParameterTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.task.CheckDirTask;
 import com.cubrid.cubridmanager.core.cubrid.database.task.RenameDbTask;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.core.utils.CoreUtils;
@@ -542,10 +543,10 @@ public class RenameDatabaseDialog extends CMTitleAreaDialog implements ModifyLis
 		if (spaceInfoList == null) {
 			spaceInfoList = new ArrayList<Map<String, String>>();
 			if (this.dbSpaceInfoList != null) {
-				List<DbSpaceInfoList.DbSpaceInfo> list = this.dbSpaceInfoList.getSpaceinfo();
+				List<DbSpaceInfo> list = this.dbSpaceInfoList.getSpaceinfo();
 				for (int i = 0; list != null && i < list.size(); i++) {
 					Map<String, String> map = new HashMap<String, String>();
-					DbSpaceInfoList.DbSpaceInfo spaceInfo = list.get(i);
+					DbSpaceInfo spaceInfo = list.get(i);
 					String type = spaceInfo.getType();
 					if (!VolumeType.GENERIC.getText().equals(type)
 							&& !VolumeType.DATA.getText().equals(type)

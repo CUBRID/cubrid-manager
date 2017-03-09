@@ -112,6 +112,7 @@ import com.cubrid.cubridmanager.core.common.task.GetEnvInfoTask;
 import com.cubrid.cubridmanager.core.common.task.SetCubridConfParameterTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.task.GetDatabaseListTask;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.core.monitoring.model.HostStatData;
@@ -704,7 +705,7 @@ public class HostDashboardEditor extends
 							dbVolumeSpaceInfoList.add(dbSpaceInfo);
 
 							if (dbSpaceInfoList != null) {
-								for (DbSpaceInfoList.DbSpaceInfo spaceInfo : dbSpaceInfoList.getSpaceinfo()) {
+								for (DbSpaceInfo spaceInfo : dbSpaceInfoList.getSpaceinfo()) {
 									dbSpaceInfo.addVolumeSpaceInfo(spaceInfo);
 								}
 							}
@@ -1554,7 +1555,7 @@ class ServerStatusLabelProvider implements
 class DBVolumeSpaceInfo {
 	private String dbName;
 	private long pageSize;
-	private Map<String, List<DbSpaceInfoList.DbSpaceInfo>> volumeSpaceInfoMap = new HashMap<String, List<DbSpaceInfoList.DbSpaceInfo>>();
+	private Map<String, List<DbSpaceInfo>> volumeSpaceInfoMap = new HashMap<String, List<DbSpaceInfo>>();
 
 	DBVolumeSpaceInfo(String dbName) {
 		this.dbName = dbName;
@@ -1576,17 +1577,17 @@ class DBVolumeSpaceInfo {
 		this.pageSize = pageSize;
 	}
 
-	public void addVolumeSpaceInfo(DbSpaceInfoList.DbSpaceInfo spaceInfo) {
+	public void addVolumeSpaceInfo(DbSpaceInfo spaceInfo) {
 		String type = spaceInfo.getType();
-		List<DbSpaceInfoList.DbSpaceInfo> spaceInfoList = volumeSpaceInfoMap.get(type);
+		List<DbSpaceInfo> spaceInfoList = volumeSpaceInfoMap.get(type);
 		if (spaceInfoList == null) {
-			spaceInfoList = new ArrayList<DbSpaceInfoList.DbSpaceInfo>();
+			spaceInfoList = new ArrayList<DbSpaceInfo>();
 			volumeSpaceInfoMap.put(type, spaceInfoList);
 		}
 		spaceInfoList.add(spaceInfo);
 	}
 
-	public List<DbSpaceInfoList.DbSpaceInfo> getVolumeSpaceInfo(String type) {
+	public List<DbSpaceInfo> getVolumeSpaceInfo(String type) {
 		return volumeSpaceInfoMap.get(type);
 	}
 }
@@ -1662,9 +1663,9 @@ class DBSpaceLabelProvider implements
 		Date lastCreateDate = null;
 
 		StringBuilder sb = new StringBuilder();
-		List<DbSpaceInfoList.DbSpaceInfo> dbSpaceInfoList = volumeSpaceInfo.getVolumeSpaceInfo(type);
+		List<DbSpaceInfo> dbSpaceInfoList = volumeSpaceInfo.getVolumeSpaceInfo(type);
 		if (dbSpaceInfoList != null) {
-			for (DbSpaceInfoList.DbSpaceInfo dbSpaceInfo : dbSpaceInfoList) {
+			for (DbSpaceInfo dbSpaceInfo : dbSpaceInfoList) {
 				totalPage += dbSpaceInfo.getTotalpage();
 				freePage += dbSpaceInfo.getFreepage();
 				Date createDate = null;
@@ -1718,9 +1719,9 @@ class DBSpaceLabelProvider implements
 	private String getLogString(DBVolumeSpaceInfo volumeSpaceInfo, String type) { // FIXME extract
 		long totalPage = 0;
 
-		List<DbSpaceInfoList.DbSpaceInfo> dbSpaceInfoList = volumeSpaceInfo.getVolumeSpaceInfo(type);
+		List<DbSpaceInfo> dbSpaceInfoList = volumeSpaceInfo.getVolumeSpaceInfo(type);
 		if (dbSpaceInfoList != null) {
-			for (DbSpaceInfoList.DbSpaceInfo dbSpaceInfo : dbSpaceInfoList) {
+			for (DbSpaceInfo dbSpaceInfo : dbSpaceInfoList) {
 				totalPage += dbSpaceInfo.getTotalpage();
 			}
 		}
@@ -1754,9 +1755,9 @@ class DBSpaceLabelProvider implements
 
 		if (type != null && element instanceof DBVolumeSpaceInfo) {
 			DBVolumeSpaceInfo volumeSpaceInfo = (DBVolumeSpaceInfo) element;
-			List<DbSpaceInfoList.DbSpaceInfo> dbSpaceInfoList = volumeSpaceInfo.getVolumeSpaceInfo(type);
+			List<DbSpaceInfo> dbSpaceInfoList = volumeSpaceInfo.getVolumeSpaceInfo(type);
 			if (dbSpaceInfoList != null) {
-				for (DbSpaceInfoList.DbSpaceInfo dbSpaceInfo : dbSpaceInfoList) {
+				for (DbSpaceInfo dbSpaceInfo : dbSpaceInfoList) {
 					totalPage += dbSpaceInfo.getTotalpage();
 					freePage += dbSpaceInfo.getFreepage();
 				}

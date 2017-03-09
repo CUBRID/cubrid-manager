@@ -49,6 +49,7 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListOld;
@@ -107,9 +108,6 @@ public class CubridDbSpaceFolderLoader extends
 	public static final String PERMANENT_PERMANENT_DATA_FOLDER_ID = "PERMANENT PERMANENT DATA";
 	public static final String PERMANENT_TEMPORARY_DATA_FOLDER_ID = "PERMANENT TEMPORARY DATA";
 	public static final String TEMPORARY_TEMPORARY_DATA_FOLDER_ID = "TEMPORARY TEMPORARY DATA";
-	
-	private ArrayList<Folder> folders = new ArrayList<Folder>();
-	
 	static {
 		foldersInformationOldFormat = new HashMap<String, FolderInformationContainer>();
 		foldersInformationNewFormat = new HashMap<String, FolderInformationContainer>();
@@ -145,38 +143,6 @@ public class CubridDbSpaceFolderLoader extends
 																											"TEMPORARY_TEMPORARY"));
 	}
 	
-	class Folder{
-		private ICubridNode node;
-		private String type;
-
-		public Folder(ICubridNode parent, String volumeFolderId, String volumeFolderName, String volumeFolder, String type){
-			String indexVolumeFolderId = parent.getId() + NODE_SEPARATOR
-					+ volumeFolderId;
-			node = parent.getChild(indexVolumeFolderId);
-			if (node == null) {
-				node = new DefaultSchemaNode(indexVolumeFolderId,
-						volumeFolderName, "icons/navigator/folder.png");
-				node.setType(volumeFolder);
-				node.setContainer(true);
-				if (volumeFolder.compareTo(CubridNodeType.LOG_VOLUEM_FOLDER) != 0) {
-					node.setEditorId(VolumeFolderInfoEditor.ID);
-				}
-				parent.addChild(node);
-			}
-
-			this.type = type;
-		}
-
-		public ICubridNode getICubridNode(){
-			return node;
-		}
-
-		public String getType(){
-			return type;
-		}
-
-	};
-	
 	/**
 	 * 
 	 * Load children object for parent
@@ -192,62 +158,60 @@ public class CubridDbSpaceFolderLoader extends
 			
 			CubridDatabase database = ((ISchemaNode) parent).getDatabase();
 			HashMap<String, FolderInformationContainer> foldersInformation;
-			HashMap<String, Folder> foldersHashMap = new HashMap<String, Folder>();
+			HashMap<String, ICubridNode> foldersHashMap = new HashMap<String, ICubridNode>();
 			DatabaseInfo databaseInfo = database.getDatabaseInfo();
 			CommonQueryTask<? extends DbSpaceInfoList> task;
-			folders.clear();
 			DbSpaceInfoList dbSpaceInfoList;
 
 			if (DbSpaceInfoList.useOld(database.getDatabaseInfo().getServerInfo().getEnvInfo())) {
 				foldersInformation = foldersInformationOldFormat;
-				dbSpaceInfoList = new DbSpaceInfoListOld();
 				task = new CommonQueryTask<DbSpaceInfoListOld>(
 						parent.getServer().getServerInfo(),
-						CommonSendMsg.getCommonDatabaseSendMsg(), (DbSpaceInfoListOld)dbSpaceInfoList);
+						CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListOld());
 			} else {
 				foldersInformation = foldersInformationNewFormat;
-				dbSpaceInfoList = new DbSpaceInfoListNew();
 				task = new CommonQueryTask<DbSpaceInfoListNew>(
 						parent.getServer().getServerInfo(),
-						CommonSendMsg.getCommonDatabaseSendMsg(), (DbSpaceInfoListNew)dbSpaceInfoList);
+						CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoListNew());
 			}
 			
 			for (Map.Entry<String, FolderInformationContainer> entry : foldersInformation.entrySet()) {
 			    String key = entry.getKey();
 			    FolderInformationContainer value = entry.getValue();
 			    
-			    Folder folder = new Folder(parent, 
-											key, 
-											value.volumeFolderName, 
-											value.volumeFolder,
-											value.type);
-			    folders.add(folder);
+			    ICubridNode folder = addFolder(parent, 
+												key, 
+												value.volumeFolderName, 
+												value.volumeFolder,
+												value.type);
 			    foldersHashMap.put(value.volumeType, folder);
 			}
-			Folder logFolder = new Folder(parent,
-										  LOG_VOLUME_FOLDER_ID,
-										  LOG_VOLUME_FOLDER_NAME,
-										  CubridNodeType.LOG_VOLUEM_FOLDER,
-										  null);
-			Folder activeLogFolder = new Folder(logFolder.getICubridNode(),
-												ACTIVE_LOG_FOLDER_ID,
-												ACTIVE_LOG_FOLDER_NAME,
-												CubridNodeType.ACTIVE_LOG_FOLDER,
-												CubridNodeType.ACTIVE_LOG);
-			Folder archiveLogFolder = new Folder(logFolder.getICubridNode(),
-												ARCHIVE_LOG_FOLDER_ID,
-												ARCHIVE_LOG_FOLDER_NAME,
-												CubridNodeType.ARCHIVE_LOG_FOLDER,
-												CubridNodeType.ARCHIVE_LOG);
 			
+			ICubridNode logFolder = addFolder(parent,
+											LOG_VOLUME_FOLDER_ID,
+											LOG_VOLUME_FOLDER_NAME,
+											CubridNodeType.LOG_VOLUEM_FOLDER,
+											null);
+			
+			foldersHashMap.put(VolumeType.ACTIVE_LOG.getText(), addFolder(logFolder,
+																ACTIVE_LOG_FOLDER_ID,
+																ACTIVE_LOG_FOLDER_NAME,
+																CubridNodeType.ACTIVE_LOG_FOLDER,
+																CubridNodeType.ACTIVE_LOG));
+			
+			foldersHashMap.put(VolumeType.ARCHIVE_LOG.getText(), addFolder(logFolder,
+																ARCHIVE_LOG_FOLDER_ID,
+																ARCHIVE_LOG_FOLDER_NAME,
+																CubridNodeType.ARCHIVE_LOG_FOLDER,
+																CubridNodeType.ARCHIVE_LOG));
 			task.setDbName(database.getLabel());
 			monitorCancel(monitor, new ITask[]{task });
 			task.execute();
 			final String errorMsg = task.getErrorMsg();
 			if (!monitor.isCanceled() && errorMsg != null
 					&& errorMsg.trim().length() > 0) {
-				for(Folder folder : folders){
-					folder.getICubridNode().removeAllChild();
+				for (ICubridNode folder : foldersHashMap.values()){
+					folder.removeAllChild();
 				}
 
 				Display display = Display.getDefault();
@@ -264,16 +228,16 @@ public class CubridDbSpaceFolderLoader extends
 				return;
 			}
 
-			for(Folder folder : folders){
-				folder.getICubridNode().removeAllChild();
+			for (ICubridNode folder : foldersHashMap.values()){
+				folder.removeAllChild();
 			}
 
 			dbSpaceInfoList = task.getResultModel();
-			List<DbSpaceInfoList.DbSpaceInfo> spaceInfoList = dbSpaceInfoList == null ? null
+			List<DbSpaceInfo> spaceInfoList = dbSpaceInfoList == null ? null
 					: dbSpaceInfoList.getSpaceinfo();
 			
 			for (int i = 0; spaceInfoList != null && i < spaceInfoList.size(); i++) {
-				DbSpaceInfoList.DbSpaceInfo spaceInfo = spaceInfoList.get(i);
+				DbSpaceInfo spaceInfo = spaceInfoList.get(i);
 				ICubridNode volumeNode = new DefaultSchemaNode("",
 						spaceInfo.getShortVolumeName(), "");
 				volumeNode.setContainer(false);
@@ -290,30 +254,18 @@ public class CubridDbSpaceFolderLoader extends
 					continue;
 				}
 				
-				Folder folder = foldersHashMap.get(key);
+				ICubridNode folder = foldersHashMap.get(key);
 				if (folder != null) {
-					String id = folder.getICubridNode().getId() + NODE_SEPARATOR + spaceInfo.getShortVolumeName();
+					String id = folder.getId() + NODE_SEPARATOR + spaceInfo.getShortVolumeName();
 					volumeNode.setId(id);
 					volumeNode.setType(folder.getType());
 					volumeNode.setIconPath("icons/navigator/volume_item.png");
-					folder.getICubridNode().addChild(volumeNode);
-				} else if (type.compareTo("Archive_log") == 0) {
-					String id = archiveLogFolder.getICubridNode().getId() + NODE_SEPARATOR + spaceInfo.getShortVolumeName();
-					volumeNode.setId(id);
-					volumeNode.setIconPath("icons/navigator/volume_item.png");
-					volumeNode.setType(CubridNodeType.ARCHIVE_LOG);
-					archiveLogFolder.getICubridNode().addChild(volumeNode);
-				} else if (type.compareTo("Active_log") == 0){
-					String id = activeLogFolder.getICubridNode().getId() + NODE_SEPARATOR + spaceInfo.getShortVolumeName();
-					volumeNode.setId(id);
-					volumeNode.setIconPath("icons/navigator/volume_item.png");
-					volumeNode.setType(CubridNodeType.ACTIVE_LOG);
-					activeLogFolder.getICubridNode().addChild(volumeNode);
+					folder.addChild(volumeNode);
 				}
 			}
 			if (spaceInfoList != null && !spaceInfoList.isEmpty()) {
-				for(Folder folder : folders){
-					Collections.sort(folder.getICubridNode().getChildren());
+				for (ICubridNode folder : foldersHashMap.values()){
+					Collections.sort(folder.getChildren());
 				}
 			}
 			databaseInfo.setDbSpaceInfoList(dbSpaceInfoList);
@@ -322,5 +274,22 @@ public class CubridDbSpaceFolderLoader extends
 					new CubridNodeChangedEvent((ICubridNode) parent,
 							CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
 		}
+	}
+	
+	private ICubridNode addFolder(ICubridNode parent, String volumeFolderId, String volumeFolderName, String volumeFolder, String type){
+		String indexVolumeFolderId = parent.getId() + NODE_SEPARATOR
+				+ volumeFolderId;
+		ICubridNode node = parent.getChild(indexVolumeFolderId);
+		if (node == null) {
+			node = new DefaultSchemaNode(indexVolumeFolderId,
+					volumeFolderName, "icons/navigator/folder.png");
+			node.setType(volumeFolder);
+			node.setContainer(true);
+			if (volumeFolder.compareTo(CubridNodeType.LOG_VOLUEM_FOLDER) != 0) {
+				node.setEditorId(VolumeFolderInfoEditor.ID);
+			}
+			parent.addChild(node);
+		}
+		return node;
 	}
 }

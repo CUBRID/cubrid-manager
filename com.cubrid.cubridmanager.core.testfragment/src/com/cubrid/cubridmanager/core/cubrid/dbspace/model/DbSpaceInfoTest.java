@@ -41,7 +41,7 @@ import junit.framework.TestCase;
 public class DbSpaceInfoTest extends
 		TestCase {
 	public void testModelDbSpaceInfo() {
-		DbSpaceInfoList.DbSpaceInfo bean = new DbSpaceInfoList.DbSpaceInfo();
+		DbSpaceInfo bean = new DbSpaceInfo();
 		bean.setSpacename("spacename");
 		assertEquals(bean.getSpacename(), "spacename");
 		bean.setType("type");

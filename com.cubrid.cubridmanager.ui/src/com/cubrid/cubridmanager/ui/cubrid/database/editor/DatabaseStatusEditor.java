@@ -95,6 +95,7 @@ import com.cubrid.cubridmanager.core.common.model.ServerVersion;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListOld;
@@ -282,7 +283,7 @@ public class DatabaseStatusEditor extends
 		}
 		if (database.getDatabaseInfo().getDbSpaceInfoList() != null
 				&& database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo() != null) {
-			Map<String, DbSpaceInfoList.DbSpaceInfo> map = database.getDatabaseInfo().getDbSpaceInfoList().getSpaceInfoMap();
+			Map<String, DbSpaceInfo> map = database.getDatabaseInfo().getDbSpaceInfoList().getSpaceInfoMap();
 
 			if (map.containsKey(VolumeType.GENERIC.toString().toUpperCase())) {
 				paintOnePie(map.get(VolumeType.GENERIC.toString().toUpperCase()));
@@ -306,7 +307,7 @@ public class DatabaseStatusEditor extends
 	 * @param dbSpaceInfo the DbSpace information
 	 */
 
-	public void paintOnePie(DbSpaceInfoList.DbSpaceInfo dbSpaceInfo) {
+	public void paintOnePie(DbSpaceInfo dbSpaceInfo) {
 		JFreeChart chart = createChart(createDataset(dbSpaceInfo), dbSpaceInfo);
 
 		final ChartComposite frame = new ChartComposite(chartComp, SWT.NONE,
@@ -324,7 +325,7 @@ public class DatabaseStatusEditor extends
 	 * @param dbSpaceInfo the DbSpaceInfo
 	 * @return the dataset
 	 */
-	private DefaultPieDataset createDataset(DbSpaceInfoList.DbSpaceInfo dbSpaceInfo) {
+	private DefaultPieDataset createDataset(DbSpaceInfo dbSpaceInfo) {
 		int freeSize = dbSpaceInfo.getFreepage();
 		int totalSize = dbSpaceInfo.getTotalpage();
 
@@ -350,7 +351,7 @@ public class DatabaseStatusEditor extends
 	 * @return the chart
 	 */
 	private static JFreeChart createChart(DefaultPieDataset dataset,
-			DbSpaceInfoList.DbSpaceInfo dbSpaceInfo) {
+			DbSpaceInfo dbSpaceInfo) {
 
 		JFreeChart chart = ChartFactory.createPieChart3D(dbSpaceInfo.getType(),
 				dataset, true, true, false);

@@ -1,7 +1,5 @@
 package com.cubrid.cubridmanager.core.cubrid.dbspace.model;
 
-import java.util.ArrayList;
-
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.LogUtil;
@@ -11,7 +9,7 @@ public class DbSpaceInfoListOld extends DbSpaceInfoList{
 	
 	public int getTotalSize(){
 		int totalSize = 0;
-		for (DbSpaceInfoList.DbSpaceInfo bean : spaceinfo) {
+		for (DbSpaceInfo bean : spaceinfo) {
 			if (!bean.getType().equals("GENERIC")
 					&& !bean.getType().equals("DATA")
 					&& !bean.getType().equals("TEMP")
@@ -26,7 +24,7 @@ public class DbSpaceInfoListOld extends DbSpaceInfoList{
 
 	public int getFreeSize(){
 		int freeSize = 0;
-		for (DbSpaceInfoList.DbSpaceInfo bean : spaceinfo) {
+		for (DbSpaceInfo bean : spaceinfo) {
 			if (!bean.getType().equals("GENERIC")
 					&& !bean.getType().equals("DATA")
 					&& !bean.getType().equals("TEMP")

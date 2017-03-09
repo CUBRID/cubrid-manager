@@ -45,6 +45,7 @@ import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.common.model.ConfConstants;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.BackupPlanInfo;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.QueryPlanInfo;
@@ -698,7 +699,7 @@ public class DatabaseInfo implements IDatabaseSpec {
 	 * 
 	 * @param spaceInfo DbSpaceInfo The instance of DbSpaceInfo
 	 */
-	public void addSpaceInfo(DbSpaceInfoList.DbSpaceInfo spaceInfo) {
+	public void addSpaceInfo(DbSpaceInfo spaceInfo) {
 		if (dbSpaceInfoList == null) {
 			dbSpaceInfoList = new DbSpaceInfoList();
 			dbSpaceInfoList.setDbname(dbName);
@@ -712,7 +713,7 @@ public class DatabaseInfo implements IDatabaseSpec {
 	 * 
 	 * @param spaceInfo DbSpaceInfo The instance of DbSpaceInfo
 	 */
-	public void removeSpaceInfo(DbSpaceInfoList.DbSpaceInfo spaceInfo) {
+	public void removeSpaceInfo(DbSpaceInfo spaceInfo) {
 		if (dbSpaceInfoList != null) {
 			dbSpaceInfoList.removeSpaceinfo(spaceInfo);
 		}

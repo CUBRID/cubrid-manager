@@ -54,7 +54,7 @@ public class DbSpaceInfoListTest extends
 		bean.setLogpagesize(8);
 		bean.setFreespace(9);
 		
-		DbSpaceInfoList.DbSpaceInfo dbSpaceInfo = new DbSpaceInfoList.DbSpaceInfo();
+		DbSpaceInfo dbSpaceInfo = new DbSpaceInfo();
 		dbSpaceInfo.setType("GENERIC");
 		dbSpaceInfo.setFreepage(256);
 		dbSpaceInfo.setLocation("d:\\data");
@@ -65,7 +65,7 @@ public class DbSpaceInfoListTest extends
 		
 		bean.addSpaceinfo(dbSpaceInfo);
 		
-		dbSpaceInfo = new DbSpaceInfoList.DbSpaceInfo();
+		dbSpaceInfo = new DbSpaceInfo();
 		dbSpaceInfo.setType("GENERIC");
 		dbSpaceInfo.setFreepage(256);
 		dbSpaceInfo.setLocation("d:\\data");
@@ -138,7 +138,7 @@ public class DbSpaceInfoListTest extends
 	 */
 	@SuppressWarnings("unchecked")
 	public void testAddSpaceinfo() {
-		bean.addSpaceinfo(new DbSpaceInfoList.DbSpaceInfo());
+		bean.addSpaceinfo(new DbSpaceInfo());
 		assertEquals(bean.getSpaceinfo() instanceof List, true);
 	}
 
@@ -148,7 +148,7 @@ public class DbSpaceInfoListTest extends
 	 * .
 	 */
 	public void testRemoveSpaceinfo() {
-		bean.removeSpaceinfo(new DbSpaceInfoList.DbSpaceInfo());
+		bean.removeSpaceinfo(new DbSpaceInfo());
 	}
 
 	/**
