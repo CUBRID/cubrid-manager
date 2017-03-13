@@ -297,6 +297,12 @@ public class DatabaseStatusEditor extends
 			if (map.containsKey(VolumeType.TEMP.toString().toUpperCase())) {
 				paintOnePie(map.get(VolumeType.TEMP.toString().toUpperCase()));
 			}
+			if (map.containsKey("PERMANENT")) {
+				paintOnePie(map.get("PERMANENT"));
+			}
+			if (map.containsKey("TEMPORARY")) {
+				paintOnePie(map.get("TEMPORARY"));
+			}
 		}
 	}
 
