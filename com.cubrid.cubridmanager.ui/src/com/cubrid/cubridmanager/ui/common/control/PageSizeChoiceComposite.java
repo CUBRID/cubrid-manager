@@ -278,7 +278,7 @@ public class PageSizeChoiceComposite {
 	public void setUnitOfSize(String str) {
 		boolean isItem = false;
 		for (int i = 0; i < unitItems.length; i++) {
-			if (unitItems[i].equalsIgnoreCase(str)) {
+			if (unitItems[i].substring(0, 1).equalsIgnoreCase(str)) {
 				unitCombo.select(i);
 				isItem = true;
 				break;
