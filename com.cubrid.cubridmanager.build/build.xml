@@ -32,6 +32,7 @@
 	<!--
 	<property name="installer.linux" value="${build.dir}/installer/linux" />
 	-->
+	<property name="installer.mac" value="${build.dir}/installer/mac" />
 	<property name="update.configurator.match" value="org.eclipse.update.configurator,3.3.100.v20100512,plugins/org.eclipse.update.configurator_3.3.100.v20100512.jar,4,false" />
 	<property name="update.configurator.replace" value="org.eclipse.update.configurator,3.3.100.v20100512,plugins/org.eclipse.update.configurator_3.3.100.v20100512.jar,4,true" />
 
@@ -283,7 +284,7 @@
 		-->
 
 		<!--
-		optimize cocoa
+		optimize mac
 		-->
 		<unzip dest="${deploy.home}/cocoa" overwrite="true">
 			<fileset dir="${buildDirectory}/${buildLabel}">
@@ -387,12 +388,12 @@
 	<!--
 	package macosx cocoa
 	-->
-	<target name="packagecocoa" depends="postbuild">
+	<target name="packagemac" depends="postbuild">
 		<untar src="${build.dir}/cm-macosx-java7-patch.tgz" dest="${build.dir}/patch" compression="gzip" />
-		<delete dir="${product.macosx.cocoa}/cubridmanager.app" />
+		<delete dir="${product.macosx.cocoa}/${product.name}.app" />
 		<delete dir="${product.macosx.cocoa}/plugins/org.eclipse.equinox.launcher.cocoa.macosx.x86_64_1.1.0.v20100503" />
 		<delete file="${product.macosx.cocoa}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
-		<copy todir="${product.macosx.cocoa}/cubridmanager.app">
+		<copy todir="${product.macosx.cocoa}/${product.name}.app">
 			<fileset dir="${build.dir}/patch/cubridmanager.app" />
 		</copy>
 		<copy todir="${product.macosx.cocoa}/plugins">
@@ -401,6 +402,18 @@
 		<copy todir="${product.macosx.cocoa}/plugins/org.eclipse.equinox.launcher.cocoa.macosx.x86_64_1.1.0.v20100503">
 			<fileset dir="${build.dir}/patch/org.eclipse.equinox.launcher.cocoa.macosx.x86_64_1.1.0.v20100503" />
 		</copy>
+		<move todir="${product.macosx.cocoa}/${product.name}.app/Contents/app" includeEmptyDirs="yes" verbose="true">
+			<fileset dir="${product.macosx.cocoa}">
+				<include name="**/*"/>
+				<exclude name="**/${product.name}.app/**"/>
+			</fileset>
+		</move>
+		<chmod file="${product.macosx.cocoa}/${product.name}.app/Contents/MacOS/${launcher.name}" perm="755" />
+		<delete file="${product.macosx.cocoa}/${product.name}.app/Contents/MacOS/launcher" />
+		<delete includeemptydirs="true">
+			<fileset dir="${product.macosx.cocoa}/${product.name}.app/Contents/app/${launcher.name}.app" includes="**/*" />
+		</delete>
+		<delete dir="${product.macosx.cocoa}/${product.name}.app/Contents/app/${launcher.name}.app" />
 		<tar longfile="gnu" destfile="${deploy.home}/${product.name}-${product.version}-macosx-cocoa.tar">
 			<tarfileset dir="${product.macosx.cocoa}" filemode="755" includes="**/Contents/MacOS/${launcher.name}" />
 			<tarfileset dir="${product.macosx.cocoa}" excludes="**/Contents/MacOS/${launcher.name}" />
@@ -484,8 +497,21 @@
 	</target>
 	-->
 
+	<!--
+	Make mac osx installer for CUBRID Manager
+	-->
+	<target name="macinstaller" description="Make mac dmg installer" depends="postbuild">
+		<exec dir="${installer.mac}" outputproperty="installer.output" errorproperty="redirector.err" executable="${installer.mac}/package.sh" failifexecutionfails="false">
+			<arg value="--name=${product.name}" />
+			<arg value="--version=${product.version}" />
+			<arg value="--dsstore=${installer.mac}/cubridmanager-dmg-dsstore.tgz" />
+			<arg value="--input=${product.macosx.cocoa}" />
+			<arg value="--output=${output.path}" />
+		</exec>
+	</target>
+
 	<target depends="packagewin32,packagewin64,win32installer,win64installer" name="distwin" />
 	<target depends="packagelinux32,packagelinux64" name="distlinux" />
-	<target depends="packagecocoa" name="distcocoa" />
-	<target depends="clean,distwin,distlinux,distcocoa,package_autoupdate" name="dist" />
+	<target depends="packagemac,macinstaller" name="distmac" />
+	<target depends="clean,distwin,distlinux,distmac,package_autoupdate" name="dist" />
 </project>

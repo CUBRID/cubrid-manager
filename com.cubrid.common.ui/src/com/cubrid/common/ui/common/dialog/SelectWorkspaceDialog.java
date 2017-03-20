@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.util.Util;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -232,10 +233,17 @@ public class SelectWorkspaceDialog extends
 	 * @return String
 	 */
 	private String getSuggestedWorkspacePath() {
-		Location installLoc = Platform.getInstallLocation();
-		URL url = installLoc.getURL();
-		File file = new File(url.getFile());
-		return file.getAbsolutePath() + File.separator + "workspace";
+		String workspacePath;
+		if (Util.isMac()) {
+			File file = new File(System.getProperty("user.home") + File.separator + "Documents" + File.separator + "CUBRIDManager");
+			workspacePath = file.getAbsolutePath();
+		} else {
+			Location installLoc = Platform.getInstallLocation();
+			URL url = installLoc.getURL();
+			File file = new File(url.getFile());
+			workspacePath = file.getAbsolutePath() + File.separator + "workspace";
+		}
+		return workspacePath;
 	}
 
 	/**
