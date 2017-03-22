@@ -206,7 +206,7 @@ public class ClientSocket extends AbstractManagerClient {
 		TreeNode node = this.getResponse();
 		if (node == null) {
 			super.canConnect = false;
-			ServerManager.getInstance().setConnected(hostAddress, port, userName, false);
+			ServerManager.setConnected(hostAddress, port, userName, false);
 		}
 
 		if (errorMsg != null && errorMsg.trim().length() > 0) {
@@ -274,10 +274,10 @@ public class ClientSocket extends AbstractManagerClient {
 			if (heartbeatThread == null) {
 				heartbeatThread = new Thread("Monitoring " + hostAddress + ":" + port) {
 					public void run() {
-						while (ServerManager.getInstance().isConnected(hostAddress, port, userName)) {
+						while (ServerManager.isConnected(hostAddress, port, userName)) {
 							try {
 								if (socket == null || socketInputStream == null) {
-									ServerManager.getInstance().setConnected(hostAddress, port, userName, false);
+									ServerManager.setConnected(hostAddress, port, userName, false);
 									return;
 								}
 								if (!isBusy) {
@@ -287,22 +287,22 @@ public class ClientSocket extends AbstractManagerClient {
 									}
 									int data = socketInputStream.read();
 									if (data < 0) {
-										ServerManager.getInstance().setConnected(hostAddress, port, userName, false);
+										ServerManager.setConnected(hostAddress, port, userName, false);
 										return;
 									}
 								}
 								sleep(time);
 							} catch (SocketException e) {
 								LOGGER.debug(e.getMessage(), e);
-								ServerManager.getInstance().setConnected(hostAddress, port, userName, false);
+								ServerManager.setConnected(hostAddress, port, userName, false);
 								break;
 							} catch (IOException e) {
 								LOGGER.debug(e.getMessage(), e);
-								ServerManager.getInstance().setConnected(hostAddress, port, userName, false);
+								ServerManager.setConnected(hostAddress, port, userName, false);
 								break;
 							} catch (InterruptedException e) {
 								LOGGER.debug(e.getMessage(), e);
-								ServerManager.getInstance().setConnected(hostAddress, port, userName, false);
+								ServerManager.setConnected(hostAddress, port, userName, false);
 								break;
 							}
 						}

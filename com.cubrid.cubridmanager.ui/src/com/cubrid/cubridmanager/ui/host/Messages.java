@@ -49,8 +49,10 @@ public class Messages extends
 	// add host and edit host dialog related message
 	public static String titleAddHostDialog;
 	public static String titleConnectHostDialog;
+	public static String titleEditHostDialog;
 	public static String msgAddHostDialog;
 	public static String msgConnectHostDialog;
+	public static String msgEditHostDialog;
 	public static String btnConnectHost;
 	public static String btnAddHost;
 	public static String btnBrowse;
@@ -74,6 +76,7 @@ public class Messages extends
 	public static String errUserPassword;
 	public static String errHostExist;
 	public static String errAddressExist;
+	public static String errDuplicateHost;
 	public static String errPort;
 	public static String errConnectionRefused;
 	public static String errConnectionFailed;

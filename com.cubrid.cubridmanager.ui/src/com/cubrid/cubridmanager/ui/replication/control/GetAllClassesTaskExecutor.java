@@ -54,6 +54,7 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.DBClasses;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetClassListTask;
 import com.cubrid.cubridmanager.ui.mondashboard.preference.MonitorDashboardPreference;
 import com.cubrid.cubridmanager.ui.spi.Version;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * 
@@ -93,12 +94,12 @@ public class GetAllClassesTaskExecutor extends
 	 */
 	private void init() {
 		ServerInfo serverInfo = new ServerInfo();
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		DatabaseInfo dbInfo = null;
 		OnOffType status = OnOffType.OFF;
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
 					Integer.parseInt(port), userName);
 			dbInfo = serverInfo.getLoginedUserInfo().getDatabaseInfo(dbName);
 			if (dbInfo.getRunningType() == DbRunningType.CS) {
@@ -111,7 +112,7 @@ public class GetAllClassesTaskExecutor extends
 			serverInfo.setUserName(userName);
 			serverInfo.setUserPassword(password);
 
-			ServerManager.getInstance().addServer(ip, Integer.parseInt(port),
+			CMHostNodePersistManager.getInstance().addServer(ip, Integer.parseInt(port),
 					userName, serverInfo);
 			MonitoringTask monitoringTask = new MonitoringTask(serverInfo);
 			addTask(monitoringTask);
@@ -152,7 +153,7 @@ public class GetAllClassesTaskExecutor extends
 	 * 
 	 */
 	private void disConnect() {
-		ServerManager.getInstance().setConnected(ip, Integer.parseInt(port),
+		ServerManager.setConnected(ip, Integer.parseInt(port),
 				userName, false);
 	}
 

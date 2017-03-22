@@ -15,6 +15,7 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.lock.DbLotInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.model.lock.LockHolders;
 import com.cubrid.cubridmanager.core.cubrid.database.model.lock.LockInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.model.lock.LockWaiters;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 public class LockDbTaskTest extends
 		SetupEnvTestCase {
@@ -28,7 +29,7 @@ public class LockDbTaskTest extends
 		System.out.println("<database.lockdb.001.req.txt>");
 
 		CommonQueryTask<DatabaseLockInfo> task = new CommonQueryTask<DatabaseLockInfo>(
-				ServerManager.getInstance().getServer(host, monport, userName),
+				CMHostNodePersistManager.getInstance().getServerInfo(host, monport, userName),
 				CommonSendMsg.getCommonDatabaseSendMsg(),
 				new DatabaseLockInfo());
 		task.setDbName("unlockeddb");
@@ -88,7 +89,7 @@ public class LockDbTaskTest extends
 		System.out.println("<database.lockdb.002.req.txt>");
 
 		CommonQueryTask<DatabaseLockInfo> task = new CommonQueryTask<DatabaseLockInfo>(
-				ServerManager.getInstance().getServer(host, monport, userName),
+				CMHostNodePersistManager.getInstance().getServerInfo(host, monport, userName),
 				CommonSendMsg.getCommonDatabaseSendMsg(),
 				new DatabaseLockInfo());
 		task.setDbName("lockeddb");

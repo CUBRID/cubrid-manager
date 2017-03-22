@@ -450,7 +450,7 @@ public class EditMultiHostStatisticItemDialog extends
 				if (hostItem != null) {
 					ServerInfo serverInfo = hostItem.getServerInfo();
 					if (serverInfo == null) {
-						for (CubridServer cubridServer : hostNodePersistManager.getAllServer()) {
+						for (CubridServer cubridServer : hostNodePersistManager.getAllServers()) {
 							if (cubridServer.getId().equals(
 									hostItem.getCubridServerId())) {
 								serverInfo = cubridServer.getServerInfo();

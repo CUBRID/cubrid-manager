@@ -210,10 +210,7 @@ public class ServiceDashboardLabelProvider extends
 					double cpuUsed = sDashInfo.getCpuUsed();
 					return sDashInfo.getServer().isConnected() ? cpuUsed+"%":"-";
 				case 14:
-					int databaseOn = sDashInfo.getDatabaseOn();
-					int databaseOff = sDashInfo.getDatabaseOff();
-					return sDashInfo.getServer().isConnected() ? Integer.toString(databaseOn)+" / "+
-						Integer.toString(databaseOff):"- / -";
+					return sDashInfo.getServer().isConnected() ? "Yes" : "No";
 				case 15:
 					String serverVersion = sDashInfo.getServerVersion();
 					return sDashInfo.getServer().isConnected() ? serverVersion:"-";

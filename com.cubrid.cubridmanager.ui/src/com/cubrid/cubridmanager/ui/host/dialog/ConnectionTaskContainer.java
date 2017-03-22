@@ -40,6 +40,7 @@ import com.cubrid.cubridmanager.ui.host.Messages;
 import com.cubrid.cubridmanager.ui.mondashboard.preference.MonitorDashboardPreference;
 import com.cubrid.cubridmanager.ui.spi.Version;
 import com.cubrid.cubridmanager.ui.spi.model.loader.CubridDatabasesFolderLoader;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 import com.cubrid.jdbc.proxy.manage.ServerJdbcVersionMapping;
 
 public class ConnectionTaskContainer implements Callable<Integer>, Runnable {
@@ -81,15 +82,15 @@ public class ConnectionTaskContainer implements Callable<Integer>, Runnable {
 		for (ITask task : tasks) {
 			if (task instanceof MonitoringTask) {
 				if (!serverInfo.isConnected()) {
-					ServerManager.getInstance().addServer(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+					CMHostNodePersistManager.getInstance().addServer(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 						serverInfo.getUserName(), serverInfo);
 					MonitoringTask monitoringTask = (MonitoringTask)task;
 					serverInfo = monitoringTask.connectServer(Version.releaseVersion, monPref.getHAHeartBeatTimeout());
 					if (serverInfo.isConnected()) {
-						ServerManager.getInstance().addServer(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+						CMHostNodePersistManager.getInstance().addServer(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 							serverInfo.getUserName(), serverInfo);
 					} else {
-						ServerManager.getInstance().removeServer(serverInfo.getHostAddress(),
+						CMHostNodePersistManager.getInstance().removeServer(serverInfo.getHostAddress(),
 							serverInfo.getHostMonPort(), serverInfo.getUserName());
 					}
 				}
@@ -227,7 +228,7 @@ public class ConnectionTaskContainer implements Callable<Integer>, Runnable {
 	 */
 	private void disConnect() {
 		if (serverInfo != null) {
-			ServerManager.getInstance().setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+			ServerManager.setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 				serverInfo.getUserName(), false);
 		}
 	}

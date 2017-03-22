@@ -34,6 +34,7 @@ import com.cubrid.cubridmanager.core.common.ServerManager;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.cubrid.service.model.NodeInfo;
 import com.cubrid.cubridmanager.core.cubrid.service.model.NodeType;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 import junit.framework.TestCase;
 
@@ -131,11 +132,10 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getHostName(), haHost);
 			assertEquals(node.getCmConnectName(), haConnName);
 		}finally{
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(haIp,
+			ServerInfo serverInfo = ServerManager.getServer(haIp,
 					haCmPort, haCmUser);
-			ServerManager.getInstance().removeServer(
-					serverInfo.getHostAddress(),
-					serverInfo.getHostMonPort(),
+			CMHostNodePersistManager.getInstance().removeServer(
+					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
@@ -151,11 +151,10 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getHostName(), replicaHost);
 			assertEquals(node.getCmConnectName(), replicaConnName);
 		}finally{
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(replicaIp,
+			ServerInfo serverInfo = ServerManager.getServer(replicaIp,
 					replicaCmPort, replicaCmUser);
-			ServerManager.getInstance().removeServer(
-					serverInfo.getHostAddress(),
-					serverInfo.getHostMonPort(),
+			CMHostNodePersistManager.getInstance().removeServer(
+					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
@@ -171,11 +170,10 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getHostName(), brokerHost);
 			assertEquals(node.getCmConnectName(), brokerConnName);
 		}finally{
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(brokerIp,
+			ServerInfo serverInfo = ServerManager.getServer(brokerIp,
 					brokerCmPort, brokerCmUser);
-			ServerManager.getInstance().removeServer(
-					serverInfo.getHostAddress(),
-					serverInfo.getHostMonPort(),
+			CMHostNodePersistManager.getInstance().removeServer(
+					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
@@ -191,11 +189,10 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getHostName(), shardHost);
 			assertEquals(node.getCmConnectName(), shardConnName);
 		}finally{
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(shardIp,
+			ServerInfo serverInfo = ServerManager.getServer(shardIp,
 					shardCmPort, shardCmUser);
-			ServerManager.getInstance().removeServer(
-					serverInfo.getHostAddress(),
-					serverInfo.getHostMonPort(),
+			CMHostNodePersistManager.getInstance().removeServer(
+					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}

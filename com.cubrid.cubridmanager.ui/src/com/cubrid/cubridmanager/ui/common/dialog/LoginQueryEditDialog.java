@@ -166,7 +166,7 @@ public class LoginQueryEditDialog extends
 	 */
 	private void initial() {
 		//load the register CUBRID server and CUBRID database
-		List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServer();
+		List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServers();
 		serverMap = new HashMap<String, CubridServer>();
 		databaseMap = new HashMap<String, List<CubridDatabase>>();
 		allHostCombo.removeAll();

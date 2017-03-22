@@ -39,6 +39,7 @@ import com.cubrid.cubridmanager.core.cubrid.service.model.HaNode;
 import com.cubrid.cubridmanager.core.cubrid.service.model.NodeInfo;
 import com.cubrid.cubridmanager.core.cubrid.service.model.NodeType;
 import com.cubrid.cubridmanager.core.cubrid.service.model.ShardNode;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 import junit.framework.TestCase;
 
@@ -310,10 +311,10 @@ public class HaShardManagerTest extends TestCase{
 				assertTrue(haNode.getRemoteBrokers().contains(brokerNode));
 			}
 		} finally {
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(brokerIp,
+			ServerInfo serverInfo = ServerManager.getServer(brokerIp,
 					brokerCmPort, brokerCmUser);
 			if (serverInfo != null) {
-				ServerManager.getInstance().removeServer(
+				CMHostNodePersistManager.getInstance().removeServer(
 						serverInfo.getHostAddress(),
 						serverInfo.getHostMonPort(), serverInfo.getUserName());
 			}

@@ -74,6 +74,7 @@ import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
 import com.cubrid.cubridmanager.ui.mondashboard.preference.MonitorDashboardPreference;
 import com.cubrid.cubridmanager.ui.spi.Version;
 import com.cubrid.cubridmanager.ui.spi.model.loader.CubridDatabasesFolderLoader;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.util.HAUtil;
 import com.cubrid.jdbc.proxy.manage.ServerJdbcVersionMapping;
 
@@ -160,7 +161,7 @@ public class ConnectHostJobExecutor extends
 	public void cancel() {
 		super.cancel();
 		if (serverInfo != null && taskList.size() > 1 && !wasConnected) {
-			ServerManager.getInstance().setConnected(
+			ServerManager.setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}
@@ -173,7 +174,7 @@ public class ConnectHostJobExecutor extends
 	 */
 	private void disConnect() {
 		if (serverInfo != null && taskList.size() > 1 && !wasConnected) {
-			ServerManager.getInstance().setConnected(
+			ServerManager.setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}
@@ -278,7 +279,7 @@ public class ConnectHostJobExecutor extends
 			});
 		}
 		if (serverInfo.isConnected()) {
-			ServerManager.getInstance().addServer(serverInfo.getHostAddress(),
+			CMHostNodePersistManager.getInstance().addServer(serverInfo.getHostAddress(),
 					serverInfo.getHostMonPort(), serverInfo.getUserName(),
 					serverInfo);
 		}

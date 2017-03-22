@@ -246,7 +246,7 @@ public class ConnectHostNodeDialog extends
 		boolean isValidPassword = password.trim().length() >= 4
 				&& password.indexOf(" ") < 0;
 
-		ServerInfo serverInfo = ServerManager.getInstance().getServer(
+		ServerInfo serverInfo = ServerManager.getServer(
 				ipText.getText(), Integer.parseInt(port),
 				userNameText.getText());
 		if (isValidPassword && serverInfo != null

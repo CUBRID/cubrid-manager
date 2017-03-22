@@ -36,6 +36,7 @@ import org.osgi.framework.BundleContext;
 
 import com.cubrid.common.ui.perspective.PerspectiveManager;
 import com.cubrid.cubridmanager.core.common.ServerManager;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -80,7 +81,7 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		PerspectiveManager.getInstance().removePerspectiveListener(listener);
-		ServerManager.getInstance().disConnectAllServer();
+		CMHostNodePersistManager.getInstance().disConnectAllServer();
 		plugin = null;
 		super.stop(context);
 	}

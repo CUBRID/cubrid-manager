@@ -76,7 +76,7 @@ public class GroupNodeDnDHandler extends
 		ICubridNode newDragNode = dragNode;
 		if (DND.DROP_COPY == dropOperation && dragNode instanceof CubridServer) {
 			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-			HostDialog dialog = new HostDialog(shell, true);
+			HostDialog dialog = new HostDialog(shell, true, false);
 			dialog.setServer((CubridServer) dragNode);
 			int returnCode = dialog.open();
 			if (returnCode == HostDialog.ADD_ID

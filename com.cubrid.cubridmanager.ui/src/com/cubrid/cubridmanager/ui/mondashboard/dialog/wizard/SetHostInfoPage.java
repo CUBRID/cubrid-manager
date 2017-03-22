@@ -62,6 +62,7 @@ import com.cubrid.cubridmanager.core.mondashboard.task.GetHeartbeatNodeInfoTask;
 import com.cubrid.cubridmanager.ui.host.dialog.ConnectHostExecutor;
 import com.cubrid.cubridmanager.ui.mondashboard.Messages;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.util.HAUtil;
 import com.cubrid.jdbc.proxy.manage.ServerJdbcVersionMapping;
 
@@ -200,7 +201,7 @@ public class SetHostInfoPage extends
 				if (nickName.trim().length() == 0) {
 					nickNameText.setText(address + ":" + port);
 				}
-				ServerInfo serverInfo = ServerManager.getInstance().getServer(
+				ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 						address, Integer.parseInt(port), userName);
 				if (serverInfo == null) {
 					serverInfo = new ServerInfo();
@@ -303,7 +304,7 @@ public class SetHostInfoPage extends
 		boolean isValidPassword = password.trim().length() >= 4
 				&& password.indexOf(" ") < 0;
 
-		ServerInfo serverInfo = ServerManager.getInstance().getServer(
+		ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 				ipText.getText(), Integer.parseInt(port),
 				userNameText.getText());
 		if (isValidPassword && serverInfo != null
@@ -332,7 +333,7 @@ public class SetHostInfoPage extends
 		String userName = userNameText.getText();
 		if (ip != null && port != null && ValidateUtil.isNumber(port)
 				&& userName != null) {
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(ip,
+			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
 					Integer.parseInt(port), userName);
 			if (serverInfo != null && serverInfo.isConnected()) {
 				if (CompatibleUtil.isSupportHA(serverInfo)) {
@@ -381,7 +382,7 @@ public class SetHostInfoPage extends
 					portText.getText());
 		}
 		if (hostStatusInfo == null) {
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(
+			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 					ipText.getText(), Integer.parseInt(portText.getText()),
 					userNameText.getText());
 			hostStatusInfo = HAUtil.getHAHostStatusInfo(serverInfo);
@@ -422,7 +423,7 @@ public class SetHostInfoPage extends
 		if (!ValidateUtil.isNumber(portText.getText())) {
 			return false;
 		}
-		ServerInfo serverInfo = ServerManager.getInstance().getServer(
+		ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 				ipText.getText(), Integer.parseInt(portText.getText()),
 				userNameText.getText());
 		if (serverInfo == null) {
@@ -442,7 +443,7 @@ public class SetHostInfoPage extends
 		}
 		AddHostAndDbWizard wizard = ((AddHostAndDbWizard) getWizard());
 		int type = wizard.getAddedType();
-		ServerInfo serverInfo = ServerManager.getInstance().getServer(
+		ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 				ipText.getText(), Integer.parseInt(portText.getText()),
 				userNameText.getText());
 		if ((type == 0 || type == 2)

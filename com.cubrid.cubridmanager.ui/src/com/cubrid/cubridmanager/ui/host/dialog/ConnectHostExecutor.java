@@ -65,6 +65,7 @@ import com.cubrid.cubridmanager.ui.host.Messages;
 import com.cubrid.cubridmanager.ui.mondashboard.preference.MonitorDashboardPreference;
 import com.cubrid.cubridmanager.ui.spi.Version;
 import com.cubrid.cubridmanager.ui.spi.model.loader.CubridDatabasesFolderLoader;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 import com.cubrid.jdbc.proxy.manage.ServerJdbcVersionMapping;
 
 /**
@@ -140,7 +141,7 @@ public class ConnectHostExecutor extends TaskExecutor {
 	public void cancel() {
 		super.cancel();
 		if (serverInfo != null) {
-			ServerManager.getInstance().setConnected(
+			ServerManager.setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}
@@ -152,7 +153,7 @@ public class ConnectHostExecutor extends TaskExecutor {
 	 */
 	private void disConnect() {
 		if (serverInfo != null) {
-			ServerManager.getInstance().setConnected(
+			ServerManager.setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}
@@ -272,15 +273,15 @@ public class ConnectHostExecutor extends TaskExecutor {
 		for (ITask task : taskList) {
 			if (task instanceof MonitoringTask) {
 				if (!serverInfo.isConnected()) {
-					addServer(serverInfo);
+					addServerInHashMap(serverInfo);
 					MonitoringTask monitoringTask = (MonitoringTask) task;
 					serverInfo = monitoringTask.connectServer(
 							Version.releaseVersion,
 							monPref.getHAHeartBeatTimeout());
 					if (serverInfo.isConnected()) {
-						addServer(serverInfo);
+						addServerInHashMap(serverInfo);
 					} else {
-						removeServer(serverInfo);
+						removeServerFromHashMap(serverInfo);
 					}
 				}
 				changePassword();
@@ -532,20 +533,35 @@ public class ConnectHostExecutor extends TaskExecutor {
 	}
 
 	private void removeServer(ServerInfo serverInfo) {
-		ServerManager.getInstance().removeServer(
+		CMHostNodePersistManager.getInstance().removeServer(
 				serverInfo.getHostAddress(),
 				serverInfo.getHostMonPort(),
 				serverInfo.getUserName());
 	}
-
-	private void addServer(ServerInfo serverInfo) {
-		ServerManager.getInstance().addServer(
+	
+	private void removeServerFromHashMap(ServerInfo serverInfo) {
+		CMHostNodePersistManager.getInstance().removeServerFromHashMap(
+				serverInfo.getHostAddress(),
+				serverInfo.getHostMonPort(),
+				serverInfo.getUserName());
+	}
+	
+	private void addServerInHashMap(ServerInfo serverInfo){
+		CMHostNodePersistManager.getInstance().addServerInHashMap(
 				serverInfo.getHostAddress(),
 				serverInfo.getHostMonPort(),
 				serverInfo.getUserName(),
 				serverInfo);
 	}
 
+	private void addServer(ServerInfo serverInfo){
+		CMHostNodePersistManager.getInstance().addServer(
+				serverInfo.getHostAddress(),
+				serverInfo.getHostMonPort(),
+				serverInfo.getUserName(),
+				serverInfo);
+	}
+	
 	/**
 	 * Retrieves the version of client
 	 *

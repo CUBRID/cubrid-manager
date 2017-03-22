@@ -58,6 +58,7 @@ import com.cubrid.cubridmanager.core.replication.model.SlaveInfo;
 import com.cubrid.cubridmanager.ui.mondashboard.preference.MonitorDashboardPreference;
 import com.cubrid.cubridmanager.ui.replication.Messages;
 import com.cubrid.cubridmanager.ui.spi.Version;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * 
@@ -344,7 +345,7 @@ public class SetDatabaseInfoPage extends
 						final String msg = task.getErrorMsg();
 						if (monitor.isCanceled()) {
 							if (isConnected) {
-								ServerManager.getInstance().setConnected(ip,
+								ServerManager.setConnected(ip,
 										Integer.parseInt(port), userName, false);
 							}
 							return false;
@@ -358,7 +359,7 @@ public class SetDatabaseInfoPage extends
 								}
 							});
 							if (isConnected) {
-								ServerManager.getInstance().setConnected(ip,
+								ServerManager.setConnected(ip,
 										Integer.parseInt(port), userName, false);
 							}
 							return false;
@@ -366,7 +367,7 @@ public class SetDatabaseInfoPage extends
 					}
 					if (!monitor.isCanceled()) {
 						if (isConnected) {
-							ServerManager.getInstance().setConnected(ip,
+							ServerManager.setConnected(ip,
 									Integer.parseInt(port), userName, false);
 						}
 						display.syncExec(new Runnable() {
@@ -380,9 +381,9 @@ public class SetDatabaseInfoPage extends
 				}
 			};
 			ServerInfo serverInfo = new ServerInfo();
-			if (ServerManager.getInstance().isConnected(ip,
+			if (ServerManager.isConnected(ip,
 					Integer.parseInt(port), userName)) {
-				serverInfo = ServerManager.getInstance().getServer(ip,
+				serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
 						Integer.parseInt(port), userName);
 			} else {
 				serverInfo.setHostAddress(ip);
@@ -390,7 +391,7 @@ public class SetDatabaseInfoPage extends
 				serverInfo.setHostJSPort(Integer.parseInt(port + 1));
 				serverInfo.setUserName(userNameText.getText());
 				serverInfo.setUserPassword(password);
-				ServerManager.getInstance().addServer(ip,
+				CMHostNodePersistManager.getInstance().addServer(ip,
 						Integer.parseInt(port), userName, serverInfo);
 				MonitoringTask monitoringTask = new MonitoringTask(serverInfo);
 				taskExcutor.addTask(monitoringTask);

@@ -94,11 +94,11 @@ public final class CreateReplicationUtil {
 		final String port = masterHost.getPort();
 		final String userName = masterHost.getUserName();
 		final String password = masterHost.getPassword();
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo serverInfo = new ServerInfo();
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = ServerManager.getServer(ip,
 					Integer.parseInt(port), userName);
 			if (!serverInfo.getLoginedUserInfo().isAdmin()) {
 				return Messages.bind(Messages.errInvalidUser, ip);
@@ -209,11 +209,11 @@ public final class CreateReplicationUtil {
 		final String port = slaveHost.getPort();
 		final String userName = slaveHost.getUserName();
 		final String password = slaveHost.getPassword();
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo serverInfo = new ServerInfo();
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = ServerManager.getServer(ip,
 					Integer.parseInt(port), userName);
 			if (!serverInfo.getLoginedUserInfo().isAdmin()) {
 				return Messages.bind(Messages.errInvalidUser, ip);
@@ -301,11 +301,11 @@ public final class CreateReplicationUtil {
 		final String port = distdbHost.getPort();
 		final String userName = distdbHost.getUserName();
 		final String password = distdbHost.getPassword();
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo serverInfo = new ServerInfo();
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = ServerManager.getServer(ip,
 					Integer.parseInt(port), userName);
 			if (!serverInfo.getLoginedUserInfo().isAdmin()) {
 				return Messages.bind(Messages.errInvalidUser, ip);
@@ -394,11 +394,11 @@ public final class CreateReplicationUtil {
 		final String port = distdbHost.getPort();
 		final String userName = distdbHost.getUserName();
 		final String password = distdbHost.getPassword();
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo serverInfo = new ServerInfo();
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = ServerManager.getServer(ip,
 					Integer.parseInt(port), userName);
 			if (!serverInfo.getLoginedUserInfo().isAdmin()) {
 				return Messages.bind(Messages.errInvalidUser, ip);
@@ -458,11 +458,11 @@ public final class CreateReplicationUtil {
 		final String port = slaveHost.getPort();
 		final String userName = slaveHost.getUserName();
 		final String password = slaveHost.getPassword();
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo serverInfo = new ServerInfo();
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = ServerManager.getServer(ip,
 					Integer.parseInt(port), userName);
 			if (!serverInfo.getLoginedUserInfo().isAdmin()) {
 				return Messages.bind(Messages.errInvalidUser, ip);
@@ -539,11 +539,11 @@ public final class CreateReplicationUtil {
 		final String port = masterHost.getPort();
 		final String userName = masterHost.getUserName();
 		final String password = masterHost.getPassword();
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo serverInfo = new ServerInfo();
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = ServerManager.getServer(ip,
 					Integer.parseInt(port), userName);
 			if (!serverInfo.getLoginedUserInfo().isAdmin()) {
 				return Messages.bind(Messages.errInvalidUser, ip);
@@ -588,11 +588,11 @@ public final class CreateReplicationUtil {
 		final String port = distdbHost.getPort();
 		final String userName = distdbHost.getUserName();
 		final String password = distdbHost.getPassword();
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo serverInfo = new ServerInfo();
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = ServerManager.getServer(ip,
 					Integer.parseInt(port), userName);
 			if (!serverInfo.getLoginedUserInfo().isAdmin()) {
 				return Messages.bind(Messages.errInvalidUser, ip);

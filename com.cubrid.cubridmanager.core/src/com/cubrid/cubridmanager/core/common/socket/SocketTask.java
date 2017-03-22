@@ -172,7 +172,7 @@ public abstract class SocketTask extends AbstractTask {
 			return;
 		}
 		if (isNeedServerConnected
-				&& !ServerManager.getInstance().isConnected(
+				&& !ServerManager.isConnected(
 						serverInfo.getHostAddress(),
 						serverInfo.getHostMonPort(), serverInfo.getUserName())) {
 			errorMsg = Messages.error_disconnected;

@@ -280,7 +280,7 @@ public class CubridHostNavigatorView extends CubridNavigatorView {
 	 * @return Object
 	 */
 	protected Object getGroupItems() {
-		return CMHostNodePersistManager.getInstance().getAllServer();
+		return CMHostNodePersistManager.getInstance().getAllServers();
 	}
 
 	/**

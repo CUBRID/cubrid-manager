@@ -29,11 +29,7 @@
 package com.cubrid.cubridmanager.core.common;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 
@@ -45,21 +41,12 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
  */
 public final class ServerManager {
 
-	private static ServerManager manager = new ServerManager();
-	private final Map<String, ServerInfo> serverInfoMap = new HashMap<String, ServerInfo>();
-
-	private ServerManager() {
+	private static HashMap<String, ServerInfo> serverInfos;
+	
+	public static ServerInfo getServer(String hostAddress, int port, String userName){
+		return serverInfos.get(hostAddress + ":" + port + ":" + userName);
 	}
-
-	/**
-	 * Return the only CUBRID Manager server manager instance
-	 * 
-	 * @return ServerManager
-	 */
-	public static ServerManager getInstance() {
-		return manager;
-	}
-
+	
 	/**
 	 * Return connected status of server
 	 * 
@@ -68,7 +55,7 @@ public final class ServerManager {
 	 * @param userName the String
 	 * @return boolean
 	 */
-	public boolean isConnected(String hostAddress, int port, String userName) {
+	public static boolean isConnected(String hostAddress, int port, String userName) {
 		ServerInfo serverInfo = getServer(hostAddress, port, userName);
 		if (serverInfo == null) {
 			return false;
@@ -84,78 +71,21 @@ public final class ServerManager {
 	 * @param userName the String
 	 * @param isConnected boolean whether is connected
 	 */
-	public void setConnected(String hostAddress, int port, String userName, boolean isConnected) {
-		synchronized (this) {
+	public static void setConnected(String hostAddress, int port, String userName, boolean isConnected) {
+		synchronized (serverInfos) {
 			ServerInfo serverInfo = getServer(hostAddress, port, userName);
 			if (serverInfo == null) {
 				return;
 			}
 			serverInfo.setConnected(isConnected);
-//			if (!isConnected) {
-//				serverInfoMap.remove(hostAddress + ":" + port + ":" + userName);
-//			}
 		}
 	}
-
-	/**
-	 * Get CUBRID Manager server information
-	 * 
-	 * @param hostAddress String host address
-	 * @param port int host port
-	 * @param userName the String
-	 * @return ServerInfo
-	 */
-	public ServerInfo getServer(String hostAddress, int port, String userName) {
-		return serverInfoMap.get(hostAddress + ":" + port + ":" + userName);
+	
+	public static void setServerInfos(HashMap<String, ServerInfo> infos){
+		serverInfos = infos;
 	}
-
-	/**
-	 * Remove CUBRID Manager server
-	 * 
-	 * @param hostAddress String host address
-	 * @param port int host port
-	 * @param userName the String
-	 */
-	public void removeServer(String hostAddress, int port, String userName) {
-		synchronized (this) {
-			setConnected(hostAddress, port, userName, false);
-			serverInfoMap.remove(hostAddress + ":" + port + ":" + userName);
-		}
-	}
-
-	/**
-	 * Add CUBRID Manager server information
-	 * 
-	 * @param hostAddress String host address
-	 * @param port int host port
-	 * @param value ServerInfo given serverInfo
-	 * @param userName the String
-	 * @return ServerInfo
-	 */
-	public ServerInfo addServer(String hostAddress, int port, String userName, ServerInfo value) {
-		synchronized (this) {
-			return serverInfoMap.put(hostAddress + ":" + port + ":" + userName, value);
-		}
-	}
-
-	public void disConnectAllServer() {
-		synchronized (this) {
-			if (serverInfoMap != null) {
-				List<ServerInfo> serverInfoList = new ArrayList<ServerInfo>();
-				serverInfoList.addAll(serverInfoMap.values());
-				Iterator<ServerInfo> it = serverInfoList.iterator();
-				while (it.hasNext()) {
-					ServerInfo serverInfo = it.next();
-					if (serverInfo.isConnected()) {
-						setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
-								serverInfo.getLoginedUserInfo().getUserName(), false);
-					}
-				}
-			}
-		}
-	}
-
-	public Collection<ServerInfo> getAllServerInfo() {
-		return serverInfoMap.values();
+	
+	public static HashMap<String, ServerInfo> getAllServerInfos(){
+		return serverInfos;
 	}
 }

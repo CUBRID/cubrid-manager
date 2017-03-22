@@ -65,6 +65,7 @@ import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.mondashboard.preference.MonitorDashboardPreference;
 import com.cubrid.cubridmanager.ui.replication.Messages;
 import com.cubrid.cubridmanager.ui.spi.Version;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * 
@@ -225,7 +226,7 @@ public class CreateReplicationJobExecutor extends
 	 */
 	private void disConnect(MonitoringTask monitoringTask) {
 		if (monitoringTask != null) {
-			ServerManager.getInstance().setConnected(
+			ServerManager.setConnected(
 					monitoringTask.getServerInfo().getHostAddress(),
 					monitoringTask.getServerInfo().getHostMonPort(),
 					monitoringTask.getServerInfo().getUserName(), false);
@@ -256,7 +257,7 @@ public class CreateReplicationJobExecutor extends
 			if (task instanceof MonitoringTask) {
 				monitoringTask = (MonitoringTask) task;
 				ServerInfo serverInfo = monitoringTask.getServerInfo();
-				ServerManager.getInstance().addServer(
+				CMHostNodePersistManager.getInstance().addServer(
 						serverInfo.getHostAddress(),
 						serverInfo.getHostMonPort(), serverInfo.getUserName(),
 						serverInfo);
@@ -428,7 +429,7 @@ public class CreateReplicationJobExecutor extends
 			if (task instanceof MonitoringTask) {
 				monitoringTask = (MonitoringTask) task;
 				ServerInfo serverInfo = monitoringTask.getServerInfo();
-				ServerManager.getInstance().addServer(
+				CMHostNodePersistManager.getInstance().addServer(
 						serverInfo.getHostAddress(),
 						serverInfo.getHostMonPort(), serverInfo.getUserName(),
 						serverInfo);
@@ -516,7 +517,7 @@ public class CreateReplicationJobExecutor extends
 			if (task instanceof MonitoringTask) {
 				monitoringTask = (MonitoringTask) task;
 				ServerInfo serverInfo = monitoringTask.getServerInfo();
-				ServerManager.getInstance().addServer(
+				CMHostNodePersistManager.getInstance().addServer(
 						serverInfo.getHostAddress(),
 						serverInfo.getHostMonPort(), serverInfo.getUserName(),
 						serverInfo);
@@ -603,7 +604,7 @@ public class CreateReplicationJobExecutor extends
 			if (task instanceof MonitoringTask) {
 				monitoringTask = (MonitoringTask) task;
 				ServerInfo serverInfo = monitoringTask.getServerInfo();
-				ServerManager.getInstance().addServer(
+				CMHostNodePersistManager.getInstance().addServer(
 						serverInfo.getHostAddress(),
 						serverInfo.getHostMonPort(), serverInfo.getUserName(),
 						serverInfo);
@@ -657,7 +658,7 @@ public class CreateReplicationJobExecutor extends
 			if (task instanceof MonitoringTask) {
 				monitoringTask = (MonitoringTask) task;
 				ServerInfo serverInfo = monitoringTask.getServerInfo();
-				ServerManager.getInstance().addServer(
+				CMHostNodePersistManager.getInstance().addServer(
 						serverInfo.getHostAddress(),
 						serverInfo.getHostMonPort(), serverInfo.getUserName(),
 						serverInfo);

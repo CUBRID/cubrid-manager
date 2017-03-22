@@ -68,6 +68,7 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.ui.broker.editor.internal.BrokerIntervalSettingManager;
 import com.cubrid.cubridmanager.ui.common.navigator.CubridHostNavigatorView;
 import com.cubrid.cubridmanager.ui.host.Messages;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.util.HostUtils;
 
 public class NewMultiHostConnectionDialog extends CMTitleAreaDialog {
@@ -168,7 +169,7 @@ public class NewMultiHostConnectionDialog extends CMTitleAreaDialog {
 				|| multiHostConnectionFailedServerInfo.getCubridServer().isConnected()) {
 			return;
 		}
-		HostDialog dialog = new HostDialog(getShell(), false);
+		HostDialog dialog = new HostDialog(getShell(), false, false);
 		ServerInfo oldServerInfo = multiHostConnectionFailedServerInfo.getCubridServer().getServerInfo();
 		dialog.setServer(multiHostConnectionFailedServerInfo.getCubridServer());
 		if (dialog.open() != HostDialog.CONNECT_ID) {
@@ -190,7 +191,7 @@ public class NewMultiHostConnectionDialog extends CMTitleAreaDialog {
 		multiHostConnectionFailedServerInfo.getCubridServer().setLabel(serverInfo.getServerName());
 		multiHostConnectionFailedServerInfo.getCubridServer().setServerInfo(serverInfo);
 		multiHostConnectionFailedServerInfo.getCubridServer().setAutoSavePassword(dialog.isSavePassword());
-		ServerManager.getInstance().addServer(serverInfo.getHostAddress(),
+		CMHostNodePersistManager.getInstance().addServer(serverInfo.getHostAddress(),
 				serverInfo.getHostMonPort(), serverInfo.getUserName(),
 				serverInfo);
 		CubridNodeManager.getInstance().fireCubridNodeChanged(

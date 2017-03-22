@@ -331,10 +331,6 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 	public MonitoringTask getMonitoringTask() {
 		synchronized (this) {
 			if (monitoringTask == null) {
-				if (getHostAddress() != null) {
-					ServerManager.getInstance().addServer(getHostAddress(),
-							getHostMonPort(), getUserName(), this);
-				}
 				monitoringTask = new MonitoringTask(this);
 			}
 			return monitoringTask;
@@ -1198,6 +1194,17 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 
 	public void setCheckCertStatus(boolean isCheckCertStatus) {
 		this.isCheckCertStatus = isCheckCertStatus;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		if(!(obj instanceof ServerInfo)){
+			return false;
+		}
+		ServerInfo serverInfo = (ServerInfo)obj;
+		return serverInfo.getHostAddress().compareTo(getHostAddress()) == 0 &&
+				serverInfo.getHostMonPort() == getHostMonPort() &&
+				serverInfo.getUserName().compareTo(getUserName()) == 0;
 	}
 
 }

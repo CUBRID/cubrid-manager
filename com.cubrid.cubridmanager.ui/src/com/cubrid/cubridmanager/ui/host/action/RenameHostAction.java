@@ -158,7 +158,7 @@ public class RenameHostAction extends SelectionAction {
 			setEnabled(false);
 
 			// Save the data
-			ServerManager.getInstance().addServer(
+			CMHostNodePersistManager.getInstance().addServer(
 					server.getServerInfo().getHostAddress(),
 					server.getServerInfo().getHostMonPort(),
 					server.getServerInfo().getUserName(),

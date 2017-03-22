@@ -65,6 +65,7 @@ import com.cubrid.cubridmanager.core.mondashboard.model.HostStatusType;
 import com.cubrid.cubridmanager.ui.mondashboard.Messages;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.BrokerNode;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * 
@@ -353,7 +354,7 @@ public class SelectBrokerPage extends
 			} else {
 				hostNode = setHostInfoPage.getHostNode();
 			}
-			serverInfo = ServerManager.getInstance().getServer(
+			serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 					hostNode.getIp(), Integer.parseInt(hostNode.getPort()),
 					hostNode.getUserName());
 			BrokerInfos brokerInfos = serverInfo.getBrokerInfos();

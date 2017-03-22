@@ -159,7 +159,7 @@ public class EditHostAction extends SelectionAction {
 			return;
 		}
 
-		doRun(servers);
+		doRun(servers, false);
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class EditHostAction extends SelectionAction {
 	 * 
 	 * @param obj
 	 */
-	public void doRun(CubridServer[] servers) {
+	public void doRun(CubridServer[] servers, boolean actionIsConnect) {
 		//multi edit
 		if (servers.length > 1) {
 			MultiHostEditDialog dialog = new MultiHostEditDialog(getShell(),
@@ -227,8 +227,7 @@ public class EditHostAction extends SelectionAction {
 
 				server.setId(newServerInfo.getServerName());
 				server.setLabel(newServerInfo.getServerName());
-
-				ServerManager.getInstance().addServer(
+				CMHostNodePersistManager.getInstance().addServer(
 						newServerInfo.getHostAddress(),
 						newServerInfo.getHostMonPort(),
 						newServerInfo.getUserName(), newServerInfo);
@@ -254,7 +253,7 @@ public class EditHostAction extends SelectionAction {
 		}
 
 		// single edit
-		HostDialog dialog = new HostDialog(getShell(), false);
+		HostDialog dialog = new HostDialog(getShell(), false, actionIsConnect);
 		CubridServer server = null;
 		try {
 			server = servers[0];
@@ -307,7 +306,7 @@ public class EditHostAction extends SelectionAction {
 		server.setLabel(serverInfo.getServerName());
 		server.setServerInfo(serverInfo);
 		server.setAutoSavePassword(dialog.isSavePassword());
-		ServerManager.getInstance().addServer(serverInfo.getHostAddress(),
+		CMHostNodePersistManager.getInstance().addServer(serverInfo.getHostAddress(),
 				serverInfo.getHostMonPort(), serverInfo.getUserName(),
 				serverInfo);
 

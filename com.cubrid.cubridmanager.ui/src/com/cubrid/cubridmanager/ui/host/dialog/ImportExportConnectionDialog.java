@@ -240,7 +240,7 @@ public class ImportExportConnectionDialog extends CMTitleAreaDialog {
 	 * Init export data
 	 */
 	private void initExportTableData() {
-		List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServer();
+		List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServers();
 		for (CubridServer server : servers) {
 			server.setData(serverOnSelection,true);
 		}
@@ -536,7 +536,7 @@ public class ImportExportConnectionDialog extends CMTitleAreaDialog {
 	 * @return
 	 */
 	public boolean isContainSameHost(CubridServer server) {
-		for (CubridServer temp : CMHostNodePersistManager.getInstance().getAllServer()) {
+		for (CubridServer temp : CMHostNodePersistManager.getInstance().getAllServers()) {
 			if (temp.getHostAddress().equals(server.getHostAddress())
 					&& temp.getMonPort().equals(server.getMonPort())) {
 				return true;

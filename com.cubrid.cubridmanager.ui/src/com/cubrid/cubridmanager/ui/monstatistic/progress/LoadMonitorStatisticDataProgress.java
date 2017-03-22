@@ -249,12 +249,12 @@ public class LoadMonitorStatisticDataProgress implements IRunnableWithProgress {
 	}
 
 	private void removeServer(ServerInfo serverInfo) {
-		ServerManager.getInstance().removeServer(serverInfo.getHostAddress(),
+		CMHostNodePersistManager.getInstance().removeServer(serverInfo.getHostAddress(),
 				serverInfo.getHostMonPort(), serverInfo.getUserName());
 	}
 
 	private void addServer(ServerInfo serverInfo) {
-		ServerManager.getInstance().addServer(serverInfo.getHostAddress(),
+		CMHostNodePersistManager.getInstance().addServer(serverInfo.getHostAddress(),
 				serverInfo.getHostMonPort(), serverInfo.getUserName(),
 				serverInfo);
 	}
@@ -312,7 +312,6 @@ public class LoadMonitorStatisticDataProgress implements IRunnableWithProgress {
 	 */
 	public static ServerInfo buildServerInfo(StatisticChartHost hostInfo) {
 		final CMHostNodePersistManager hostNodePersistManager = CMHostNodePersistManager.getInstance();
-		final ServerManager serverManager = ServerManager.getInstance();
 
 		ServerInfo serverInfo = hostInfo.getServerInfo();
 		String serverName = null;
@@ -345,7 +344,7 @@ public class LoadMonitorStatisticDataProgress implements IRunnableWithProgress {
 				username = hostInfo.getUser();
 				password = hostInfo.getPassword();
 			}
-			serverInfo = serverManager.getServer(ip, port, username);
+			serverInfo = hostNodePersistManager.getServerInfo(ip, port, username);
 			if (serverInfo == null) {
 				//if (serverInfo == null || !serverInfo.isConnected()) {
 				serverInfo = new ServerInfo();
@@ -379,7 +378,7 @@ public class LoadMonitorStatisticDataProgress implements IRunnableWithProgress {
 		for (ServerInfo serverInfo : disconnectedServerSet) {
 			serverInfo.disConnect();
 			serverInfo.setConnected(false);
-			ServerManager.getInstance().removeServer(serverInfo.getHostAddress(), 
+			CMHostNodePersistManager.getInstance().removeServer(serverInfo.getHostAddress(), 
 					serverInfo.getHostMonPort(), serverInfo.getUserName());
 		}
 		disconnectedServerSet.clear();

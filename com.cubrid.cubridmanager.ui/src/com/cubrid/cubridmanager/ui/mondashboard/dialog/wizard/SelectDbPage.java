@@ -73,6 +73,7 @@ import com.cubrid.cubridmanager.ui.mondashboard.Messages;
 import com.cubrid.cubridmanager.ui.mondashboard.dialog.AddHADatabaseDialog;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.DatabaseNode;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.util.HAUtil;
 
 /**
@@ -536,7 +537,7 @@ public class SelectDbPage extends
 			} else {
 				hostNode = setHostInfoPage.getHostNode();
 			}
-			serverInfo = ServerManager.getInstance().getServer(
+			serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 					hostNode.getIp(), Integer.parseInt(hostNode.getPort()),
 					hostNode.getUserName());
 			List<DatabaseInfo> dbInfoList = serverInfo.getLoginedUserInfo().getDatabaseInfoList();

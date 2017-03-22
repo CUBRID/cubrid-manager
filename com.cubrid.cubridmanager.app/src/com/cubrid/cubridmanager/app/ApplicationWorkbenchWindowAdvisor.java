@@ -93,6 +93,7 @@ import com.cubrid.cubridmanager.ui.spi.contribution.CubridStatusLineContrItem;
 import com.cubrid.cubridmanager.ui.spi.contribution.CubridTitleLineContrItem;
 import com.cubrid.cubridmanager.ui.spi.contribution.CubridWorkbenchContrItem;
 import com.cubrid.cubridmanager.ui.spi.persist.CMDBNodePersistManager;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
 import com.cubrid.cubridmanager.ui.workspace.dialog.ChooseModeDialog;
 
@@ -328,7 +329,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 	 * Performs arbitrary actions after the window is closed.
 	 */
 	public void postWindowClose() {
-		ServerManager.getInstance().disConnectAllServer();
+		CMHostNodePersistManager.getInstance().disConnectAllServer();
 		ResourceManager.dispose();
 		super.postWindowClose();
 	}

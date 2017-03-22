@@ -175,7 +175,7 @@ public class SettingHostPage extends
 			public void widgetDefaultSelected(SelectionEvent e) {
 				selectedSlaveServer = null;
 				String serverName = slaveHostCombo.getText();
-				List<CubridServer> serverList = CMHostNodePersistManager.getInstance().getAllServer();
+				List<CubridServer> serverList = CMHostNodePersistManager.getInstance().getAllServers();
 				for (CubridServer server : serverList) {
 					if (serverName.equals(server.getName())) {
 						selectedSlaveServer = server;
@@ -228,7 +228,7 @@ public class SettingHostPage extends
 
 		slaveHostCombo.removeAll();
 		String master = haModel.getMasterServer().getServer().getServerName();
-		List<CubridServer> serverList = CMHostNodePersistManager.getInstance().getAllServer();
+		List<CubridServer> serverList = CMHostNodePersistManager.getInstance().getAllServers();
 		for (CubridServer server : serverList) {
 			if (server.isConnected() && !master.equals(server.getServerName())) {
 				ServerInfo serverInfo = server.getServerInfo();

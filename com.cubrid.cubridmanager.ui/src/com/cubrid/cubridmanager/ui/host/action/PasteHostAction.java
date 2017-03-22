@@ -168,7 +168,7 @@ public class PasteHostAction extends
 		}
 		CubridServer pastedServer = (CubridServer) objs[0];
 
-		HostDialog dialog = new HostDialog(getShell(), true);
+		HostDialog dialog = new HostDialog(getShell(), true, false);
 		dialog.setServer(pastedServer);
 
 		int returnCode = dialog.open();

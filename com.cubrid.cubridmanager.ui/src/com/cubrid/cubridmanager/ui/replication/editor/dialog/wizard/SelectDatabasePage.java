@@ -50,6 +50,7 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.ui.replication.Messages;
 import com.cubrid.cubridmanager.ui.replication.editor.model.HostNode;
 import com.cubrid.cubridmanager.ui.replication.editor.model.MasterNode;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * 
@@ -164,7 +165,7 @@ public class SelectDatabasePage extends
 			setErrorMessage(Messages.errInvalidHostInfo);
 		}
 		if (isValidHost) {
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(
+			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 					host.getIp(), Integer.parseInt(host.getPort()),
 					host.getUserName());
 			if (serverInfo != null
@@ -176,7 +177,7 @@ public class SelectDatabasePage extends
 		List<String> dbNameList = new ArrayList<String>();
 		if (host != null && host.isValid()) {
 			databaseInfoList = host.getDatabaseInfoList();
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(
+			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 					host.getIp(), Integer.parseInt(host.getPort()),
 					host.getUserName());
 			if (serverInfo != null && serverInfo.isConnected()) {

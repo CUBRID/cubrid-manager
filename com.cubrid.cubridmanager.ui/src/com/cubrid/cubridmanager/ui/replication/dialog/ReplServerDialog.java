@@ -60,6 +60,7 @@ import com.cubrid.cubridmanager.core.replication.task.StopReplServerTask;
 import com.cubrid.cubridmanager.ui.mondashboard.preference.MonitorDashboardPreference;
 import com.cubrid.cubridmanager.ui.replication.Messages;
 import com.cubrid.cubridmanager.ui.spi.Version;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * 
@@ -266,7 +267,7 @@ public class ReplServerDialog extends
 		TaskExecutor taskExcutor = new TaskExecutor() {
 
 			public void disConnect() {
-				ServerManager.getInstance().setConnected(ip,
+				ServerManager.setConnected(ip,
 						Integer.parseInt(port), userName, false);
 			}
 
@@ -329,7 +330,7 @@ public class ReplServerDialog extends
 					final String msg = task.getErrorMsg();
 					if (openErrorBox(getShell(), msg, monitor)) {
 						if (isConnected) {
-							ServerManager.getInstance().setConnected(ip,
+							ServerManager.setConnected(ip,
 									Integer.parseInt(port), userName, false);
 
 						}
@@ -351,11 +352,11 @@ public class ReplServerDialog extends
 			}
 		};
 
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo serverInfo = new ServerInfo();
 		if (isConnected) {
-			serverInfo = ServerManager.getInstance().getServer(ip,
+			serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
 					Integer.parseInt(port), userName);
 		} else {
 			serverInfo.setHostAddress(ip);
@@ -363,7 +364,7 @@ public class ReplServerDialog extends
 			serverInfo.setHostJSPort(Integer.parseInt(port) + 1);
 			serverInfo.setUserName(userName);
 			serverInfo.setUserPassword(password);
-			ServerManager.getInstance().addServer(ip, Integer.parseInt(port),
+			CMHostNodePersistManager.getInstance().addServer(ip, Integer.parseInt(port),
 					userName, serverInfo);
 			MonitoringTask monitoringTask = new MonitoringTask(serverInfo);
 			taskExcutor.addTask(monitoringTask);
@@ -404,7 +405,7 @@ public class ReplServerDialog extends
 				&& password.indexOf(" ") < 0;
 		boolean isValidUser = true;
 		if (isValidPort) {
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(
+			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(
 					ipText.getText(), Integer.parseInt(port),
 					userNameText.getText());
 			if (serverInfo != null

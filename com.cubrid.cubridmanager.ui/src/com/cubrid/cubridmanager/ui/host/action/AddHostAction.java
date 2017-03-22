@@ -102,7 +102,7 @@ public class AddHostAction extends SelectionAction {
 			return;
 		}
 
-		HostDialog dialog = new HostDialog(getShell(), true);
+		HostDialog dialog = new HostDialog(getShell(), true, false);
 		int returnCode = dialog.open();
 		if (returnCode == HostDialog.ADD_ID || returnCode == HostDialog.CONNECT_ID) {
 			CubridServer server = getServerNode(dialog);

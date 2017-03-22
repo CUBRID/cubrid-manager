@@ -34,6 +34,7 @@ import java.util.Set;
 
 import com.cubrid.cubridmanager.core.common.ServerManager;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 import junit.framework.TestCase;
 
@@ -56,7 +57,7 @@ public class NodeInfoTest extends TestCase{
 		String status = "Master";
 		int port = 8001;
 		String userName = "admin";
-		ServerInfo serverInfo = ServerManager.getInstance().getServer(ip,
+		ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
 				port, userName);
 		Set<NodeInfo> nodeSet = new HashSet<NodeInfo>();
 		nodeInfo.setServiceName(serviceName);

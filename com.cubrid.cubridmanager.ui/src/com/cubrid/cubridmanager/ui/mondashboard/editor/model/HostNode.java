@@ -314,7 +314,7 @@ public class HostNode extends
 	 */
 	public ServerInfo getServerInfo() {
 		if (ip != null && port != null && userName != null) {
-			return ServerManager.getInstance().getServer(ip,
+			return ServerManager.getServer(ip,
 					Integer.parseInt(port), userName);
 		}
 		return null;

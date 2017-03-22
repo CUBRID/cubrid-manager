@@ -150,7 +150,7 @@ public class EditStatisticHostDialog extends
 		this.parentDialog = parentDialog;
 		this.isNewHost = isNewHost;
 
-		List<CubridServer> cubridServerList = hostNodePersistManager.getAllServer();
+		List<CubridServer> cubridServerList = hostNodePersistManager.getAllServers();
 		itemsHost = new String[cubridServerList.size() + 1];
 		itemsHost[0] = VALUE_DEFAULT;
 		for (int i = 0; i < cubridServerList.size(); i++) {

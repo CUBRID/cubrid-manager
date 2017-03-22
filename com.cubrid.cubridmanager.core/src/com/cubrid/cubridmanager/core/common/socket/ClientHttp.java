@@ -231,7 +231,7 @@ public class ClientHttp extends AbstractManagerClient {
 				errorMsg = e.getMessage();
 			}
 			super.canConnect = false;
-			ServerManager.getInstance().setConnected(hostAddress, port, userName, false);
+			ServerManager.setConnected(hostAddress, port, userName, false);
 		}
 		// TODO Add identifiable error message in the above code.
 

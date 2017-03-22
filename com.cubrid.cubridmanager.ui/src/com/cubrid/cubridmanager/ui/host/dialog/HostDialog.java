@@ -50,7 +50,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 import com.cubrid.common.ui.common.dialog.JdbcManageDialog;
 import com.cubrid.common.ui.common.preference.GeneralPreference;
@@ -68,7 +67,6 @@ import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.ValidateUtil;
 import com.cubrid.cubridmanager.core.common.ServerManager;
-import com.cubrid.cubridmanager.core.common.model.CertStatus;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.ui.host.Messages;
@@ -104,6 +102,7 @@ public class HostDialog extends
 	private boolean isSavePassword;
 	private Button btnAutoCommit;
 	private final boolean isNewHost;
+	private final boolean actionIsConnect;
 	private ServerInfo testConnServerInfo = null;
 
 	private Button btnUseTimeOut;
@@ -118,9 +117,10 @@ public class HostDialog extends
 	 * @param parentShell
 	 * @param isNewHost
 	 */
-	public HostDialog(Shell parentShell, boolean isNewHost) {
+	public HostDialog(Shell parentShell, boolean isNewHost, boolean actionIsConnect) {
 		super(parentShell);
 		this.isNewHost = isNewHost;
+		this.actionIsConnect = actionIsConnect;
 	}
 
 	/**
@@ -332,9 +332,30 @@ public class HostDialog extends
 			setTitle(Messages.titleAddHostDialog);
 			setMessage(Messages.msgAddHostDialog);
 		} else {
-			setTitle(Messages.titleConnectHostDialog);
-			setMessage(Messages.msgConnectHostDialog);
+			if(actionIsConnect){
+				setTitle(Messages.titleConnectHostDialog);
+				setMessage(Messages.msgConnectHostDialog);
+			}else{
+				setTitle(Messages.titleEditHostDialog);
+				setMessage(Messages.msgEditHostDialog);
+			}
 		}
+		
+		if(actionIsConnect){
+			hostNameText.setEnabled(false);
+			portText.setEnabled(false);
+			passwordText.setEnabled(false);
+			jdbcVersionCombo.setEnabled(false);
+			userNameText.setEnabled(false);
+			addressText.setEnabled(false);
+			btnSavePassword.setEnabled(false);
+			btnAutoCommit.setEnabled(false);
+			btnUseTimeOut.setEnabled(false);
+			timeOutCombo.setEnabled(false);
+			btnOpen.setEnabled(false);
+			passHelp.setVisible(false);
+		}
+		
 		return parentComp;
 	}
 
@@ -376,7 +397,11 @@ public class HostDialog extends
 		if (isNewHost) {
 			getShell().setText(Messages.titleAddHostDialog);
 		} else {
-			getShell().setText(Messages.titleConnectHostDialog);
+			if (actionIsConnect) {
+				getShell().setText(Messages.titleConnectHostDialog);
+			} else {
+				getShell().setText(Messages.titleEditHostDialog);
+			}
 		}
 	}
 
@@ -410,6 +435,7 @@ public class HostDialog extends
 
 			getButton(CONNECT_ID).setEnabled(isEnabled);
 			getButton(TEST_CONNECT_ID).setEnabled(isEnabled);
+			getButton(SAVE_ID).setEnabled(!actionIsConnect);
 		}
 
 		createButton(parent, IDialogConstants.CANCEL_ID,
@@ -437,7 +463,7 @@ public class HostDialog extends
 			String password = passwordText.getText();
 			String jdbcDriverVersion = jdbcVersionCombo.getText();
 
-			serverInfo = ServerManager.getInstance().getServer(address,
+			serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(address,
 					Integer.parseInt(port), userName);
 			if (serverInfo == null) {
 				serverInfo = new ServerInfo();
@@ -511,7 +537,7 @@ public class HostDialog extends
 	 */
 	public void closeTestServerConnection() {
 		if (testConnServerInfo != null) {
-			ServerManager.getInstance().setConnected(
+			ServerManager.setConnected(
 					testConnServerInfo.getHostAddress(),
 					testConnServerInfo.getHostMonPort(),
 					testConnServerInfo.getUserName(), false);
@@ -611,9 +637,9 @@ public class HostDialog extends
 			setEnabled(false);
 			return;
 		}
-		boolean isHostExist = CMHostNodePersistManager.getInstance().isContainedByName(
+		boolean hostNameExists = CMHostNodePersistManager.getInstance().isContainedByName(
 				hostName, isNewHost ? null : server);
-		if (isHostExist) {
+		if (hostNameExists) {
 			setErrorMessage(Messages.errHostExist);
 			setEnabled(false);
 			return;
@@ -639,14 +665,18 @@ public class HostDialog extends
 			setEnabled(false);
 			return;
 		}
+		
+		String userName = userNameText.getText();
 		boolean isAddressExist = CMHostNodePersistManager.getInstance().isContainedByHostAddress(
 				address, port, isNewHost ? null : server);
-		if (isHostExist && isAddressExist) {
-			setErrorMessage(Messages.errAddressExist);
+		boolean isUserNameExist = CMHostNodePersistManager.getInstance().isContainedByUserName(userName);
+		
+		if(isUserNameExist && isAddressExist && isNewHost){
+			setErrorMessage(Messages.errDuplicateHost);
 			setEnabled(false);
 			return;
 		}
-		String userName = userNameText.getText();
+		
 		boolean isValidUserName = userName.indexOf(" ") < 0
 				&& userName.trim().length() >= 4
 				&& userName.trim().length() <= ValidateUtil.MAX_NAME_LENGTH;

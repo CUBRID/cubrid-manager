@@ -174,7 +174,7 @@ public final class CMGroupNodePersistManager implements
 		if (groupNodeList.isEmpty()) {
 			try {
 				groupNodeList.add((CubridGroupNode) DEFAULT_GROUP_NODE.clone());
-				List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServer();
+				List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServers();
 				for (CubridServer server : servers) {
 					groupNodeList.get(0).addChild(server);
 				}
@@ -207,7 +207,7 @@ public final class CMGroupNodePersistManager implements
 				}
 			}
 			dftNode.removeAllChild();
-			List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServer();
+			List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServers();
 			for (CubridServer ser : servers) {
 				if (!nodesHasParent.contains(ser)) {
 					dftNode.addChild(ser);
@@ -254,7 +254,7 @@ public final class CMGroupNodePersistManager implements
 	 */
 	public List<ICubridNode> getAllGroupItems() {
 		List<ICubridNode> result = new ArrayList<ICubridNode>();
-		List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServer();
+		List<CubridServer> servers = CMHostNodePersistManager.getInstance().getAllServers();
 		for (CubridServer server : servers) {
 			result.add(server);
 		}
@@ -370,7 +370,7 @@ public final class CMGroupNodePersistManager implements
 		if (!(node instanceof CubridServer)) {
 			return;
 		}
-		List<CubridServer> serverList = CMHostNodePersistManager.getInstance().getAllServer();
+		List<CubridServer> serverList = CMHostNodePersistManager.getInstance().getAllServers();
 		int oldIndex = serverList.indexOf(node);
 		int insertIndex = Math.min(serverList.size(), index);
 		if (oldIndex < insertIndex) {
@@ -419,7 +419,7 @@ public final class CMGroupNodePersistManager implements
 	 * @deprecated
 	 */
 	public void fix() {
-		List<CubridServer> svrs = CMHostNodePersistManager.getInstance().getAllServer();
+		List<CubridServer> svrs = CMHostNodePersistManager.getInstance().getAllServers();
 		if (svrs == null)
 			return;
 

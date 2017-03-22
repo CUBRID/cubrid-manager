@@ -249,7 +249,7 @@ public class SlaveDbInfoPage extends
 			return Messages.chsldb0errInvalidMasterDbPort;
 		}
 
-		ServerInfo serverInfo = ServerManager.getInstance().getServer(hostIp,
+		ServerInfo serverInfo = ServerManager.getServer(hostIp,
 				Integer.parseInt(masterDbHostPort),
 				masterDbHostUserText.getText());
 		//verify whether a user that it is not admin already logined

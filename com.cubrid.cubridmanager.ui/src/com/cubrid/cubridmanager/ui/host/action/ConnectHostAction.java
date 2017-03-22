@@ -155,7 +155,7 @@ public class ConnectHostAction extends SelectionAction {
 			} else {
 				EditHostAction editHostAction = (EditHostAction)ActionManager.getInstance().getAction(EditHostAction.ID);
 				if (editHostAction != null) {
-					editHostAction.doRun(servers);
+					editHostAction.doRun(servers, true);
 				}
 			}
 		} else {
