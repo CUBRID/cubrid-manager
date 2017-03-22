@@ -102,7 +102,7 @@ public final class HostUtils {
 
 		server.getLoader().setLoaded(false);
 		server.removeAllChild();
-		ServerManager.setConnected(
+		ServerManager.getInstance().setConnected(
 				server.getHostAddress(),
 				server.getMonPort() == null ? 0 : Integer.parseInt(server.getMonPort()),
 				server.getUserName(), false);

@@ -87,7 +87,7 @@ public class HaShardDemo {
 			String serviceName, String connectName, String nodeName) {
 		HaShardManager haShardManager = HaShardManager.getInstance();
 		//build server info
-		ServerInfo serverInfo = ServerManager.getServer(ip, port, userName);
+		ServerInfo serverInfo = ServerManager.getInstance().getServer(ip, port, userName);
 		if (serverInfo == null) {
 			serverInfo = new ServerInfo();
 			serverInfo.setHostAddress(ip);

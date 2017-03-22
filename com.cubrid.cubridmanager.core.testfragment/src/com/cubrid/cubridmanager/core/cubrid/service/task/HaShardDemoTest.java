@@ -34,7 +34,6 @@ import com.cubrid.cubridmanager.core.common.ServerManager;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.cubrid.service.model.NodeInfo;
 import com.cubrid.cubridmanager.core.cubrid.service.model.NodeType;
-import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 import junit.framework.TestCase;
 
@@ -122,7 +121,7 @@ public class HaShardDemoTest extends TestCase {
 	}
 	
 	public void testHaNode() {
-		try{
+		try {
 			demo.registerServiceAndBuildInfo(haIp, haCmPort, haCmUser, 
 					haCmPass, serviceName, haConnName, haHost);
 			
@@ -131,17 +130,17 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getServiceName(), serviceName);
 			assertEquals(node.getHostName(), haHost);
 			assertEquals(node.getCmConnectName(), haConnName);
-		}finally{
-			ServerInfo serverInfo = ServerManager.getServer(haIp,
+		} finally {
+			ServerInfo serverInfo = ServerManager.getInstance().getServer(haIp,
 					haCmPort, haCmUser);
-			CMHostNodePersistManager.getInstance().removeServer(
+			ServerManager.getInstance().removeServer(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
 	
 	public void testReplicaNode() {
-		try{
+		try {
 			demo.registerServiceAndBuildInfo(replicaIp, replicaCmPort, replicaCmUser, 
 					replicaCmPass, serviceName, replicaConnName, replicaHost);
 			
@@ -150,17 +149,17 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getServiceName(), serviceName);
 			assertEquals(node.getHostName(), replicaHost);
 			assertEquals(node.getCmConnectName(), replicaConnName);
-		}finally{
-			ServerInfo serverInfo = ServerManager.getServer(replicaIp,
+		} finally {
+			ServerInfo serverInfo = ServerManager.getInstance().getServer(replicaIp,
 					replicaCmPort, replicaCmUser);
-			CMHostNodePersistManager.getInstance().removeServer(
+			ServerManager.getInstance().removeServer(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
 	
 	public void testBrokerNode() {
-		try{
+		try {
 			demo.registerServiceAndBuildInfo(brokerIp, brokerCmPort, brokerCmUser, 
 					brokerCmPass, serviceName, brokerConnName, brokerHost);
 			
@@ -169,17 +168,17 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getServiceName(), serviceName);
 			assertEquals(node.getHostName(), brokerHost);
 			assertEquals(node.getCmConnectName(), brokerConnName);
-		}finally{
-			ServerInfo serverInfo = ServerManager.getServer(brokerIp,
+		} finally {
+			ServerInfo serverInfo = ServerManager.getInstance().getServer(brokerIp,
 					brokerCmPort, brokerCmUser);
-			CMHostNodePersistManager.getInstance().removeServer(
+			ServerManager.getInstance().removeServer(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
 	
 	public void testShardNode() {
-		try{
+		try {
 			demo.registerServiceAndBuildInfo(shardIp, shardCmPort, shardCmUser, 
 					shardCmPass, serviceName, shardConnName, shardHost);
 			
@@ -188,10 +187,10 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getServiceName(), serviceName);
 			assertEquals(node.getHostName(), shardHost);
 			assertEquals(node.getCmConnectName(), shardConnName);
-		}finally{
-			ServerInfo serverInfo = ServerManager.getServer(shardIp,
+		} finally {
+			ServerInfo serverInfo = ServerManager.getInstance().getServer(shardIp,
 					shardCmPort, shardCmUser);
-			CMHostNodePersistManager.getInstance().removeServer(
+			ServerManager.getInstance().removeServer(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}

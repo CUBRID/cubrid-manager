@@ -159,7 +159,7 @@ public class ChangeSlaveDbWizard extends
 		final String userName = "admin";
 		final String password = slaveDbInfoPage.getMasterHostPassword();
 
-		boolean isConnected = ServerManager.isConnected(ip,
+		boolean isConnected = ServerManager.getInstance().isConnected(ip,
 				Integer.parseInt(port), userName);
 		ServerInfo masterServerInfo = new ServerInfo();
 		String mdbName = slaveDbInfoPage.getMasterDbName();
@@ -381,7 +381,7 @@ public class ChangeSlaveDbWizard extends
 		 */
 		private void disConnect(MonitoringTask monitoringTask) {
 			if (monitoringTask != null) {
-				ServerManager.setConnected(
+				ServerManager.getInstance().setConnected(
 						monitoringTask.getServerInfo().getHostAddress(),
 						monitoringTask.getServerInfo().getHostMonPort(),
 						monitoringTask.getServerInfo().getUserName(), false);

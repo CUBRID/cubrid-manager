@@ -231,7 +231,7 @@ public class AddHADatabaseDialog extends
 				String port = portText.getText();
 				String userName = userNameText.getText();
 				String password = passwordText.getText();
-				ServerInfo serverInfo = ServerManager.getServer(
+				ServerInfo serverInfo = ServerManager.getInstance().getServer(
 						address, Integer.parseInt(port), userName);
 				if (serverInfo == null) {
 					serverInfo = new ServerInfo();
@@ -554,7 +554,7 @@ public class AddHADatabaseDialog extends
 		boolean isValidPassword = password.trim().length() >= 4
 				&& password.indexOf(" ") < 0;
 
-		ServerInfo serverInfo = ServerManager.getServer(
+		ServerInfo serverInfo = ServerManager.getInstance().getServer(
 				ipCombo.getText(), Integer.parseInt(port),
 				userNameText.getText());
 		if (isValidPassword && serverInfo != null

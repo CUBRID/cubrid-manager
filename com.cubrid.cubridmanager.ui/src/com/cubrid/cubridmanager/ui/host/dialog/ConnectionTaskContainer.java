@@ -228,7 +228,7 @@ public class ConnectionTaskContainer implements Callable<Integer>, Runnable {
 	 */
 	private void disConnect() {
 		if (serverInfo != null) {
-			ServerManager.setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+			ServerManager.getInstance().setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 				serverInfo.getUserName(), false);
 		}
 	}

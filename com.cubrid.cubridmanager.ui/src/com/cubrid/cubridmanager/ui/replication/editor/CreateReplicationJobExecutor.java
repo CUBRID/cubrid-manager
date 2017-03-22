@@ -226,7 +226,7 @@ public class CreateReplicationJobExecutor extends
 	 */
 	private void disConnect(MonitoringTask monitoringTask) {
 		if (monitoringTask != null) {
-			ServerManager.setConnected(
+			ServerManager.getInstance().setConnected(
 					monitoringTask.getServerInfo().getHostAddress(),
 					monitoringTask.getServerInfo().getHostMonPort(),
 					monitoringTask.getServerInfo().getUserName(), false);

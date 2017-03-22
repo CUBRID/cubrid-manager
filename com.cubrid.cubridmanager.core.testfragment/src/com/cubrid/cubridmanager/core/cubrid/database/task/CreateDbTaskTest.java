@@ -112,7 +112,7 @@ public class CreateDbTaskTest extends
 		System.out.println("<database.createdb.001.req.txt>");
 
 		CreateDbTask task = new CreateDbTask(
-				ServerManager.getServer(host, monport, userName));
+				ServerManager.getInstance().getServer(host, monport, userName));
 		task.setDbName("fulldb");
 		task.setGeneralVolumePath("/opt/frameworks/cubrid/databases/fulldb");
 		task.setLogSize("100");
@@ -147,7 +147,7 @@ public class CreateDbTaskTest extends
 		System.out.println("<database.createdb.002.req.txt>");
 
 		CreateDbTask task = new CreateDbTask(
-				ServerManager.getServer(host, monport, userName));
+				ServerManager.getInstance().getServer(host, monport, userName));
 		task.setDbName("noextravoldb");
 		task.setGeneralVolumePath("/opt/frameworks/cubrid/databases/noextravoldb");
 		task.setLogSize("100");
@@ -172,7 +172,7 @@ public class CreateDbTaskTest extends
 		System.out.println("<database.createdb.003.req.txt>");
 
 		CreateDbTask task = new CreateDbTask(
-				ServerManager.getServer(host, monport, userName));
+				ServerManager.getInstance().getServer(host, monport, userName));
 		task.setDbName("numpage0db");
 		task.setGeneralVolumePath("/opt/frameworks/cubrid/databases/numpage0db");
 		task.setLogSize("100");
@@ -200,7 +200,7 @@ public class CreateDbTaskTest extends
 		System.out.println("<database.createdb.004.req.txt>");
 
 		CreateDbTask task = new CreateDbTask(
-				ServerManager.getServer(host, monport, userName));
+				ServerManager.getInstance().getServer(host, monport, userName));
 		task.setDbName("logsize0db");
 		task.setGeneralVolumePath("/opt/frameworks/cubrid/databases/logsize0db");
 		task.setLogSize("0");
@@ -225,7 +225,7 @@ public class CreateDbTaskTest extends
 		System.out.println("<database.createdb.005.req.txt>");
 
 		CreateDbTask task = new CreateDbTask(
-				ServerManager.getServer(host, monport, userName));
+				ServerManager.getInstance().getServer(host, monport, userName));
 		task.setDbName("pagesize0db");
 		task.setGeneralVolumePath("/opt/frameworks/cubrid/databases/pagesize0db");
 		task.setLogSize("100");
@@ -250,7 +250,7 @@ public class CreateDbTaskTest extends
 		System.out.println("<database.createdb.006.req.txt>");
 
 		CreateDbTask task = new CreateDbTask(
-				ServerManager.getServer(host, monport, userName));
+				ServerManager.getInstance().getServer(host, monport, userName));
 		task.setDbName("");
 		//task.execute();
 		assertNull(task.getErrorMsg());
@@ -271,7 +271,7 @@ public class CreateDbTaskTest extends
 		System.out.println("<database.createdb.007.req.txt>");
 
 		CreateDbTask task = new CreateDbTask(
-				ServerManager.getServer(host, monport, userName));
+				ServerManager.getInstance().getServer(host, monport, userName));
 		task.setDbName("demodb");
 		task.setGeneralVolumePath("/opt/frameworks/cubrid/databases/demodb");
 		task.setLogSize("100");

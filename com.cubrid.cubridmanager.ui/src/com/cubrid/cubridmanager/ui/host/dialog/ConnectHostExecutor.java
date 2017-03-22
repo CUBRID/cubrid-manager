@@ -141,7 +141,7 @@ public class ConnectHostExecutor extends TaskExecutor {
 	public void cancel() {
 		super.cancel();
 		if (serverInfo != null) {
-			ServerManager.setConnected(
+			ServerManager.getInstance().setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}
@@ -153,7 +153,7 @@ public class ConnectHostExecutor extends TaskExecutor {
 	 */
 	private void disConnect() {
 		if (serverInfo != null) {
-			ServerManager.setConnected(
+			ServerManager.getInstance().setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}

@@ -23,7 +23,7 @@ public class CheckDbTaskTest extends
 
 		CommonUpdateTask task = new CommonUpdateTask(
 				CommonTaskName.CHECK_DATABASE_TASK_NAME,
-				ServerManager.getServer(host, monport, userName),
+				ServerManager.getInstance().getServer(host, monport, userName),
 				CommonSendMsg.getCommonDatabaseSendMsg());
 		task.setDbName("demodb");
 		task.execute();
@@ -44,7 +44,7 @@ public class CheckDbTaskTest extends
 
 		CommonUpdateTask task = new CommonUpdateTask(
 				CommonTaskName.CHECK_DATABASE_TASK_NAME,
-				ServerManager.getServer(host, monport, userName),
+				ServerManager.getInstance().getServer(host, monport, userName),
 				CommonSendMsg.getCommonDatabaseSendMsg());
 		task.setDbName("notexistdb");
 		task.execute();

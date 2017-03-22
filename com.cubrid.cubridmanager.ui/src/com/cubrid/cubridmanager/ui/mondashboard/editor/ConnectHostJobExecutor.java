@@ -161,7 +161,7 @@ public class ConnectHostJobExecutor extends
 	public void cancel() {
 		super.cancel();
 		if (serverInfo != null && taskList.size() > 1 && !wasConnected) {
-			ServerManager.setConnected(
+			ServerManager.getInstance().setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}
@@ -174,7 +174,7 @@ public class ConnectHostJobExecutor extends
 	 */
 	private void disConnect() {
 		if (serverInfo != null && taskList.size() > 1 && !wasConnected) {
-			ServerManager.setConnected(
+			ServerManager.getInstance().setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}

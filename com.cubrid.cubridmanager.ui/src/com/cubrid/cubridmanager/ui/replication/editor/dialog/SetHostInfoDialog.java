@@ -241,7 +241,7 @@ public class SetHostInfoDialog extends
 		final String port = portText.getText();
 		final String userName = userNameText.getText();
 		final String password = passwordText.getText();
-		boolean isConnected = ServerManager.isConnected(ip,
+		boolean isConnected = ServerManager.getInstance().isConnected(ip,
 				Integer.parseInt(port), userName);
 		if (isConnected && hostInfo != null) {
 			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
@@ -362,7 +362,7 @@ public class SetHostInfoDialog extends
 			String userName, String password) {
 		boolean isEnabled = true;
 		boolean isValidPassword;
-		boolean isConnected = ServerManager.isConnected(ip,
+		boolean isConnected = ServerManager.getInstance().getInstance().isConnected(ip,
 				Integer.parseInt(port), userName);
 		if (isConnected) {
 			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
@@ -476,7 +476,7 @@ public class SetHostInfoDialog extends
 		 * 
 		 */
 		public void disConnect() {
-			ServerManager.setConnected(ip,
+			ServerManager.getInstance().setConnected(ip,
 					Integer.parseInt(port), userName, false);
 		}
 

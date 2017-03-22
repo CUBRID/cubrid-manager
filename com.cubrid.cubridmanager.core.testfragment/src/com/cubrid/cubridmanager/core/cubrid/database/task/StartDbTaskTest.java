@@ -7,7 +7,6 @@ import com.cubrid.cubridmanager.core.common.ServerManager;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.common.task.CommonTaskName;
 import com.cubrid.cubridmanager.core.common.task.CommonUpdateTask;
-import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 public class StartDbTaskTest extends
 		SetupEnvTestCase {
@@ -22,7 +21,7 @@ public class StartDbTaskTest extends
 
 		CommonUpdateTask task = new CommonUpdateTask(
 				CommonTaskName.START_DB_TASK_NAME,
-				CMHostNodePersistManager.getInstance().getServerInfo(host, monport, userName),
+				ServerManager.getInstance().getServer(host, monport, userName),
 				CommonSendMsg.getCommonDatabaseSendMsg());
 
 		task.setDbName("demodb");
@@ -43,7 +42,7 @@ public class StartDbTaskTest extends
 
 		CommonUpdateTask task = new CommonUpdateTask(
 				CommonTaskName.START_DB_TASK_NAME,
-				CMHostNodePersistManager.getInstance().getServerInfo(host, monport, userName),
+				ServerManager.getInstance().getServer(host, monport, userName),
 				CommonSendMsg.getCommonDatabaseSendMsg());
 
 		task.setDbName("notexistdb");
@@ -64,7 +63,7 @@ public class StartDbTaskTest extends
 
 		CommonUpdateTask task = new CommonUpdateTask(
 				CommonTaskName.START_DB_TASK_NAME,
-				CMHostNodePersistManager.getInstance().getServerInfo(host, monport, userName),
+				ServerManager.getInstance().getServer(host, monport, userName),
 				CommonSendMsg.getCommonDatabaseSendMsg());
 
 		task.setDbName(null);

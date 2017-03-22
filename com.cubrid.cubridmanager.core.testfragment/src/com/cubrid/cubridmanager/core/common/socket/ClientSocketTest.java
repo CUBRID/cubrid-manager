@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import com.cubrid.cubridmanager.core.SetupEnvTestCase;
 import com.cubrid.cubridmanager.core.common.ServerManager;
-import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 public class ClientSocketTest extends
 		SetupEnvTestCase {
@@ -101,7 +100,7 @@ public class ClientSocketTest extends
 			cs.sendRequest("9\n\n");
 			cs.setTimeout(3);
 			cs.stopHeartbeatThread();
-			CMHostNodePersistManager.getInstance().disConnectAllServer();
+			ServerManager.getInstance().disConnectAllServer();
 		} catch (Exception e) {
 			assertTrue(true);
 		}
@@ -110,16 +109,16 @@ public class ClientSocketTest extends
 		try {
 			ClientSocket cs = new ClientSocket(serverInfo.getHostAddress(),
 					jpport, serverInfo.getUserName(), "UTF-8", "UTF-8");
-			CMHostNodePersistManager.getInstance().disConnectAllServer();
+			ServerManager.getInstance().disConnectAllServer();
 		} catch (Exception e) {
 		}
 		
 		try {
-			CMHostNodePersistManager.getInstance().removeServer("localhost", 8001, "dba");
-			CMHostNodePersistManager.getInstance().removeServer("localhost", 8002, "dba");
-			CMHostNodePersistManager.getInstance().removeServer("localhost", 8003, "dba");
-			CMHostNodePersistManager.getInstance().removeServer("localhost", 8004, "dba");
-			assertNotNull(ServerManager.getAllServerInfos());
+			ServerManager.getInstance().removeServer("localhost", 8001, "dba");
+			ServerManager.getInstance().removeServer("localhost", 8002, "dba");
+			ServerManager.getInstance().removeServer("localhost", 8003, "dba");
+			ServerManager.getInstance().removeServer("localhost", 8004, "dba");
+			assertNotNull(ServerManager.getInstance().getAllServerInfos());
 		} catch (Exception e) {
 		}
 		

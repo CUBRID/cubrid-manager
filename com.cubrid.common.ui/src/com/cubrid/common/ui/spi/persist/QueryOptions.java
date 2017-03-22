@@ -390,7 +390,7 @@ public final class QueryOptions {
 			pref.put(prefix + QueryOptions.CHAR_SET, charSet);
 		}
 		if (serverInfo == null) {
-			Iterator<Map.Entry<String, ServerInfo>> serverInfos = ServerManager.getAllServerInfos().entrySet().iterator(); 
+			Iterator<Map.Entry<String, ServerInfo>> serverInfos = ServerManager.getInstance().getAllServerInfos().entrySet().iterator(); 
 			while(serverInfos.hasNext()){
 				changeCharset(serverInfos.next().getValue());
 			}

@@ -76,7 +76,7 @@ public class MonitoringTask extends SocketTask {
 	 * @return ServerInfo The instance of ServerInfo
 	 */
 	public ServerInfo connectServer(String clientVersion, int heartBeatTimeout) {
-		if (ServerManager.isConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+		if (ServerManager.getInstance().isConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 				serverInfo.getUserName())) {
 			return serverInfo;
 		}
@@ -106,7 +106,7 @@ public class MonitoringTask extends SocketTask {
 			errorMsg = getCmsEnvTask.getErrorMsg();
 			warningMsg = getCmsEnvTask.getWarningMsg();
 
-			ServerManager.setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+			ServerManager.getInstance().setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		}
 
@@ -126,7 +126,7 @@ public class MonitoringTask extends SocketTask {
 		this.setTimeout(serverInfo.getSoTimeOut());
 		this.execute();
 		if (!isSuccess()) {
-			ServerManager.setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+			ServerManager.getInstance().setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 			finish();
 			return serverInfo;
@@ -138,7 +138,7 @@ public class MonitoringTask extends SocketTask {
 			finish();
 			return serverInfo;
 		}
-		ServerManager.setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+		ServerManager.getInstance().setConnected(serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 				serverInfo.getUserName(), true);
 		serverInfo.setHostToken(token);
 		getClientService().setHeartbeat(heartBeatTimeout);
@@ -154,7 +154,7 @@ public class MonitoringTask extends SocketTask {
 		if (isConnectServerRunning) {
 			super.cancel();
 			getClientService().stopHeartbeatThread();
-			ServerManager.setConnected(
+			ServerManager.getInstance().setConnected(
 					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName(), false);
 		} else {

@@ -94,7 +94,7 @@ public class GetAllClassesTaskExecutor extends
 	 */
 	private void init() {
 		ServerInfo serverInfo = new ServerInfo();
-		boolean isConnected = ServerManager.isConnected(ip,
+		boolean isConnected = ServerManager.getInstance().isConnected(ip,
 				Integer.parseInt(port), userName);
 		DatabaseInfo dbInfo = null;
 		OnOffType status = OnOffType.OFF;
@@ -153,7 +153,7 @@ public class GetAllClassesTaskExecutor extends
 	 * 
 	 */
 	private void disConnect() {
-		ServerManager.setConnected(ip, Integer.parseInt(port),
+		ServerManager.getInstance().setConnected(ip, Integer.parseInt(port),
 				userName, false);
 	}
 

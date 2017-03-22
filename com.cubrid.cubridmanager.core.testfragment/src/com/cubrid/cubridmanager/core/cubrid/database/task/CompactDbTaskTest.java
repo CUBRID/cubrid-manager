@@ -22,7 +22,7 @@ public class CompactDbTaskTest extends
 
 		CommonUpdateTask task = new CommonUpdateTask(
 				CommonTaskName.COMPACT_DATABASE_TASK_NANE,
-				ServerManager.getServer(host, monport, userName),
+				ServerManager.getInstance().getServer(host, monport, userName),
 				CommonSendMsg.getCompactDbSendMsg());
 		task.setDbName("activedb");
 		task.setVerbose(YesNoType.Y);
@@ -43,7 +43,7 @@ public class CompactDbTaskTest extends
 
 		CommonUpdateTask task = new CommonUpdateTask(
 				CommonTaskName.COMPACT_DATABASE_TASK_NANE,
-				ServerManager.getServer(host, monport, userName),
+				ServerManager.getInstance().getServer(host, monport, userName),
 				CommonSendMsg.getCompactDbSendMsg());
 		task.setDbName("inactivedb");
 		//task.execute();
@@ -63,7 +63,7 @@ public class CompactDbTaskTest extends
 
 		CommonUpdateTask task = new CommonUpdateTask(
 				CommonTaskName.COMPACT_DATABASE_TASK_NANE,
-				ServerManager.getServer(host, monport, userName),
+				ServerManager.getInstance().getServer(host, monport, userName),
 				CommonSendMsg.getCompactDbSendMsg());
 		task.setDbName("notexistdb");
 		task.execute();

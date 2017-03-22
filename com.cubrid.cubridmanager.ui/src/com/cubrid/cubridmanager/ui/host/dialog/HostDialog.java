@@ -537,7 +537,7 @@ public class HostDialog extends
 	 */
 	public void closeTestServerConnection() {
 		if (testConnServerInfo != null) {
-			ServerManager.setConnected(
+			ServerManager.getInstance().setConnected(
 					testConnServerInfo.getHostAddress(),
 					testConnServerInfo.getHostMonPort(),
 					testConnServerInfo.getUserName(), false);
