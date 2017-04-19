@@ -682,7 +682,7 @@ public class BrokerConfigEditComposite extends
 		Map<String, String> brokerMap = confListData.get(0);
 		for (int i = 1, len = confTableViewer.getTable().getColumnCount(); i < len; i++) {
 			String brokerName = brokerMap.get(Integer.toString(i));
-			if (isNotBlank(brokerName)) {
+			if (!isNotBlank(brokerName)) {
 				return Messages.bind(Messages.cubridBrokerConfEditorErrMsg3, i);
 			}
 			if (nameList.contains(brokerName)) {
