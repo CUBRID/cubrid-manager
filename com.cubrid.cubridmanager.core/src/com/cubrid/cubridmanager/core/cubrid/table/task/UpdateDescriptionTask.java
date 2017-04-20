@@ -29,15 +29,13 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.task;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.ConstantsUtil;
+import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
-import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 
@@ -74,66 +72,14 @@ public class UpdateDescriptionTask extends
 	
 	@Override
 	public void execute() {
-		String pureTableName = tableName.replace("\"", "");
-		String pureColumnName = StringUtil.isEmpty(columnName) ? "*"
-				: columnName.replace("\"", "");
-
-		String sql = "INSERT INTO "
-				+ ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " ("
-				+ "table_name, column_name, description, last_updated,"
-				+ " last_updated_user) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_USER)";
-
-		// [TOOLS-2425]Support shard broker
-		if (databaseInfo.isShard()) {
-			sql = databaseInfo.wrapShardQuery(sql);
-		}
-
-		PreparedStatement pStmt = null;
 		try {
-			int i = 1;
-			pStmt = connection.prepareStatement(sql);
-			pStmt.setString(i++, pureTableName);
-			pStmt.setString(i++, pureColumnName);
-			pStmt.setString(i++, description);
-			pStmt.executeUpdate();
-			QueryUtil.commit(connection);
-			return;
-		} catch (SQLException e) {
-			if (e.getErrorCode() != -670) {
-				this.errorMsg = e.getMessage();
-			}
-		} finally {
-			QueryUtil.freeQuery(pStmt);
-		}
-
-		sql = "UPDATE " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " SET description=?, last_updated=CURRENT_TIMESTAMP,"
-				+ " last_updated_user=CURRENT_USER"
-				+ " WHERE table_name=? AND column_name=?";
-
-		// [TOOLS-2425]Support shard broker
-		if (databaseInfo.isShard()) {
-			sql = databaseInfo.wrapShardQuery(sql);
-		}
-
-		try {
-			int i = 1;
-			pStmt = connection.prepareStatement(sql);
-			pStmt.setString(i++, description);
-			pStmt.setString(i++, pureTableName);
-			pStmt.setString(i++, pureColumnName);
-			pStmt.executeUpdate();
-			
-			QueryUtil.commit(connection);
+			SchemaCommentHandler.updateDescription(databaseInfo, connection, tableName, columnName, description);
 		} catch (SQLException e) {
 			this.errorMsg = e.getMessage();
 			LOGGER.error(e.getMessage(), e);
 			QueryUtil.rollback(connection);
 		} finally {
-			QueryUtil.freeQuery(pStmt);
+			finish();
 		}
-		finish();
 	}
-
 }
