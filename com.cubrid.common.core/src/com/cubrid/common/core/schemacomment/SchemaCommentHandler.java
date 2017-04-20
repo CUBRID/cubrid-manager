@@ -281,7 +281,7 @@ public class SchemaCommentHandler {
 		sql = "UPDATE " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
 				+ " SET description=?, last_updated=CURRENT_TIMESTAMP,"
 				+ " last_updated_user=CURRENT_USER"
-				+ " WHERE table_name=? AND column_name=?";
+				+ " WHERE LOWER(table_name)=? AND LOWER(column_name)=?";
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
@@ -292,8 +292,8 @@ public class SchemaCommentHandler {
 			int i = 1;
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(i++, description);
-			stmt.setString(i++, pureTableName);
-			stmt.setString(i++, pureColumnName);
+			stmt.setString(i++, pureTableName.toLowerCase());
+			stmt.setString(i++, pureColumnName.toLowerCase());
 			stmt.executeUpdate();
 			QueryUtil.commit(conn);
 		} catch (SQLException e) {
@@ -309,7 +309,7 @@ public class SchemaCommentHandler {
 			String tableName) throws SQLException {
 		String pureTableName = tableName.replace("\"", "");
 		String sql = "DELETE FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " WHERE table_name='" + pureTableName + "'";
+				+ " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
@@ -427,10 +427,10 @@ public class SchemaCommentHandler {
 		sqlSB.append(ConstantsUtil.SCHEMA_DESCRIPTION_TABLE );
 		sqlSB.append(" SET description = '");
 		sqlSB.append(desc);
-		sqlSB.append("', last_updated = CURRENT_TIMESTAMP, last_updated_user = CURRENT_USER WHERE table_name = '");
-		sqlSB.append(pureTableName);
-		sqlSB.append("' AND column_name = '");
-		sqlSB.append(pureColumnName);
+		sqlSB.append("', last_updated = CURRENT_TIMESTAMP, last_updated_user = CURRENT_USER WHERE LOWER(table_name) = '");
+		sqlSB.append(pureTableName.toLowerCase());
+		sqlSB.append("' AND LOWER(column_name) = '");
+		sqlSB.append(pureColumnName.toLowerCase());
 		sqlSB.append("';");
 		return sqlSB.toString();
 	}
