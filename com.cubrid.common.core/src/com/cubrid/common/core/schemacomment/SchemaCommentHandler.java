@@ -172,34 +172,7 @@ public class SchemaCommentHandler {
 
 	public static Map<String, SchemaComment> loadDescriptions(IDatabaseSpec dbSpec, Connection conn)
 			throws SQLException {
-		String sql = "SELECT table_name, column_name, description"
-				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE;
-
-		// [TOOLS-2425]Support shard broker
-		if (dbSpec.isShard()) {
-			sql = dbSpec.wrapShardQuery(sql);
-		}
-
-		Map<String, SchemaComment> results = new HashMap<String, SchemaComment>();
-		
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				SchemaComment meta = resultToMetaDesc(rs);
-				results.put(meta.getId(), meta);
-			}
-		} catch (SQLException e) {
-			QueryUtil.rollback(conn);
-			LOGGER.error(e.getMessage(), e);
-			throw e;
-		} finally {
-			QueryUtil.freeQuery(stmt, rs);
-		}
-		
-		return results;
+		return loadDescription(dbSpec, conn, null);
 	}
 
 	public static Map<String, SchemaComment> loadTableDescriptions(IDatabaseSpec dbSpec, Connection conn) 
@@ -237,10 +210,13 @@ public class SchemaCommentHandler {
 
 	public static Map<String, SchemaComment> loadDescription(IDatabaseSpec dbSpec, 
 			Connection conn, String tableName) throws SQLException {
-		String pureTableName = tableName.replace("\"", "");
 		String sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
-				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
+				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE;
+
+		if (StringUtil.isNotEmpty(tableName)) {
+			String pureTableName = tableName.replace("\"", "");
+			sql += " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
+		}
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
