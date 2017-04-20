@@ -204,9 +204,9 @@ public class SchemaCommentHandler {
 
 	public static Map<String, SchemaComment> loadTableDescriptions(IDatabaseSpec dbSpec, Connection conn) 
 			throws SQLException {
-		String sql = "SELECT table_name, column_name, description"
+		String sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
 				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " WHERE table_name LIKE '%' AND column_name = '*'";
+				+ " WHERE LOWER(table_name) LIKE '%' AND column_name = '*'";
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
@@ -238,9 +238,9 @@ public class SchemaCommentHandler {
 	public static Map<String, SchemaComment> loadDescription(IDatabaseSpec dbSpec, 
 			Connection conn, String tableName) throws SQLException {
 		String pureTableName = tableName.replace("\"", "");
-		String sql = "SELECT table_name, column_name, description"
+		String sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
 				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " WHERE table_name='" + pureTableName + "'";
+				+ " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
