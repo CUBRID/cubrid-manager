@@ -122,25 +122,4 @@ public class CubridUtil {
 			QueryUtil.freeQuery(stmt);
 		}
 	}
-	
-	/**
-	 * Judge the sql is command
-	 * @param sql
-	 * @return
-	 */
-	public static boolean isCommand(String sql) {
-		if (!StringUtil.isEmpty(sql)) {
-			if (sql.trim().endsWith(";")) {
-				sql = sql.trim().substring(0, sql.trim().length() - 1);
-			}
-
-			String[] wordArray = sql.split("\\s|\\r|\\n|\\t");
-			if (wordArray.length > 0) {
-				if ("SHOW".equalsIgnoreCase(wordArray[0])
-						|| "SET".equalsIgnoreCase(wordArray[0]))
-					return true;
-			}
-		}
-		return false;
-	}
 }

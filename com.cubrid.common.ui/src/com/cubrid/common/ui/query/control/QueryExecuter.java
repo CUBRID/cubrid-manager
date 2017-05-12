@@ -229,7 +229,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 	private String statsLog;
 	private String queryPlanLog;
-	private boolean isCommand;
 	private String textData = "";
 	private List<String> columnTableNames;
 
@@ -276,8 +275,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 			formater4Float.setMaximumIntegerDigits(38);
 			formater4Float.setMaximumFractionDigits(7);
 		}
-
-		isCommand = CubridUtil.isCommand(orignQuery);
 	}
 
 	public QueryExecuter(QueryEditorPart qe, int idx, String query, CubridDatabase cubridDatabase,
@@ -295,9 +292,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	public void makeResult(CUBRIDResultSetProxy rs) throws SQLException {
 		fillColumnData(rs);
 		fillTableItemData(rs);
-		if (isCommand) {
-			fillTextData();
-		}
+		fillTextData();
 	}
 
 	public void fillTextData() {
@@ -692,73 +687,64 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		resultMessage.append(query);
 		queryRange[1] = query.length();
 
-		if (!isCommand) {
-			ServerInfo serverInfo = database.getServer() == null ? null
-					: database.getServer().getServerInfo();
-			String fontString = QueryOptions.getFontString(serverInfo);
-			Font tmpFont = ResourceManager.getFont(fontString);
-			if (tmpFont == null) {
-				String[] fontData = QueryOptions.getDefaultFont();
-				tmpFont = ResourceManager.getFont(fontData[0],
-						Integer.valueOf(fontData[1]),
-						Integer.valueOf(fontData[2]));
+		ServerInfo serverInfo = database.getServer() == null ? null
+				: database.getServer().getServerInfo();
+		String fontString = QueryOptions.getFontString(serverInfo);
+		Font tmpFont = ResourceManager.getFont(fontString);
+		if (tmpFont == null) {
+			String[] fontData = QueryOptions.getDefaultFont();
+			tmpFont = ResourceManager.getFont(fontData[0],
+					Integer.valueOf(fontData[1]),
+					Integer.valueOf(fontData[2]));
+		}
+		font = tmpFont;
+		tblResult.setFont(font);
+		int[] fontColor = QueryOptions.getFontColor(serverInfo);
+		color = ResourceManager.getColor(fontColor[0], fontColor[1],fontColor[2]);
+		tblResult.setForeground(color);
+		// Set font and foreground
+		selectableSupport.getTableCursor().setFont(font);
+		selectableSupport.getTableCursor().setForeground(color);
+		selectableSupport.setShowDetailOperator(this);
+		tblResult.addPaintListener(new PaintListener() {
+			public void paintControl(PaintEvent e) {
+				selectableSupport.redrawMoreButton();
 			}
-			font = tmpFont;
-			tblResult.setFont(font);
-			int[] fontColor = QueryOptions.getFontColor(serverInfo);
-			color = ResourceManager.getColor(fontColor[0], fontColor[1],fontColor[2]);
-			tblResult.setForeground(color);
-			// Set font and foreground
-			selectableSupport.getTableCursor().setFont(font);
-			selectableSupport.getTableCursor().setForeground(color);
-			selectableSupport.setShowDetailOperator(this);
-			tblResult.addPaintListener(new PaintListener() {
-				public void paintControl(PaintEvent e) {
-					selectableSupport.redrawMoreButton();
-				}
-			});
+		});
 
-			if (queryEditor != null) {
-				if (!multiQueryResult) {
-					createContextMenuItems();
-				}
-
-				editor = new ControlEditor(selectableSupport.getTableCursor());
-				editor.horizontalAlignment = SWT.LEFT;
-				editor.grabHorizontal = true;
-				editor.grabVertical = true;
-
-				bindEvents();
-				addTableItemToolTips();
+		if (queryEditor != null) {
+			if (!multiQueryResult) {
+				createContextMenuItems();
 			}
 
-			makeColumn();
-			makeItem();
+			editor = new ControlEditor(selectableSupport.getTableCursor());
+			editor.horizontalAlignment = SWT.LEFT;
+			editor.grabHorizontal = true;
+			editor.grabVertical = true;
 
-			if (!StringUtil.isEmpty(queryPlanLog)) {
-				resultMessage.append(StringUtil.NEWLINE).append(
-						QueryUtil.SPLIT_LINE_FOR_QUERY_RESULT);
-				resultMessage.append(StringUtil.NEWLINE).append(queryPlanLog);
-			}
+			bindEvents();
+			addTableItemToolTips();
+		}
 
-			if (!StringUtil.isEmpty(statsLog)) {
-				resultMessage.append(StringUtil.NEWLINE)
-						.append(Messages.queryStat).append(":");
-				resultMessage.append(StringUtil.NEWLINE).append(
-						QueryUtil.SPLIT_LINE_FOR_QUERY_RESULT);
-				resultMessage.append(StringUtil.NEWLINE).append(statsLog);
-			}
+		makeColumn();
+		makeItem();
 
-			messageText.setText(resultMessage.toString());
-		} else {
+		if (!StringUtil.isEmpty(queryPlanLog)) {
 			resultMessage.append(StringUtil.NEWLINE).append(
 					QueryUtil.SPLIT_LINE_FOR_QUERY_RESULT);
-			resultMessage.append(StringUtil.NEWLINE);
-
-			resultMessage.append(textData);
-			messageText.setText(resultMessage.toString());
-
+			resultMessage.append(StringUtil.NEWLINE).append(queryPlanLog);
 		}
+
+		if (!StringUtil.isEmpty(statsLog)) {
+			resultMessage.append(StringUtil.NEWLINE)
+					.append(Messages.queryStat).append(":");
+			resultMessage.append(StringUtil.NEWLINE).append(
+					QueryUtil.SPLIT_LINE_FOR_QUERY_RESULT);
+			resultMessage.append(StringUtil.NEWLINE).append(statsLog);
+		}
+
+		messageText.setText(resultMessage.toString());
+
 		// Styled Query info
 		StyleRange queryInfoStyle = new StyleRange();
 		queryInfoStyle.start = queryInfoRange[0];
