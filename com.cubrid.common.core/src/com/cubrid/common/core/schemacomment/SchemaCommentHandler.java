@@ -44,6 +44,7 @@ import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.ConstantsUtil;
 import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
 
@@ -57,6 +58,10 @@ public class SchemaCommentHandler {
 	 * @return
 	 */
 	public static boolean isInstalledMetaTable(IDatabaseSpec dbSpec, Connection conn) {
+		if (CompatibleUtil.isCommentSupports(dbSpec)) {
+			return true;
+		}
+
 		// Are there the description table?
 		String sql = "SELECT COUNT(*)"
 				+ " FROM db_class"
@@ -177,9 +182,23 @@ public class SchemaCommentHandler {
 
 	public static Map<String, SchemaComment> loadTableDescriptions(IDatabaseSpec dbSpec, Connection conn) 
 			throws SQLException {
-		String sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
-				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " WHERE LOWER(table_name) LIKE '%' AND column_name = '*'";
+		boolean isSupportInEngine = CompatibleUtil.isCommentSupports(dbSpec);
+		String sql = null;
+
+		if(isSupportInEngine) {
+			sql = "SELECT class_name as table_name, null as column_name, comment as description "
+					+ "FROM db_class "
+					+ "WHERE is_system_class='NO'";
+		} else {
+			sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
+					+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
+					+ " WHERE LOWER(table_name) LIKE '%' AND column_name = '*'";
+		}
+
+		// [TOOLS-2425]Support shard broker
+		if (dbSpec.isShard()) {
+			sql = dbSpec.wrapShardQuery(sql);
+		}
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
@@ -210,12 +229,33 @@ public class SchemaCommentHandler {
 
 	public static Map<String, SchemaComment> loadDescription(IDatabaseSpec dbSpec, 
 			Connection conn, String tableName) throws SQLException {
-		String sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
-				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE;
+		boolean isSupportInEngine = CompatibleUtil.isCommentSupports(dbSpec);
+		String sql = null;
+		String tableCondition = null;
+		String columnCondition = null;
 
-		if (StringUtil.isNotEmpty(tableName)) {
-			String pureTableName = tableName.replace("\"", "");
-			sql += " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
+		if (isSupportInEngine) {
+			sql = "SELECT class_name as table_name, null as column_name, comment as description "
+					+ "FROM db_class "
+					+ "WHERE is_system_class='NO' %s"
+					+ "UNION ALL "
+					+ "SELECT class_name as table_name, attr_name as column_name, comment as description "
+					+ "FROM db_attribute %s";
+			if (StringUtil.isNotEmpty(tableName)) {
+				tableCondition = "AND class_name = '" + QuerySyntax.escapeKeyword(tableName) + "' ";
+				columnCondition = "WHERE class_name = '" + QuerySyntax.escapeKeyword(tableName) + "'";
+			} else {
+				tableCondition = "AND comment is not null ";
+				columnCondition = "WHERE comment is not null";
+			}
+			sql = String.format(sql, tableCondition, columnCondition);
+		} else {
+			sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
+					+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE;
+			if (StringUtil.isNotEmpty(tableName)) {
+				String pureTableName = tableName.replace("\"", "");
+				sql += " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
+			}
 		}
 
 		// [TOOLS-2425]Support shard broker
