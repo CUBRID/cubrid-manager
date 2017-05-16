@@ -37,6 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.ConstantsUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.common.Messages;
@@ -104,6 +105,14 @@ public class SchemaCommentInstallAction extends SelectionAction {
 			return;
 		}
 
+		DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
+
+		if (CompatibleUtil.isCommentSupports(dbInfo)) {
+			CommonUITool.openInformationBox(Messages.msgTableCommentAlertTitle,
+					Messages.msgTableCommentInstallNotSupport);
+			return;
+		}
+
 		String msg = Messages.bind(Messages.msgTableCommentConfirm, 
 				ConstantsUtil.SCHEMA_DESCRIPTION_TABLE);
 		boolean needToCreate = CommonUITool.openConfirmBox(msg);
@@ -113,7 +122,6 @@ public class SchemaCommentInstallAction extends SelectionAction {
 			return;
 		}
 
-		DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
 		Connection conn = null;
 		boolean success = false;
 		String error = null;

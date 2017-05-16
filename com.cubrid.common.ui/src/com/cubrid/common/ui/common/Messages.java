@@ -416,6 +416,7 @@ public class Messages extends NLS {
 	public static String msgTableCommentAlertTitle;
 	public static String msgTableCommentCancel;
 	public static String msgTableCommentAlreadyInstalled;
+	public static String msgTableCommentInstallNotSupport;
 
 	// [TOOLS-2425]Support shard broker
 	public static String errTableCommentCannotInstallOnShard;
