@@ -1378,7 +1378,7 @@ public final class StringUtil {
 		return order;
 	}
 
-	public static StringBuilder data = new StringBuilder();
+	private static StringBuilder data = new StringBuilder();
 
 	/**
 	 * Escaping single quotation or double quotation.

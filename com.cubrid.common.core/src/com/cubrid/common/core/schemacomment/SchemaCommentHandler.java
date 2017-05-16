@@ -291,57 +291,87 @@ public class SchemaCommentHandler {
 		String pureTableName = tableName.replace("\"", "");
 		String pureColumnName = StringUtil.isEmpty(columnName) ? "*" : columnName.replace("\"\\[\\]\\'", "");
 
-		String sql = "INSERT INTO " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE +" ("
-				+ "table_name, column_name, description, last_updated,"
-				+ " last_updated_user) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_USER)";
-
-		// [TOOLS-2425]Support shard broker
-		if (dbSpec.isShard()) {
-			sql = dbSpec.wrapShardQuery(sql);
-		}
-
-		PreparedStatement stmt = null;
-		try {
-			int i = 1;
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(i++, pureTableName);
-			stmt.setString(i++, pureColumnName);
-			stmt.setString(i++, description);
-			stmt.executeUpdate();
-			QueryUtil.commit(conn);
-			return;
-		} catch (SQLException e) {
-			if (e.getErrorCode() != -670) {
-				LOGGER.error(e.getMessage(), e);
+		if (CompatibleUtil.isCommentSupports(dbSpec)) {
+			description = StringUtil.escapeQuotes("'" + description + "'");
+			String sql = null;
+			if (pureColumnName.equals("*")) {	// '*' means description is for table
+				sql = "ALTER TABLE " + QuerySyntax.escapeKeyword(pureTableName) +
+						" COMMENT " + description;
+			} else {	// description for column
+				sql = QueryUtil.getColumnDescSql(conn, pureTableName, pureColumnName);
+				sql = String.format(sql, description);
 			}
-		} finally {
-			QueryUtil.freeQuery(stmt);
-		}
-		
-		sql = "UPDATE " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " SET description=?, last_updated=CURRENT_TIMESTAMP,"
-				+ " last_updated_user=CURRENT_USER"
-				+ " WHERE LOWER(table_name)=? AND LOWER(column_name)=?";
 
-		// [TOOLS-2425]Support shard broker
-		if (dbSpec.isShard()) {
-			sql = dbSpec.wrapShardQuery(sql);
-		}
+			// [TOOLS-2425]Support shard broker
+			if (dbSpec.isShard()) {
+				sql = dbSpec.wrapShardQuery(sql);
+			}
 
-		try {
-			int i = 1;
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(i++, description);
-			stmt.setString(i++, pureTableName.toLowerCase());
-			stmt.setString(i++, pureColumnName.toLowerCase());
-			stmt.executeUpdate();
-			QueryUtil.commit(conn);
-		} catch (SQLException e) {
-			QueryUtil.rollback(conn);
-			LOGGER.error(e.getMessage(), e);
-			throw e;
-		} finally {
-			QueryUtil.freeQuery(stmt);
+			PreparedStatement stmt = null;
+			try {
+				stmt = conn.prepareStatement(sql);
+				stmt.execute();
+				QueryUtil.commit(conn);
+			} catch (SQLException e) {
+				if (e.getErrorCode() != -670) {
+					LOGGER.error(e.getMessage(), e);
+				}
+			} finally {
+				QueryUtil.freeQuery(stmt);
+			}
+		} else {
+			String sql = "INSERT INTO " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE +" ("
+					+ "table_name, column_name, description, last_updated,"
+					+ " last_updated_user) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_USER)";
+
+			// [TOOLS-2425]Support shard broker
+			if (dbSpec.isShard()) {
+				sql = dbSpec.wrapShardQuery(sql);
+			}
+
+			PreparedStatement stmt = null;
+			try {
+				int i = 1;
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(i++, pureTableName);
+				stmt.setString(i++, pureColumnName);
+				stmt.setString(i++, description);
+				stmt.executeUpdate();
+				QueryUtil.commit(conn);
+				return;
+			} catch (SQLException e) {
+				if (e.getErrorCode() != -670) {
+					LOGGER.error(e.getMessage(), e);
+				}
+			} finally {
+				QueryUtil.freeQuery(stmt);
+			}
+
+			sql = "UPDATE " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
+					+ " SET description=?, last_updated=CURRENT_TIMESTAMP,"
+					+ " last_updated_user=CURRENT_USER"
+					+ " WHERE LOWER(table_name)=? AND LOWER(column_name)=?";
+
+			// [TOOLS-2425]Support shard broker
+			if (dbSpec.isShard()) {
+				sql = dbSpec.wrapShardQuery(sql);
+			}
+
+			try {
+				int i = 1;
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(i++, description);
+				stmt.setString(i++, pureTableName.toLowerCase());
+				stmt.setString(i++, pureColumnName.toLowerCase());
+				stmt.executeUpdate();
+				QueryUtil.commit(conn);
+			} catch (SQLException e) {
+				QueryUtil.rollback(conn);
+				LOGGER.error(e.getMessage(), e);
+				throw e;
+			} finally {
+				QueryUtil.freeQuery(stmt);
+			}
 		}
 	}
 
