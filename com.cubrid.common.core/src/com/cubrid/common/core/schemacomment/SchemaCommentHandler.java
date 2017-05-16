@@ -347,6 +347,9 @@ public class SchemaCommentHandler {
 
 	public static void deleteDescription(IDatabaseSpec dbSpec, Connection conn,
 			String tableName) throws SQLException {
+		if (CompatibleUtil.isCommentSupports(dbSpec)) {
+			return;
+		}
 		String pureTableName = tableName.replace("\"", "");
 		String sql = "DELETE FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
 				+ " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
