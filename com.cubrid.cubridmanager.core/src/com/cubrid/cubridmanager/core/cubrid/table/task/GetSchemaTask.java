@@ -48,6 +48,8 @@ import com.cubrid.common.core.common.model.DBResolution;
 import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.common.model.SerialInfo;
+import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
+import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
@@ -193,6 +195,16 @@ public class GetSchemaTask extends JDBCTask {
 	private SchemaInfo getTableInfo() throws SQLException {
 		boolean supportCharset = CompatibleUtil.isSupportCreateDBByCharset(databaseInfo);
 
+		// get table comment
+		boolean supportComment = SchemaCommentHandler.isInstalledMetaTable(databaseInfo, connection);
+		String description = null;
+
+		if (supportComment) {
+			description = SchemaCommentHandler.loadDescription(
+					databaseInfo, connection, tableName).get(tableName + "*")
+					.getDescription();
+		}
+
 		//get table information
 		String sql = "SELECT * FROM db_class WHERE class_name=?";
 
@@ -228,6 +240,7 @@ public class GetSchemaTask extends JDBCTask {
 						schemaInfo.setReuseOid(true);
 					}
 				}
+				schemaInfo.setDescription(description);
 				schemaInfo.setOwner(owner);
 				schemaInfo.setClassname(tableName);
 				schemaInfo.setDbname(databaseInfo.getDbName());
@@ -694,12 +707,18 @@ public class GetSchemaTask extends JDBCTask {
 			if (supportCharset && isNeedCollationInfo && StringUtil.isEqual(schemaInfo.getVirtual(), SchemaInfo.VIRTUAL_NORMAL)) {
 				columnCollMap = extractColumnCollationMap(connection, schemaInfo);
 			}
-			sql = "SELECT a.attr_name, a.attr_type, a.from_class_name,"
-					+ " a.data_type, a.prec, a.scale, a.is_nullable, "
-					+ " a.domain_class_name, a.default_value, a.def_order"
-					+ " FROM db_attribute a"
-					+ " WHERE a.class_name=? "
-					+ " ORDER BY a.def_order";
+
+			// get table comment
+			boolean supportComment = SchemaCommentHandler.isInstalledMetaTable(databaseInfo, connection);
+			Map<String, SchemaComment> comments = null;
+			if (supportComment) {
+				comments = SchemaCommentHandler.loadDescriptions(databaseInfo, connection);
+			}
+
+			sql = "SELECT *"
+					+ " FROM db_attribute"
+					+ " WHERE class_name=? "
+					+ " ORDER BY def_order";
 
 			// [TOOLS-2425]Support shard broker
 			sql = databaseInfo.wrapShardQuery(sql);
@@ -748,6 +767,10 @@ public class GetSchemaTask extends JDBCTask {
 					if (supportCharset && columnCollMap != null && DataType.canUseCollation(attr.getType())) {
 						String collation = columnCollMap.get(attrName);
 						attr.setCollation(collation);
+					}
+
+					if (comments != null) {
+						attr.setDescription(comments.get(tableName + "*" + attrName).getDescription());
 					}
 
 					if ("INSTANCE".equals(type)) { //INSTANCE
