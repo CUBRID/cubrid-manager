@@ -284,6 +284,12 @@ public class GetAllSchemaTask extends
 		String reuseOidCoulmn = isSupportReuseOid ? ",	c.is_reuse_oid_class\n" : "\n";
 		String dbName = databaseInfo.getDbName();
 
+		boolean isSupportComment = SchemaCommentHandler.isInstalledMetaTable(databaseInfo, connection);
+		Map<String, SchemaComment> descriptions = null;
+		if (isSupportComment) {
+			descriptions = SchemaCommentHandler.loadDescriptions(databaseInfo, connection);
+		}
+
 		String sql = "SELECT a.attr_name, a.attr_type, a.from_class_name,"
 			+ " a.data_type, a.prec, a.scale, a.is_nullable,"
 			+ " a.domain_class_name, a.default_value, a.def_order,"
@@ -336,11 +342,17 @@ public class GetAllSchemaTask extends
 					}
 				}
 
+				SchemaComment tableComment = isSupportComment ?
+						descriptions.get(className + "*") : null;
+				if (tableComment != null) {
+					schemaInfo.setDescription(tableComment.getDescription());
+				}
+
 				schemaInfo.setOwner(owner);
 				schemaInfo.setClassname(className);
 				schemaInfo.setDbname(dbName);
 				schemaInfo.setPartitionGroup(partitioned);
-				getColumnInfo(rs, schemaInfo, isSupportCharset);
+				getColumnInfo(rs, schemaInfo, isSupportCharset, descriptions);
 
 				String fromAttrName = rs.getString("from_attr_name");
 				String attrName = rs.getString("attr_name");
@@ -368,7 +380,8 @@ public class GetAllSchemaTask extends
 	 * @param schemaInfo the SchemaInfo
 	 * @throws SQLException the exception
 	 */
-	private void getColumnInfo(ResultSet rs, SchemaInfo schemaInfo, boolean supportCharset) throws SQLException {
+	private void getColumnInfo(ResultSet rs, SchemaInfo schemaInfo, boolean supportCharset,
+			Map<String, SchemaComment> descriptions) throws SQLException {
 		if (schemaInfo == null) {
 			return;
 		}
@@ -415,6 +428,12 @@ public class GetAllSchemaTask extends
 		if (supportCharset && columnCollMap != null) {
 			String collation = columnCollMap.get(attrName);
 			attr.setCollation(collation);
+		}
+
+		SchemaComment columnSchema = descriptions != null ?
+				descriptions.get(schemaInfo.getClassname() + "*" + attrName) : null;
+		if (columnSchema != null) {
+			attr.setDescription(columnSchema.getDescription());
 		}
 
 		if ("INSTANCE".equals(type)) { //INSTANCE
