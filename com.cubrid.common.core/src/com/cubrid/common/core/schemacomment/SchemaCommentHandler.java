@@ -294,13 +294,7 @@ public class SchemaCommentHandler {
 		if (CompatibleUtil.isCommentSupports(dbSpec)) {
 			description = StringUtil.escapeQuotes("'" + description + "'");
 			String sql = null;
-			if (pureColumnName.equals("*")) {	// '*' means description is for table
-				sql = "ALTER TABLE " + QuerySyntax.escapeKeyword(pureTableName) +
-						" COMMENT " + description;
-			} else {	// description for column
-				sql = QueryUtil.getColumnDescSql(conn, pureTableName, pureColumnName);
-				sql = String.format(sql, description);
-			}
+			sql = generateDescriptionSql(conn, pureTableName, pureColumnName, description);
 
 			// [TOOLS-2425]Support shard broker
 			if (dbSpec.isShard()) {
@@ -373,6 +367,19 @@ public class SchemaCommentHandler {
 				QueryUtil.freeQuery(stmt);
 			}
 		}
+	}
+
+	public static String generateDescriptionSql(Connection conn, String tableName,
+			String columnName, String description) throws SQLException {
+		String sql = null;
+		if (columnName.equals("*")) {	// '*' means description is for table
+			sql = "ALTER TABLE " + QuerySyntax.escapeKeyword(tableName) +
+					" COMMENT " + description;
+		} else {	// description for column
+			sql = QueryUtil.getColumnDescSql(conn, tableName, columnName);
+			sql = String.format(sql, description);
+		}
+		return sql + ";";
 	}
 
 	public static void deleteDescription(IDatabaseSpec dbSpec, Connection conn,

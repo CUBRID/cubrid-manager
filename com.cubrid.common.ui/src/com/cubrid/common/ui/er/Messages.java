@@ -179,5 +179,6 @@ public class Messages extends
 	public static String errSyncComments;
 	public static String edittabNameInsertSQL;
 	public static String edittabNameUpdateSQL;
+	public static String edittabNameAlterSQL;
 	public static String msgNoComments;
 }

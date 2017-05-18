@@ -29,6 +29,8 @@
  */
 package com.cubrid.common.ui.er.editor;
 
+import java.sql.SQLException;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -241,6 +243,9 @@ public class ERSchemaToolBar extends
 				try {
 					erSchemaEditor.generateSyncCommentSQL();
 				} catch (PartInitException e) {
+					LOGGER.error(e.getMessage());
+					CommonUITool.openErrorBox(erSchemaEditor.getSite().getShell(), e.getMessage());
+				} catch (SQLException e) {
 					LOGGER.error(e.getMessage());
 					CommonUITool.openErrorBox(erSchemaEditor.getSite().getShell(), e.getMessage());
 				}
