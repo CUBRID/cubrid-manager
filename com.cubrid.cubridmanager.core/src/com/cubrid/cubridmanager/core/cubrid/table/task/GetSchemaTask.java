@@ -197,12 +197,11 @@ public class GetSchemaTask extends JDBCTask {
 
 		// get table comment
 		boolean supportComment = SchemaCommentHandler.isInstalledMetaTable(databaseInfo, connection);
-		String description = null;
+		SchemaComment schemaComment = null;
 
 		if (supportComment) {
-			description = SchemaCommentHandler.loadDescription(
-					databaseInfo, connection, tableName).get(tableName + "*")
-					.getDescription();
+			schemaComment = SchemaCommentHandler.loadDescription(
+					databaseInfo, connection, tableName).get(tableName + "*");
 		}
 
 		//get table information
@@ -240,7 +239,9 @@ public class GetSchemaTask extends JDBCTask {
 						schemaInfo.setReuseOid(true);
 					}
 				}
-				schemaInfo.setDescription(description);
+				if (schemaComment != null) {
+					schemaInfo.setDescription(schemaComment.getDescription());
+				}
 				schemaInfo.setOwner(owner);
 				schemaInfo.setClassname(tableName);
 				schemaInfo.setDbname(databaseInfo.getDbName());
@@ -769,8 +770,9 @@ public class GetSchemaTask extends JDBCTask {
 						attr.setCollation(collation);
 					}
 
-					if (comments != null) {
-						attr.setDescription(comments.get(tableName + "*" + attrName).getDescription());
+					SchemaComment schemaComment = comments.get(tableName + "*" + attrName);
+					if (schemaComment != null) {
+						attr.setDescription(schemaComment.getDescription());
 					}
 
 					if ("INSTANCE".equals(type)) { //INSTANCE
