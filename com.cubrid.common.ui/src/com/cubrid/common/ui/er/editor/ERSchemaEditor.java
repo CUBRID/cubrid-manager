@@ -603,86 +603,110 @@ public class ERSchemaEditor extends
 	}
 
 	/**
-	 * Generate "insert" and "update" SQLs to editing query tabs.
-	* 
-	* @return void
+	 * Generate SQLs to editing query tabs.
+	 *
+	 * @return void
 	 * @throws PartInitException 
 	 */
 	public void generateSyncCommentSQL() throws PartInitException, SQLException {
-		Connection conn = null;
-		StringBuffer allInsertSqls = null;
-		StringBuffer allUpdateSqls = null;
-		StringBuffer alterSqls = null;	// for version of 10.x
-		Map<String, SchemaInfo> schemaInfos = erSchema.getAllSchemaInfo();
-		Collection<SchemaInfo> erdSchemaInfos = schemaInfos.values();
-		SqlFormattingStrategy formater = new SqlFormattingStrategy();
-		DatabaseInfo info = database.getDatabaseInfo();
-		final boolean isSupportOnServer = CompatibleUtil.isCommentSupports(info);
+		Collection<SchemaInfo> erdSchemaInfos = erSchema.getAllSchemaInfo().values();
+		List<StringBuffer> sqls = generateSqls(erdSchemaInfos);
 
-		if (isSupportOnServer) {
-			conn = JDBCConnectionManager.getConnection(info, true);
-			alterSqls = new StringBuffer();
-		} else {
-			allInsertSqls = new StringBuffer();
-			allUpdateSqls = new StringBuffer();
-		}
-
-		for (SchemaInfo newSchemaInfo : erdSchemaInfos) {
-			boolean isAddLine = false;
-			String tableName = newSchemaInfo.getClassname();
-
-			if(StringUtil.isNotEmpty(newSchemaInfo.getDescription())){
-				if (isSupportOnServer) {
-					String description = String.format("'%s'", newSchemaInfo.getDescription());
-					String sql = SchemaCommentHandler.generateDescriptionSql(conn,
-							tableName, "*", StringUtil.escapeQuotes(description));
-					appendFormattingSQL(alterSqls, sql, formater);
-				} else {
-					String insertSql = SchemaCommentHandler.buildInsertSQL(tableName, "", newSchemaInfo.getDescription());
-					appendFormattingSQL(allInsertSqls, insertSql, formater);
-					String updateSql = SchemaCommentHandler.buildUpdateSQL(tableName, "", newSchemaInfo.getDescription());
-					appendFormattingSQL(allUpdateSqls, updateSql, formater);
-				}
-				isAddLine = true;
-			}
-
-			for (DBAttribute newAttr : newSchemaInfo.getAttributes()) {
-				if(StringUtil.isNotEmpty(newAttr.getDescription())){
-					if (isSupportOnServer) {
-						String description = String.format("'%s'", newAttr.getDescription());
-						String sql = SchemaCommentHandler.generateDescriptionSql(conn,
-								tableName, newAttr.getName(), StringUtil.escapeQuotes(description));
-						appendFormattingSQL(alterSqls, sql, formater);
-					} else {
-						String insertSql = SchemaCommentHandler.buildInsertSQL(tableName, newAttr.getName(), newAttr.getDescription());
-						appendFormattingSQL(allInsertSqls, insertSql, formater);
-						String updateSql = SchemaCommentHandler.buildUpdateSQL(tableName, newAttr.getName(), newAttr.getDescription());
-						appendFormattingSQL(allUpdateSqls, updateSql, formater);
-					}
-					isAddLine = true;
-				}
-			}
-			if(isAddLine){
-				if(isSupportOnServer) {
-					alterSqls.append("\n\r");
-				} else {
-					allInsertSqls.append("\n\r");
-				}
-			}
-		}
-
-		if((isSupportOnServer && alterSqls.length() < 1)	// since version of 10.x
-				|| (!isSupportOnServer) && allInsertSqls.length() < 1) {	// before version of 10.x
+		if(sqls.size() == 0) {
 			CommonUITool.openInformationBox(Messages.msgNoComments);
 			return;
 		}
 
-		final QueryEditorPart editPart = CommonUITool.openQueryEditor(database,false);
-		if(isSupportOnServer) {
-			editPart.setQuery(alterSqls.toString(), true, false, false);
+		generateSqlsToQueryEditor(sqls);
+	}
+
+	private List<StringBuffer> generateSqls(Collection<SchemaInfo> erdSchemaInfos)
+			throws SQLException {
+		List<StringBuffer> sqls = new ArrayList<StringBuffer>();
+		SqlFormattingStrategy formater = new SqlFormattingStrategy();
+		StringBuffer insertOrAlterSqls = null;
+		StringBuffer allUpdateSqls = null;
+		Connection conn = null;
+		boolean isSupportOnServer = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
+
+		if (isSupportOnServer) {
+			conn = JDBCConnectionManager.getConnection(database.getDatabaseInfo(), true);
+			insertOrAlterSqls = new StringBuffer();
 		} else {
-			editPart.setQuery(allInsertSqls.toString(), true, false, false);
-			editPart.newQueryTab(allUpdateSqls.toString(), false);
+			insertOrAlterSqls = new StringBuffer();
+			allUpdateSqls = new StringBuffer();
+		}
+
+		for (SchemaInfo newSchemaInfo : erdSchemaInfos) {
+			if (StringUtil.isEmpty(newSchemaInfo.getDescription())) {
+				continue;
+			}
+
+			boolean isAddLine = false;
+			String tableName = newSchemaInfo.getClassname();
+
+			if (isSupportOnServer) {
+				String description = String.format("'%s'", newSchemaInfo.getDescription());
+				String sql = SchemaCommentHandler.generateDescriptionSql(conn,
+						tableName, "*", StringUtil.escapeQuotes(description));
+				appendFormattingSQL(insertOrAlterSqls, sql, formater);
+			} else {
+				String insertSql = SchemaCommentHandler.buildInsertSQL(tableName,
+						"", newSchemaInfo.getDescription());
+				appendFormattingSQL(insertOrAlterSqls, insertSql, formater);
+				String updateSql = SchemaCommentHandler.buildUpdateSQL(tableName,
+						"", newSchemaInfo.getDescription());
+				appendFormattingSQL(allUpdateSqls, updateSql, formater);
+			}
+			isAddLine = true;
+
+			for (DBAttribute newAttr : newSchemaInfo.getAttributes()) {
+				if (StringUtil.isEmpty(newAttr.getDescription())) {
+					continue;
+				}
+
+				if (isSupportOnServer) {
+					String description = String.format("'%s'", newAttr.getDescription());
+					String sql = SchemaCommentHandler.generateDescriptionSql(conn,
+							tableName, newAttr.getName(), StringUtil.escapeQuotes(description));
+					appendFormattingSQL(insertOrAlterSqls, sql, formater);
+				} else {
+					String insertSql = SchemaCommentHandler.buildInsertSQL(tableName,
+							newAttr.getName(), newAttr.getDescription());
+					appendFormattingSQL(insertOrAlterSqls, insertSql, formater);
+					String updateSql = SchemaCommentHandler.buildUpdateSQL(tableName,
+							newAttr.getName(), newAttr.getDescription());
+					appendFormattingSQL(allUpdateSqls, updateSql, formater);
+				}
+				isAddLine = true;
+			}
+			if(isAddLine){
+				insertOrAlterSqls.append("\n\r");
+			}
+		}
+
+		if (insertOrAlterSqls.length() > 0) {
+			sqls.add(insertOrAlterSqls);
+			if (!isSupportOnServer) {
+				sqls.add(allUpdateSqls);
+			}
+		}
+
+		return sqls;
+	}
+
+	private void appendFormattingSQL(StringBuffer allSqls, String sql, SqlFormattingStrategy formater){
+		sql = formater.format(sql).trim();
+		allSqls.append(sql);
+		allSqls.append("\n\r");
+	}
+
+	private void generateSqlsToQueryEditor(List<StringBuffer> sqls) throws PartInitException {
+		final boolean isSupportOnServer = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
+		final QueryEditorPart editPart = CommonUITool.openQueryEditor(database,false);
+		editPart.setQuery(sqls.get(0).toString(), true, false, false);
+		if (sqls.size() > 1) {
+			editPart.newQueryTab(sqls.get(1).toString(), false);
 		}
 		UIJob job = new UIJob("") {
 			public IStatus runInUIThread(IProgressMonitor monitor) {
@@ -698,13 +722,7 @@ public class ERSchemaEditor extends
 		job.setPriority(UIJob.BUILD);
 		job.schedule();
 	}
-	
-	private void appendFormattingSQL(StringBuffer allSqls, String sql, SqlFormattingStrategy formater){
-		sql = formater.format(sql).trim();
-		allSqls.append(sql);
-		allSqls.append("\n\r");
-	}
-	
+
 	public void registDropTarget() {
 		dndController = new ERDNDController(this);
 		dndController.registerDropTarget();
