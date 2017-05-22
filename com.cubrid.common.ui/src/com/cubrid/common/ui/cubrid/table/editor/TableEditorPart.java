@@ -1841,6 +1841,12 @@ public class TableEditorPart extends
 		tblCol.setWidth(282);
 		tblCol.setText(Messages.tblColumnIndexRule);
 
+		if (CompatibleUtil.isCommentSupports(database.getDatabaseInfo())) {
+			tblCol = new TableColumn(indexTable, SWT.NONE);
+			tblCol.setWidth(250);
+			tblCol.setText(Messages.tblColumnIndexMemo);
+		}
+
 		IndexTableViewerContentProvider indexContentProvider = new IndexTableViewerContentProvider();
 		IndexTableViewerLabelProvider indexLabelProvider = new IndexTableViewerLabelProvider();
 		indexTableView.setContentProvider(indexContentProvider);

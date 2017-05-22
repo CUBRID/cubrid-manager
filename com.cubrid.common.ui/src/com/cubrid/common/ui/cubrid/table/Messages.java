@@ -260,6 +260,7 @@ public class Messages extends
 	public static String tblColumnForeignTable;
 	public static String tblColumnIndexName;
 	public static String tblColumnIndexRule;
+	public static String tblColumnIndexMemo;
 	public static String tblColumnIndexType;
 	public static String tblColumnInherit;
 	public static String tblColumnInheritHint;
