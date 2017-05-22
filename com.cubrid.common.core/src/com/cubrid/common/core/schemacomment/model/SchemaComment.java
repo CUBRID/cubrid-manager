@@ -31,17 +31,23 @@ public class SchemaComment { // FIXME add description
 	private String table;
 	private String column;
 	private String description;
+	private String objectName;
+	private CommentType type;
 
 	public String getId() {
-		if (table == null && column == null) {
+		if (table == null && column == null && type == null) {
 			return null;
 		}
 
-		if (column == null) {
-			return table + "*";
+		if (type == null) {
+			if (column == null) {
+				return table + "*";
+			} else {
+				return table + "*" + column;
+			}
 		}
 
-		return table + "*" + column;
+		return type.getName() + "*" + objectName;
 	}
 
 	public String getTable() {
@@ -74,5 +80,21 @@ public class SchemaComment { // FIXME add description
 
 	public boolean isColumn() {
 		return table != null && column != null;
+	}
+
+	public String getObjectName() {
+		return objectName;
+	}
+
+	public void setObjectName(String objectName) {
+		this.objectName = objectName;
+	}
+
+	public void setType(CommentType type) {
+		this.type = type;
+	}
+
+	public CommentType getType() {
+		return type;
 	}
 }

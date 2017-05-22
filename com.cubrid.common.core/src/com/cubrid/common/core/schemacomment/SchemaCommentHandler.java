@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import com.cubrid.common.core.common.model.DBAttribute;
 import com.cubrid.common.core.common.model.IDatabaseSpec;
 import com.cubrid.common.core.common.model.SchemaInfo;
+import com.cubrid.common.core.schemacomment.model.CommentType;
 import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.ConstantsUtil;
@@ -283,6 +284,79 @@ public class SchemaCommentHandler {
 		}
 		
 		return results;
+	}
+
+	public static SchemaComment loadObjectDescription(IDatabaseSpec dbSpec,
+			Connection conn, String objName, CommentType type) throws SQLException {
+		String sql = null;
+
+		switch (type) {
+		case INDEX:
+			sql = "SELECT index_name, comment " +
+					"FROM db_index " +
+					"WHERE index_name = ?";
+			break;
+		case VIEW:
+			sql = "SELECT vclass_name, comment " +
+					"FROM db_vclass" +
+					"WHERE vclass_name = ?";
+			break;
+		case SP:
+			sql = "SELECT sp_name, comment " +
+					"FROM db_stored_procedure " +
+					"WHERE sp_name = ?";
+			break;
+		case TRIGGER:
+			sql = "SELECT name, comment " +
+			"FROM db_trigger " +
+			"WHERE name = ?";
+			break;
+		case SERIAL:
+			sql = "SELECT name, comment " +
+					"FROM db_serial " +
+					"WHERE name = ?";
+			break;
+		case USER:
+			sql = "SELECT name, comment " +
+					"FROM db_user " +
+					"WHERE name = ?";
+			break;
+		case PARTITION:
+			sql = "SELECT partition_name, comment " +
+					"FROM db_partition " +
+					"WHERE partition_name = ?";
+			break;
+		}
+
+		// [TOOLS-2425]Support shard broker
+		if (dbSpec.isShard()) {
+			sql = dbSpec.wrapShardQuery(sql);
+		}
+
+		SchemaComment schemaComment = null;
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, objName);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				schemaComment = new SchemaComment();
+				schemaComment.setType(type);
+				schemaComment.setObjectName(rs.getString(1));
+				schemaComment.setDescription(rs.getString(2));
+			}
+		} catch (SQLException e) {
+			QueryUtil.rollback(conn);
+			LOGGER.error(e.getMessage(), e);
+			throw e;
+		} finally {
+			QueryUtil.freeQuery(pstmt, rs);
+		}
+
+		return schemaComment;
 	}
 
 	public static void updateDescription(IDatabaseSpec dbSpec, Connection conn,
