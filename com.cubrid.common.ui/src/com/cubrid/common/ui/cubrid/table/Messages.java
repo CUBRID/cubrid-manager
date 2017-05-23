@@ -139,6 +139,7 @@ public class Messages extends
 	public static String lblCurVal;
 	public static String lblIndexes;
 	public static String lblIndexName;
+	public static String lblIndexDescription;
 	public static String lblIndexType;
 	public static String lblOwner;
 	public static String lblCollation;

@@ -85,6 +85,7 @@ public class AddIndexDialog extends
 	private Table columnTable;
 	private Group group;
 	private Text indexNameText;
+	private Text indexDescriptionText;
 	private Constraint indexConstraint;
 	private Constraint editedIndex;
 	private int newIndex = -1;
@@ -95,6 +96,7 @@ public class AddIndexDialog extends
 	private Button btnRevIndex;
 	private Button btnRevUnique;
 	private boolean isNewConstraint;
+	private boolean isCommentSupport;
 
 	/**
 	 * The constructor
@@ -111,6 +113,7 @@ public class AddIndexDialog extends
 		this.editedIndex = editedIndex;
 		this.isSupportPrefixLength = CompatibleUtil.isSupportPrefixIndexLength(database.getDatabaseInfo());
 		this.isNewConstraint = isNewConstraint;
+		this.isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 	}
 
 	/**
@@ -390,6 +393,20 @@ public class AddIndexDialog extends
 			titleLabel.setLayoutData(gridData);
 		}
 		createColumnTable();
+
+		if (isCommentSupport) {
+			Label indexDescriptionLabel = new Label(group, SWT.NONE);
+			indexDescriptionLabel.setText(Messages.lblIndexDescription);
+			indexDescriptionText = new Text(group, SWT.BORDER);
+			{
+				indexDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+				GridData gdConstraintDescText = new GridData();
+				gdConstraintDescText.grabExcessHorizontalSpace = true;
+				gdConstraintDescText.verticalAlignment = GridData.CENTER;
+				gdConstraintDescText.horizontalAlignment = GridData.FILL;
+				indexDescriptionText.setLayoutData(gdConstraintDescText);
+			}
+		}
 
 		Composite btnComposite = new Composite(parent, SWT.NONE);
 		{

@@ -54,6 +54,7 @@ public final class ValidateUtil {
 	public final static int MAX_PASSWORD_LENGTH = 31; //db user PASSWORD max length
 	public final static int MIN_PASSWORD_LENGTH = 4; //db user PASSWORD min length
 	public final static int MAX_SCHEMA_NAME_LENGTH = 254; // (254byte)table,view,column,stored procedure,index, method, method args,fk,partition,partition expr
+	public final static int MAX_DB_OBJECT_COMMENT = 1024;
 
 	private ValidateUtil() {
 	}
