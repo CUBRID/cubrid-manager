@@ -2815,11 +2815,13 @@ public class TableEditorPart extends
 
 				// get description for index
 				for (Constraint cons : newSchemaInfo.getConstraints()) {
-					String indexName = cons.getName();
-					SchemaComment indexComment = SchemaCommentHandler.loadObjectDescription(
-							dbSpec, conn, indexName, CommentType.INDEX);
-					if (indexComment != null) {
-						cons.setDescription(indexComment.getDescription());
+					if (CompatibleUtil.isCommentSupports(dbSpec)) {
+						String indexName = cons.getName();
+						SchemaComment indexComment = SchemaCommentHandler.loadObjectDescription(
+								dbSpec, conn, indexName, CommentType.INDEX);
+						if (indexComment != null) {
+							cons.setDescription(indexComment.getDescription());
+						}
 					}
 				}
 
