@@ -266,6 +266,10 @@ public class AddIndexDialog extends
 				indexName = indexConstraint.getDefaultName(tableName);
 			}
 			indexConstraint.setName(indexName);
+			if (isCommentSupport) {
+				String description = indexDescriptionText.getText().trim();
+				indexConstraint.setDescription(description);
+			}
 			List<Constraint> constraintList = new ArrayList<Constraint>();
 			constraintList.addAll(schemaInfo.getConstraints());
 			if (editedIndex != null) {

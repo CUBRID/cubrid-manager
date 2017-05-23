@@ -1432,6 +1432,12 @@ public class SchemaDDL {
 		}
 		makeIndexColumns(bf, tableName, columnsRuleArray);
 
+		String description = indexConstaint.getDescription();
+		if (description != null) {
+			description = StringUtil.escapeQuotes("'" + description + "'");
+			bf.append(String.format(" COMMENT %s", description));
+		}
+
 		return bf.toString();
 	}
 
