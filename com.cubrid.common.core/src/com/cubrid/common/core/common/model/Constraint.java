@@ -49,6 +49,7 @@ public class Constraint implements
 	private List<String> classAttributes = null; // String
 	private List<String> attributes = null; // String
 	private List<String> rules = null; // String
+	private String description;
 
 	private boolean newFlag;
 
@@ -623,5 +624,13 @@ public class Constraint implements
 
 	public void setNewFlag(boolean newFlag) {
 		this.newFlag = newFlag;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }

@@ -98,6 +98,7 @@ import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.core.common.model.PartitionType;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
+import com.cubrid.common.core.schemacomment.model.CommentType;
 import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.ApplicationType;
@@ -2809,6 +2810,16 @@ public class TableEditorPart extends
 							newSchemaInfo.getClassname(), attr.getName());
 					if (schemaComment != null) {
 						attr.setDescription(schemaComment.getDescription());
+					}
+				}
+
+				// get description for index
+				for (Constraint cons : newSchemaInfo.getConstraints()) {
+					String indexName = cons.getName();
+					SchemaComment indexComment = SchemaCommentHandler.loadObjectDescription(
+							dbSpec, conn, indexName, CommentType.INDEX);
+					if (indexComment != null) {
+						cons.setDescription(indexComment.getDescription());
 					}
 				}
 

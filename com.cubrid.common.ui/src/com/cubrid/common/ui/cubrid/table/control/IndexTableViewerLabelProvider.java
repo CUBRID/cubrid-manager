@@ -117,6 +117,8 @@ public class IndexTableViewerLabelProvider implements
 			}
 
 			return rulebf.toString();
+		case 4:
+			return a.getDescription();
 		default:
 			break;
 		}
