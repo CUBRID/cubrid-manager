@@ -115,6 +115,7 @@ public class CreateViewDialog extends
 	private Combo ownerCombo;
 	private Text tableText;
 	private Text querydescText;
+	private Text viewDescriptionText;
 	private final CubridDatabase database;
 	private TabFolder tabFolder = null;
 	private final boolean isNewTableFlag;
@@ -128,11 +129,13 @@ public class CreateViewDialog extends
 	private static final int BUTTON_EDIT_ID = 1003;
 	private String owner;
 	private String viewName = "";
+	private boolean isCommentSupport = false;
 
 	public CreateViewDialog(Shell parentShell, CubridDatabase database, boolean isNew) {
 		super(parentShell);
 		this.database = database;
 		this.isNewTableFlag = isNew;
+		this.isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 	}
 
 	protected Control createDialogArea(Composite parent) {
@@ -261,6 +264,16 @@ public class CreateViewDialog extends
 		gdTableText.horizontalIndent = 30;
 		tableText.setLayoutData(gdTableText);
 
+		if (isCommentSupport) {
+			final Label viewDescriptionLabel = new Label(group, SWT.SHADOW_IN);
+			viewDescriptionLabel.setText(Messages.lblViewDescription);
+			viewDescriptionText = new Text(group, SWT.BORDER);
+			viewDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			final GridData gdViewDescription = new GridData(SWT.FILL, SWT.CENTER, true, false);
+			gdViewDescription.horizontalIndent = 30;
+			viewDescriptionText.setLayoutData(gdViewDescription);
+		}
+
 		final Label ownerLabel = new Label(group, SWT.NONE);
 		ownerLabel.setText(Messages.lblViewOwnerName);
 
@@ -276,6 +289,7 @@ public class CreateViewDialog extends
 				}
 			}
 		});
+
 		final Label querySQLLabel = new Label(composite, SWT.LEFT | SWT.WRAP);
 		querySQLLabel.setText(Messages.lblQueryList);
 		querySQLLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
