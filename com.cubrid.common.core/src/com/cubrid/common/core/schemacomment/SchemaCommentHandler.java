@@ -298,7 +298,7 @@ public class SchemaCommentHandler {
 			break;
 		case VIEW:
 			sql = "SELECT vclass_name, comment " +
-					"FROM db_vclass" +
+					"FROM db_vclass " +
 					"WHERE vclass_name = ?";
 			break;
 		case SP:
