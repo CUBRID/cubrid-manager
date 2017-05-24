@@ -27,6 +27,10 @@
  */
 package com.cubrid.common.ui.cubrid.table.dialog;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,10 +68,14 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.common.model.DBAttribute;
+import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
+import com.cubrid.common.core.schemacomment.model.CommentType;
+import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
+import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.query.format.SqlFormattingStrategy;
@@ -81,6 +89,7 @@ import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
 import com.cubrid.common.ui.spi.util.ValidateUtil;
+import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.common.task.CommonSQLExcuterTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.ClassAuthorizations;
@@ -562,6 +571,11 @@ public class CreateViewDialog extends
 			tableText.setEditable(false);
 			tableText.setText(classInfo.getClassName());
 
+			if (isCommentSupport) {
+				String comment = getViewComment();
+				viewDescriptionText.setText(comment);
+			}
+
 			ownerOld = classInfo.getOwnerName();
 			String[] strs = new String[] { classInfo.getClassName(),
 					isPropertyQuery ? Messages.msgPropertyInfo : Messages.msgEditInfo };
@@ -654,6 +668,33 @@ public class CreateViewDialog extends
 		for (String userName : dbUserList) {
 			ownerCombo.add(userName.toUpperCase(Locale.getDefault()));
 		}
+	}
+
+	/**
+	 * get view's comment
+	 *
+	 * @return
+	 */
+	private String getViewComment() {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		SchemaComment schemaComment = null;
+		String viewName = tableText.getText();
+
+		try {
+			DatabaseInfo dbInfo = database.getDatabaseInfo();
+			conn = JDBCConnectionManager.getConnection(dbInfo, true);
+			schemaComment = SchemaCommentHandler.loadObjectDescription(
+					dbInfo, conn, viewName, CommentType.VIEW);
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+			CommonUITool.openErrorBox(e.getMessage());
+		} finally {
+			QueryUtil.freeQuery(stmt, rs);
+		}
+
+		return schemaComment.getDescription();
 	}
 
 	/**
