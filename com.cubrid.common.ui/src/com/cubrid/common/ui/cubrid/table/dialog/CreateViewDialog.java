@@ -281,6 +281,14 @@ public class CreateViewDialog extends
 			final GridData gdViewDescription = new GridData(SWT.FILL, SWT.CENTER, true, false);
 			gdViewDescription.horizontalIndent = 30;
 			viewDescriptionText.setLayoutData(gdViewDescription);
+			viewDescriptionText.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent event) {
+					if (getButton(IDialogConstants.OK_ID) != null) {
+						getButton(IDialogConstants.OK_ID).setEnabled(true);
+					}
+				}
+			});
 		}
 
 		final Label ownerLabel = new Label(group, SWT.NONE);
@@ -457,6 +465,8 @@ public class CreateViewDialog extends
 					if (val != null) {
 						map.put("3", val);
 					}
+				} else if (isCommentSupport && property.equals(columnNameArr[4])) {
+					map.put("4", value.toString());
 				}
 				viewColTableViewer.refresh();
 				valid();
@@ -588,7 +598,9 @@ public class CreateViewDialog extends
 			if (isCommentSupport) {
 				if (!classInfo.isSystemClass()) {
 					String comment = getViewComment();
-					viewDescriptionText.setText(comment);
+					if (comment != null) {
+						viewDescriptionText.setText(comment);
+					}
 				} else {
 					viewDescriptionText.setEditable(false);
 				}
@@ -855,7 +867,7 @@ public class CreateViewDialog extends
 		ddl.append("(");
 
 		for (Map<String, String> map : viewColListData) {
-			// "Name", "Data type", "Shared", "Default", "Default value"
+			// "Name", "Data type", "Shared", "Default", "Default value", "comment"
 			String type = map.get("1");
 			ddl.append(StringUtil.NEWLINE);
 			ddl.append(" ").append(QuerySyntax.escapeKeyword(map.get("0"))).append(" ");
@@ -877,6 +889,15 @@ public class CreateViewDialog extends
 					ddl.append(" ").append(defaultValue);
 				}
 			}
+
+			if (isCommentSupport) {
+				String comment = map.get("4");
+				if (StringUtil.isNotEmpty(comment)) {
+					comment = String.format("'%s'", comment);
+					ddl.append(String.format(" COMMENT %s ", StringUtil.escapeQuotes(comment)));
+				}
+			}
+
 			ddl.append(",");
 		}
 
@@ -892,6 +913,14 @@ public class CreateViewDialog extends
 			ddl.append(map.get("0"));
 			if (i != total - 1) {
 				ddl.append(StringUtil.NEWLINE).append(" UNION ALL ");
+			}
+		}
+
+		if (isCommentSupport) {
+			String comment = viewDescriptionText.getText();
+			if (StringUtil.isNotEmpty(comment)) {
+				comment = String.format("'%s'", comment);
+				ddl.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(comment)));
 			}
 		}
 		ddl.append(";");
