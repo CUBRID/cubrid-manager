@@ -344,21 +344,33 @@ public class CreateViewDialog extends
 
 		final Label columnsLabel = new Label(composite, SWT.NONE);
 		columnsLabel.setText(Messages.lblTableNameColumns);
-		final String[] columnNameArr = new String[] { Messages.tblColViewName,
-				Messages.tblColViewDataType, Messages.tblColViewDefaultType,
-				Messages.tblColViewDefaultValue };
+		final String[] columnNameArr = isCommentSupport
+				? new String[] {
+					Messages.tblColViewName,
+					Messages.tblColViewDataType,
+					Messages.tblColViewDefaultType,
+					Messages.tblColViewDefaultValue,
+					Messages.tblColViewMemo}
+				: new String[] {
+					Messages.tblColViewName,
+					Messages.tblColViewDataType,
+					Messages.tblColViewDefaultType,
+					Messages.tblColViewDefaultValue};
 
 		viewColTableViewer = createCommonTableViewer(composite, null, columnNameArr,
 				CommonUITool.createGridData(GridData.FILL_BOTH, 2, 4, -1, 200));
 		viewColTableViewer.setInput(viewColListData);
 		viewColTableViewer.setColumnProperties(columnNameArr);
 
-		CellEditor[] editors = new CellEditor[4];
+		CellEditor[] editors = new CellEditor[5];
 		editors[0] = new TextCellEditor(viewColTableViewer.getTable());
 		editors[1] = null;
 		editors[2] = new ComboBoxCellEditor(viewColTableViewer.getTable(), defaultType,
 				SWT.READ_ONLY);
 		editors[3] = new TextCellEditor(viewColTableViewer.getTable());
+		if (isCommentSupport) {
+			editors[4] = new TextCellEditor(viewColTableViewer.getTable());
+		}
 
 		viewColTableViewer.setCellEditors(editors);
 		viewColTableViewer.setCellModifier(new ICellModifier() {

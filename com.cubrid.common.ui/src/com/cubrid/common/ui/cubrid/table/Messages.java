@@ -479,6 +479,7 @@ public class Messages extends
 	public static String tblColViewDataType;
 	public static String tblColViewDefaultType;
 	public static String tblColViewDefaultValue;
+	public static String tblColViewMemo;
 	public static String msgPropertyInfo;
 	public static String msgEditInfo;
 	public static String btnAddParameter;
