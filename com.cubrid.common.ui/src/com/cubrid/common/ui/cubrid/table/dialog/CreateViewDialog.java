@@ -572,8 +572,12 @@ public class CreateViewDialog extends
 			tableText.setText(classInfo.getClassName());
 
 			if (isCommentSupport) {
-				String comment = getViewComment();
-				viewDescriptionText.setText(comment);
+				if (!classInfo.isSystemClass()) {
+					String comment = getViewComment();
+					viewDescriptionText.setText(comment);
+				} else {
+					viewDescriptionText.setEditable(false);
+				}
 			}
 
 			ownerOld = classInfo.getOwnerName();
