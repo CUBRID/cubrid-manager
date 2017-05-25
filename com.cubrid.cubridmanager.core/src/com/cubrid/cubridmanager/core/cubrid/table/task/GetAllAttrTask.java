@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.cubrid.common.core.common.model.DBAttribute;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.cubridmanager.core.Messages;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
@@ -116,9 +117,7 @@ public class GetAllAttrTask extends
 				return;
 			}
 
-			String sql = "SELECT attr_name, class_name, attr_type, def_order, from_class_name,"
-					+ " from_attr_name, data_type, prec, scale, domain_class_name,"
-					+ " default_value, is_nullable FROM db_attribute WHERE class_name=?"
+			String sql = "SELECT * FROM db_attribute WHERE class_name=?"
 					+ " ORDER BY def_order";
 
 			// [TOOLS-2425]Support shard broker
@@ -155,6 +154,9 @@ public class GetAllAttrTask extends
 				}
 				dataType = DataType.convertAttrTypeString(dataType, String.valueOf(prec), String.valueOf(scale));
 				dbAttribute.setType(dataType);
+				if (CompatibleUtil.isCommentSupports(databaseInfo)) {
+					dbAttribute.setDescription(rs.getString("comment"));
+				}
 				//Fix bug TOOLS-3093
 				defaultValue = DataType.convertDefaultValue(dataType, defaultValue, databaseInfo);
 				dbAttribute.setDefault(defaultValue);

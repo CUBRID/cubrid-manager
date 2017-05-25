@@ -424,6 +424,8 @@ public class CreateViewDialog extends
 					}
 
 					return value;
+				} else if (isCommentSupport && property.equals(columnNameArr[4])) {
+					return map.get("4");
 				}
 
 				return null;
@@ -631,6 +633,10 @@ public class CreateViewDialog extends
 				map.put("1", type);
 				map.put("2", defaultType[0]);
 				map.put("3", defaultType[0]);
+
+				if (isCommentSupport) {
+					map.put("4", attr.getDescription());
+				}
 
 				String dfltType = null;
 				String value = null;
