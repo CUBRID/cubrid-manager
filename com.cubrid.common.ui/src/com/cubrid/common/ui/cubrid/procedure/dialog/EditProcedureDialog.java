@@ -329,7 +329,8 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 
 			try {
 				AddFuncParamsDialog addDlg = new AddFuncParamsDialog(
-						getShell(), model, sqlTypeMap, javaTypeMap, true, procParamsListData);
+						getShell(), model, sqlTypeMap, javaTypeMap, true, procParamsListData,
+						database);
 				if (addDlg.open() == IDialogConstants.OK_ID) { // add
 					procParamsListData.add(model);
 					procParamsTableViewer.refresh();
@@ -348,7 +349,8 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 			}
 			Map<String, String> map = procParamsListData.get(index);
 			AddFuncParamsDialog editDlg = new AddFuncParamsDialog(getShell(),
-					map, sqlTypeMap, javaTypeMap, false, procParamsListData);
+					map, sqlTypeMap, javaTypeMap, false, procParamsListData,
+					database);
 			if (editDlg.open() == IDialogConstants.OK_ID) {
 				procParamsTableViewer.refresh();
 				for (int i = 0; i < procParamsTableViewer.getTable().getColumnCount(); i++) {

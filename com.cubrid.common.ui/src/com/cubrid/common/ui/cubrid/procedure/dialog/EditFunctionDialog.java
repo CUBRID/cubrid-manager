@@ -434,7 +434,8 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 
 			try {
 				AddFuncParamsDialog addDlg = new AddFuncParamsDialog(
-						getShell(), model, sqlTypeMap, javaTypeMap, true, funcParamsListData);
+						getShell(), model, sqlTypeMap, javaTypeMap, true, funcParamsListData,
+						database);
 				if (addDlg.open() == IDialogConstants.OK_ID) { // add
 					funcParamsListData.add(model);
 					funcParamsTableViewer.refresh();
@@ -452,7 +453,8 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 			}
 			Map<String, String> map = funcParamsListData.get(index);
 			AddFuncParamsDialog editDlg = new AddFuncParamsDialog(
-					getShell(), map, sqlTypeMap, javaTypeMap, false, funcParamsListData);
+					getShell(), map, sqlTypeMap, javaTypeMap, false, funcParamsListData,
+					database);
 
 			if (editDlg.open() == IDialogConstants.OK_ID) {
 				funcParamsTableViewer.refresh();

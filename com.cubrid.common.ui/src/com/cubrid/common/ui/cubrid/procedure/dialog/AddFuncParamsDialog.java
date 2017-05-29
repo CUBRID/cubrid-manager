@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.procedure.Messages;
 import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
@@ -70,6 +71,7 @@ public class AddFuncParamsDialog extends
 	private final Map<String, String> sqlTypeMap;
 	private final Map<String, List<String>> javaTypeMap;
 	private Text parameterNameText = null;
+	private Text parameterDescriptionText = null;
 	private Label javaTypeLabel = null;
 	private Label javaTypeLabel2 = null;
 	private Text javaTypeText;
@@ -77,17 +79,19 @@ public class AddFuncParamsDialog extends
 	private final static String[] PARAM_MODEL_STRS = new String[]{"IN", "OUT",
 			"INOUT" };
 	private final List<Map<String, String>> paramList;
+	private boolean isCommentSupport = false;
 
 	public AddFuncParamsDialog(Shell parentShell, Map<String, String> model,
 			Map<String, String> sqlTypeMap,
 			Map<String, List<String>> javaTypeMap, boolean newFlag,
-			List<Map<String, String>> paramList) {
+			List<Map<String, String>> paramList, CubridDatabase database) {
 		super(parentShell);
 		this.sqlTypeMap = sqlTypeMap;
 		this.javaTypeMap = javaTypeMap;
 		this.model = model;
 		this.newFlag = newFlag;
 		this.paramList = paramList;
+		this.database = database;
 	}
 
 	/**
@@ -97,6 +101,7 @@ public class AddFuncParamsDialog extends
 	 * @return the composite
 	 */
 	protected Control createDialogArea(Composite parent) {
+		isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 		Composite parentComp = (Composite) super.createDialogArea(parent);
 
 		final Composite composite = new Composite(parentComp, SWT.NONE);
@@ -120,7 +125,6 @@ public class AddFuncParamsDialog extends
 	 * @param composite the parent composite
 	 */
 	private void createdbNameGroup(Composite composite) {
-
 		final Group dbnameGroup = new Group(composite, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = 10;
@@ -145,6 +149,17 @@ public class AddFuncParamsDialog extends
 				setValidMessage();
 			}
 		});
+
+		if (isCommentSupport) {
+			final Label parameterDescriptionLabel = new Label(dbnameGroup, SWT.LEFT
+					| SWT.WRAP);
+			parameterDescriptionLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+			parameterDescriptionLabel.setText(Messages.lblParameterDescription);
+
+			parameterDescriptionText = new Text(dbnameGroup, SWT.BORDER);
+			parameterDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			parameterDescriptionText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		}
 
 		final Label databaseName = new Label(dbnameGroup, SWT.LEFT | SWT.WRAP);
 

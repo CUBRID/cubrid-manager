@@ -51,6 +51,7 @@ public class Messages extends
 	public static String msgEditFuncParamDialog;
 	public static String titleEditFuncParamDialog;
 	public static String lblParameterName;
+	public static String lblParameterDescription;
 	public static String lblSqlType;
 	public static String lblSpecialJavaType;
 	public static String lblJavaType;
