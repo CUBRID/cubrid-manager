@@ -55,6 +55,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.task.ITask;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.StringUtil;
@@ -87,6 +88,7 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 	private TableViewer procParamsTableViewer;
 	private static SqlFormattingStrategy formator = new SqlFormattingStrategy();
 	private Text procNameText;
+	private Text procDescriptionText;
 	private CubridDatabase database = null;
 	private TabFolder tabFolder;
 	private StyledText sqlScriptText;
@@ -102,6 +104,7 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 	private static final int BUTTON_DOWN_ID = 1005;
 	private static final int BUTTON_DROP_ID = 1006;
 	private String procedureName = null;
+	private boolean isCommentSupport = false;
 
 	public EditProcedureDialog(Shell parentShell) {
 		super(parentShell);
@@ -110,6 +113,7 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 	}
 
 	protected Control createDialogArea(Composite parent) {
+		isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 		Composite parentComp = (Composite) super.createDialogArea(parent);
 		Composite composite = new Composite(parentComp, SWT.NONE);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -193,11 +197,28 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 			}
 		});
 
-		final String[] userColumnNameArr = new String[]{
-				Messages.tblColProcedureParamName,
-				Messages.tblColProcedureParamType,
-				Messages.tblColProcedureJavaParamType,
-				Messages.tblColProcedureModel };
+		if (isCommentSupport) {
+			final Label procDescriptionLabel = new Label(composite, SWT.NONE);
+			procDescriptionLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+			procDescriptionLabel.setText(Messages.lblProcedureDescription);
+
+			procDescriptionText = new Text(composite, SWT.BORDER);
+			procDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			procDescriptionText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		}
+
+		final String[] userColumnNameArr = isCommentSupport
+				? new String[] {
+					Messages.tblColProcedureParamName,
+					Messages.tblColProcedureParamType,
+					Messages.tblColProcedureJavaParamType,
+					Messages.tblColProcedureModel,
+					Messages.tblColProcedureMemo }
+				: new String[] {
+					Messages.tblColProcedureParamName,
+					Messages.tblColProcedureParamType,
+					Messages.tblColProcedureJavaParamType,
+					Messages.tblColProcedureModel };
 		procParamsTableViewer = CommonUITool.createCommonTableViewer(composite,
 				null, userColumnNameArr,
 				CommonUITool.createGridData(GridData.FILL_BOTH, 6, 4, -1, 200));

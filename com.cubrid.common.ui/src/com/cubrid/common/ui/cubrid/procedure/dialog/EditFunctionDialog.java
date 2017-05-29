@@ -59,6 +59,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.task.ITask;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.StringUtil;
@@ -94,6 +95,7 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 	private TableViewer funcParamsTableViewer;
 	private static SqlFormattingStrategy formator = new SqlFormattingStrategy();
 	private Text funcNameText;
+	private Text funcDescriptionText;
 	private CubridDatabase database = null;
 	private TabFolder tabFolder;
 	private StyledText sqlScriptText;
@@ -111,6 +113,7 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 	private static final int BUTTON_DOWN_ID = 1005;
 	private static final int BUTTON_DROP_ID = 1006;
 	private String functionName = null;
+	private boolean isCommentSupport = false;
 
 	public EditFunctionDialog(Shell parentShell) {
 		super(parentShell);
@@ -119,6 +122,7 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 	}
 
 	protected Control createDialogArea(Composite parent) {
+		isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 		Composite parentComp = (Composite) super.createDialogArea(parent);
 		Composite composite = new Composite(parentComp, SWT.NONE);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -203,13 +207,30 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 			}
 		});
 
-		final String[] userColumnNameArr = new String[]{
-				Messages.tblColFunctionParamName,
-				Messages.tblColFunctionParamType,
-				Messages.tblColFunctionJavaParamType,
-				Messages.tblColFunctionModel
+		if (isCommentSupport) {
+			final Label commentLabel = new Label(composite, SWT.NONE);
+			commentLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+			commentLabel.setText(Messages.lblFunctionDescription);
 
-		};
+			funcDescriptionText = new Text(composite, SWT.BORDER);
+			funcDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			funcDescriptionText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		}
+
+		final String[] userColumnNameArr = isCommentSupport 
+				? new String[]{
+					Messages.tblColFunctionParamName,
+					Messages.tblColFunctionParamType,
+					Messages.tblColFunctionJavaParamType,
+					Messages.tblColFunctionModel,
+					Messages.tblColFunctionMemo
+				}
+				: new String[] {
+					Messages.tblColFunctionParamName,
+					Messages.tblColFunctionParamType,
+					Messages.tblColFunctionJavaParamType,
+					Messages.tblColFunctionModel
+				};
 		funcParamsTableViewer = CommonUITool.createCommonTableViewer(composite,
 				null, userColumnNameArr,
 				CommonUITool.createGridData(GridData.FILL_BOTH, 6, 4, -1, 200));
