@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.cubridmanager.core.Messages;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
@@ -54,24 +55,11 @@ public class GetSPInfoListTask extends
 	private String spName = null;
 	private SPType spType = null;
 	private final List<SPInfo> spInfoList = new ArrayList<SPInfo>();
-	// FIXME extract to utility class
-	private static final String GET_ALLSPINFO_SQL = "SELECT sp.sp_name,                                   "
-			+ "       sp.sp_type,                                   "
-			+ "       sp.return_type,                               "
-			+ "       sp.arg_count,                                 "
-			+ "       sp.lang,                                      "
-			+ "       sp.target,                                    "
-			+ "       sp.owner,                                     "
-			+ "       spargs.index_of,                              "
-			+ "       spargs.arg_name,                              "
-			+ "       spargs.data_type,                             "
-			+ "       spargs.mode                                   "
-			+ "  FROM db_stored_procedure sp                        "
-			+ "  LEFT OUTER JOIN db_stored_procedure_args spargs    "
-			+ "    ON sp.sp_name=spargs.sp_name                     ";
+	private static boolean isCommentSupport = false;
 
 	public GetSPInfoListTask(DatabaseInfo dbInfo) {
 		super("GetAllSPInfoList", dbInfo);
+		isCommentSupport = CompatibleUtil.isCommentSupports(dbInfo);
 	}
 
 	/**
@@ -79,6 +67,17 @@ public class GetSPInfoListTask extends
 	 */
 	@Override
 	public void execute() {// FIXME extract to utility class
+		String sql = "SELECT sp.sp_name, sp.sp_type, sp.return_type,"
+				+ " sp.arg_count, sp.lang, sp.target, sp.owner, spargs.index_of,"
+				+ " spargs.arg_name, spargs.data_type, spargs.mode "
+
+				+ (isCommentSupport ?
+				  ", sp.comment, spargs.comment as [col_comment]" :
+				  "")
+
+				+ "FROM db_stored_procedure sp LEFT OUTER JOIN "
+				+ "db_stored_procedure_args spargs "
+				+ "ON sp.sp_name=spargs.sp_name";
 		try {
 			if (errorMsg != null && errorMsg.trim().length() > 0) {
 				return;
@@ -89,7 +88,6 @@ public class GetSPInfoListTask extends
 				return;
 			}
 
-			String sql = GET_ALLSPINFO_SQL;
 			int paraCount = 0;
 			Map<String, String> paraMap = new HashMap<String, String>();
 			if (spName != null && !"".equals(spName)) {
@@ -154,9 +152,13 @@ public class GetSPInfoListTask extends
 			String target = rs.getString("target");
 			String language = rs.getString("lang");
 			String owner = rs.getString("owner");
+			String description = null;
+			if (isCommentSupport) {
+				description = rs.getString("comment");
+			}
 			SPInfo spInfo = getSPInfo(spInfoList, spName);
 			if (spInfo == null) {
-				spInfo = new SPInfo(spName, type, returnType, language, owner, target);
+				spInfo = new SPInfo(spName, type, returnType, language, owner, target, description);
 				spInfoList.add(spInfo);
 			}
 			String argName = rs.getString("arg_name");
@@ -175,7 +177,11 @@ public class GetSPInfoListTask extends
 			} else if (mode != null && mode.trim().equalsIgnoreCase("INOUT")) {
 				spArgsType = SPArgsType.INOUT;
 			}
-			SPArgsInfo spArgsInfo = new SPArgsInfo(spName, argName, index, dataType, spArgsType);
+			String colDescription = null;
+			if (isCommentSupport) {
+				colDescription = rs.getString("col_comment");
+			}
+			SPArgsInfo spArgsInfo = new SPArgsInfo(spName, argName, index, dataType, spArgsType, colDescription);
 			spInfo.addSPArgsInfo(spArgsInfo);
 		}
 	}

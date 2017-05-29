@@ -45,6 +45,7 @@ public class SPInfo {
 	private String language;
 	private String owner;
 	private String target;
+	private String description;
 	private List<SPArgsInfo> argsInfoList = new ArrayList<SPArgsInfo>();
 
 	public SPInfo(String spName) {
@@ -52,7 +53,7 @@ public class SPInfo {
 	}
 
 	public SPInfo(String spName, SPType spType, String returnType, String language, String owner,
-			String target) {
+			String target, String description) {
 		super();
 		this.spName = spName;
 		this.spType = spType;
@@ -60,6 +61,7 @@ public class SPInfo {
 		this.language = language;
 		this.owner = owner;
 		this.target = target;
+		this.description = description;
 	}
 
 	public String getSpName() {
@@ -116,6 +118,14 @@ public class SPInfo {
 
 	public void setArgsInfoList(List<SPArgsInfo> argsInfoList) {
 		this.argsInfoList = argsInfoList;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 
 	/**

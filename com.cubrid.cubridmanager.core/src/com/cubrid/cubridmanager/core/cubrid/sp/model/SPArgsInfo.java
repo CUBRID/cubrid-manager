@@ -40,6 +40,7 @@ public class SPArgsInfo {
 	private int index;
 	private String argName;
 	private String dataType;
+	private String description;
 	private SPArgsType spArgsType;
 
 	//Constructor
@@ -48,12 +49,13 @@ public class SPArgsInfo {
 	}
 
 	public SPArgsInfo(String spName, String argName, int index, String dataType,
-			SPArgsType spArgsType) {
+			SPArgsType spArgsType, String description) {
 		this.spName = spName;
 		this.argName = argName;
 		this.index = index;
 		this.dataType = dataType;
 		this.spArgsType = spArgsType;
+		this.description = description;
 	}
 
 	public String getSpName() {
@@ -86,6 +88,14 @@ public class SPArgsInfo {
 
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public SPArgsType getSpArgsType() {
