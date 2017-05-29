@@ -525,6 +525,11 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 			String[] javaParamType = null;
 
 			funcNameText.setText(spInfo.getSpName());
+
+			if (isCommentSupport) {
+				funcDescriptionText.setText(spInfo.getDescription());
+			}
+
 			if ("void".equalsIgnoreCase(returnType)) {
 				returnTypeCombo.select(0);
 
@@ -601,6 +606,9 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 						model.put("1", spArgsInfo.getDataType());
 						model.put("2", javaParamType[i]);
 						model.put("3", spArgsInfo.getSpArgsType().toString());
+						if (isCommentSupport) {
+							model.put("4", spArgsInfo.getDescription());
+						}
 						funcParamsListData.add(model);
 					}
 				}

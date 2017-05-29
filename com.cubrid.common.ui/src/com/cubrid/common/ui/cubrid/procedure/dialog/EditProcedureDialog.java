@@ -418,6 +418,10 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 
 			procNameText.setText(spInfo.getSpName());
 
+			if (isCommentSupport) {
+				procDescriptionText.setText(spInfo.getDescription());
+			}
+
 			if (target != null && target.length() > 0
 					&& target.indexOf("(") > 0 && target.indexOf(")") > 0) {
 
@@ -447,6 +451,9 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 						model.put("1", spArgsInfo.getDataType());
 						model.put("2", javaParamType[i]);
 						model.put("3", spArgsInfo.getSpArgsType().toString());
+						if (isCommentSupport) {
+							model.put("4", spArgsInfo.getDescription());
+						}
 						procParamsListData.add(model);
 					}
 				}
