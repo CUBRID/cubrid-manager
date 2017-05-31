@@ -526,7 +526,8 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 
 			funcNameText.setText(spInfo.getSpName());
 
-			if (isCommentSupport) {
+			if (isCommentSupport
+					&& StringUtil.isNotEmpty(spInfo.getDescription())) {
 				funcDescriptionText.setText(spInfo.getDescription());
 			}
 
