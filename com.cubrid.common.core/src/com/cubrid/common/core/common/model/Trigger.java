@@ -86,6 +86,8 @@ public class Trigger implements
 	private String status;
 	// the trigger order
 	private String priority;
+	// the trigger comment
+	private String description;
 
 	/**
 	 * compare to the argument obj
@@ -157,6 +159,14 @@ public class Trigger implements
 
 	public String getCondition() {
 		return condition;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 
 	/**

@@ -87,6 +87,7 @@ public class CreateTriggerDialog extends
 	private StyledText sqlText;
 	private final Color white = ResourceManager.getColor(SWT.COLOR_WHITE);
 	private Text triggerNameText = null;
+	private Text triggerDescriptionText = null;
 	private Combo triggerTargetTableCombo = null;
 	private Combo triggerTargetColumnCombo = null;
 	private Text triggerConditionText = null;
@@ -103,6 +104,7 @@ public class CreateTriggerDialog extends
 	private Trigger trigger = null;
 	private TabFolder tabFolder;
 	public final static int ALTER_TRIGGER_OK_ID = 100;
+	private boolean isCommentSupport = false;
 
 	private final String[][] eventTimeMap = {
 			{Messages.eventTimeBefore, "BEFORE" },
@@ -150,6 +152,7 @@ public class CreateTriggerDialog extends
 	 * @return the composite
 	 */
 	protected Control createDialogArea(Composite parent) {
+		isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 		Composite parentComp = (Composite) super.createDialogArea(parent);
 
 		parentComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -646,6 +649,14 @@ public class CreateTriggerDialog extends
 				triggerPriorityText.setFocus();
 			}
 		});
+		if (isCommentSupport) {
+			triggerDescriptionText.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent event) {
+					validateAll();
+					triggerDescriptionText.setFocus();
+				}
+			});
+		}
 		tabFolder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(final SelectionEvent event) {
 				if (tabFolder.getSelectionIndex() == 0) {
@@ -699,6 +710,12 @@ public class CreateTriggerDialog extends
 
 		newTrigger.setStatus(triggerStatus);
 		newTrigger.setPriority(strPriority);
+
+		if (isCommentSupport) {
+			String description = triggerDescriptionText.getText();
+			newTrigger.setDescription(description);
+		}
+
 		return newTrigger;
 	}
 
@@ -1050,6 +1067,15 @@ public class CreateTriggerDialog extends
 					false, 2, 2));
 		}
 
+		if (isCommentSupport) {
+			Label triggerDescriptionLabel = new Label(optionGroup, SWT.LEFT | SWT.WRAP);
+			triggerDescriptionLabel.setText(Messages.triggerDesscription);
+			triggerDescriptionText = new Text(optionGroup, SWT.BORDER);
+			triggerDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+			triggerDescriptionText.setLayoutData(gridData);
+		}
+
 		final Group statusGroup = new Group(optionGroup, SWT.NONE);
 		{
 			statusGroup.setText(Messages.triggerStatusGroupText);
@@ -1087,7 +1113,6 @@ public class CreateTriggerDialog extends
 				false);
 		triggerPriorityText.setLayoutData(gdPriority);
 		triggerPriorityText.setText("00.00");
-
 	}
 
 	/**
@@ -1330,6 +1355,13 @@ public class CreateTriggerDialog extends
 			}
 			if (!oldPriority.equals(newPriority)) {
 				return true;
+			}
+			if (isCommentSupport) {
+				String oldDescription = oldTrigger.getDescription();
+				String newDescription = newTrigger.getDescription();
+				if (!newDescription.equals(oldDescription)) {
+					return true;
+				}
 			}
 			return false;
 		}
