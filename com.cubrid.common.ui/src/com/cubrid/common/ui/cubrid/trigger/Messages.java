@@ -56,6 +56,7 @@ public class Messages extends
 	public static String triggerInfo;
 	public static String triggerGroupName;
 	public static String triggerName;
+	public static String triggerDesscription;
 	public static String triggerEvent;
 	public static String triggerEventTarget;
 	public static String triggerEventTargetTable;
