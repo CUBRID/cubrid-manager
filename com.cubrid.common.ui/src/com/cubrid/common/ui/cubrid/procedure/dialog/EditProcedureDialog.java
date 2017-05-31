@@ -418,7 +418,8 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 
 			procNameText.setText(spInfo.getSpName());
 
-			if (isCommentSupport) {
+			if (isCommentSupport
+					&& StringUtil.isNotEmpty(spInfo.getDescription())) {
 				procDescriptionText.setText(spInfo.getDescription());
 			}
 
@@ -601,11 +602,17 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 			String type = map.get("1");
 			String javaType = map.get("2");
 			String paramModel = map.get("3");
+			String description = map.get("4");
 			sb.append(QuerySyntax.escapeKeyword(name)).append(" ");
 			if (!paramModel.equalsIgnoreCase(SPArgsType.IN.toString())) {
 				sb.append(paramModel).append(" ");
 			}
-			sb.append(type).append(",");
+			sb.append(type);
+			if (isCommentSupport && StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				sb.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+			}
+			sb.append(",");
 			javaSb.append(javaType).append(",");
 		}
 		if (!procParamsListData.isEmpty()) {
@@ -624,7 +631,13 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 			javaFuncName = "";
 		}
 		sb.append("NAME '").append(javaFuncName).append("(").append(javaSb).append(")").append("'");
-
+		if (isCommentSupport) {
+			String description = procDescriptionText.getText();
+			if (StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				sb.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+			}
+		}
 		return formatSql(sb.toString());
 	}
 

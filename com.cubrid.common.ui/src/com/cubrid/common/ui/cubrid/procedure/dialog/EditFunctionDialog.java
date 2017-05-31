@@ -776,16 +776,22 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 		}
 		sb.append(QuerySyntax.escapeKeyword(functionName)).append("(");
 		for (Map<String, String> map : funcParamsListData) {
-			// "PARAMS_INDEX", "PARAM_NAME", "PARAM_TYPE", "JAVA_PARAM_TYPE"
+			// "PARAMS_INDEX", "PARAM_NAME", "PARAM_TYPE", "JAVA_PARAM_TYPE", "COMMENT" - after 10.0
 			String name = map.get("0");
 			String type = map.get("1");
 			String javaType = map.get("2");
 			String paramModel = map.get("3");
+			String description = map.get("4");
 			sb.append(QuerySyntax.escapeKeyword(name)).append(" ");
 			if (!paramModel.equalsIgnoreCase(SPArgsType.IN.toString())) {
 				sb.append(paramModel).append(" ");
 			}
-			sb.append(type).append(",");
+			sb.append(type);
+			if (isCommentSupport && StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				sb.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+			}
+			sb.append(",");
 			javaSb.append(javaType).append(",");
 		}
 		if (!funcParamsListData.isEmpty()) {
@@ -821,6 +827,13 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
 		}
 
 		sb.append("'");
+		if (isCommentSupport) {
+			String description = funcDescriptionText.getText();
+			if (StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				sb.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+			}
+		}
 		return formatSql(sb.toString());
 	}
 

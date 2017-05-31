@@ -159,6 +159,11 @@ public class AddFuncParamsDialog extends
 			parameterDescriptionText = new Text(dbnameGroup, SWT.BORDER);
 			parameterDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
 			parameterDescriptionText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+			parameterDescriptionText.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					setValidMessage();
+				}
+			});
 		}
 
 		final Label databaseName = new Label(dbnameGroup, SWT.LEFT | SWT.WRAP);
@@ -278,9 +283,13 @@ public class AddFuncParamsDialog extends
 			String sqlType = model.get("1");
 			String javaType = model.get("2");
 			String paramModel = model.get("3");
+			String description = model.get("4");
 
 			if (name != null && !"".equals(name)) {
 				parameterNameText.setText(name);
+			}
+			if (isCommentSupport && StringUtil.isNotEmpty(description)) {
+				parameterDescriptionText.setText(description);
 			}
 			if (sqlType != null && !"".equals(sqlType)) {
 				paramTypeCombo.setText(sqlType);
@@ -379,6 +388,9 @@ public class AddFuncParamsDialog extends
 				model.put("2", javaType[0]);
 			}
 			model.put("3", paramModel);
+			if (isCommentSupport) {
+				model.put("4", parameterDescriptionText.getText());
+			}
 		}
 
 		super.buttonPressed(buttonId);
