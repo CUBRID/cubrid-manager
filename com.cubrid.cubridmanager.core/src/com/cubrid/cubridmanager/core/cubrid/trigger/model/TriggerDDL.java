@@ -63,7 +63,23 @@ public final class TriggerDDL {
 		appendEvent(trigger, bf);
 		appendCondition(trigger, bf);
 		appendAction(trigger, bf);
+		appendComment(trigger, bf);
 		return bf.toString();
+	}
+
+	/**
+	 * COMMENT 'user defined comment' [ ; ]
+	 *
+	 * @param trigger Trigger
+	 * @param bf StringBuffer
+	 */
+	public static void appendComment(Trigger trigger, StringBuffer bf) {
+		String description = trigger.getDescription();
+		if (StringUtil.isNotEmpty(description)) {
+			description = String.format("'%s'", description);
+			bf.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+		}
+		bf.append(endLineChar);
 	}
 
 	/**
@@ -93,7 +109,6 @@ public final class TriggerDDL {
 			bf.append(newLine);
 			bf.append(action);
 		}
-		bf.append(endLineChar);
 	}
 
 	/**
@@ -208,8 +223,10 @@ public final class TriggerDDL {
 		String triggerName = oldTrigger.getName();
 		String oldPriority = oldTrigger.getPriority();
 		String oldStatus = oldTrigger.getStatus();
+		String oldDescription = oldTrigger.getDescription();
 		String newPriority = newTrigger.getPriority();
 		String newStatus = newTrigger.getStatus();
+		String newDescription = newTrigger.getDescription();
 		StringBuffer bf = new StringBuffer();
 		boolean statusChanged = false;
 		if (!oldStatus.equals(newStatus)) {
@@ -234,7 +251,22 @@ public final class TriggerDDL {
 			bf.append(endLineChar);
 			bf.append(newLine);
 		}
-		if (statusChanged || priorityChanged) {
+
+		boolean commentChanged = false;
+		if (newDescription != null && !newDescription.equals(oldDescription)) {
+			commentChanged = true;
+		}
+
+		if (commentChanged) {
+			bf.append("ALTER TRIGGER ");
+			bf.append(QuerySyntax.escapeKeyword(triggerName));
+			newDescription = String.format("'%s'", newDescription);
+			bf.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(newDescription)));
+			bf.append(endLineChar);
+			bf.append(newLine);
+		}
+
+		if (statusChanged || priorityChanged || commentChanged) {
 			return bf.toString();
 		} else {
 			return "";
