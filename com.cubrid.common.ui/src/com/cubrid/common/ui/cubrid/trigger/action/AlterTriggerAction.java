@@ -27,6 +27,7 @@
  */
 package com.cubrid.common.ui.cubrid.trigger.action;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,9 +37,12 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Shell;
 
 import com.cubrid.common.core.common.model.Trigger;
+import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
+import com.cubrid.common.core.schemacomment.model.CommentType;
+import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.ApplicationType;
-import com.cubrid.common.core.util.ApplicationUtil;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.ui.cubrid.trigger.Messages;
 import com.cubrid.common.ui.cubrid.trigger.dialog.CreateTriggerDialog;
 import com.cubrid.common.ui.perspective.PerspectiveManager;
@@ -53,6 +57,8 @@ import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
 import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.ActionSupportUtil;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.trigger.task.GetTriggerListTask;
 import com.cubrid.cubridmanager.core.cubrid.trigger.task.JDBCGetTriggerInfoTask;
 
@@ -136,7 +142,7 @@ public class AlterTriggerAction extends
 	 * @param node
 	 * @return
 	 */
-	public int run (CubridDatabase database, final ISchemaNode node) { // FIXME move this logic to core module
+	public int run (final CubridDatabase database, final ISchemaNode node) { // FIXME move this logic to core module
 		TaskExecutor taskExcutor = new TaskExecutor() {
 			public boolean exec(final IProgressMonitor monitor) {
 				if (monitor.isCanceled()) {
@@ -170,6 +176,18 @@ public class AlterTriggerAction extends
 					if (trigger == null) {
 						openErrorBox(shell, Messages.errNameNoExist, monitor);
 						return false;
+					}
+					// getting comment for version after 10.0
+					if (CompatibleUtil.isCommentSupports(database.getDatabaseInfo())) {
+						try {
+							SchemaComment schemaComment = SchemaCommentHandler.loadObjectDescription(
+									database.getDatabaseInfo(), JDBCConnectionManager.getConnection(
+											database.getDatabaseInfo(), true), trigger.getName(),
+											CommentType.TRIGGER);
+							trigger.setDescription(schemaComment.getDescription());
+						} catch (SQLException e) {
+							CommonUITool.openErrorBox(e.getMessage());
+						}
 					}
 					node.setModelObj(trigger);
 				}

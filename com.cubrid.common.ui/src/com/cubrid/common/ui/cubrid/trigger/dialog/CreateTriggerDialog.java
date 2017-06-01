@@ -532,6 +532,9 @@ public class CreateTriggerDialog extends
 			b.setEnabled(false);
 		}
 		triggerPriorityText.setText(trigger.getPriority());
+		if (isCommentSupport && trigger.getDescription() != null) {
+			triggerDescriptionText.setText(trigger.getDescription());
+		}
 	}
 
 	/**
