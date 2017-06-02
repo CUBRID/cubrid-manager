@@ -1444,4 +1444,8 @@ public final class StringUtil {
 		data = quote + data + quote;
 		return "'" + data + "'";
 	}
+
+	public static String parseBitToHex(String data) {
+		return (data).substring(2, data.length() - 1);
+	}
 }

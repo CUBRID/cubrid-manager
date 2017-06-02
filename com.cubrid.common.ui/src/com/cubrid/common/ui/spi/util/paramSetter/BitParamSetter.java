@@ -37,7 +37,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import javax.xml.bind.DatatypeConverter;
+
 import com.cubrid.common.core.util.Closer;
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.dialog.PstmtParameter;
 
 /**
@@ -81,6 +84,9 @@ public class BitParamSetter extends DefaultParamSetter {
 		} else if (value instanceof InputStream) {
 			InputStream in = (InputStream) value;
 			bytesvalues = getBytesFromInputSteam(in);
+		} else if (value instanceof String) {	// bit or bit varying
+			value = StringUtil.parseBitToHex((String) value);
+			bytesvalues = DatatypeConverter.parseHexBinary(String.valueOf(value));
 		} else {
 			bytesvalues = (byte[]) value;
 		}
