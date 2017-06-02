@@ -652,11 +652,11 @@ public final class QueryUtil {
 		return sql;
 	}
 	
-	public static List<String> getColumnList(Connection conn, String tableName) {
+	private static List<String> getColumnList(Connection conn, String tableName) {
 		List<String> columnList = new ArrayList<String>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "SELECT attr_name FROM db_attribute WHERE class_name = ?";
+		String sql = "SELECT attr_name FROM db_attribute WHERE class_name = ? ORDER BY def_order";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
