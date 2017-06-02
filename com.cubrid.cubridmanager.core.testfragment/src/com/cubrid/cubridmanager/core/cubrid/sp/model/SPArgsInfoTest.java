@@ -55,7 +55,7 @@ public class SPArgsInfoTest extends
 		SPArgsInfo spArgsInfoNoArg = new SPArgsInfo();
 		assertNotNull(spArgsInfoNoArg);
 		SPArgsInfo spArgsInfo = new SPArgsInfo(spName, argName, index,
-				dataType, spArgsType);
+				dataType, spArgsType, null);
 		assertNotNull(spArgsInfo);
 
 		//test 	getters and setters	

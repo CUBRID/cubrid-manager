@@ -61,7 +61,7 @@ public class SPInfoTest extends
 		SPInfo sPInfo1 = new SPInfo(spName);
 		assertNotNull(sPInfo1);
 		SPInfo sPInfo = new SPInfo(spName, spType, returnType, language, owner,
-				target);
+				target, null);
 		assertNotNull(sPInfo);
 
 		//test 	getters and setters	

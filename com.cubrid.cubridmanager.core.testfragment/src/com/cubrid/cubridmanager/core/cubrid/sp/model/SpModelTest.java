@@ -28,7 +28,7 @@ public class SpModelTest extends
 		bean.setArgsInfoList(new ArrayList<SPArgsInfo>());
 		assertEquals(bean.getArgsInfoList().size(), 0);
 		bean.addSPArgsInfo(new SPArgsInfo("spName", "spName", -1, "spName",
-				SPArgsType.IN));
+				SPArgsType.IN, null));
 		bean.removeSPArgsInfo(new SPArgsInfo());
 	}
 
