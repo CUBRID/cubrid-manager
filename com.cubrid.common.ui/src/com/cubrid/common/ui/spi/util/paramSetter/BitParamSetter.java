@@ -85,8 +85,7 @@ public class BitParamSetter extends DefaultParamSetter {
 			InputStream in = (InputStream) value;
 			bytesvalues = getBytesFromInputSteam(in);
 		} else if (value instanceof String) {	// bit or bit varying
-			value = StringUtil.parseBitToHex((String) value);
-			bytesvalues = DatatypeConverter.parseHexBinary(String.valueOf(value));
+			bytesvalues = StringUtil.parseBitToBytes((String) value);
 		} else {
 			bytesvalues = (byte[]) value;
 		}
