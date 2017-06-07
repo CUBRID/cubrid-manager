@@ -38,7 +38,7 @@ public class SerialTaskTest extends
 		CreateOrEditSerialTask createOrEditSerialTask = new CreateOrEditSerialTask(
 				databaseInfo);
 		createOrEditSerialTask.createSerial("serial1", "1", "1", "100", "1",
-				true, false, false, "10", false);
+				true, false, false, "10", false, null);
 		assertTrue(createOrEditSerialTask.getErrorMsg() == null
 				|| createOrEditSerialTask.getErrorMsg().trim().length() <= 0);
 
@@ -57,28 +57,28 @@ public class SerialTaskTest extends
 		CreateOrEditSerialTask createOrEditSerialTask2 = new CreateOrEditSerialTask(
 				databaseInfo);
 		createOrEditSerialTask2.createSerial("serial2", null, null, "100", "1",
-				true, false, false, "100", true);
+				true, false, false, "100", true, null);
 		CreateOrEditSerialTask createOrEditSerialTask3 = new CreateOrEditSerialTask(
 				databaseInfo);
 		createOrEditSerialTask3.createSerial("serial3", null, null, "100", "1",
-				true, true, true, "100", true);
+				true, true, true, "100", true, null);
 		CreateOrEditSerialTask createOrEditSerialTask4 = new CreateOrEditSerialTask(
 				databaseInfo);
 		createOrEditSerialTask4.createSerial("serial4", "1", "1", "100", "1",
-				true, true, true, "100", true);
+				true, true, true, "100", true, null);
 		CreateOrEditSerialTask createOrEditSerialTask5 = new CreateOrEditSerialTask(
 				databaseInfo);
 		createOrEditSerialTask5.createSerial("serial5", null, null, null, null,
-				false, false, false, "100", true);
+				false, false, false, "100", true, null);
 		createOrEditSerialTask5.createSerial("serial6", null, null, null, null,
-				false, false, false, "100", true);
+				false, false, false, "100", true, null);
 		createOrEditSerialTask5.createSerial("serial6", null, null, null, null,
-				false, false, false, "100", true);
+				false, false, false, "100", true, null);
 
 		//test edit serial
 		createOrEditSerialTask = new CreateOrEditSerialTask(databaseInfo);
 		createOrEditSerialTask.editSerial("serial1", "2", "2", "102", "2",
-				false, false, false, "10", false);
+				false, false, false, "10", false, null);
 		assertTrue(createOrEditSerialTask.getErrorMsg() == null
 				|| createOrEditSerialTask.getErrorMsg().trim().length() <= 0);
 		getSerialInfoTask = new GetSerialInfoTask(databaseInfo);
@@ -92,20 +92,20 @@ public class SerialTaskTest extends
 		assertTrue(isOk);
 		createOrEditSerialTask2 = new CreateOrEditSerialTask(databaseInfo);
 		createOrEditSerialTask2.editSerial("serial2", null, null, "100", "1",
-				true, false, false, "100", true);
+				true, false, false, "100", true, null);
 		createOrEditSerialTask3 = new CreateOrEditSerialTask(databaseInfo);
 		createOrEditSerialTask3.editSerial("serial3", null, null, "100", "1",
-				true, true, true, "100", true);
+				true, true, true, "100", true, null);
 		createOrEditSerialTask4 = new CreateOrEditSerialTask(databaseInfo);
 		createOrEditSerialTask4.editSerial("serial4", "1", "1", "100", "1",
-				true, true, true, "100", true);
+				true, true, true, "100", true, null);
 		createOrEditSerialTask5 = new CreateOrEditSerialTask(databaseInfo);
 		createOrEditSerialTask5.editSerial("serial5", null, null, null, null,
-				false, false, false, "100", true);
+				false, false, false, "100", true, null);
 		createOrEditSerialTask5.editSerial("serial6", null, null, null, null,
-				false, false, false, "100", true);
+				false, false, false, "100", true, null);
 		createOrEditSerialTask5.editSerial("serial6", null, null, null, null,
-				false, false, false, "100", true);
+				false, false, false, "100", true, null);
 
 		//test get serial information list
 		GetSerialInfoListTask getSerialInfoListTask = new GetSerialInfoListTask(

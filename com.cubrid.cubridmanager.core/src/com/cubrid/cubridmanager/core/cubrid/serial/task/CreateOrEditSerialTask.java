@@ -72,11 +72,12 @@ public class CreateOrEditSerialTask extends JDBCTask {
 	 * @param isNoMaxVal boolean whether is NOMAXVALUE
 	 * @param cacheCount string the cache count
 	 * @param isNoCache boolean whether is NOCACHE
+	 * @param description string the Serial's comment
 	 */
 	public void createSerial(String serialName, String startVal,
 			String incrementVal, String maxVal, String minVal, boolean isCycle,
 			boolean isNoMinVal, boolean isNoMaxVal, String cacheCount,
-			boolean isNoCache) {
+			boolean isNoCache, String description) {
 		if (StringUtil.isNotEmpty(errorMsg)) {
 			return;
 		}
@@ -119,6 +120,11 @@ public class CreateOrEditSerialTask extends JDBCTask {
 			}
 		}
 
+		if (StringUtil.isNotEmpty(description)) {
+			description = String.format("'%s'", description);
+			sql += String.format(" COMMENT %s", StringUtil.escapeQuotes(description));
+		}
+
 		try {
 			if (connection == null || connection.isClosed()) {
 				if (StringUtil.isEmpty(errorMsg)) {
@@ -152,11 +158,12 @@ public class CreateOrEditSerialTask extends JDBCTask {
 	 * @param isNoMaxVal boolean whether is NOMAXVALUE
 	 * @param cacheCount string the cache count
 	 * @param isNoCache boolean whether is NOCACHE
+	 * @param description String Serial's comment
 	 */
 	public void editSerial(String serialName, String startVal,
 			String incrementVal, String maxVal, String minVal, boolean isCycle,
 			boolean isNoMinVal, boolean isNoMaxVal, String cacheCount,
-			boolean isNoCache) {
+			boolean isNoCache, String description) {
 		if (errorMsg != null && errorMsg.trim().length() > 0) {
 			return;
 		}
@@ -200,6 +207,12 @@ public class CreateOrEditSerialTask extends JDBCTask {
 				sql += " CACHE " + cacheCount;
 			}
 		}
+
+		if (StringUtil.isNotEmpty(description)) {
+			description = String.format("'%s'", description);
+			sql += String.format(" COMMENT %s", StringUtil.escapeQuotes(description));
+		}
+
 		try {
 			if (connection == null || connection.isClosed()) {
 				if (StringUtil.isEmpty(errorMsg)) {

@@ -548,6 +548,7 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 		final boolean isCycle = cycleButton.getSelection();
 		final String cacheCount = isSupportCache ? cacheCountText.getText().trim() : null;
 		final boolean isNoCache = isSupportCache ? noCacheBtn.getSelection() : false;
+		final String description = isCommentSupport ? serialDescriptionText.getText() : null;
 		if (editedNode == null) {
 			taskName = Messages.bind(Messages.createSerialTaskName, serialName);
 		} else {
@@ -565,12 +566,12 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 						CreateOrEditSerialTask createSerialTask = (CreateOrEditSerialTask) task;
 						if (editedNode == null) {
 							createSerialTask.createSerial(serialName, startVal,
-									incrementVal, maxVal, minVal, isCycle,
-									isNoMinValue, isNoMaxValue, cacheCount, isNoCache);
+									incrementVal, maxVal, minVal, isCycle, isNoMinValue,
+									isNoMaxValue, cacheCount, isNoCache, description);
 						} else {
 							createSerialTask.editSerial(serialName, startVal,
-									incrementVal, maxVal, minVal, isCycle,
-									isNoMinValue, isNoMaxValue, cacheCount, isNoCache);
+									incrementVal, maxVal, minVal, isCycle, isNoMinValue,
+									isNoMaxValue, cacheCount, isNoCache, description);
 						}
 					}
 					final String msg = task.getErrorMsg();
