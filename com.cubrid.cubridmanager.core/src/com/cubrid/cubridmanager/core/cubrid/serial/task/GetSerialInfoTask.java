@@ -48,6 +48,7 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
  */
 public class GetSerialInfoTask extends JDBCTask {
 	private static final Logger LOGGER = LogUtil.getLogger(GetSerialInfoTask.class);
+	private boolean isCommentSupport = false;
 
 	/**
 	 * The constructor
@@ -56,6 +57,7 @@ public class GetSerialInfoTask extends JDBCTask {
 	 */
 	public GetSerialInfoTask(DatabaseInfo dbInfo) {
 		super("GetSerialInfo", dbInfo);
+		isCommentSupport = CompatibleUtil.isCommentSupports(dbInfo);
 	}
 
 	/**
@@ -109,6 +111,11 @@ public class GetSerialInfoTask extends JDBCTask {
 				serialInfo = new SerialInfo(name, owner, currentVal,
 						incrementVal, maxVal, minVal, isCycle, startVal,
 						cacheCount, className, attName);
+				String description = null;
+				if (isCommentSupport) {
+					description = rs.getString("comment");
+					serialInfo.setDescription(description);
+				}
 			}
 
 		} catch (SQLException e) {

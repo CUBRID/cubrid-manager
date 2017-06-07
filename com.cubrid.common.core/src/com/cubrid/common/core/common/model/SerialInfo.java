@@ -53,6 +53,7 @@ public class SerialInfo implements Cloneable {
 	private String className;
 	private String attName;
 	private String cacheCount;
+	private String description;
 
 	/**
 	 * The constructor
@@ -398,5 +399,13 @@ public class SerialInfo implements Cloneable {
 
 	public String getTableAutoIncrementString() { // FIXME add description
 		return getMinValue() + "," + getIncrementValue();
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }

@@ -464,6 +464,10 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 			if (serialInfo != null) {
 				serialNameText.setEditable(false);
 				serialNameText.setText(serialInfo.getName());
+				String description = serialInfo.getDescription();
+				if (isCommentSupport && StringUtil.isNotEmpty(description)) {
+					serialDescriptionText.setText(description);
+				}
 				startValText.setText(String.valueOf(serialInfo.getCurrentValue()));
 				String incrValue = serialInfo.getIncrementValue();
 				incrementValText.setText(incrValue);
