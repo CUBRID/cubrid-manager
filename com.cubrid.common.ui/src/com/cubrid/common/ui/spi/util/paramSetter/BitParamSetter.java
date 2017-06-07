@@ -37,8 +37,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import javax.xml.bind.DatatypeConverter;
-
 import com.cubrid.common.core.util.Closer;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.dialog.PstmtParameter;
