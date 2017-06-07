@@ -385,6 +385,13 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 				sb.append(" CACHE ").append(cacheCountText.getText().trim());
 			}
 		}
+		if (isCommentSupport) {
+			String description = serialDescriptionText.getText();
+			if (StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				sb.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+			}
+		}
 
 		return formatSql(sb.toString());
 	}
