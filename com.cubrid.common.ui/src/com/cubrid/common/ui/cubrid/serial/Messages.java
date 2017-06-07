@@ -49,6 +49,7 @@ public class Messages extends
 	public static String titleCreateSerialDialog;
 	public static String msgCreateSerialDialog;
 	public static String lblSerialName;
+	public static String lblSerialDescription;
 	public static String lblStartValue;
 	public static String lblCurrentValue;
 	public static String lblIncrementValue;
