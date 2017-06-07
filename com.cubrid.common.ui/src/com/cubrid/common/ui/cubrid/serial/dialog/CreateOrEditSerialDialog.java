@@ -76,6 +76,7 @@ import com.cubrid.cubridmanager.core.cubrid.serial.task.CreateOrEditSerialTask;
  */
 public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements ModifyListener {
 	private Text serialNameText = null;
+	private Text serialDescriptionText = null;
 	private Text startValText = null;
 	private Text incrementValText = null;
 	private Text maxValText = null;
@@ -96,6 +97,7 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 	private String serialName;
 	private static final String SERIAL_MIN = "-1000000000000000000000000000000000000";
 	private static final String SERIAL_MAX = "10000000000000000000000000000000000000";
+	private boolean isCommentSupport = false;
 
 	public CreateOrEditSerialDialog(Shell parentShell, boolean isEditAble) {
 		super(parentShell);
@@ -158,6 +160,8 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 	 * @return the composite
 	 */
 	private Composite createGeneralInfoComp() {
+		isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
+
 		Composite composite = new Composite(tabFolder, SWT.NONE);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		GridLayout layout = new GridLayout();
@@ -170,6 +174,15 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 		serialNameText = new Text(composite, SWT.LEFT | SWT.BORDER);
 		serialNameText.setLayoutData(CommonUITool.createGridData(
 				GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
+
+		if (isCommentSupport) {
+			Label serialDescriptionLabel = new Label(composite, SWT.LEFT);
+			serialDescriptionLabel.setText(Messages.lblSerialDescription);
+			serialDescriptionLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+			serialDescriptionText = new Text(composite, SWT.LEFT | SWT.BORDER);
+			serialDescriptionText.setLayoutData(CommonUITool.createGridData(
+					GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
+		}
 
 		Label startValLabel = new Label(composite, SWT.LEFT);
 		if (editedNode == null) {
