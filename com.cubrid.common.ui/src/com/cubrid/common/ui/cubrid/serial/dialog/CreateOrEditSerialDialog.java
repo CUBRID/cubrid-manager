@@ -180,6 +180,7 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 			serialDescriptionLabel.setText(Messages.lblSerialDescription);
 			serialDescriptionLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
 			serialDescriptionText = new Text(composite, SWT.LEFT | SWT.BORDER);
+			serialDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
 			serialDescriptionText.setLayoutData(CommonUITool.createGridData(
 					GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
 		}
@@ -513,6 +514,9 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
 		maxValText.addModifyListener(this);
 		if (isSupportCache) {
 			cacheCountText.addModifyListener(this);
+		}
+		if (isCommentSupport) {
+			serialDescriptionText.addModifyListener(this);
 		}
 
 		if (!isEditAble) {
