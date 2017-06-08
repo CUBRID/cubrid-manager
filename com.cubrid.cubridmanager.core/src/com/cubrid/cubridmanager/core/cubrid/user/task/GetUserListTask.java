@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
@@ -54,6 +55,7 @@ import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
  * @version 1.0 - 2012-09-10 created by fulei
  */
 public class GetUserListTask extends JDBCTask {
+	private boolean isCommentSupport = false;
 	/**
 	 * The constructor
 	 * 
@@ -62,10 +64,12 @@ public class GetUserListTask extends JDBCTask {
 	 */
 	public GetUserListTask(DatabaseInfo dbInfo) {
 		super("GetAllUserList", dbInfo);
+		isCommentSupport = CompatibleUtil.isCommentSupports(dbInfo);
 	}
 
 	public GetUserListTask(DatabaseInfo dbInfo, Connection connection) {
 		super("GetAllUserList", dbInfo, connection);
+		isCommentSupport = CompatibleUtil.isCommentSupports(dbInfo);
 	}
 	
 	/**
@@ -91,7 +95,9 @@ public class GetUserListTask extends JDBCTask {
 		Map<String, String> oidMap = new HashMap<String, String>();
 		Map<String, List<String>> groupMap = new HashMap<String, List<String>>();
 
-		String sql = "SELECT db_user, name, groups FROM db_user";
+		String sql = isCommentSupport ?
+				"SELECT db_user, name, groups, comment FROM db_user"
+				: "SELECT db_user, name, groups FROM db_user";
 
 		// [TOOLS-2425]Support shard broker
 		sql = databaseInfo.wrapShardQuery(sql);
@@ -120,6 +126,10 @@ public class GetUserListTask extends JDBCTask {
 				DbUserInfo dbUserInfo = new DbUserInfo();
 				dbUserInfo.setDbName(databaseInfo.getDbName());
 				dbUserInfo.setName(name);
+				if (isCommentSupport) {
+					String description = rs.getString(4);
+					dbUserInfo.setDescription(description);
+				}
 				dbUserInfo.addAuthorization(new HashMap<String,String>());
 				dbUserInfoList.addUser(dbUserInfo);
 			}

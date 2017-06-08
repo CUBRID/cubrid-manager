@@ -45,6 +45,7 @@ public class DbUserInfo {
 	private String noEncryptPassword = null;
 	private UserGroup groups;
 	private boolean isDbaAuthority = false;
+	private String description;
 	private Map<String, String> authorization;//CM previlege
 	private Map<String, ClassAuthorizations> userAuthorizations;//CQB previlege
 	/**
@@ -161,5 +162,13 @@ public class DbUserInfo {
 	public DbUserInfo clone() throws CloneNotSupportedException{
 		DbUserInfo obj = (DbUserInfo) super.clone();
 		return obj;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }
