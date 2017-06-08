@@ -102,6 +102,7 @@ public class Messages extends
 	public static String msgQuestionSureDelete;
 	public static String grpUserMemberInfo;
 	public static String lblUserName;
+	public static String lblUserDescription;
 	public static String msgSelectDB;
 	public static String errOldPassword;
 	public static String grpPasswordSetting;
