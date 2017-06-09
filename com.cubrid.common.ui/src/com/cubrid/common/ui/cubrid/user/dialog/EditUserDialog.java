@@ -91,6 +91,7 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetAllClassListTask;
 import com.cubrid.cubridmanager.core.cubrid.user.model.DbUserInfo;
 import com.cubrid.cubridmanager.core.cubrid.user.model.DbUserInfoList;
+import com.cubrid.cubridmanager.core.cubrid.user.task.ChangeDbUserCommentTask;
 import com.cubrid.cubridmanager.core.cubrid.user.task.ChangeDbUserPwdTask;
 import com.cubrid.cubridmanager.core.cubrid.user.task.CreateUserTask;
 import com.cubrid.cubridmanager.core.cubrid.user.task.DropUserTask;
@@ -147,6 +148,7 @@ public class EditUserDialog extends CMTrayDialog {
 	private Map<String, String> partitionClassMap;
 	private String inputtedPassword = null;
 	private boolean isCommentSupport = false;
+	private boolean isCommentModified = false;
 
 	public EditUserDialog(Shell parentShell) {
 		super(parentShell);
@@ -261,7 +263,14 @@ public class EditUserDialog extends CMTrayDialog {
 			userDescriptionLabel.setText(Messages.lblUserDescription);
 
 			userDescriptionText = new Text(userNameGroup, SWT.BORDER);
+			userDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
 			userDescriptionText.setLayoutData(gdUserNameText);
+			userDescriptionText.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent e) {
+					isCommentModified = true;
+				}
+			});
 		}
 
 		final Group userPasswordGroup = new Group(userNameGroup, SWT.NONE);
@@ -766,7 +775,7 @@ public class EditUserDialog extends CMTrayDialog {
 					}
 					task = new CreateUserTask(database.getDatabaseInfo(),
 							userNameText.getText(), pwdText.getText(),
-							groupList, memberList);
+							groupList, memberList, isCommentSupport ? userDescriptionText.getText() : null);
 					taskExecutor.addTask(task);
 				} else {
 					if (!groupChange()) {
@@ -782,7 +791,7 @@ public class EditUserDialog extends CMTrayDialog {
 						}
 						task = new CreateUserTask(database.getDatabaseInfo(),
 								userNameText.getText(), pwdText.getText(),
-								groupList, memberList);
+								groupList, memberList, isCommentSupport ? userDescriptionText.getText() : null);
 						taskExecutor.addTask(task);
 
 						isDropAndCreateUser = true;
@@ -792,9 +801,14 @@ public class EditUserDialog extends CMTrayDialog {
 						changeDbUserPwdTask.setDbUserName(userName);
 						changeDbUserPwdTask.setNewPwd(password);
 						taskExecutor.addTask(task);
+					} else if (isCommentModified) {
+						task = new ChangeDbUserCommentTask(database.getDatabaseInfo());
+						ChangeDbUserCommentTask changeDbUserCommentTask = (ChangeDbUserCommentTask) task;
+						changeDbUserCommentTask.setDbUserName(userName);
+						changeDbUserCommentTask.setNewDescription(userDescriptionText.getText());
+						taskExecutor.addTask(task);
 					}
 				}
-		
 			}
 			
 			task = new UpdateAddUserJdbcTask(database.getDatabaseInfo(), userNameText.getText(),

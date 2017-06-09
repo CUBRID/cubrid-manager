@@ -51,7 +51,7 @@ public class CreateAndDropUserTest extends SetupJDBCTestCase{
 		List<String> groupList = new ArrayList<String>();
 		groupList.add("public");
 		List<String> memberList = new ArrayList<String>();
-		CreateUserTask createTask = new CreateUserTask(databaseInfo, testUserName, "1111", groupList, memberList);
+		CreateUserTask createTask = new CreateUserTask(databaseInfo, testUserName, "1111", groupList, memberList, null);
 		createTask.execute();
 		assertNull (createTask.getErrorMsg());
 		

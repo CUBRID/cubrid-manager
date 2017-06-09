@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.cubrid.common.core.util.QuerySyntax;
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 
@@ -47,15 +48,17 @@ public class CreateUserTask extends JDBCTask {
 	private String password;
 	private List<String> groupList;
 	private List<String> memberList;
+	private String description;
 	
 	public CreateUserTask(DatabaseInfo dbInfo,
-			String userName,String password,
-			List<String> groupList, List<String> memberList) {
+			String userName,String password, List<String> groupList,
+			List<String> memberList, String description) {
 		super("CreateUserTask", dbInfo);
 		this.userName = userName;
 		this.password = password;
 		this.groupList = groupList;
 		this.memberList = memberList;
+		this.description = description;
 	}
 		
 	public void execute() {
@@ -104,6 +107,11 @@ public class CreateUserTask extends JDBCTask {
 		if (memberBf.length() > 0) {
 			memberBf = memberBf.deleteCharAt(memberBf.length() - 1);
 			sb.append(" MEMBERS ").append(memberBf);
+		}
+
+		if (StringUtil.isNotEmpty(description)) {
+			description = String.format("'%s'", description);
+			sb.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
 		}
 
 		String sql = sb.toString();
