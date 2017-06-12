@@ -52,6 +52,7 @@ public class PartitionInfo implements Cloneable {
 	private String partitionExprType = null;
 	private List<String> partitionValues = new ArrayList<String>();
 	private int rows = -1;
+	private String description;
 
 	/**
 	 * @return String A string indicates the info of this object
@@ -341,5 +342,13 @@ public class PartitionInfo implements Cloneable {
 			}
 			return false;
 		}
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }

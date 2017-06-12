@@ -119,6 +119,8 @@ public class PartitionTableLabelProvider implements
 			} else {
 				return String.valueOf(item.getRows());
 			}
+		case 6:
+			return item.getDescription() != null ? item.getDescription() : "";
 		default:
 			break;
 		}

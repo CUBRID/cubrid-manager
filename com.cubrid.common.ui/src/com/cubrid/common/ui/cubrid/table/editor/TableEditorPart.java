@@ -2617,8 +2617,13 @@ public class TableEditorPart extends
 
 		final Table partitionTable = partitionTableView.getTable();
 		{
-			partitionTable.setLayout(TableViewUtil.createTableViewLayout(new int[] { 20, 15, 10,
-					20, 25, 10 }));
+			if (isCommentSupport) {
+				partitionTable.setLayout(TableViewUtil.createTableViewLayout(
+						new int[] { 20, 15, 10,	20, 25, 10, 20 }));
+			} else {
+				partitionTable.setLayout(TableViewUtil.createTableViewLayout(
+						new int[] { 20, 15, 10,	20, 25, 10 }));
+			}
 			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 			gd.heightHint = 350;
 			partitionTable.setLayoutData(gd);
@@ -2634,6 +2639,9 @@ public class TableEditorPart extends
 		TableViewUtil.createTableColumn(partitionTable, SWT.CENTER, Messages.tblColExpr);
 		TableViewUtil.createTableColumn(partitionTable, SWT.CENTER, Messages.tblColExprValue);
 		TableViewUtil.createTableColumn(partitionTable, SWT.CENTER, Messages.tblColRows);
+		if (isCommentSupport) {
+			TableViewUtil.createTableColumn(partitionTable, SWT.CENTER, Messages.tblColPartitionDescription);
+		}
 
 		partitionTableView.setLabelProvider(new PartitionTableLabelProvider());
 		partitionTableView.setContentProvider(new PartitionContentProvider());
