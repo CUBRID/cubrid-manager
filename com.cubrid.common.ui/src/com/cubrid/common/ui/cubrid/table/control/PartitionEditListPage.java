@@ -63,7 +63,6 @@ import com.cubrid.common.ui.spi.util.TableViewUtil;
 import com.cubrid.common.ui.spi.util.ValidateUtil;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetPartitionedClassListTask;
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 
 /**
  * 
@@ -359,7 +358,6 @@ public class PartitionEditListPage extends
 			String partitionType = partitonInfo.getPartitionType().getText().toUpperCase();
 			String partitionExpr = partitonInfo.getPartitionExpr();
 			String exprDataType = partitonInfo.getPartitionExprType();
-			String partitionDescription = partitonInfo.getDescription();
 			if (exprDataType == null) {
 				partitionExprTypeCombo.setEnabled(true);
 				partitionExprTypeCombo.select(0);
@@ -369,15 +367,16 @@ public class PartitionEditListPage extends
 			}
 			partitionTypeText.setText(partitionType);
 			partitionExprText.setText(partitionExpr);
-			if (StringUtil.isNotEmpty(partitionDescription)) {
-				partitionDescriptionText.setText(partitionDescription);
-			}
 			if (this.editedPartitionInfo == null) {
 				initValuesCombo();
 			}
 		}
 		if (editedPartitionInfo != null) {
 			partitionNameText.setText(editedPartitionInfo.getPartitionName());
+			String description = editedPartitionInfo.getDescription();
+			if (StringUtil.isNotEmpty(description)) {
+				partitionDescriptionText.setText(description);
+			}
 			for (int i = 0; i < editedPartitionInfo.getPartitionValues().size(); i++) {
 				String value = editedPartitionInfo.getPartitionValues().get(i);
 				new TableItem(listValueTable, SWT.NONE).setText(value);
@@ -399,6 +398,7 @@ public class PartitionEditListPage extends
 			String partitionType = partitionTypePage.getPartitionType();
 			String partitionExpr = partitionTypePage.getPartitionExpr();
 			String exprDataType = partitionTypePage.getPartitionExprDataType();
+			String partitionDescription = partitionTypePage.getDescription();
 			if (exprDataType == null) {
 				partitionExprTypeCombo.setEnabled(true);
 				if (editedPartitionInfo == null) {
@@ -412,6 +412,9 @@ public class PartitionEditListPage extends
 			}
 			partitionTypeText.setText(partitionType);
 			partitionExprText.setText(partitionExpr);
+			if (StringUtil.isNotEmpty(partitionDescription)) {
+				partitionDescriptionText.setText(partitionDescription);
+			}
 			initValuesCombo();
 			setPageComplete(validate());
 			partitionNameText.setFocus();
