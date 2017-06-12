@@ -531,6 +531,7 @@ public class Messages extends
 	//Partition
 	public static String tabItemPartition;
 	public static String tblColPartitionName;
+	public static String tblColPartitionDescription;
 	public static String tblColType;
 	public static String tblColExpr;
 	public static String tblColExprValue;
