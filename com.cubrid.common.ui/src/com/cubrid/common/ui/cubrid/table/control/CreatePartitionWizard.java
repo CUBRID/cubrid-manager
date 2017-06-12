@@ -93,7 +93,7 @@ public class CreatePartitionWizard extends
 					partitionInfoList, isNewTable);
 			addPage(listPage);
 
-			rangePage = new PartitionEditRangePage(partitionInfoList);
+			rangePage = new PartitionEditRangePage(dbInfo, partitionInfoList);
 			addPage(rangePage);
 
 			WizardDialog dialog = (WizardDialog) getContainer();
@@ -124,7 +124,7 @@ public class CreatePartitionWizard extends
 					dialog.addPageChangedListener(listPage);
 				}
 			} else {
-				rangePage = new PartitionEditRangePage(partitionInfoList);
+				rangePage = new PartitionEditRangePage(dbInfo, partitionInfoList);
 				rangePage.setEditedPartitionInfo(editedPartitionInfo);
 				addPage(rangePage);
 				if (typePage != null) {
