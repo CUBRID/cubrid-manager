@@ -231,6 +231,7 @@ public class TableEditorPart extends
 	private List<Constraint> originalConstraints = new ArrayList<Constraint>();
 	private int showDefaultType = EditTableAction.MODE_TABLE_EDIT;
 	private TableEditorAdaptor editorAdaptor;
+	private boolean isCommentSupport = false;
 
 	public void showToolTip(Rectangle rect, String title, String message) {
 		CommonUITool.showToolTip(columnsTable, toolTip, rect, title, message);
@@ -245,6 +246,7 @@ public class TableEditorPart extends
 	}
 
 	public void createPartControl(Composite parent) {
+		isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 		final Composite composite = new Composite(parent, SWT.NONE);
 		{
 			final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -1842,7 +1844,7 @@ public class TableEditorPart extends
 		tblCol.setWidth(282);
 		tblCol.setText(Messages.tblColumnIndexRule);
 
-		if (CompatibleUtil.isCommentSupports(database.getDatabaseInfo())) {
+		if (isCommentSupport) {
 			tblCol = new TableColumn(indexTable, SWT.NONE);
 			tblCol.setWidth(250);
 			tblCol.setText(Messages.tblColumnIndexMemo);
@@ -2815,7 +2817,7 @@ public class TableEditorPart extends
 
 				// get description for index
 				for (Constraint cons : newSchemaInfo.getConstraints()) {
-					if (CompatibleUtil.isCommentSupports(dbSpec)) {
+					if (isCommentSupport) {
 						String indexName = cons.getName();
 						SchemaComment indexComment = SchemaCommentHandler.loadObjectDescription(
 								dbSpec, conn, indexName, CommentType.INDEX);
