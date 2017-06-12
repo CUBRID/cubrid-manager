@@ -353,7 +353,7 @@ public class PartitionEditListPage extends
 	 */
 	private void init() {
 		partitionExprTypeCombo.setItems(PartitionUtil.getSupportedDateTypes());
-		if (!partitionInfoList.isEmpty() && editedPartitionInfo == null) {
+		if (!partitionInfoList.isEmpty() && editedPartitionInfo == null) {	// create partition
 			PartitionInfo partitonInfo = partitionInfoList.get(0);
 			String partitionType = partitonInfo.getPartitionType().getText().toUpperCase();
 			String partitionExpr = partitonInfo.getPartitionExpr();
@@ -371,7 +371,7 @@ public class PartitionEditListPage extends
 				initValuesCombo();
 			}
 		}
-		if (editedPartitionInfo != null) {
+		if (editedPartitionInfo != null) {	// edit partition
 			partitionNameText.setText(editedPartitionInfo.getPartitionName());
 			String description = editedPartitionInfo.getDescription();
 			if (StringUtil.isNotEmpty(description)) {
@@ -383,6 +383,9 @@ public class PartitionEditListPage extends
 			}
 		}
 		partitionNameText.addModifyListener(this);
+		if (isCommentSupport) {
+			partitionDescriptionText.addModifyListener(this);
+		}
 	}
 
 	/**
