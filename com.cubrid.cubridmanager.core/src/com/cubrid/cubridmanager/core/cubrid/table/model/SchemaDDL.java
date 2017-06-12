@@ -2237,6 +2237,11 @@ public class SchemaDDL {
 			} else {
 				throw new RuntimeException("Invalid partition type.");
 			}
+			String description = inf.getDescription();
+			if (StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				ddl.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+			}
 		}
 
 		ddl.append(")");
