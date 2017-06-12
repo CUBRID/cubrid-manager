@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 
 import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.core.common.model.PartitionType;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.QueryUtil;
@@ -58,9 +59,11 @@ import com.cubrid.cubridmanager.core.utils.ModelUtil.ClassType;
  */
 public class GetPartitionedClassListTask extends JDBCTask {
 	private static final Logger LOGGER = LogUtil.getLogger(GetPartitionedClassListTask.class);
+	private boolean isCommentSupport = false;
 
 	public GetPartitionedClassListTask(DatabaseInfo dbInfo) {
 		super("GetPartitionedClassList", dbInfo);
+		isCommentSupport = CompatibleUtil.isCommentSupports(dbInfo);
 	}
 
 	/**
@@ -131,7 +134,7 @@ public class GetPartitionedClassListTask extends JDBCTask {
 				return result;
 			}
 
-			String sql = "SELECT class_name, partition_name, partition_class_name, partition_type, partition_expr, partition_values FROM db_partition WHERE class_name='"
+			String sql = "SELECT * FROM db_partition WHERE class_name='"
 					+ tableName.trim().toLowerCase() + "'";
 
 			// [TOOLS-2425]Support shard broker
@@ -176,6 +179,9 @@ public class GetPartitionedClassListTask extends JDBCTask {
 				PartitionInfo partitionItem = new PartitionInfo(className,
 						partitionName, partitionClassName, partitionType,
 						partitionExpr, partitionValues, -1);
+				if (isCommentSupport) {
+					partitionItem.setDescription(rs.getString("comment"));
+				}
 				if (exprDataType == null && partitionExpr != null
 						&& partitionExpr.trim().length() > 0) {
 					exprDataType = getExprDataType(className, partitionExpr);
