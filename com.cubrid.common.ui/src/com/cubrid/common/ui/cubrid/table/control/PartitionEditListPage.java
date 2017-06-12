@@ -507,6 +507,10 @@ public class PartitionEditListPage extends
 		return partitionExprTypeCombo.getText();
 	}
 
+	public String getPartitionDescription() {
+		return partitionDescriptionText.getText();
+	}
+
 	/**
 	 * 
 	 * Get values list

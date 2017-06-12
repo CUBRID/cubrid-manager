@@ -216,16 +216,19 @@ public class CreatePartitionWizard extends
 		} else if (partitionType == PartitionType.LIST) {
 			String partitionName = listPage.getPartitionName();
 			String exprDataType = listPage.getPartitionExprDataType();
+			String partitionDescription = listPage.getPartitionDescription();
 			List<String> valuesList = listPage.getListValues();
 			if (this.editedPartitionInfo == null) {
 				PartitionInfo partitonInfo = new PartitionInfo(
 						schemaInfo.getClassname(), partitionName,
 						partitionType, expr, valuesList, -1);
 				partitonInfo.setPartitionExprType(exprDataType);
+				partitonInfo.setDescription(partitionDescription);
 				partitionInfoList.add(partitonInfo);
 			} else {
 				editedPartitionInfo.setPartitionName(partitionName);
 				editedPartitionInfo.setPartitionExprType(exprDataType);
+				editedPartitionInfo.setDescription(partitionDescription);
 				if (isChangeListValues(
 						editedPartitionInfo.getPartitionValues(), valuesList)) {
 					editedPartitionInfo.setPartitionValues(valuesList);
