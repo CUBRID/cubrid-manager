@@ -38,6 +38,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.core.common.model.PartitionType;
 import com.cubrid.common.core.common.model.SchemaInfo;
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 
@@ -243,6 +244,7 @@ public class CreatePartitionWizard extends
 			String partitionName = rangePage.getPartitionName();
 			String exprDataType = rangePage.getPartitionExprDataType();
 			String newValue = rangePage.getRangeValue();
+			String partitionDescription = rangePage.getPartitionDescription();
 			if (this.editedPartitionInfo == null) {
 				List<String> rangeList = new ArrayList<String>();
 				rangeList.add(null);
@@ -255,6 +257,7 @@ public class CreatePartitionWizard extends
 						schemaInfo.getClassname(), partitionName,
 						partitionType, expr, rangeList, -1);
 				partitonInfo.setPartitionExprType(exprDataType);
+				partitonInfo.setDescription(partitionDescription);
 				partitionInfoList.add(partitonInfo);
 				resetRangePartitionInfoList(partitionInfoList);
 			} else {
@@ -266,6 +269,10 @@ public class CreatePartitionWizard extends
 				}
 				if (!expr.equals(editedPartitionInfo.getPartitionExpr())) {
 					changePartitionExpr(expr);
+				}
+				if (StringUtil.isNotEmpty(partitionDescription) &&
+						!partitionDescription.equals(editedPartitionInfo.getDescription())) {
+					editedPartitionInfo.setDescription(partitionDescription);
 				}
 				String oldValue = editedPartitionInfo.getPartitionValues().get(
 						1);

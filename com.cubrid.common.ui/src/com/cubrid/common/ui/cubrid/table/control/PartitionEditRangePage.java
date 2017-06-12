@@ -381,6 +381,10 @@ public class PartitionEditRangePage extends
 		return partitionExprTypeCombo.getText();
 	}
 
+	public String getPartitionDescription() {
+		return partitionDescriptionText.getText();
+	}
+
 	/**
 	 * 
 	 * Get the max range value
