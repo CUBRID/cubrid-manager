@@ -53,7 +53,9 @@ import org.eclipse.swt.widgets.Text;
 
 import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.core.common.model.SchemaInfo;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.PartitionUtil;
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
@@ -61,6 +63,7 @@ import com.cubrid.common.ui.spi.util.TableViewUtil;
 import com.cubrid.common.ui.spi.util.ValidateUtil;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetPartitionedClassListTask;
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 
 /**
  * 
@@ -85,7 +88,9 @@ public class PartitionEditListPage extends
 	private Text partitionTypeText;
 	private Text partitionExprText;
 	private Text partitionNameText;
+	private Text partitionDescriptionText;
 	private boolean isCanFinished = false;
+	private boolean isCommentSupport = false;
 
 	private Combo partitionValueCombo;
 
@@ -99,6 +104,7 @@ public class PartitionEditListPage extends
 		this.partitionInfoList = partitionInfoList;
 		this.isNewTable = isNewTable;
 		setPageComplete(false);
+		isCommentSupport = CompatibleUtil.isCommentSupports(dbInfo);
 	}
 
 	/**
@@ -151,6 +157,17 @@ public class PartitionEditListPage extends
 		partitionNameText.setTextLimit(ValidateUtil.MAX_SCHEMA_NAME_LENGTH);
 		partitionNameText.setLayoutData(CommonUITool.createGridData(
 				GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+
+		if (isCommentSupport) {
+			Label partitionDescriptionLabel = new Label(composite, SWT.NONE);
+			partitionDescriptionLabel.setText(Messages.lblPartitionDescription);
+			partitionDescriptionLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+
+			partitionDescriptionText = new Text(composite, SWT.BORDER);
+			partitionDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			partitionDescriptionText.setLayoutData(CommonUITool.createGridData(
+					GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+		}
 
 		Label partitionTypeLabel = new Label(composite, SWT.NONE);
 		partitionTypeLabel.setText(Messages.lblPartitionType);
@@ -342,6 +359,7 @@ public class PartitionEditListPage extends
 			String partitionType = partitonInfo.getPartitionType().getText().toUpperCase();
 			String partitionExpr = partitonInfo.getPartitionExpr();
 			String exprDataType = partitonInfo.getPartitionExprType();
+			String partitionDescription = partitonInfo.getDescription();
 			if (exprDataType == null) {
 				partitionExprTypeCombo.setEnabled(true);
 				partitionExprTypeCombo.select(0);
@@ -351,6 +369,9 @@ public class PartitionEditListPage extends
 			}
 			partitionTypeText.setText(partitionType);
 			partitionExprText.setText(partitionExpr);
+			if (StringUtil.isNotEmpty(partitionDescription)) {
+				partitionDescriptionText.setText(partitionDescription);
+			}
 			if (this.editedPartitionInfo == null) {
 				initValuesCombo();
 			}

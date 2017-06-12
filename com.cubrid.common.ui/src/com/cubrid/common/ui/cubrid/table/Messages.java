@@ -568,6 +568,7 @@ public class Messages extends
 	public static String titleListPage;
 	public static String msgListPage;
 	public static String lblPartitionName;
+	public static String lblPartitionDescription;
 	public static String grpExpressionValue;
 	public static String lblPartitionValue;
 	public static String errValueExist;
