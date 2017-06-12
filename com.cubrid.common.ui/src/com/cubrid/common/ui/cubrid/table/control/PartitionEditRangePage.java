@@ -382,7 +382,8 @@ public class PartitionEditRangePage extends
 	}
 
 	public String getPartitionDescription() {
-		return partitionDescriptionText.getText();
+		return partitionDescriptionText != null ?
+				partitionDescriptionText.getText() : null;
 	}
 
 	/**
