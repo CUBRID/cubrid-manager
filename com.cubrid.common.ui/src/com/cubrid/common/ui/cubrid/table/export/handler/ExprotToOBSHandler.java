@@ -119,7 +119,7 @@ public class ExprotToOBSHandler extends
 							exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
 									path));
 
-							String sql = QueryUtil.getSelectSQL(conn, tableName);
+							String sql = getSelectSQL(conn, tableName);
 
 							// [TOOLS-2425]Support shard broker
 							sql = DatabaseInfo.wrapShardQuery(dbInfo, sql);
