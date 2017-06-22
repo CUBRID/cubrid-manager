@@ -232,7 +232,8 @@ public class CreateViewDialog extends
 	private Composite createSQLScriptComposite() {
 		final Composite composite = new Composite(tabFolder, SWT.NONE);
 		composite.setLayout(new GridLayout());
-		sqlText = new StyledText(composite, SWT.WRAP | SWT.BORDER | SWT.READ_ONLY);
+		sqlText = new StyledText(composite, SWT.WRAP | SWT.BORDER | SWT.READ_ONLY
+				| SWT.V_SCROLL | SWT.H_SCROLL);
 		CommonUITool.registerContextMenu(sqlText, false);
 		final GridData gdSqlText = new GridData(SWT.FILL, SWT.FILL, true, true);
 		sqlText.setLayoutData(gdSqlText);
