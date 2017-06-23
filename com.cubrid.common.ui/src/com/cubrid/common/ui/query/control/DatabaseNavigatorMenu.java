@@ -718,10 +718,7 @@ public class DatabaseNavigatorMenu {
 					&& lastSelectdDb != null
 					&& !StringUtil.isEqualNotIgnoreNull(selectdDb.getId(),
 							lastSelectdDb.getId())) {
-				ServerInfo serverInfo = selectdDb.getServer() == null ? null
-						: selectdDb.getServer().getServerInfo();
-				boolean autoCommit = QueryOptions.getAutoCommit(serverInfo);
-				editor.setAutocommit(autoCommit);
+				editor.setAutocommit(true);
 			}
 
 			/*Save current selectDB*/

@@ -66,7 +66,6 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 public class QueryPropertyComposite extends
 		Composite {
 
-	private Button autocommitBtn;
 	private Button searchUnitBtn;
 	private Spinner pageUnitCountSpinner;
 	private Spinner unitCountSpinner;
@@ -95,7 +94,6 @@ public class QueryPropertyComposite extends
 	 */
 	public void loadPreference() {
 		ServerInfo serverInfo = server == null ? null : server.getServerInfo();
-		boolean autoCommit = QueryOptions.getAutoCommit(serverInfo);
 		boolean unitInstances = QueryOptions.getEnableSearchUnit(serverInfo);
 		int recordCount = QueryOptions.getSearchUnitCount(serverInfo);
 		int pageCount = QueryOptions.getPageLimit(serverInfo);
@@ -112,7 +110,6 @@ public class QueryPropertyComposite extends
 		fontColorGreen = QueryOptions.getFontColorGreen(serverInfo);
 		fontString = QueryOptions.getFontString(serverInfo);
 
-		autocommitBtn.setSelection(autoCommit);
 		searchUnitBtn.setSelection(unitInstances);
 		unitCountSpinner.setEnabled(unitInstances);
 		unitCountSpinner.setSelection(recordCount);
@@ -160,7 +157,6 @@ public class QueryPropertyComposite extends
 	 */
 	public void save() {
 		ServerInfo serverInfo = server == null ? null : server.getServerInfo();
-		boolean isAutocommit = autocommitBtn.getSelection();
 		boolean isEnableSearchUnit = searchUnitBtn.getSelection();
 		int unitCount = unitCountSpinner.getSelection();
 		int pageUnitCount = pageUnitCountSpinner.getSelection();
@@ -172,7 +168,6 @@ public class QueryPropertyComposite extends
 		boolean isShowMultiPageConfirm = multiPageConfirmBtn.getSelection();
 		boolean isUseScientificNotation = useScientificNotationBtn.getSelection();
 
-		QueryOptions.setAutoCommit(serverInfo, isAutocommit);
 		QueryOptions.setEnableSearchUnit(serverInfo, isEnableSearchUnit);
 		QueryOptions.setSearchUnitCount(serverInfo, unitCount);
 		QueryOptions.setPageLimit(serverInfo, pageUnitCount);
@@ -210,18 +205,6 @@ public class QueryPropertyComposite extends
 	private void createContent() {
 		setLayout(new GridLayout());
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		final Group autocommitGroup = new Group(this, SWT.NONE);
-		final GridData gdAutocommitGroup = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		autocommitGroup.setLayoutData(gdAutocommitGroup);
-		autocommitGroup.setLayout(new GridLayout());
-
-		autocommitBtn = new Button(autocommitGroup, SWT.CHECK);
-		final GridData gdAutocommitBtn = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		autocommitBtn.setLayoutData(gdAutocommitBtn);
-		autocommitBtn.setText(Messages.autoCommitLabel);
 
 		final Group groupFirst = new Group(this, SWT.NONE);
 		groupFirst.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
