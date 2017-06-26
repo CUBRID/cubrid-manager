@@ -379,7 +379,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 	 */
 	public void postWindowOpen() {
 		removePlatformDependencyActions();
-		showDashboard();
+//		showDashboard();
 
 		/* Open the perspective */
 		String perspective = PerspectiveManager.getInstance().getSelectedPerspective();

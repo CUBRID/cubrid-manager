@@ -52,7 +52,7 @@ public class GeneralPreferenceComposite extends
 		Composite {
 
 	private Button maximizeWindowBtn = null;
-	private Button checkNewInfoBtn = null;
+//	private Button checkNewInfoBtn = null;
 	private Button isAlwaysExitBtn = null;
 	private Button isAutoCheckUpdateBtn = null;
 	private Button autoCompleteKeywordBtn = null;
@@ -89,11 +89,11 @@ public class GeneralPreferenceComposite extends
 		isAlwaysExitBtn.setLayoutData(isAlwaysExitGd);
 		isAlwaysExitBtn.setText(Messages.msgToggleExitConfirm);
 
-		checkNewInfoBtn = new Button(this, SWT.CHECK);
-		final GridData checkNewInfoPageGd = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		checkNewInfoBtn.setLayoutData(checkNewInfoPageGd);
-		checkNewInfoBtn.setText(Messages.btnCheckNewInfo);
+//		checkNewInfoBtn = new Button(this, SWT.CHECK);
+//		final GridData checkNewInfoPageGd = new GridData(SWT.FILL, SWT.CENTER,
+//				true, false);
+//		checkNewInfoBtn.setLayoutData(checkNewInfoPageGd);
+//		checkNewInfoBtn.setText(Messages.btnCheckNewInfo);
 
 		isAutoCheckUpdateBtn = new Button(this, SWT.CHECK);
 		final GridData autoCheckUpdateBtnGd = new GridData(SWT.FILL,
@@ -179,8 +179,8 @@ public class GeneralPreferenceComposite extends
 		boolean isAlwaysExit = GeneralPreference.isAlwaysExit();
 		isAlwaysExitBtn.setSelection(isAlwaysExit);
 
-		boolean isShowWelcomePage = GeneralPreference.isCheckNewInfoOnStartUp();
-		checkNewInfoBtn.setSelection(isShowWelcomePage);
+//		boolean isShowWelcomePage = GeneralPreference.isCheckNewInfoOnStartUp();
+//		checkNewInfoBtn.setSelection(isShowWelcomePage);
 
 		boolean isAutoCheckUpdate = GeneralPreference.isAutoCheckUpdate();
 		isAutoCheckUpdateBtn.setSelection(isAutoCheckUpdate);
@@ -219,8 +219,8 @@ public class GeneralPreferenceComposite extends
 		boolean isAlwaysExit = isAlwaysExitBtn.getSelection();
 		GeneralPreference.setAlwaysExit(isAlwaysExit);
 
-		boolean isShowWelcomePage = checkNewInfoBtn.getSelection();
-		GeneralPreference.setCheckNewInfoOnStartUp(isShowWelcomePage);
+//		boolean isShowWelcomePage = checkNewInfoBtn.getSelection();
+//		GeneralPreference.setCheckNewInfoOnStartUp(isShowWelcomePage);
 
 		boolean isAutoCheckUpdate = isAutoCheckUpdateBtn.getSelection();
 		GeneralPreference.setAutoCheckUpdate(isAutoCheckUpdate);
