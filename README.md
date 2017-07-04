@@ -1,9 +1,9 @@
 # CUBRID Manager
-[CUBRID Manager](https://github.com/CUBRID/cubrid-manager) is a [CUBRID](https://github.com/CUBRID/cubrid) database management tool that provides [CUBRID](https://github.com/CUBRID/cubrid) database management and query function in GUI environment. The management function of the [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) can be easily performed by using the GUI. In addition, the query function of the [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) provides a query editor tool for application development.
+[CUBRID Manager](https://github.com/CUBRID/cubrid-manager) is a [CUBRID](https://github.com/CUBRID/cubrid) database management tool that provides [CUBRID](https://github.com/CUBRID/cubrid) functions for database management and executing query in GUI environment. The management function of the [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) can be easily performed by using the GUI. In addition, the query function of the [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) provides a query editor tool for application development.
 
-The management function of [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) can be used only in the environment where the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server) running on the server on which the [CUBRID](https://github.com/CUBRID/cubrid) DBMS is installed, but the query function can be executed without running the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server).
+The management function of [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) can only be used in the environment where the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server) running on the server on which the [CUBRID](https://github.com/CUBRID/cubrid) DBMS is installed, but the query function can be executed without running the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server).
 
-The [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) client is a Java application based on [Eclipse RCP](https://wiki.eclipse.org/Rich_Client_Platform) that runs only on JRE or JDK 1.6 or later, and the recommended JRE version is 1.7.
+The [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) is a Java application based on [Eclipse RCP](https://wiki.eclipse.org/Rich_Client_Platform) that runs only on JRE or JDK 1.6 or later, and the recommended JRE version is 1.7.
 
 ## MAJOR REFERENCES
 
