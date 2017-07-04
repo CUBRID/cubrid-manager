@@ -1,0 +1,29 @@
+# CUBRID Manager
+[CUBRID Manager](https://github.com/CUBRID/cubrid-manager) is a [CUBRID](https://github.com/CUBRID/cubrid) database management tool that provides [CUBRID](https://github.com/CUBRID/cubrid) database management and query function in GUI environment. The management function of the [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) can be easily performed by using the GUI. In addition, the query function of the [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) provides a query editor tool for application development.
+
+The management function of [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) can be used only in the environment where the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server) running on the server on which the [CUBRID](https://github.com/CUBRID/cubrid) DBMS is installed, but the query function can be executed without running the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server).
+
+The [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) client is a Java application based on [Eclipse RCP](https://wiki.eclipse.org/Rich_Client_Platform) that runs only on JRE or JDK 1.6 or later, and the recommended JRE version is 1.7.
+
+## MAJOR REFERENCES
+
+CUBRID Official Site: http://www.cubrid.org and http://www.cubrid.com
+
+## DOWNLOADS and FILE REPOSITORIES
+
+CM can be found here:
+
+- http://www.cubrid.org/downloads/os-select/64-bit/tools/manager
+- ftp://ftp.cubrid.org/CUBRID_Tools/CUBRID_Manager/
+
+## How to run CUBRID Manager on Eclipse
+
+Please refer here:
+
+- https://github.com/CUBRID/cubrid-manager/wiki/How-to-run-CUBRID-Manager-on-Eclipse
+
+## GETTING HELP
+
+If You encounter any difficulties with getting started, or just have some
+questions, or find bugs, or have some suggestions, we kindly ask you to
+post your thoughts on our issues at https://github.com/CUBRID/cubrid-manager/issues.
