@@ -1451,4 +1451,15 @@ public final class StringUtil {
 		data = (data).substring(2, data.length() - 1);
 		return DatatypeConverter.parseHexBinary(data);
 	}
+
+	public static String removeBOM(String data, String charset) {
+		if ("UTF-8".equals(charset)) {
+			String BOM = "\uFEFF";
+			if (data.startsWith(BOM)) {
+				return data.replace(BOM, "");
+			}
+		}
+
+		return data;
+	}
 }
