@@ -475,7 +475,8 @@ public abstract class AbsImportRunnable implements
 				String content = null;
 				String pattern = null;
 				if (columnArray.length > column) {
-					content = columnArray[column];
+					content = currentRow != 0 ? columnArray[column] :
+						StringUtil.removeBOM(columnArray[column], importConfig.getFilesCharset());
 				}
 
 				if (columnPattern != null && columnPattern.length > column) {
