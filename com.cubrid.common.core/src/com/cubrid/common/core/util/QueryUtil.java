@@ -651,13 +651,13 @@ public final class QueryUtil {
 		sql = "SELECT " + columns + " FROM " + QuerySyntax.escapeKeyword(name);
 		return sql;
 	}
-	
+
 	private static List<String> getColumnList(Connection conn, String tableName) {
 		List<String> columnList = new ArrayList<String>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "SELECT attr_name FROM db_attribute WHERE class_name = ? ORDER BY def_order";
-		
+
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, tableName);
