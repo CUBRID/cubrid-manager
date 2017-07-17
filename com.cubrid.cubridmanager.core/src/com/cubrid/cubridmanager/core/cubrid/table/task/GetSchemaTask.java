@@ -770,9 +770,11 @@ public class GetSchemaTask extends JDBCTask {
 						attr.setCollation(collation);
 					}
 
-					SchemaComment schemaComment = comments.get(tableName + "*" + attrName);
-					if (schemaComment != null) {
-						attr.setDescription(schemaComment.getDescription());
+					if (comments != null) {
+						SchemaComment schemaComment = comments.get(tableName + "*" + attrName);
+						if (schemaComment != null) {
+							attr.setDescription(schemaComment.getDescription());
+						}
 					}
 
 					if ("INSTANCE".equals(type)) { //INSTANCE
