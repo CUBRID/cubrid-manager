@@ -1,6 +1,7 @@
 package com.cubrid.cubridmanager.core.common.model;
 
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ServerVersion {
 	private int majorVersion, minorVersion;
@@ -9,7 +10,6 @@ public class ServerVersion {
 	public ServerVersion() {
 		this(-1, -1);
 	}
-	
 
 	public ServerVersion(int majorVersion, int minorVersion) {
 		this.majorVersion = majorVersion;
@@ -18,18 +18,20 @@ public class ServerVersion {
 	
 	public void setVersion(String fullVersion) {
 		serverVersion = fullVersion;
-		StringTokenizer st = new StringTokenizer(fullVersion);
-		st.nextToken();
-		String versionNo = st.nextToken();
+		String regex = "\\d*\\.\\d*\\.\\d*\\.[\\d-a-zA-Z]*";
+		Matcher matcher = Pattern.compile(regex)
+				.matcher(fullVersion);
 		
-		majorVersion = Integer.parseInt(versionNo.substring(0, versionNo.indexOf('.')));
-		minorVersion = Integer.parseInt(versionNo.substring(versionNo.indexOf('.')+1));
+		if (matcher.find()) {
+			String[] versions = matcher.group().split("\\.");
+			majorVersion = Integer.parseInt(versions[0]);
+			minorVersion = Integer.parseInt(versions[1]);
+		}
 	}
 	
 	public boolean isSmallerThan(int majorVersion, int minorVersion) {
 		return (majorVersion == this.majorVersion) ? (this.minorVersion < minorVersion) :
 													 (this.majorVersion < majorVersion);
-						
 	}
 	
 	public boolean isSmallerThan(ServerVersion serverVersion) {
