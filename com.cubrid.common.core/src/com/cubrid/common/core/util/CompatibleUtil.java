@@ -1266,4 +1266,26 @@ public final class CompatibleUtil {
 	public static boolean isCommentSupports(IDatabaseSpec databaseSpec) {
 		return isAfter100(databaseSpec);
 	}
+
+	/**
+	 * Whether supports functional index
+	 * <b>Note: <b>Only after 9.0.0
+	 *
+	 * @param databaseSpec IDatabaseSpec
+	 * @return
+	 */
+	public static boolean isSupportFuncIndex(IDatabaseSpec databaseSpec) {
+		return isAfter900(databaseSpec);
+	}
+
+	/**
+	 * Whether supports functional index
+	 * <b>Note: <b>Only after 9.0.0
+	 *
+	 * @param serverInfo IServerSpec
+	 * @return
+	 */
+	public static boolean isSupportFuncIndex(IServerSpec serverInfo) {
+		return isAfter900(serverInfo);
+	}
 }
