@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.cubridmanager.core.Messages;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
@@ -97,8 +98,11 @@ public class GetUserClassIndexesTask extends
 			}
 			QueryUtil.freeQuery(stmt, rs);
 
-			sql = "SELECT key_attr_name FROM db_index_key"
-					+ " WHERE index_name=? AND class_name=?";
+			boolean isSupportFunIndex = CompatibleUtil.isSupportFuncIndex(databaseInfo);
+			String funcIndex = isSupportFunIndex ? ", func" : "";
+
+			sql = "SELECT key_attr_name" + funcIndex
+					+ " FROM db_index_key WHERE index_name=? AND class_name=?";
 
 			// [TOOLS-2425]Support shard broker
 			sql = databaseInfo.wrapShardQuery(sql);
@@ -113,7 +117,12 @@ public class GetUserClassIndexesTask extends
 				rs = ((PreparedStatement) stmt).executeQuery();
 				List<String> columns = new ArrayList<String>();
 				while (rs.next()) {
-					columns.add(rs.getString("key_attr_name"));
+					String attrName = rs.getString("key_attr_name");
+					if (isSupportFunIndex && attrName == null) {
+						columns.add(rs.getString("func").trim());
+					} else {
+						columns.add(rs.getString("key_attr_name"));
+					}
 				}
 				dbIndex.setColumns(columns);
 			}
