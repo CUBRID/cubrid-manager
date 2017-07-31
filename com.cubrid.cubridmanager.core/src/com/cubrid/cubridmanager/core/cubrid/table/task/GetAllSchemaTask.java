@@ -547,6 +547,7 @@ public class GetAllSchemaTask extends
 	private void getConstraintInfo() throws SQLException {
 		Map<String, Map<String, String>> foreignKeys = getForeignKeyInfo();
 		boolean isSupportPrefixIndexLength = CompatibleUtil.isSupportPrefixIndexLength(databaseInfo);
+		boolean isSupportFuncIndex = CompatibleUtil.isSupportFuncIndex(databaseInfo);
 
 		String extraColumns = null;
 		if (isSupportPrefixIndexLength) {
@@ -555,11 +556,13 @@ public class GetAllSchemaTask extends
 			extraColumns = "";
 		}
 
+		String funcDef = isSupportFuncIndex ? ", k.func" : "";
+
 		Map<String, Constraint> constraintMap = new HashMap<String, Constraint>();
 
 		String sql = "SELECT i.class_name, i.index_name, i.is_unique, i.is_reverse,"
 				+ " i.is_primary_key, i.is_foreign_key, i.key_count,"
-				+ " k.key_attr_name, k.asc_desc, k.key_order" + extraColumns
+				+ " k.key_attr_name, k.asc_desc, k.key_order" + extraColumns + funcDef
 				+ " FROM db_index i, db_index_key k"
 				+ " WHERE i.class_name=k.class_name AND i.index_name=k.index_name"
 				+ " ORDER BY i.class_name, i.index_name, k.key_order";
@@ -624,6 +627,10 @@ public class GetAllSchemaTask extends
 					if (indexLength > 0) {
 						indexPrefix = "(" + indexLength + ")";
 					}
+				}
+
+				if (isSupportFuncIndex && attrName == null) {
+					attrName = rs.getString("func").trim();
 				}
 
 				constraint.addAttribute(attrName);
