@@ -507,11 +507,11 @@ public class GetSchemaTask extends JDBCTask {
 
 		List<Constraint> cList = schemaInfo.getConstraints();
 		boolean isSupportPrefixIndexLength = CompatibleUtil.isSupportPrefixIndexLength(databaseInfo);
-		sql = "SELECT key_attr_name, asc_desc, key_order";
-		if (isSupportPrefixIndexLength) {
-			sql += ", key_prefix_length";
-		}
-		sql += " FROM db_index_key WHERE index_name=? AND class_name=? ORDER BY key_order";
+		boolean isSupportFuncIndex = CompatibleUtil.isSupportFuncIndex(databaseInfo);
+		String prefixIndexLength = isSupportPrefixIndexLength ? ", key_prefix_length" : "";
+		String funcIndex = isSupportFuncIndex ? ", func" : "";
+		sql = "SELECT key_attr_name, asc_desc, key_order" + prefixIndexLength + funcIndex
+				+ " FROM db_index_key WHERE index_name=? AND class_name=? ORDER BY key_order";
 
 		// [TOOLS-2425]Support shard broker
 		sql = databaseInfo.wrapShardQuery(sql);
@@ -524,6 +524,9 @@ public class GetSchemaTask extends JDBCTask {
 				rs = ((PreparedStatement) stmt).executeQuery();
 				while (rs.next()) {
 					String attrName = rs.getString("key_attr_name");
+					if (isSupportFuncIndex && attrName == null) {
+						attrName = rs.getString("func").trim();
+					}
 					String ascDesc = rs.getString("asc_desc");
 					String indexPrefix = "";
 					if (isSupportPrefixIndexLength) {
