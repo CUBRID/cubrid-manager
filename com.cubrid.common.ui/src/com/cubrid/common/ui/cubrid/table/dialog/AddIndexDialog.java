@@ -735,7 +735,7 @@ public class AddIndexDialog extends
 		if (isSupportFuncIndex) {
 			tblCol = new TableColumn(columnTable, SWT.LEFT);
 			tblCol.setWidth(196);
-			tblCol.setText("Function expression");
+			tblCol.setText(Messages.colFunctionExpression);
 		}
 
 		setTableEditor();

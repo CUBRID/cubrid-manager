@@ -66,6 +66,7 @@ public class Messages extends
 	public static String colSchemaType;
 	public static String colUseColumn;
 	public static String colPrefixLength;
+	public static String colFunctionExpression;
 
 	public static String dataNewKey;
 
