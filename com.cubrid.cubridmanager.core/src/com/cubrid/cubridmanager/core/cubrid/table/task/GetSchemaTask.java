@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.slf4j.Logger;
@@ -508,6 +510,7 @@ public class GetSchemaTask extends JDBCTask {
 		List<Constraint> cList = schemaInfo.getConstraints();
 		boolean isSupportPrefixIndexLength = CompatibleUtil.isSupportPrefixIndexLength(databaseInfo);
 		boolean isSupportFuncIndex = CompatibleUtil.isSupportFuncIndex(databaseInfo);
+		String regex = String.format("\\[%s\\].\\[[\\w#]*\\]", tableName);
 		String prefixIndexLength = isSupportPrefixIndexLength ? ", key_prefix_length" : "";
 		String funcIndex = isSupportFuncIndex ? ", func" : "";
 		sql = "SELECT key_attr_name, asc_desc, key_order" + prefixIndexLength + funcIndex
@@ -524,8 +527,14 @@ public class GetSchemaTask extends JDBCTask {
 				rs = ((PreparedStatement) stmt).executeQuery();
 				while (rs.next()) {
 					String attrName = rs.getString("key_attr_name");
+					String funcDef = null;
 					if (isSupportFuncIndex && attrName == null) {
-						attrName = rs.getString("func").trim();
+						funcDef = rs.getString("func").trim();
+						Matcher matcher = Pattern.compile(regex).matcher(funcDef);
+						if (matcher.find()) {
+							String columnName = matcher.group().split("\\.")[1];
+							attrName = columnName.substring(1, columnName.length() - 1);
+						}
 					}
 					String ascDesc = rs.getString("asc_desc");
 					String indexPrefix = "";
@@ -549,7 +558,11 @@ public class GetSchemaTask extends JDBCTask {
 							c.addRule("ON UPDATE " + fkInfo.get("UPDATE_RULE"));
 						}
 					} else {
-						c.addRule(attrName + indexPrefix + " " + ascDesc);
+						if (isSupportFuncIndex && funcDef != null) {
+							c.addRule(funcDef + " " + ascDesc);
+						} else {
+							c.addRule(attrName + indexPrefix + " " + ascDesc);
+						}
 					}
 
 					// set the db attributes' unique property.
