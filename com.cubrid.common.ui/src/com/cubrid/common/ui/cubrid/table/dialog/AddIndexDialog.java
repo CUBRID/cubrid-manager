@@ -774,7 +774,7 @@ public class AddIndexDialog extends
 								&& isSupportPrefixLength
 								&& FieldHandlerUtils.isSupportPrefixIndex(dataType);
 						boolean isCanEditFuncIndex = i == 5
-								&& indexType.equals(CUB_INDEX)
+								&& indexType.equals(CUB_INDEX) || indexType.equals(CUB_RINDEX)
 								&& isSupportFuncIndex;
 						if (isCanEditOrder) {
 							new IndexTableItemEditor(
