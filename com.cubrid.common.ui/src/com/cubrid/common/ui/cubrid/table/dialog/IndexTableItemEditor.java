@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-
 /**
  * 
  * Table column editor
@@ -62,7 +60,6 @@ public class IndexTableItemEditor implements
 	protected CCombo combo;
 	protected Table table;
 	protected int columnEditorType;
-	protected DatabaseInfo databaseInfo;
 
 	/**
 	 * The constructor
