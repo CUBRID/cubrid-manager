@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-
 /**
  * 
  * Table column editor
@@ -49,9 +47,9 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
  */
 public class IndexTableItemEditor implements
 		Listener {
+
 	public static final int COLUMN_EDITOR_TYPE_TEXT = 1;
 	public static final int COLUMN_EDITOR_TYPE_CCOMBO = 2;
-	public static final int COLUMN_EDITOR_TYPE_STRING_TEXT = 3;
 	public final static String ORDER_ASC = "ASC"; //$NON-NLS-1$
 	public final static String ORDER_DESC = "DESC"; //$NON-NLS-1$
 
@@ -62,7 +60,6 @@ public class IndexTableItemEditor implements
 	protected CCombo combo;
 	protected Table table;
 	protected int columnEditorType;
-	protected DatabaseInfo databaseInfo;
 
 	/**
 	 * The constructor
@@ -70,7 +67,6 @@ public class IndexTableItemEditor implements
 	 * @param table Table
 	 * @param item TableItem
 	 * @param column int
-	 * @param columnEditorType int
 	 */
 	public IndexTableItemEditor(Table table, final TableItem item, int column,
 			int columnEditorType) {
@@ -111,8 +107,9 @@ public class IndexTableItemEditor implements
 			}
 			combo.setFocus();
 
-		} else {
+		} else if (columnEditorType == COLUMN_EDITOR_TYPE_TEXT) {
 			text = new Text(table, SWT.MULTI | SWT.WRAP);
+			text.setTextLimit(10);
 			text.addListener(SWT.FocusOut, this);
 			text.addListener(SWT.Traverse, this);
 
@@ -121,23 +118,18 @@ public class IndexTableItemEditor implements
 			text.selectAll();
 			text.setFocus();
 
-			if (columnEditorType == COLUMN_EDITOR_TYPE_TEXT) {
-				text.setTextLimit(10);
-				text.addVerifyListener(new VerifyListener() {
-					public void verifyText(VerifyEvent event) {
-						event.doit = false;
-						char ch = event.character;
-						if (Character.isDigit(ch)) {
-							event.doit = true;
-						}
-						if (ch == '\b' || ch == SWT.DEL) {
-							event.doit = true;
-						}
+			text.addVerifyListener(new VerifyListener() {
+				public void verifyText(VerifyEvent event) {
+					event.doit = false;
+					char ch = event.character;
+					if (Character.isDigit(ch)) {
+						event.doit = true;
 					}
-				});
-			} else if (columnEditorType == COLUMN_EDITOR_TYPE_STRING_TEXT) {
-				text.setTextLimit(255);
-			}
+					if (ch == '\b' || ch == SWT.DEL) {
+						event.doit = true;
+					}
+				}
+			});
 		}
 	}
 
@@ -148,7 +140,7 @@ public class IndexTableItemEditor implements
 	public void handleEvent(final Event event) {
 		if (columnEditorType == COLUMN_EDITOR_TYPE_CCOMBO) {
 			handleCombo(event);
-		} else {
+		} else if (columnEditorType == COLUMN_EDITOR_TYPE_TEXT) {
 			handleText(event);
 		}
 	}
