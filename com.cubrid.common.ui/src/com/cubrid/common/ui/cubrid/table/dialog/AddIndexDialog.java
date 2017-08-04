@@ -181,7 +181,7 @@ public class AddIndexDialog extends
 				if (QuerySyntax.isNotFunctionBasedIndex(ruleInfo) && ruleInfo.indexOf("(") > 0) {
 					prefixLength = ruleInfo.substring(ruleInfo.indexOf("(") + 1, ruleInfo.indexOf(")"));
 					ruleArr = new String[] {columnName, order, prefixLength};
-				} else {	// function-based
+				} else {
 					ruleArr = new String[] {ruleInfo, order, prefixLength};
 				}
 				ruleMap.put(columnName.toUpperCase(), ruleArr);
@@ -200,7 +200,7 @@ public class AddIndexDialog extends
 			item.setText(4, ruleArr == null ? "" : ruleArr[2]);
 			if (isSupportFuncIndex) {
 				if (ruleArr != null && !attr.getName().equals(ruleArr[0])) {
-					item.setText(5, ruleArr == null ? "" : ruleArr[0]);
+					item.setText(5, ruleArr[0]);
 				}
 			}
 			item.setForeground(ResourceManager.getColor(128, 128, 128));
@@ -774,7 +774,7 @@ public class AddIndexDialog extends
 								&& isSupportPrefixLength
 								&& FieldHandlerUtils.isSupportPrefixIndex(dataType);
 						boolean isCanEditFuncIndex = i == 5
-								&& indexType.equals(CUB_INDEX)
+								&& indexType.equals(CUB_INDEX) || indexType.equals(CUB_RINDEX)
 								&& isSupportFuncIndex;
 						if (isCanEditOrder) {
 							new IndexTableItemEditor(
