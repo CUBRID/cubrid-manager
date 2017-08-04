@@ -680,27 +680,6 @@ public final class QuerySyntax {
 			"lead", "ntile", "rank", "rlike", "row_number"
 	};
 
-	// This functions based CUBRID 10.1
-	public static final String[] FUNCTION_BASED_INDEXES = {
-			"ABS", "ACOS", "ADD_MONTHS", "ADDDATE", "ASIN", "ATAN", "ATAN2",
-			"BIT_COUNT", "BIT_LENGTH", "CEIL", "CHAR_LENGTH", "CHR", "COS",
-			"COT", "DATE", "DATE_ADD", "DATE_FORMAT", "DATE_SUB", "DATEDIFF",
-			"DAY", "DAYOFMONTH", "DAYOFWEEK", "DAYOFYEAR", "DEGREES", "EXP",
-			"FLOOR", "FORMAT", "FROM_DAYS", "FROM_UNIXTIME", "GREATEST",
-			"HOUR", "IFNULL", "INET_ATON", "INET_NTOA", "INSTR", "LAST_DAY",
-			"LEAST", "LEFT", "LN", "LOCATE", "LOG", "LOG10", "LOG2", "LOWER",
-			"LPAD", "LTRIM", "MAKEDATE", "MAKETIME", "MD5", "MID", "MINUTE",
-			"MOD", "MONTH", "MONTHS_BETWEEN", "NULLIF", "NVL", "NVL2",
-			"OCTET_LENGTH", "POSITION", "POWER", "QUARTER", "RADIANS",
-			"REPEAT", "REPLACE", "REVERSE", "RIGHT", "ROUND", "RPAD", "RTRIM",
-			"SECOND", "SECTOTIME", "SIN", "SQRT", "STR_TO_DATE", "STRCMP",
-			"SUBDATE", "SUBSTR", "SUBSTRING", "SUBSTRING_INDEX", "TAN", "TIME",
-			"TIME_FORMAT", "TIMEDIFF", "TIMESTAMP", "TIMETOSEC", "TO_CHAR",
-			"TO_DATE", "TO_DATETIME", "TO_DAYS", "TO_NUMBER", "TO_TIME",
-			"TO_TIMESTAMP", "TRANSLATE", "TRIM", "TRUNC", "UNIX_TIMESTAMP",
-			"UPPER", "WEEK", "WEEKDAY", "YEAR"
-		};
-
 	public final static Map<Character, List<String>> KEYWORDINDEXMAP = new HashMap<Character, List<String>>();
 	public final static Set<String> KEYWORDSET = new HashSet<String>();
 	static {
@@ -886,22 +865,4 @@ public final class QuerySyntax {
 		}
 	}
 
-	public static boolean isFunctionBasedIndex(String rule) {
-		rule = rule.split("\\(")[0];
-		if (rule == null) {
-			return false;
-		} else {
-			rule = rule.toUpperCase().trim();
-		}
-		for (String s : FUNCTION_BASED_INDEXES) {
-			if (s.startsWith(rule)) {
-				return true;
-			}
-		}
-		return  false;
-	}
-
-	public static boolean isNotFunctionBasedIndex(String rule) {
-		return !isFunctionBasedIndex(rule);
-	}
 }

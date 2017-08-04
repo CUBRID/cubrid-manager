@@ -58,7 +58,6 @@ import com.cubrid.common.core.common.model.Constraint;
 import com.cubrid.common.core.common.model.DBAttribute;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.util.CompatibleUtil;
-import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.spi.ResourceManager;
 import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
@@ -66,7 +65,6 @@ import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
 import com.cubrid.common.ui.spi.util.ValidateUtil;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
 
 /**
@@ -92,7 +90,6 @@ public class AddIndexDialog extends
 	private Constraint editedIndex;
 	private int newIndex = -1;
 	private final boolean isSupportPrefixLength;
-	private final boolean isSupportFuncIndex;
 	private String errorMsg;
 	private Button btnIndex;
 	private Button btnUnique;
@@ -112,13 +109,11 @@ public class AddIndexDialog extends
 	public AddIndexDialog(Shell parentShell, SchemaInfo newSchema,
 			CubridDatabase database, Constraint editedIndex, boolean isNewConstraint) {
 		super(parentShell);
-		DatabaseInfo databaseInfo = database.getDatabaseInfo();
 		this.schemaInfo = newSchema;
 		this.editedIndex = editedIndex;
-		this.isSupportPrefixLength = CompatibleUtil.isSupportPrefixIndexLength(databaseInfo);
+		this.isSupportPrefixLength = CompatibleUtil.isSupportPrefixIndexLength(database.getDatabaseInfo());
 		this.isNewConstraint = isNewConstraint;
-		this.isCommentSupport = CompatibleUtil.isCommentSupports(databaseInfo);
-		this.isSupportFuncIndex = CompatibleUtil.isSupportFuncIndex(databaseInfo);
+		this.isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 	}
 
 	/**
@@ -168,22 +163,17 @@ public class AddIndexDialog extends
 			setSelectIndexType(indexType);
 
 			List<String> rules = editedIndex.getRules();
-			List<String> attrs = editedIndex.getAttributes();
-			for (int i = 0; i < attrs.size(); i++) {
-				String columnName = attrs.get(i);
-				String rule = rules.get(i);
-
-				String ruleInfo = rule.split("\\sASC|\\sDESC")[0];
-				String order = rule.toUpperCase().endsWith("ASC") ? "ASC" : "DESC";
+			for (String rule : rules) {
+				String[] strs = rule.trim().split(" ");
+				String columnName = strs[0];
+				String order = strs[1];
 				String prefixLength = "";
-				String[] ruleArr = null;
-
-				if (QuerySyntax.isNotFunctionBasedIndex(ruleInfo) && ruleInfo.indexOf("(") > 0) {
-					prefixLength = ruleInfo.substring(ruleInfo.indexOf("(") + 1, ruleInfo.indexOf(")"));
-					ruleArr = new String[] {columnName, order, prefixLength};
-				} else {	// function-based
-					ruleArr = new String[] {ruleInfo, order, prefixLength};
+				if (strs[0].indexOf("(") > 0) {
+					columnName = strs[0].substring(0, strs[0].indexOf("("));
+					prefixLength = strs[0].substring(strs[0].indexOf("(") + 1,
+							strs[0].indexOf(")"));
 				}
+				String[] ruleArr = {columnName, order, prefixLength };
 				ruleMap.put(columnName.toUpperCase(), ruleArr);
 			}
 		}
@@ -198,11 +188,6 @@ public class AddIndexDialog extends
 			item.setText(3, ruleArr == null ? IndexTableItemEditor.ORDER_ASC
 					: ruleArr[1].toUpperCase());
 			item.setText(4, ruleArr == null ? "" : ruleArr[2]);
-			if (isSupportFuncIndex) {
-				if (ruleArr != null && !attr.getName().equals(ruleArr[0])) {
-					item.setText(5, ruleArr == null ? "" : ruleArr[0]);
-				}
-			}
 			item.setForeground(ResourceManager.getColor(128, 128, 128));
 			item.setChecked(ruleArr != null);
 		}
@@ -263,13 +248,9 @@ public class AddIndexDialog extends
 				if (indexPrefixLength.length() > 0) {
 					isHasPrefixLength = true;
 				}
-				if (isSupportFuncIndex && item.getText(5).length() > 0) {
-					indexConstraint.addRule(item.getText(5).trim()
-							+ " " + item.getText(3));
-				} else {
-					indexConstraint.addRule(item.getText(1) + indexPrefixLength
-							+ " " + item.getText(3));
-				}
+				indexConstraint.addRule(item.getText(1) + indexPrefixLength
+						+ " " + item.getText(3));
+
 			}
 			if (indexConstraint.getAttributes().size() == 0) {
 				setErrorMessage(Messages.errSelectMoreColumns);
@@ -709,7 +690,7 @@ public class AddIndexDialog extends
 			}
 		});
 		CommonUITool.hackForYosemite(columnTable);
-
+		
 		TableColumn tblCol = new TableColumn(columnTable, SWT.LEFT);
 		tblCol.setWidth(83);
 		tblCol.setText(Messages.colUseColumn);
@@ -728,14 +709,8 @@ public class AddIndexDialog extends
 
 		if (isSupportPrefixLength) {
 			tblCol = new TableColumn(columnTable, SWT.LEFT);
-			tblCol.setWidth(83);
-			tblCol.setText(Messages.colPrefixLength);
-		}
-
-		if (isSupportFuncIndex) {
-			tblCol = new TableColumn(columnTable, SWT.LEFT);
 			tblCol.setWidth(196);
-			tblCol.setText(Messages.colFunctionExpression);
+			tblCol.setText(Messages.colPrefixLength);
 		}
 
 		setTableEditor();
@@ -773,9 +748,6 @@ public class AddIndexDialog extends
 								&& indexType.equals(CUB_INDEX)
 								&& isSupportPrefixLength
 								&& FieldHandlerUtils.isSupportPrefixIndex(dataType);
-						boolean isCanEditFuncIndex = i == 5
-								&& indexType.equals(CUB_INDEX)
-								&& isSupportFuncIndex;
 						if (isCanEditOrder) {
 							new IndexTableItemEditor(
 									columnTable,
@@ -790,12 +762,6 @@ public class AddIndexDialog extends
 									item,
 									i,
 									IndexTableItemEditor.COLUMN_EDITOR_TYPE_TEXT);
-						}
-						if (isCanEditFuncIndex) {
-							new IndexTableItemEditor(
-									columnTable,
-									item, i,
-									IndexTableItemEditor.COLUMN_EDITOR_TYPE_STRING_TEXT);
 						}
 					}
 				}
