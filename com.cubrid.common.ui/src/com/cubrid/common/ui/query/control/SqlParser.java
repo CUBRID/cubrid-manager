@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 /**
  * Parse sql,provide the below function (1)add rownum(where rownum between
@@ -279,7 +280,7 @@ public final class SqlParser { // FIXME move to core module
 		if (bracketStack.size() > 0 || isHasOuterClause(lowerSql, tokenList)
 				|| isHasOuterByClause(lowerSql, tokenList)
 				|| isHasOuterJoinClause(lowerSql, tokenList)
-				|| isHasAggregationFunction(lowerSql, tokenList)
+				|| isHasAggregationFunction(lowerSql)
 				|| isHasOuterMultiClause(lowerSql, tokenList)
 				|| isHasKeyWord(lowerSql, tokenList)
 				|| !isHasFromClause(lowerSql, tokenList)) {
@@ -601,36 +602,12 @@ public final class SqlParser { // FIXME move to core module
 	 * @param tokenList List<SqlToken>
 	 * @return boolean
 	 */
-	private static boolean isHasAggregationFunction(String sql,
-			List<SqlToken> tokenList) {
+	private static boolean isHasAggregationFunction(String sql) {
 		for (int k = 0; k < functionArr.length; k++) {
 			String functionName = functionArr[k];
-			int i = 0;
-			int pos = 0;
-			while (i < sql.length() && (pos = sql.indexOf(functionName, i)) > 0) {
-				i = pos + functionName.length();
-				String preStr = " ";
-				if (pos > 1) {
-					preStr = String.valueOf(sql.charAt(pos - 1));
-				}
-				String afterStr = " ";
-				if (i < sql.length()) {
-					afterStr = String.valueOf(sql.charAt(i));
-				}
-				if (preStr.matches("\\s")
-						&& (afterStr.matches("\\s") || afterStr.matches("\\("))) {
-					boolean isOuterFunctionSql = true;
-					for (int j = 0; j < tokenList.size(); j++) {
-						SqlToken sqlToken = tokenList.get(j);
-						if (sqlToken.start < pos && pos < sqlToken.end) {
-							isOuterFunctionSql = false;
-							break;
-						}
-					}
-					if (isOuterFunctionSql) {
-						return true;
-					}
-				}
+			String regex = String.format("\\W%s\\s*\\(", functionName);
+			if (Pattern.compile(regex).matcher(sql).find()) {
+				return true;
 			}
 		}
 		return false;
