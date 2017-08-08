@@ -777,10 +777,10 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 		str = paraMap.get(ConfConstants.DATA_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && dataBufferSizeText != null) {
 			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
-				String subStr = str.replaceAll("\\D+$", "");
-				dataBufferSizeText.setText(subStr);
-				subStr = str.substring(str.length() - 1);
-				dataBufferGroup.setUnitOfSize(subStr);
+				String withoutUnitStr = str.replaceAll("\\D+$", "");
+				dataBufferSizeText.setText(withoutUnitStr);
+				String unit = str.substring(str.length() - 1);
+				dataBufferGroup.setUnitOfSize(unit);
 			} else {
 				dataBufferSizeText.setText(str);
 				dataBufferGroup.setUnitOfSize("");
@@ -796,10 +796,10 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 		str = paraMap.get(ConfConstants.SORT_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && sortBufferSizeText != null) {
 			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
-				String subStr = str.replaceAll("\\D+$", "");
-				sortBufferSizeText.setText(subStr);
-				subStr = str.substring(str.length() - 1);
-				sortBufferGroup.setUnitOfSize(subStr);
+				String withoutUnitStr = str.replaceAll("\\D+$", "");
+				sortBufferSizeText.setText(withoutUnitStr);
+				String unit = str.substring(str.length() - 1);
+				sortBufferGroup.setUnitOfSize(unit);
 			} else {
 				sortBufferSizeText.setText(str);
 				sortBufferGroup.setUnitOfSize("");
@@ -815,10 +815,10 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 		str = paraMap.get(ConfConstants.LOG_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && logBufferSizeText != null) {
 			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
-				String subStr = str.replaceAll("\\D+$", "");
-				logBufferSizeText.setText(subStr);
-				subStr = str.substring(str.length() - 1);
-				logBufferGroup.setUnitOfSize(subStr);
+				String withoutUnitStr = str.replaceAll("\\D+$", "");
+				logBufferSizeText.setText(withoutUnitStr);
+				String unit = str.substring(str.length() - 1);
+				logBufferGroup.setUnitOfSize(unit);
 			} else {
 				logBufferSizeText.setText(str);
 				logBufferGroup.setUnitOfSize("");
