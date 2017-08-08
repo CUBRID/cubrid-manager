@@ -779,7 +779,7 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
 				String withoutUnitStr = str.replaceAll("\\D+$", "");
 				dataBufferSizeText.setText(withoutUnitStr);
-				String unit = str.substring(str.length() - 1);
+				String unit = str.replaceAll("\\d", "");
 				dataBufferGroup.setUnitOfSize(unit);
 			} else {
 				dataBufferSizeText.setText(str);
@@ -798,7 +798,7 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
 				String withoutUnitStr = str.replaceAll("\\D+$", "");
 				sortBufferSizeText.setText(withoutUnitStr);
-				String unit = str.substring(str.length() - 1);
+				String unit = str.replaceAll("\\d", "");
 				sortBufferGroup.setUnitOfSize(unit);
 			} else {
 				sortBufferSizeText.setText(str);
@@ -817,7 +817,7 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
 				String withoutUnitStr = str.replaceAll("\\D+$", "");
 				logBufferSizeText.setText(withoutUnitStr);
-				String unit = str.substring(str.length() - 1);
+				String unit = str.replaceAll("\\d", "");
 				logBufferGroup.setUnitOfSize(unit);
 			} else {
 				logBufferSizeText.setText(str);
