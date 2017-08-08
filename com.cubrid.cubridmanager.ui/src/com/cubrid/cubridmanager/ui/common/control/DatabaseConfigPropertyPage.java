@@ -776,8 +776,8 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 
 		str = paraMap.get(ConfConstants.DATA_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && dataBufferSizeText != null) {
-			if (str.matches("^\\d+[KkMmGgTt]$")) {
-				String subStr = str.substring(0, str.length() - 1);
+			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
+				String subStr = str.replaceAll("\\D+$", "");
 				dataBufferSizeText.setText(subStr);
 				subStr = str.substring(str.length() - 1);
 				dataBufferGroup.setUnitOfSize(subStr);
@@ -795,8 +795,8 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 
 		str = paraMap.get(ConfConstants.SORT_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && sortBufferSizeText != null) {
-			if (str.matches("^\\d+[KkMmGgTt]$")) {
-				String subStr = str.substring(0, str.length() - 1);
+			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
+				String subStr = str.replaceAll("\\D+$", "");
 				sortBufferSizeText.setText(subStr);
 				subStr = str.substring(str.length() - 1);
 				sortBufferGroup.setUnitOfSize(subStr);
@@ -814,8 +814,8 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 
 		str = paraMap.get(ConfConstants.LOG_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && logBufferSizeText != null) {
-			if (str.matches("^\\d+[KkMmGgTt]$")) {
-				String subStr = str.substring(0, str.length() - 1);
+			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
+				String subStr = str.replaceAll("\\D+$", "");
 				logBufferSizeText.setText(subStr);
 				subStr = str.substring(str.length() - 1);
 				logBufferGroup.setUnitOfSize(subStr);
