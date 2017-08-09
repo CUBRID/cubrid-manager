@@ -262,6 +262,7 @@ public final class MessageUtil {
 		boolean confdataTag = false;
 		boolean groupTag = false;
 		boolean fileTag = false;
+		boolean classTag = false;
 		String arrayName = null;
 		// [TOOLS-3586] escape backslash('\')
 		// From RFC 4627:
@@ -307,7 +308,11 @@ public final class MessageUtil {
 				groupTag = generateKeyAndValue(
 						"group", tokStr, sb, groupTag, beginning);
 			} else if (tokStr.startsWith("file:")) { // Special circumstances
-				fileTag = generateKeyAndValue("file", tokStr, sb, fileTag, beginning);
+				fileTag = generateKeyAndValue(
+						"file", tokStr, sb, fileTag, beginning);
+			} else if (tokStr.startsWith("classname:")) {
+				classTag = generateKeyAndValue(
+						"class", tokStr, sb, classTag, beginning);
 			} else if (tokStr.startsWith("interval:")) {
 				//TODO: later check all type request param, to enable integer value in JSON.
 				int index = tokStr.indexOf(":");
@@ -351,17 +356,21 @@ public final class MessageUtil {
 			if (!beginning) {
 				sb.append(",");
 			}
-			sb.append("\"").append(key).append("\":[\"").append(value).append("\"");
+			sb.append("\"").append(key).append("\":[");
 			bool = true;
 		} else {
 			sb.replace(sb.length() - 1, sb.length(), "");
 			if (!beginning) {
 				sb.append(",");
 			}
-			sb.append("\"").append(value).append("\"");
 		}
 
-		sb.append("]");
+		if (key.equals("class")) {
+			sb.append("{\"").append("classname").append("\":")
+			.append("\"").append(value).append("\"}]");
+		} else {
+			sb.append("\"").append(value).append("\"").append("]");
+		}
 		return bool;
 	}
 

@@ -145,9 +145,7 @@ public class UnloadDatabaseTask extends
 	 * @param classes String[] the classes
 	 */
 	public void setClasses(String[] classes) {
-		super.setMsgItem("open", "class");
 		super.setMsgItem("classname", classes);
-		super.setMsgItem("close", "class");
 	}
 
 	/**
