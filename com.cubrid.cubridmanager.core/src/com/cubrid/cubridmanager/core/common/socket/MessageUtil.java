@@ -301,65 +301,13 @@ public final class MessageUtil {
 			} else if (tokStr.startsWith("close:")) {
 				sb.append("}]");
 			} else if (tokStr.startsWith("confdata:")) { // Special circumstances
-				int index = tokStr.indexOf(":");
-				String key = "confdata";
-				String value = tokStr.substring(index + 1);
-				value = value.replace("\\", "\\\\");
-				value = value.replace("\"", "\\\"");
-				if (!confdataTag) {
-					if (!beginning) {
-						sb.append(",");
-					}
-					sb.append("\"").append(key).append("\":[\"").append(value).append("\"");
-					confdataTag = true;
-				} else {
-					sb.replace(sb.length() - 1, sb.length(), "");
-					if (!beginning) {
-						sb.append(",");
-					}
-					sb.append("\"").append(value).append("\"");
-				}
-				sb.append("]");
+				confdataTag = generateKeyAndValue(
+						"confdata", tokStr, sb, confdataTag, beginning);
 			} else if (tokStr.startsWith("group:")) { // Special circumstances
-				int index = tokStr.indexOf(":");
-				String key = "group";
-				String value = tokStr.substring(index + 1);
-				value = value.replace("\\", "\\\\");
-				value = value.replace("\"", "\\\"");
-				if (!groupTag) {
-					if (!beginning) {
-						sb.append(",");
-					}
-					sb.append("\"").append(key).append("\":[\"").append(value).append("\"");
-					groupTag = true;
-				} else {
-					sb.replace(sb.length() - 1, sb.length(), "");
-					if (!beginning) {
-						sb.append(",");
-					}
-					sb.append("\"").append(value).append("\"");
-				}
-				sb.append("]");
+				groupTag = generateKeyAndValue(
+						"group", tokStr, sb, groupTag, beginning);
 			} else if (tokStr.startsWith("file:")) { // Special circumstances
-				int index = tokStr.indexOf(":");
-				String key = "file";
-				String value = tokStr.substring(index + 1);
-				value = value.replace("\\", "\\\\");
-				value = value.replace("\"", "\\\"");
-				if (!fileTag) {
-					if (!beginning) {
-						sb.append(",");
-					}
-					sb.append("\"").append(key).append("\":[\"").append(value).append("\"");
-					fileTag = true;
-				} else {
-					sb.replace(sb.length() - 1, sb.length(), "");
-					if (!beginning) {
-						sb.append(",");
-					}
-					sb.append("\"").append(value).append("\"");
-				}
-				sb.append("]");
+				fileTag = generateKeyAndValue("file", tokStr, sb, fileTag, beginning);
 			} else if (tokStr.startsWith("interval:")) {
 				//TODO: later check all type request param, to enable integer value in JSON.
 				int index = tokStr.indexOf(":");
@@ -390,6 +338,31 @@ public final class MessageUtil {
 			sb.replace(idx, idx + 4, "[]");
 		}
 		return sb.toString();
+	}
+
+	private static boolean generateKeyAndValue(String key, String data,
+			StringBuilder sb, boolean bool, boolean beginning) {
+		int index = data.indexOf(":");
+		String value = data.substring(index + 1);
+		value = value.replace("\\", "\\\\");
+		value = value.replace("\"", "\\\"");
+
+		if (!bool) {
+			if (!beginning) {
+				sb.append(",");
+			}
+			sb.append("\"").append(key).append("\":[\"").append(value).append("\"");
+			bool = true;
+		} else {
+			sb.replace(sb.length() - 1, sb.length(), "");
+			if (!beginning) {
+				sb.append(",");
+			}
+			sb.append("\"").append(value).append("\"");
+		}
+
+		sb.append("]");
+		return bool;
 	}
 
 	/**
