@@ -722,6 +722,8 @@ public class Messages extends
 	public static String msgSqlmapInputVariableName;
 	public static String msgSqlmapInputVariableType;
 
+	public static String errQeditNotOpenForConnectionFull;
+
 	static {
 		NLS.initializeMessages(CommonUIPlugin.PLUGIN_ID + ".query.Messages",
 				Messages.class);
