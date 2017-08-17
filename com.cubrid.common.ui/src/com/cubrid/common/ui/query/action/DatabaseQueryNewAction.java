@@ -44,6 +44,7 @@ import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.common.dialog.ShardIdSelectionDialog;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.QueryEditorUtil;
 import com.cubrid.common.ui.query.editor.QueryUnit;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
@@ -211,6 +212,10 @@ public class DatabaseQueryNewAction extends SelectionAction {
 			}
 
 			try {
+				if (!QueryEditorUtil.isAvailableConnect(database)) {
+					CommonUITool.openErrorBox(Messages.errQeditNotOpenForConnectionFull);
+					return;
+				}
 				IEditorPart editor = window.getActivePage().openEditor(queryUnit,
 						QueryEditorPart.ID);
 				if (editor != null && database != null) {
