@@ -997,6 +997,9 @@ public class QueryEditorPart extends
 		// When clicking the close button on a tab
 		subQueryEditorTabItem.addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
+				String brokerName = getDatabaseInfo().getBrokerName();
+				getServerInfo().releaseCasCount(brokerName);
+
 				if (!willClose && combinedQueryEditortabFolder.getItemCount() == 0) {
 					sqlEditorCounter = 1;
 					addEditorTab();
