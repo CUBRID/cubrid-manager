@@ -158,7 +158,6 @@ public class QueryEditorUtil {
 	 * @return
 	 */
 	public static boolean isAvailableConnect(CubridDatabase database) {
-		int maxCasCount = 0;
 		String currentBrokerName = null;
 		String currentBrokerPort = database.getDatabaseInfo().getBrokerPort().trim();
 		List<BrokerInfo> brokers = database.getServer().getServerInfo()
@@ -166,33 +165,15 @@ public class QueryEditorUtil {
 		for (BrokerInfo broker: brokers) {
 			if (currentBrokerPort.equals(broker.getPort().trim())) {
 				currentBrokerName = broker.getName();
-				maxCasCount = Integer.parseInt(broker.getAs());
 				break;
 			}
 		}
 
-		BrokerStatusInfos brokerStatusInfos = new BrokerStatusInfos();
-		GetBrokerStatusInfosTask<BrokerStatusInfos> statisTask =
-				new GetBrokerStatusInfosTask<BrokerStatusInfos>(
-						database.getServer().getServerInfo(),
-						CommonSendMsg.getGetBrokerStatusItems(),
-						brokerStatusInfos);
-		statisTask.setBrokerName(currentBrokerName);
-		statisTask.execute();
-		brokerStatusInfos = statisTask.getResultModel();
-		if (brokerStatusInfos != null) {
-			List<ApplyServerInfo> casInfos = brokerStatusInfos.getAsinfo();
-			int currentCasCount = 0;
-			for (ApplyServerInfo casInfo : casInfos) {
-				if (!casInfo.getAs_status().equals("IDLE")
-						&& maxCasCount == (currentCasCount++)) {
-					statisTask.finish();
-					return false;
-				}
-			}
+		ServerInfo serverInfo = database.getServer().getServerInfo();
+		if (serverInfo.getAvailableCasCount(currentBrokerName) > 0) {
+			return true;
 		}
-		statisTask.finish();
 
-		return true;
+		return false;
 	}
 }
