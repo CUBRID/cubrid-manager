@@ -1234,10 +1234,10 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 
 	public void releaseCasCount(String brokerName) {
 		int casCount = availableCasCount.get(brokerName);
-		availableCasCount.put(brokerName, ++casCount);
-	}
-
-	public void releaseAllCasCount() {
-		initUsedCasCount();
+		int max = Integer.parseInt(brokerConfParaMap.get(brokerName)
+				.get("MAX_NUM_APPL_SERVER"));
+		if (casCount < max) {
+			availableCasCount.put(brokerName, ++casCount);
+		}
 	}
 }
