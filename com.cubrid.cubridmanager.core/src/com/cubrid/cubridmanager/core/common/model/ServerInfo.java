@@ -1220,16 +1220,17 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 		}
 	}
 
-	public int getAvailableCasCount(String brokerName) {
+	public boolean isExistAvailableCas(String brokerName) {
 		if (availableCasCount == null) {
 			initUsedCasCount();
 		}
 
 		int availableCount = availableCasCount.get(brokerName);
-		if (availableCount > 0) {
+		boolean result = availableCount > 0;
+		if (result) {
 			availableCasCount.put(brokerName, availableCount - 1);
 		}
-		return availableCount;
+		return result;
 	}
 
 	public void releaseCasCount(String brokerName) {

@@ -160,7 +160,7 @@ public class QueryEditorUtil {
 	public static boolean isAvailableConnect(CubridDatabase database) {
 		String currentBrokerName = database.getDatabaseInfo().getBrokerName();
 		ServerInfo serverInfo = database.getServer().getServerInfo();
-		if (serverInfo.getAvailableCasCount(currentBrokerName) > 0) {
+		if (serverInfo.isExistAvailableCas(currentBrokerName)) {
 			return true;
 		}
 
