@@ -95,6 +95,7 @@ public final class DatabaseUtils {
 		if (!database.isAutoSavePassword()) {
 			CMDBNodePersistManager.getInstance().deleteDbParameter(database);
 		}
+		database.getServer().getServerInfo().releaseAllCasCount();
 		return true;
 	}
 
