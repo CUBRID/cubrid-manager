@@ -41,6 +41,7 @@ import com.cubrid.common.core.common.model.Trigger;
 import com.cubrid.common.core.util.FileUtil;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.cubridmanager.core.broker.model.BrokerInfo;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.common.model.ConfConstants;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
@@ -1133,5 +1134,21 @@ public class DatabaseInfo implements IDatabaseSpec {
 		}
 		obj.setAuthLoginedDbUserInfo(userInfo);
 		return obj;
+	}
+
+	/**
+	 * Get the broker name about current connected database
+	 * @return
+	 */
+	public String getBrokerName() {
+		String brokerName = "";
+		List<BrokerInfo> brokers = serverInfo.getBrokerInfos()
+				.getBorkerInfoList().getBrokerInfoList();
+		for (BrokerInfo broker: brokers) {
+			if (brokerPort.equals(broker.getPort().trim())) {
+				brokerName = broker.getName();
+			}
+		}
+		return brokerName;
 	}
 }
