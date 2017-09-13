@@ -158,17 +158,7 @@ public class QueryEditorUtil {
 	 * @return
 	 */
 	public static boolean isAvailableConnect(CubridDatabase database) {
-		String currentBrokerName = null;
-		String currentBrokerPort = database.getDatabaseInfo().getBrokerPort().trim();
-		List<BrokerInfo> brokers = database.getServer().getServerInfo()
-				.getBrokerInfos().getBorkerInfoList().getBrokerInfoList();
-		for (BrokerInfo broker: brokers) {
-			if (currentBrokerPort.equals(broker.getPort().trim())) {
-				currentBrokerName = broker.getName();
-				break;
-			}
-		}
-
+		String currentBrokerName = database.getDatabaseInfo().getBrokerName();
 		ServerInfo serverInfo = database.getServer().getServerInfo();
 		if (serverInfo.getAvailableCasCount(currentBrokerName) > 0) {
 			return true;
