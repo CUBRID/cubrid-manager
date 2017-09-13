@@ -349,6 +349,7 @@ public final class LayoutUtil {
 			return true;
 		}
 
+		String brokerName = databaseNode.getDatabaseInfo().getBrokerName();
 		for (IEditorReference editorRef : editorRefArr) {
 			String editorId = editorRef.getId();
 			if (editorId != null && editorId.equals(QueryEditorPart.ID)) {
@@ -356,6 +357,11 @@ public final class LayoutUtil {
 				CubridDatabase db = queryEditor.getSelectedDatabase();
 				if (db != null && db.getId().equals(databaseNode.getId())) {
 					isContinue = queryEditor.resetJDBCConnection();
+				}
+				String logoutKey = databaseNode.getName() + ":"
+						+ databaseNode.getServer().getServerName();
+				if (queryEditor.getPartName().contains(logoutKey)) {
+					databaseNode.getServer().getServerInfo().releaseCasCount(brokerName);
 				}
 			}
 		}
