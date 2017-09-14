@@ -160,10 +160,40 @@ public class QueryEditorUtil {
 	public static boolean isAvailableConnect(CubridDatabase database) {
 		String currentBrokerName = database.getDatabaseInfo().getBrokerName();
 		ServerInfo serverInfo = database.getServer().getServerInfo();
-		if (serverInfo.isExistAvailableCas(currentBrokerName)) {
+		if (serverInfo.isExistAvailableCas(currentBrokerName) && isExistIdleCas(database)) {
 			return true;
 		}
 
+		return false;
+	}
+
+	/**
+	 * Check for IDLE CAS is exist
+	 * @param database
+	 * @return
+	 */
+	private static boolean isExistIdleCas(CubridDatabase database) {
+		String currentBrokerName = database.getDatabaseInfo().getBrokerName();
+		BrokerStatusInfos brokerStatusInfos = new BrokerStatusInfos();
+		GetBrokerStatusInfosTask<BrokerStatusInfos> statisTask =
+				new GetBrokerStatusInfosTask<BrokerStatusInfos>(
+						database.getServer().getServerInfo(),
+						CommonSendMsg.getGetBrokerStatusItems(),
+						brokerStatusInfos);
+		statisTask.setBrokerName(currentBrokerName);
+		statisTask.execute();
+		brokerStatusInfos = statisTask.getResultModel();
+		if (brokerStatusInfos != null) {
+			List<ApplyServerInfo> casInfos = brokerStatusInfos.getAsinfo();
+			for (ApplyServerInfo casInfo : casInfos) {
+				if (casInfo.getAs_status().equals("IDLE")) {
+					System.out.println(currentBrokerName + " is IDLE!!!");
+					statisTask.finish();
+					return true;
+				}
+			}
+		}
+		statisTask.finish();
 		return false;
 	}
 }
