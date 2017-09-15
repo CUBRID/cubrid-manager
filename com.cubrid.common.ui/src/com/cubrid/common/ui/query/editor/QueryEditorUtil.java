@@ -158,12 +158,13 @@ public class QueryEditorUtil {
 	 * @return
 	 */
 	public static boolean isAvailableConnect(CubridDatabase database) {
-		int openedQueryEditor = getOpenedQueryEditorCount(database);
+		int openedQueryEditor = getOpenedQueryEditorCount();
+		int openedAndRunningQueryEditor = getOpenedAndRunningCount();
 		int maxNumApplServer = getMaxNumApplServer(database);
 		int runningCas = getRunningCasCount(database);
 		boolean isExistIdleCas = maxNumApplServer - runningCas > 0;
 		boolean isAvailableOpenQueryEditor =
-				maxNumApplServer - (runningCas + openedQueryEditor) > 0;
+				maxNumApplServer - (runningCas + openedQueryEditor - openedAndRunningQueryEditor) > 0;
 
 		if (isExistIdleCas && isAvailableOpenQueryEditor) {
 			return true;
@@ -203,17 +204,37 @@ public class QueryEditorUtil {
 		return runningCasCount;
 	}
 
-	private static int getOpenedQueryEditorCount(CubridDatabase database) {
-		IWorkbenchPage page = LayoutUtil.getActivePage();
-		if (page == null) {
-			return 0;
-		}
-
-		IEditorReference[] editorRefArr = page.getEditorReferences();
+	private static int getOpenedQueryEditorCount() {
+		IEditorReference[] editorRefArr = getQueryEditorRefs();
 		if (editorRefArr == null) {
 			return 0;
 		} else {
 			return editorRefArr.length;
 		}
+	}
+
+	private static int getOpenedAndRunningCount() {
+		int count = 0;
+		IEditorReference[] editorRefArr = getQueryEditorRefs();
+		if (editorRefArr == null) {
+			return count;
+		}
+
+		for (IEditorReference editorRef : editorRefArr) {
+			String editorId = editorRef.getId();
+			if (editorId != null && editorId.equals(QueryEditorPart.ID)) {
+				QueryEditorPart queryEditor = (QueryEditorPart) editorRef.getEditor(false);
+				if (queryEditor.isActive()) {
+					count++;
+				}
+			}
+		}
+
+		return count;
+	}
+
+	private static IEditorReference[] getQueryEditorRefs() {
+		IWorkbenchPage page = LayoutUtil.getActivePage();
+		return page == null ? null : page.getEditorReferences();
 	}
 }
