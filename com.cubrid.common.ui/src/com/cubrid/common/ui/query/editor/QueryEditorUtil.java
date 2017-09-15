@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -42,11 +43,10 @@ import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
 import com.cubrid.common.ui.spi.model.ISchemaNode;
+import com.cubrid.common.ui.spi.util.LayoutUtil;
 import com.cubrid.cubridmanager.core.broker.model.ApplyServerInfo;
-import com.cubrid.cubridmanager.core.broker.model.BrokerInfo;
 import com.cubrid.cubridmanager.core.broker.model.BrokerStatusInfos;
 import com.cubrid.cubridmanager.core.broker.task.GetBrokerStatusInfosTask;
-import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 
 /**
@@ -158,22 +158,29 @@ public class QueryEditorUtil {
 	 * @return
 	 */
 	public static boolean isAvailableConnect(CubridDatabase database) {
-		String currentBrokerName = database.getDatabaseInfo().getBrokerName();
-		ServerInfo serverInfo = database.getServer().getServerInfo();
-		if (serverInfo.isExistAvailableCas(currentBrokerName) && isExistIdleCas(database)) {
+		int openedQueryEditor = getOpenedQueryEditorCount(database);
+		int maxNumApplServer = getMaxNumApplServer(database);
+		int runningCas = getRunningCasCount(database);
+		boolean isExistIdleCas = maxNumApplServer - runningCas > 0;
+		boolean isAvailableOpenQueryEditor =
+				maxNumApplServer - (runningCas + openedQueryEditor) > 0;
+
+		if (isExistIdleCas && isAvailableOpenQueryEditor) {
 			return true;
 		}
-
 		return false;
 	}
 
-	/**
-	 * Check for IDLE CAS is exist
-	 * @param database
-	 * @return
-	 */
-	private static boolean isExistIdleCas(CubridDatabase database) {
+	private static int getMaxNumApplServer(CubridDatabase database) {
 		String currentBrokerName = database.getDatabaseInfo().getBrokerName();
+		return Integer.parseInt(
+				database.getServer().getServerInfo().getBrokerConfParaMap()
+				.get(currentBrokerName).get("MAX_NUM_APPL_SERVER"));
+	}
+
+	private static int getRunningCasCount(CubridDatabase database) {
+		String currentBrokerName = database.getDatabaseInfo().getBrokerName();
+		int runningCasCount = 0;
 		BrokerStatusInfos brokerStatusInfos = new BrokerStatusInfos();
 		GetBrokerStatusInfosTask<BrokerStatusInfos> statisTask =
 				new GetBrokerStatusInfosTask<BrokerStatusInfos>(
@@ -186,14 +193,27 @@ public class QueryEditorUtil {
 		if (brokerStatusInfos != null) {
 			List<ApplyServerInfo> casInfos = brokerStatusInfos.getAsinfo();
 			for (ApplyServerInfo casInfo : casInfos) {
-				if (casInfo.getAs_status().equals("IDLE")) {
-					System.out.println(currentBrokerName + " is IDLE!!!");
-					statisTask.finish();
-					return true;
+				if (casInfo.getAs_status().equals("BUSY")
+						|| casInfo.getAs_status().equals("CLIENT WAIT")) {
+					runningCasCount++;
 				}
 			}
 		}
 		statisTask.finish();
-		return false;
+		return runningCasCount;
+	}
+
+	private static int getOpenedQueryEditorCount(CubridDatabase database) {
+		IWorkbenchPage page = LayoutUtil.getActivePage();
+		if (page == null) {
+			return 0;
+		}
+
+		IEditorReference[] editorRefArr = page.getEditorReferences();
+		if (editorRefArr == null) {
+			return 0;
+		} else {
+			return editorRefArr.length;
+		}
 	}
 }
