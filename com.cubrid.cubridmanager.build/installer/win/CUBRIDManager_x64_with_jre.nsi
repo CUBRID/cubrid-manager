@@ -22,7 +22,7 @@
 ;!define OUTFILE_PATH '.'
 
 !define PRODUCT_NAME 'CUBRID Manager'
-!define PRODUCT_VERSION '2013'
+!define PRODUCT_VERSION '2017'
 !define PRODUCT_EXE_NAME 'cubridmanager'
 !define INSTALLER_ARCH 'x64'
 

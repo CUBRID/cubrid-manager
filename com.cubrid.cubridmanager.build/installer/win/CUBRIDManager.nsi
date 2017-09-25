@@ -23,7 +23,7 @@
 ;!define OUTFILE_PATH '.'
 
 !define PRODUCT_NAME 'CUBRID Manager'
-!define PRODUCT_VERSION '9.3.1'
+!define PRODUCT_VERSION '10.1.0'
 !define PRODUCT_EXE_NAME 'cubridmanager'
 
 !define SHORTCUT_NAME '${PRODUCT_NAME}'
