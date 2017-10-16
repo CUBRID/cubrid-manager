@@ -80,8 +80,8 @@ public class AboutDialog extends ProductInfoDialog {
 				versionId,
 				osArch,
 				Messages.msgCubridHomePageUrl,
-				Messages.msgCubridProjectSiteUrl,
-				Messages.msgCubridToolsSiteUrl });
+				Messages.msgCubridToolsSiteUrl,
+				Messages.msgCubridProjectSiteUrl});
 		this.setItem(scan(message));
 	}
 
