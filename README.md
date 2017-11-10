@@ -28,7 +28,7 @@ If you want to contribute to CUBRID Manager, please follow the procedure below.
   - Describe the problem and solution in detail.
 - Create the branch name as jira issue number.
 - Apply for PR after performing the work in that branch.
-  - When applying for PR, the title should be written in the format '[jira issue number] title'.
+  - When applying for PR, the title should be written in the format `[jira issue number] title`.
   - eg) [TOOLS-4270] Enhancement to open the query editor
 
 ## GETTING HELP
