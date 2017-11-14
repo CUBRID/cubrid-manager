@@ -79,7 +79,7 @@ import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.DrawingObjectEntityPr
 import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.DrawingObjectRelation;
 import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.DrawingObjectRelationshipProps;
 import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.DrawingObjectRelationshipProps.DORelationshipPath;
-import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.DrawingObjectRelationshipProps.DOUserControledPath;
+import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.DrawingObjectRelationshipProps.DOUserControlledPath;
 import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.ERwin4;
 import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.Entity;
 import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.Entity.AttributeGroups;
@@ -810,9 +810,9 @@ public class ExportSchemaTask extends
 			path = new DORelationshipPath();
 			path.setValue(arrayToString(p1));
 
-			relation.getDrawingObjectRelationshipProps().setDoUserControledPath(
-					new DOUserControledPath());
-			relation.getDrawingObjectRelationshipProps().getDoUserControledPath().setValue("true");
+			relation.getDrawingObjectRelationshipProps().setDoUserControlledPath(
+					new DOUserControlledPath());
+			relation.getDrawingObjectRelationshipProps().getDoUserControlledPath().setValue("true");
 		}
 	}
 

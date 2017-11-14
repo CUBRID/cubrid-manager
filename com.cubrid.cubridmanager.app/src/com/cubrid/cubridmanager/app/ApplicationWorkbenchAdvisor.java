@@ -86,9 +86,6 @@ public class ApplicationWorkbenchAdvisor extends
 				false);
 		PlatformUI.getPreferenceStore().setValue(
 				IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true);
-//		PlatformUI.getPreferenceStore().setValue(
-//				IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID,
-//				"com.cubrid.cubridmanager.app.PresentationFactory");
 
 		DataType.setNULLValuesForImport(ImportPreferencePage.getImportNULLValueList());
 	}

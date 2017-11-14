@@ -407,7 +407,7 @@ public class BrokerStatusView extends
 			public void menuAboutToShow(IMenuManager manager) {
 				IStructuredSelection selection = (IStructuredSelection) asTableViewer.getSelection();
 				ApplyServerInfo as = (ApplyServerInfo) (selection.toArray()[0]);
-				RestartAction restartAcion = new RestartAction(as.getAs_id());
+				RestartAction restartAcion = new RestartAction(as.getAsId());
 				manager.add(restartAcion);
 			}
 		});
@@ -711,18 +711,18 @@ public class BrokerStatusView extends
 			ApplyServerInfo changedAsInfo = newAsInfo.clone();
 			for (int j = 0; oldAsInfoLst != null && j < oldAsInfoLst.size(); j++) {
 				ApplyServerInfo oldAsInfo = oldAsInfoLst.get(j);
-				if (newAsInfo.getAs_id().equalsIgnoreCase(oldAsInfo.getAs_id())) {
-					long newQuery = StringUtil.intValue(newAsInfo.getAs_num_query());
-					long newTran = StringUtil.intValue(newAsInfo.getAs_num_tran());
-					long newLongQuery = StringUtil.longValue(newAsInfo.getAs_long_query());
-					long newLongTran = StringUtil.longValue(newAsInfo.getAs_long_tran());
-					long newErrQuery = StringUtil.intValue(newAsInfo.getAs_error_query());
+				if (newAsInfo.getAsId().equalsIgnoreCase(oldAsInfo.getAsId())) {
+					long newQuery = StringUtil.intValue(newAsInfo.getAsNumQuery());
+					long newTran = StringUtil.intValue(newAsInfo.getAsNumTran());
+					long newLongQuery = StringUtil.longValue(newAsInfo.getAsLongQuery());
+					long newLongTran = StringUtil.longValue(newAsInfo.getAsLongTran());
+					long newErrQuery = StringUtil.intValue(newAsInfo.getAsErrorQuery());
 
-					long oldQuery = StringUtil.intValue(oldAsInfo.getAs_num_query());
-					long oldTran = StringUtil.intValue(oldAsInfo.getAs_num_tran());
-					long oldLongQuery = StringUtil.longValue(oldAsInfo.getAs_long_query());
-					long oldLongTran = StringUtil.longValue(oldAsInfo.getAs_long_tran());
-					long oldErrQuery = StringUtil.intValue(oldAsInfo.getAs_error_query());
+					long oldQuery = StringUtil.intValue(oldAsInfo.getAsNumQuery());
+					long oldTran = StringUtil.intValue(oldAsInfo.getAsNumTran());
+					long oldLongQuery = StringUtil.longValue(oldAsInfo.getAsLongQuery());
+					long oldLongTran = StringUtil.longValue(oldAsInfo.getAsLongTran());
+					long oldErrQuery = StringUtil.intValue(oldAsInfo.getAsErrorQuery());
 
 					long changedQuery = newQuery - oldQuery;
 					long changedTran = newTran - oldTran;
@@ -730,15 +730,15 @@ public class BrokerStatusView extends
 					long changedLongQuery = newLongQuery - oldLongQuery;
 					long changedErrQuery = newErrQuery - oldErrQuery;
 
-					changedAsInfo.setAs_num_query(String.valueOf(changedQuery > 0 ? changedQuery
+					changedAsInfo.setAsNumQuery(String.valueOf(changedQuery > 0 ? changedQuery
 							: 0));
-					changedAsInfo.setAs_num_tran(String.valueOf(changedTran > 0 ? changedTran
+					changedAsInfo.setAsNumTran(String.valueOf(changedTran > 0 ? changedTran
 							: 0));
-					changedAsInfo.setAs_long_tran(String.valueOf(changedLongTran > 0 ? changedLongTran
+					changedAsInfo.setAsLongTran(String.valueOf(changedLongTran > 0 ? changedLongTran
 							: 0));
-					changedAsInfo.setAs_long_query(String.valueOf(changedLongQuery > 0 ? changedLongQuery
+					changedAsInfo.setAsLongQuery(String.valueOf(changedLongQuery > 0 ? changedLongQuery
 							: 0));
-					changedAsInfo.setAs_error_query(String.valueOf(changedErrQuery > 0 ? changedErrQuery
+					changedAsInfo.setAsErrorQuery(String.valueOf(changedErrQuery > 0 ? changedErrQuery
 							: 0));
 					break;
 				}

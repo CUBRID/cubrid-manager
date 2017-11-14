@@ -74,7 +74,7 @@ public class JDBCGetTriggerInfoTask extends JDBCTask {
 				return null;
 			}
 
-			String sql = "SELECT t.*, c.target_class_name"
+			String sql = "SELECT t.*, c.targetClassName"
 					+ " FROM db_trigger t, db_trig c"
 					+ " WHERE t.name=c.trigger_name AND t.name=?";
 
@@ -85,19 +85,21 @@ public class JDBCGetTriggerInfoTask extends JDBCTask {
 			((PreparedStatement) stmt).setString(1, triggerName);
 			rs = ((PreparedStatement) stmt).executeQuery();
 			while (rs.next()) {
-				trigger = new Trigger();
-				trigger.setName(rs.getString("name"));
-				trigger.setConditionTime(JDBCGetTriggerListTask.getConditionTime(rs.getInt("condition_time")));
-				trigger.setEventType(JDBCGetTriggerListTask.getEventType(rs.getInt("event")));
-				trigger.setTarget_class(rs.getString("target_class_name"));
-				trigger.setTarget_att(rs.getString("target_attribute"));
-				trigger.setCondition(rs.getString("condition"));
-				trigger.setActionTime(JDBCGetTriggerListTask.getActionTime(rs.getInt("action_time")));
-				trigger.setAction(JDBCGetTriggerListTask.getAction(
-						rs.getInt("action_type"),
-						rs.getString("action_definition")));
-				trigger.setStatus(JDBCGetTriggerListTask.getStatus(rs.getInt("status")));
-				trigger.setPriority(rs.getString("priority"));
+				trigger = new Trigger
+					.Builder()
+					.name(rs.getString("name"))
+					.conditionTime(JDBCGetTriggerListTask.getConditionTime(rs.getInt("condition_time")))
+					.eventType(JDBCGetTriggerListTask.getEventType(rs.getInt("event")))
+					.targetClass(rs.getString("targetClassName"))
+					.targetAttribute(rs.getString("targetAttribute"))
+					.condition(rs.getString("condition"))
+					.actionTime(JDBCGetTriggerListTask.getActionTime(rs.getInt("action_time")))
+					.action(JDBCGetTriggerListTask.getAction(
+							rs.getInt("action_type"),
+							rs.getString("action_definition")))
+					.status(JDBCGetTriggerListTask.getStatus(rs.getInt("status")))
+					.priority(rs.getString("priority"))
+					.build();
 			}
 		} catch (SQLException e) {
 			errorMsg = e.getMessage();

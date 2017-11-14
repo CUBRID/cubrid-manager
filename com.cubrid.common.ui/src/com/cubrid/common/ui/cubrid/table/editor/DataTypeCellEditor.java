@@ -94,18 +94,6 @@ public final class DataTypeCellEditor extends CellEditor {
 
 		populateComboBoxItems();
 
-//		comboBox.addKeyListener(new KeyAdapter() {
-//			public void keyPressed(KeyEvent event) {
-//				if (event.character == '\r') {
-//					applyEditorValueAndDeactivate();
-//				}
-//				keyReleaseOccured(event);
-//			}
-//
-//			public void keyReleased(KeyEvent event) {
-//			}
-//		});
-
 		comboBox.addModifyListener(getModifyListener());
 
 		comboBox.addSelectionListener(new SelectionAdapter() {

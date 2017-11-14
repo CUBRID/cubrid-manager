@@ -678,7 +678,7 @@ public class DatabaseDashboardEditor extends
 					for (HashMap<String, ApplyServerInfo> brokerValueMap : asinfoLst) {
 						for (Entry<String, ApplyServerInfo> entry : brokerValueMap.entrySet()) {
 							ApplyServerInfo applyServerInfo = entry.getValue();
-							qps += Long.valueOf(applyServerInfo.getAs_num_query());
+							qps += Long.valueOf(applyServerInfo.getAsNumQuery());
 						}
 					}
 					Map<String, String> dbInfoMap = brokerInfoListData.get(0);
@@ -1239,7 +1239,7 @@ public class DatabaseDashboardEditor extends
 								List<ApplyServerInfo> applyServerInfoList = brokerStatusInfos.getAsinfo();//one broker status
 								for (ApplyServerInfo applyServerInfo : applyServerInfoList) {
 									if (database.getName().equalsIgnoreCase(
-											applyServerInfo.getAs_dbname())) {
+											applyServerInfo.getAsDbName())) {
 										HashMap<String, ApplyServerInfo> valueMap = new HashMap<String, ApplyServerInfo>();
 										valueMap.put(brokerInfo.getName(),
 												applyServerInfo);
@@ -1259,14 +1259,14 @@ public class DatabaseDashboardEditor extends
 						ApplyServerInfo applyServerInfo = entry.getValue();
 						Map<String, String> brokerInfoMap = new HashMap<String, String>();
 						brokerInfoMap.put("0", brokerName);
-						brokerInfoMap.put("1", applyServerInfo.getAs_id());
-						brokerInfoMap.put("2", applyServerInfo.getAs_pid());
+						brokerInfoMap.put("1", applyServerInfo.getAsId());
+						brokerInfoMap.put("2", applyServerInfo.getAsPid());
 						brokerInfoMap.put("3",
-								applyServerInfo.getAs_num_query());
+								applyServerInfo.getAsNumQuery());
 						brokerInfoMap.put("4",
-								applyServerInfo.getAs_long_query());
-						brokerInfoMap.put("5", applyServerInfo.getAs_status());
-						brokerInfoMap.put("6", applyServerInfo.getAs_lct());
+								applyServerInfo.getAsLongQuery());
+						brokerInfoMap.put("5", applyServerInfo.getAsStatus());
+						brokerInfoMap.put("6", applyServerInfo.getAsLct());
 						brokerInfoListData.add(brokerInfoMap);
 					}
 				}
@@ -1414,7 +1414,7 @@ public class DatabaseDashboardEditor extends
 		for (HashMap<String, ApplyServerInfo> brokerValueMap : asinfoLst) {
 			for (Entry<String, ApplyServerInfo> entry : brokerValueMap.entrySet()) {
 				ApplyServerInfo applyServerInfo = entry.getValue();
-				qps += Long.valueOf(applyServerInfo.getAs_num_query());
+				qps += Long.valueOf(applyServerInfo.getAsNumQuery());
 			}
 		}
 		dbMap.put("2", Long.toString(qps));
@@ -1492,7 +1492,7 @@ public class DatabaseDashboardEditor extends
 			for (HashMap<String, ApplyServerInfo> brokerValueMap : asinfoLst) {
 				for (Entry<String, ApplyServerInfo> entry : brokerValueMap.entrySet()) {
 					ApplyServerInfo applyServerInfo = entry.getValue();
-					qps += Long.valueOf(applyServerInfo.getAs_num_query());
+					qps += Long.valueOf(applyServerInfo.getAsNumQuery());
 				}
 			}
 			databaseInfo.put("2", Long.toString(qps));

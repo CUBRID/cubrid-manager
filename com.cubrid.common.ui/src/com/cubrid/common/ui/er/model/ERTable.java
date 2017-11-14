@@ -381,12 +381,12 @@ public class ERTable extends
 		// list of this table, and its validation
 		List<Relationship> referencedRelationships = getTargetedRelationships();
 		for (Relationship ship : referencedRelationships) {
-			Collection<String> referedPKSet = ship.getReferencedPKs();
-			if (referedPKSet.size() != pkSet.size()) {
+			Collection<String> referredPKSet = ship.getReferencedPKs();
+			if (referredPKSet.size() != pkSet.size()) {
 				throw new ERException(Messages.bind(Messages.errFKcolumnSize,
 						new String[] { ship.getName(), ship.getForeignKeyTable().getShownName() }));
 			}
-			for (String name : referedPKSet) {
+			for (String name : referredPKSet) {
 				if (!pkSet.contains(name)) {
 					throw new ERException(Messages.bind(Messages.errNotExistRefedCol, new String[] {
 							name, ship.getName(), ship.getForeignKeyTable().getShownName(),
@@ -417,14 +417,14 @@ public class ERTable extends
 				}
 			}
 
-			// referedPKSet should be in the pk table
-			Collection<String> referedPKSet = ship.getReferencedPKs();
+			// referredPKSet should be in the pk table
+			Collection<String> referredPKSet = ship.getReferencedPKs();
 			Set<String> pkTablePKSet = ship.getPrimaryKeyTable().getPKSet();
-			if (referedPKSet.size() != pkTablePKSet.size()) {
+			if (referredPKSet.size() != pkTablePKSet.size()) {
 				throw new ERException(Messages.bind(Messages.errFKcolumnSize,
 						new String[] { ship.getName(), this.getShownName() }));
 			}
-			for (String name : referedPKSet) {
+			for (String name : referredPKSet) {
 				if (!pkTablePKSet.contains(name)) {
 					throw new ERException(Messages.bind(Messages.errNotExistRefedCol, new String[] {
 							name, ship.getName(), this.getShownName(),

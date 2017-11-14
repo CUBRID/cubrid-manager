@@ -194,8 +194,8 @@ public class QueryEditorUtil {
 		if (brokerStatusInfos != null) {
 			List<ApplyServerInfo> casInfos = brokerStatusInfos.getAsinfo();
 			for (ApplyServerInfo casInfo : casInfos) {
-				if (casInfo.getAs_status().equals("BUSY")
-						|| casInfo.getAs_status().equals("CLIENT WAIT")) {
+				if (casInfo.getAsStatus().equals("BUSY")
+						|| casInfo.getAsStatus().equals("CLIENT WAIT")) {
 					runningCasCount++;
 				}
 			}

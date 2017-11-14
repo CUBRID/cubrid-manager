@@ -135,8 +135,8 @@ public final class TriggerDDL {
 		//event_time event_type [ event_target ]
 		String conditionTime = trigger.getConditionTime();
 		String eventType = trigger.getEventType();
-		String targetTable = trigger.getTarget_class();
-		String targetColumn = trigger.getTarget_att();
+		String targetTable = trigger.getTargetClass();
+		String targetColumn = trigger.getTargetAttribute();
 		if (conditionTime != null && conditionTime.trim().length() > 0) {
 			bf.append(conditionTime).append(" ");
 		}

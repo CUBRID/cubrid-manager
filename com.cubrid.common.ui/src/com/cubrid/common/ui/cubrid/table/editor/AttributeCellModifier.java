@@ -73,9 +73,6 @@ public class AttributeCellModifier implements
 				return false;
 			}
 		} else if (StringUtil.isEqual(property, IAttributeColumn.COL_NOT_NULL) || StringUtil.isEqual(property, IAttributeColumn.COL_UK)) {
-			//			if (index == COL_UK) {
-			//				return false;
-			//			}
 			Constraint pk = editor.getNewSchemaInfo().getPK();
 			if (pk != null && pk.getAttributes().contains(attr.getName())) {
 				return false;

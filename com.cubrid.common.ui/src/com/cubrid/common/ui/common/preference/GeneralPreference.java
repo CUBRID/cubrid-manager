@@ -146,7 +146,6 @@ public final class GeneralPreference {
 	public static boolean isShowAlertModifiedQueryOnAutoCommit() {
 		try {
 			return false; // TODO now it will not be activated.
-			//return pref.getBoolean(SHOW_ALERT_RUN_MODIFIED_QUERIES_AUTOCOMMIT);
 		} catch (Exception ignored) {
 			return false;
 		}

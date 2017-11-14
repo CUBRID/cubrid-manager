@@ -271,7 +271,7 @@ public class ImportResultDialog extends
 			}
 
 			wwb.write();
-			CommonUITool.openInformationBox(Messages.infoSuccess, Messages.importResultDialogWriteExcelSucessInfo);
+			CommonUITool.openInformationBox(Messages.infoSuccess, Messages.importResultDialogWriteExcelSuccessInfo);
 		} catch (Exception e){
 			LOGGER.error("write excel error", e);
 		} finally {

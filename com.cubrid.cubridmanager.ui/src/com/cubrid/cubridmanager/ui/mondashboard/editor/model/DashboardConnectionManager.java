@@ -114,14 +114,14 @@ public class DashboardConnectionManager {
 				List<ApplyServerInfo> asList = brokerStatusInfos.getAsinfo();
 
 				for (ApplyServerInfo asi : asList) {
-					if ("IDLE".equals(asi.getAs_status())) {
+					if ("IDLE".equals(asi.getAsStatus())) {
 						continue;
 					}
-					HostNode hostNode = dashboard.getHostNodeByName(asi.getAs_dbhost());
+					HostNode hostNode = dashboard.getHostNodeByName(asi.getAsDbHost());
 					if (hostNode == null) {
 						continue;
 					}
-					String asDbname = asi.getAs_dbname();
+					String asDbname = asi.getAsDbName();
 					if (StringUtil.isNotEmpty(asDbname)) {
 						asDbname = asDbname.replaceAll("@.*", "");
 					}

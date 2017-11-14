@@ -125,7 +125,7 @@ public class BrokerNode extends
 				continue;
 			}
 			for (ApplyServerInfo asInfo : asInfoList) {
-				String dbHost = asInfo.getAs_dbhost();
+				String dbHost = asInfo.getAsDbHost();
 				if (!StringUtil.isEmpty(dbHost) && !CMServiceAnalysisUtil.isLocalHost(dbHost)) {
 					hostSet.add(dbHost);
 				}
@@ -167,8 +167,8 @@ public class BrokerNode extends
 				continue;
 			}
 			for (ApplyServerInfo asInfo : asInfoList) {
-				String dbHost = asInfo.getAs_dbhost();
-				String dbName = asInfo.getAs_dbname();
+				String dbHost = asInfo.getAsDbHost();
+				String dbName = asInfo.getAsDbName();
 				if (StringUtil.isEmpty(dbName) || StringUtil.isEmpty(dbHost)) {
 					continue;
 				}
@@ -211,7 +211,7 @@ public class BrokerNode extends
 				continue;
 			}
 			for (ApplyServerInfo asInfo : asInfoList) {
-				String dbHost = asInfo.getAs_dbhost();
+				String dbHost = asInfo.getAsDbHost();
 				if (StringUtil.isEmpty(dbHost) || CMServiceAnalysisUtil.isLocalHost(dbHost)) {
 					continue;
 				}

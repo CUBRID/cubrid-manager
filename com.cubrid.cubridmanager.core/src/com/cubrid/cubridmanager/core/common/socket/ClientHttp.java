@@ -112,14 +112,6 @@ public class ClientHttp extends AbstractManagerClient {
 
 		// support https
 		try {
-			// KeyStore trustStore =
-			// KeyStore.getInstance(KeyStore.getDefaultType());
-			// instream = new FileInputStream(new File("cm.keystore"));
-			// trustStore.load(instream, "admin1".toCharArray());
-			// SSLSocketFactory socketFactory = new
-			// SSLSocketFactory(trustStore);
-			// Scheme sch = new Scheme("https", 443, socketFactory);
-			// this.httpClient.getConnectionManager().getSchemeRegistry().register(sch);
 			X509TrustManager tm = new X509TrustManager() {
 				public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
 				}

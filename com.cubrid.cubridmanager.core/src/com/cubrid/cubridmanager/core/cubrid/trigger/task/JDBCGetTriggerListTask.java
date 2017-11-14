@@ -76,7 +76,7 @@ public class JDBCGetTriggerListTask extends JDBCTask {
 			//				FROM db_user u, TABLE(groups) AS t(g)  
 			//				WHERE u.name = d.name)
 			//			and d.name=CURRENT_USER
-			String sql = "SELECT t.*, c.target_class_name"
+			String sql = "SELECT t.*, c.targetClassName"
 					+ " FROM db_trigger t, db_trig c"
 					+ " WHERE t.name=c.trigger_name";
 
@@ -85,18 +85,19 @@ public class JDBCGetTriggerListTask extends JDBCTask {
 
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				Trigger trigger = new Trigger();
-				trigger.setName(rs.getString("name"));
-				trigger.setConditionTime(getConditionTime(rs.getInt("condition_time")));
-				trigger.setEventType(getEventType(rs.getInt("event")));
-				trigger.setTarget_class(rs.getString("target_class_name"));
-				trigger.setTarget_att(rs.getString("target_attribute"));
-				trigger.setCondition(rs.getString("condition"));
-				trigger.setActionTime(getActionTime(rs.getInt("action_time")));
-				trigger.setAction(getAction(rs.getInt("action_type"),
-						rs.getString("action_definition")));
-				trigger.setStatus(getStatus(rs.getInt("status")));
-				trigger.setPriority(rs.getString("priority"));
+				Trigger trigger = new Trigger.Builder()
+					.name(rs.getString("name"))
+					.conditionTime(getConditionTime(rs.getInt("condition_time")))
+					.eventType(getEventType(rs.getInt("event")))
+					.targetClass(rs.getString("targetClassName"))
+					.targetAttribute(rs.getString("targetAttribute"))
+					.condition(rs.getString("condition"))
+					.actionTime(getActionTime(rs.getInt("action_time")))
+					.action(getAction(rs.getInt("action_type"),
+							rs.getString("action_definition")))
+					.status(getStatus(rs.getInt("status")))
+					.priority(rs.getString("priority"))
+					.build();
 				triggers.add(trigger);
 			}
 		} catch (SQLException e) {

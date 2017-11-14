@@ -50,9 +50,8 @@ public class DBClassesTest extends
 		// test getters and setters
 		DBClasses dbClasses = new DBClasses();
 
-		dbClasses.setDbname(dbname);
 		dbClasses.setDbName(dbname);
-		assertEquals(dbClasses.getDbname(), dbname);
+		assertEquals(dbClasses.getDbName(), dbname);
 		assertEquals(dbClasses.getTaskName(), "classinfo");
 		dbClasses.getUserClassList();
 		dbClasses.getSystemClassList();

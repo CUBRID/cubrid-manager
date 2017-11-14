@@ -147,7 +147,7 @@ open:triggerinfo
 name:glo_delete_contents
 eventtype:DELETE
 action:call destroy_data(obj)
-target_class:glo
+targetClass:glo
 actiontime:BEFORE
 status:ACTIVE
 priority:1.00000

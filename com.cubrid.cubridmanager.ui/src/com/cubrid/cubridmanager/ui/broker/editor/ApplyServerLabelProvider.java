@@ -77,31 +77,31 @@ public class ApplyServerLabelProvider implements
 		ApplyServerInfo info = (ApplyServerInfo) element;
 		switch (columnIndex) {
 		case 0:
-			return info.getAs_id();
+			return info.getAsId();
 		case 1:
-			return info.getAs_pid();
+			return info.getAsPid();
 		case 2:
-			return info.getAs_num_query();
+			return info.getAsNumQuery();
 		case 3:
-			return info.getAs_num_tran();
+			return info.getAsNumTran();
 		case 4:
-			return info.getAs_port();
+			return info.getAsPort();
 		case 5:
-			return info.getAs_psize();
+			return info.getAsPsize();
 		case 6:
-			return info.getAs_status();
+			return info.getAsStatus();
 		case 7:
-			return info.getAs_dbname();
+			return info.getAsDbName();
 		case 8:
-			return info.getAs_dbhost();
+			return info.getAsDbHost();
 		case 9:
-			return info.getAs_lat();
+			return info.getAsLat();
 		case 10:
-			return info.getAs_lct();
+			return info.getAsLct();
 		case 11:
-			return info.getAs_client_ip();
+			return info.getAsClientIp();
 		case 12:
-			return info.getAs_cur();
+			return info.getAsCur();
 		default:
 			return "";
 

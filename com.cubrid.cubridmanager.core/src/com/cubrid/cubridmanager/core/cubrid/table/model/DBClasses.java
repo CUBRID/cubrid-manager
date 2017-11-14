@@ -37,7 +37,7 @@ import com.cubrid.cubridmanager.core.common.model.IModel;
  */
 public class DBClasses implements
 		IModel {
-	private String dbname;
+	private String dbName;
 	private ClassList systemClassList = null;
 	private ClassList userClassList = null;
 
@@ -54,12 +54,12 @@ public class DBClasses implements
 	}
 
 	/**
-	 * Set the key "dbname" in request message
+	 * Set the key "dbName" in request message
 	 * 
-	 * @param dbname String the database name
+	 * @param dbName String the database name
 	 */
-	public void setDbName(String dbname) {
-		this.dbname = dbname;
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
 	}
 
 	/**
@@ -109,12 +109,8 @@ public class DBClasses implements
 		}
 	}
 
-	public String getDbname() {
-		return dbname;
-	}
-
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
+	public String getDbName() {
+		return dbName;
 	}
 
 }

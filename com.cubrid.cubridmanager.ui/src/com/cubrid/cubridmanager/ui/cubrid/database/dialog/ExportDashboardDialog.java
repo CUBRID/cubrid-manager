@@ -185,7 +185,7 @@ public class ExportDashboardDialog extends CMTitleAreaDialog{
 			
 			try {
 				if(exportTableList()) {
-					CommonUITool.openInformationBox(Messages.titleSuccess, Messages.exportDashboardSucessMessage);
+					CommonUITool.openInformationBox(Messages.titleSuccess, Messages.exportDashboardSuccessMessage);
 				}
 			} catch (Exception e) {
 				CommonUITool.openErrorBox(e.getMessage());
@@ -198,7 +198,7 @@ public class ExportDashboardDialog extends CMTitleAreaDialog{
 
 	/**
 	 * export dashboard table list
-	 * @return boolean sucess
+	 * @return boolean success
 	 */
 	public boolean exportTableList () throws Exception{
 		WritableWorkbook wwb = null;

@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlValue;
 @XmlRootElement(name = "Drawing_Object_RelationshipProps")
 public class DrawingObjectRelationshipProps {
 	@XmlAccessorType(XmlAccessType.FIELD)
-	public static class DOUserControledPath {
+	public static class DOUserControlledPath {
 		@XmlValue
 		protected String value;
 
@@ -45,16 +45,16 @@ public class DrawingObjectRelationshipProps {
 	protected DOReferenceObject doReferenceObject;
 	@XmlElement(name = "DO_Relationship_Path")
 	protected List<DrawingObjectRelationshipProps.DORelationshipPath> doRelationshipPathList;
-	@XmlElement(name = "DO_User_Controled_Path")
-	protected DrawingObjectRelationshipProps.DOUserControledPath doUserControledPath;
+	@XmlElement(name = "DO_User_Controlled_Path")
+	protected DrawingObjectRelationshipProps.DOUserControlledPath doUserControlledPath;
 
-	public DrawingObjectRelationshipProps.DOUserControledPath getDoUserControledPath() {
-		return doUserControledPath;
+	public DrawingObjectRelationshipProps.DOUserControlledPath getDoUserControlledPath() {
+		return doUserControlledPath;
 	}
 
-	public void setDoUserControledPath(
-			DrawingObjectRelationshipProps.DOUserControledPath doUserControledPath) {
-		this.doUserControledPath = doUserControledPath;
+	public void setDoUserControlledPath(
+			DrawingObjectRelationshipProps.DOUserControlledPath doUserControlledPath) {
+		this.doUserControlledPath = doUserControlledPath;
 	}
 
 	public List<DrawingObjectRelationshipProps.DORelationshipPath> getDoRelationshipPathList() {

@@ -274,7 +274,7 @@ public class Messages extends NLS {
 	public static String runSQLExportDialogErrMessage;
 	public static String runSQLExportDialogMessage;
 	public static String runSQLExportDialogTitle;
-	public static String runSQLExportSucessMessage;
+	public static String runSQLExportSuccessMessage;
 	public static String runSQLFileAction;
 	public static String runSQLFileName;
 	public static String runSQLLoadingFileErrorMessage;
@@ -370,7 +370,7 @@ public class Messages extends NLS {
 	public static String cubridBrokerConfEditAnnotationDialogOpenErrorMsg;
 	public static String cubridBrokerConfEditAnnotationDialogErrorMsg;
 	public static String cubridBrokerConfEditorSaveFailedMsg;
-	public static String cubridBrokerConfEditorSaveSucessMsg;
+	public static String cubridBrokerConfEditorSaveSuccessMsg;
 	public static String cubridBrokerConfEditorAddPropItemLabel;
 	public static String cubridBrokerConfEditorDeletePropItemLabel;
 	public static String cubridBrokerConfEditorAddBrokerConfItemLabel;
@@ -499,7 +499,7 @@ public class Messages extends NLS {
 	public static String errSelectLoginDbToRunSQL;
 	public static String expConDialogCopyBtnLabel;
 	public static String expConDialogCopyErrorMsg;
-	public static String expConDialogCopySucessMsg;
+	public static String expConDialogCopySuccessMsg;
 	public static String msgConnectionUrlExported;
 	
 	public static String msgAlertUpdateJdbc;

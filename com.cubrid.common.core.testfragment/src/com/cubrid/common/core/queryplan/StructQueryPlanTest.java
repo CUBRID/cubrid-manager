@@ -65,7 +65,7 @@ public class StructQueryPlanTest extends PlanParserTest {
 		
 		assertNotNull(plan2.clone());
 		
-		String planString = loadPlanExmaple("plan02.txt");
+		String planString = loadPlanExample("plan02.txt");
 
 		PlanParser parser = new PlanParser();
 		boolean bool = parser.doParse(planString);

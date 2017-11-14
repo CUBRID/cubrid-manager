@@ -561,7 +561,7 @@ public class Messages extends
 	public static String exportDashboardDialogMessage;
 	public static String exportDashboardDialogErrMessage;
 	public static String exportDashboardDialogErrMessage2;
-	public static String exportDashboardSucessMessage;
+	public static String exportDashboardSuccessMessage;
 	public static String exportDashboardFailedMessage;
 	public static String exportDashboardDialogLblFileName;
 	public static String exportDashboardDBTableTitle;

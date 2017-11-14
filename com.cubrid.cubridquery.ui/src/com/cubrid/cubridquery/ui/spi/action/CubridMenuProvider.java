@@ -88,13 +88,8 @@ public class CubridMenuProvider extends
 			addActionToManager(manager, getAction(EditUserAction.ID));
 			addActionToManager(manager, getAction(DeleteUserAction.ID));
 		} else {
-//			addActionToManager(manager, getAction(OpenSchemaEditorAction.ID));
-//			manager.add(new Separator());
 			super.buildMenu(manager, node);
 		}
-
-//		ActionManager.addActionToManager(manager,
-//				ActionManager.getInstance().getAction(HiddenElementAction.ID));
 		if (node.isContainer() && ShowHiddenElementsAction.isSupportedNode(node)) {
 			manager.add(new Separator());
 			IAction action = getAction(ShowHiddenElementsAction.ID);
@@ -116,8 +111,6 @@ public class CubridMenuProvider extends
 		manager.add(new Separator());
 		ActionManager.addActionToManager(manager, SchemaCompareWizardAction.ID);
 		ActionManager.addActionToManager(manager, DataCompareWizardAction.ID);
-//		manager.add(new Separator());
-//		ActionManager.addActionToManager(manager, OpenSchemaEditorAction.ID);
 		manager.add(new Separator());
 		ActionManager.addActionToManager(manager, ExportERwinAction.ID);
 		ActionManager.addActionToManager(manager, ImportERwinAction.ID);
@@ -133,8 +126,6 @@ public class CubridMenuProvider extends
 		addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
 		manager.add(new Separator());
 
-//		addActionToManager(manager, getAction(RunSQLFileAction.ID));
-//		manager.add(new Separator());
 		addActionToManager(manager, getAction(ViewDatabaseVersionAction.ID));
 		addActionToManager(manager, getAction(OIDNavigatorAction.ID));
 		addActionToManager(manager, getAction(PropertyAction.ID));

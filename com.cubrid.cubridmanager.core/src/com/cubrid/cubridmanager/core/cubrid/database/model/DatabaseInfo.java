@@ -59,7 +59,7 @@ import com.cubrid.cubridmanager.core.replication.model.ReplicationInfo;
 
 /**
  * 
- * This class is responsible to cache CUBRID dabase information
+ * This class is responsible to cache CUBRID database information
  * 
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
@@ -83,7 +83,7 @@ public class DatabaseInfo implements IDatabaseSpec {
 	private List<ClassInfo> sysTableInfoList = null;
 	private List<ClassInfo> sysViewInfoList = null;
 	private Map<String, List<ClassInfo>> partitionedTableMap = null;
-	// all bakcup plan list
+	// all backup plan list
 	private List<BackupPlanInfo> backupPlanInfoList = null;
 	// all query plan list
 	private List<QueryPlanInfo> queryPlanInfoList = null;

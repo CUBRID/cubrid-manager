@@ -65,30 +65,189 @@ import java.util.Locale;
 public class Trigger implements
 		Comparable<Trigger> { // FIXME use javadoc style comment such as /** ~ */ for all methods
 	// trigger name
-	private String name;
+	private final String name;
 	// the time to evaluate trigger condition: before,after,deferred
-	private String conditionTime;
+	private final String conditionTime;
 	// 8 types: insert,update,delete(statement
 	// insert,update,delete),commit,rollback
-	private String eventType;
+	private final String eventType;
 	// the class or class attribute on which the trigger operates
-	private String target_class;
-	private String target_attribute;
+	private final String targetClass;
+	private final String targetAttribute;
 	// the condition
-	private String condition;
+	private final String condition;
 	// the time to take action
-	private String actionTime;
+	private final String actionTime;
 	// action type: print,reject, invalidate transaction, call statements
-	private String actionType;
+	private final String actionType;
 	// action string
-	private String action;
+	private final String action;
 	// whether the trigger is active: ACTIVE or INACTIVE
-	private String status;
+	private final String status;
 	// the trigger order
-	private String priority;
-	// the trigger comment
+	private final String priority;
+	// the trigger comment (Don't private final variable because AlterTriggerAction.java using setDescription function)
 	private String description;
 
+	public static class Builder {
+		private String name = null;
+		private String conditionTime = null;
+		private String eventType = null;
+		private String targetClass = null;
+		private String targetAttribute = null;
+		private String condition = null;
+		private String actionTime = null;
+		private String actionType = null;
+		private String action = null;
+		private String status = null;
+		private String priority = null;
+		private String description = null;
+		
+		public Builder() {
+		}
+		
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+		
+		public Builder conditionTime(String conditionTime) {
+			this.conditionTime = conditionTime;
+			return this;
+		}
+
+		public Builder eventType(String eventType) {
+			this.eventType = eventType;
+			return this;
+		}
+		
+		public Builder targetClass(String targetClass) {
+			this.targetClass = targetClass;
+			return this;
+		}
+		
+		public Builder targetAttribute(String targetAttribute) {
+			this.targetAttribute = targetAttribute;
+			return this;
+		}
+		
+		/**
+		 * set condition
+		 *
+		 * @param condition String
+		 */
+		public Builder condition(String condition) {
+			if (condition == null) {
+				return this;
+			}
+			String triggerCondition = condition.trim();
+			if (triggerCondition.length() > 0
+					&& triggerCondition.toLowerCase(Locale.getDefault()).startsWith(
+							"if ")) {
+				triggerCondition = triggerCondition.substring(3);
+			}
+			this.condition = triggerCondition;
+			return this;
+		}
+		
+		public Builder actionTime(String actionTime) {
+			this.actionTime = actionTime;
+			return this;
+		}
+		
+		public Builder actionType(String actionType) {
+			this.actionType = actionType;
+			return this;
+		}
+		
+		/**
+		 * set action
+		 *
+		 * @param action String
+		 */
+		public Builder action(String action) {
+			boolean found = false;
+			if (action != null) {
+				if (action.startsWith(TriggerAction.REJECT.getText())) {
+					this.actionType = TriggerAction.REJECT.getText();
+					this.action = null;
+					found = true;
+				} else if (action.startsWith(TriggerAction.INVALIDATE_TRANSACTION.getText())) {
+					this.actionType = TriggerAction.INVALIDATE_TRANSACTION.getText();
+					this.action = null;
+					found = true;
+				} else if (action.startsWith(TriggerAction.PRINT.getText())) {
+					this.actionType = TriggerAction.PRINT.getText();
+					String message = action.replace(TriggerAction.PRINT.getText(),
+							"").trim();
+					message = message.substring(1, message.length() - 1);
+					this.action = message;
+					found = true;
+				}
+			}
+
+			if (!found) {
+				this.actionType = TriggerAction.OTHER_STATEMENT.getText();
+				this.action = action;
+			}
+			
+			return this;
+		}
+		
+		public Builder status(String status) {
+			this.status = status;
+			return this;
+		}
+		
+		/**
+		 * set priority
+		 *
+		 * @param priority String
+		 */
+		public Builder priority(String priority) {
+			try {
+				Double.parseDouble(priority);
+				this.priority = Trigger.formatPriority(priority);
+			} catch (NumberFormatException e) {
+				this.priority = priority;
+			}
+			return this;
+		}
+		
+		public Builder description(String description) {
+			if(description == null) {
+				return this;
+			}
+			
+			this.description = description;
+			return this;
+		}
+		
+		public Trigger build() {
+			return new Trigger(this);
+		}
+	}
+	
+	private Trigger(Builder builder) {
+		name = builder.name;
+		conditionTime = builder.conditionTime;
+		eventType = builder.eventType;
+		targetClass = builder.targetClass;
+		targetAttribute = builder.targetAttribute;
+		condition = builder.condition;
+		actionTime = builder.actionTime;
+		actionType = builder.actionType;
+		action = builder.action;
+		status = builder.status;
+		priority = builder.priority;
+		description = builder.description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+		return;
+	}
+	
 	/**
 	 * compare to the argument obj
 	 *
@@ -121,148 +280,48 @@ public class Trigger implements
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getConditionTime() {
 		return conditionTime;
-	}
-
-	public void setConditionTime(String conditionTime) {
-		this.conditionTime = conditionTime;
 	}
 
 	public String getEventType() {
 		return eventType;
 	}
 
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
+	public String getTargetClass() {
+		return targetClass;
 	}
 
-	public String getTarget_class() {
-		return target_class;
-	}
-
-	public void setTarget_class(String targetClass) {
-		this.target_class = targetClass;
-	}
-
-	public String getTarget_att() {
-		return target_attribute;
-	}
-
-	public void setTarget_att(String targetAttribute) {
-		this.target_attribute = targetAttribute;
+	public String getTargetAttribute() {
+		return targetAttribute;
 	}
 
 	public String getCondition() {
 		return condition;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getDescription() {
 		return description;
-	}
-
-	/**
-	 * set condition
-	 *
-	 * @param condition String
-	 */
-	public void setCondition(String condition) {
-		if (condition == null) {
-			return;
-		}
-		String triggerCondition = condition.trim();
-		if (triggerCondition.length() > 0
-				&& triggerCondition.toLowerCase(Locale.getDefault()).startsWith(
-						"if ")) {
-			triggerCondition = triggerCondition.substring(3);
-		}
-		this.condition = triggerCondition;
 	}
 
 	public String getActionTime() {
 		return actionTime;
 	}
 
-	public void setActionTime(String actionTime) {
-		this.actionTime = actionTime;
-	}
-
 	public String getActionType() {
 		return actionType;
-	}
-
-	public void setActionType(String actionType) {
-		this.actionType = actionType;
 	}
 
 	public String getAction() {
 		return action;
 	}
 
-	/**
-	 * set action
-	 *
-	 * @param action String
-	 */
-	public void setAction(String action) {
-		boolean found = false;
-		if (action != null) {
-			if (action.startsWith(TriggerAction.REJECT.getText())) {
-				this.actionType = TriggerAction.REJECT.getText();
-				this.action = null;
-				found = true;
-			} else if (action.startsWith(TriggerAction.INVALIDATE_TRANSACTION.getText())) {
-				this.actionType = TriggerAction.INVALIDATE_TRANSACTION.getText();
-				this.action = null;
-				found = true;
-			} else if (action.startsWith(TriggerAction.PRINT.getText())) {
-				this.actionType = TriggerAction.PRINT.getText();
-				String message = action.replace(TriggerAction.PRINT.getText(),
-						"").trim();
-				message = message.substring(1, message.length() - 1);
-				this.action = message;
-				found = true;
-			}
-		}
-
-		if (!found) {
-			this.actionType = TriggerAction.OTHER_STATEMENT.getText();
-			this.action = action;
-		}
-	}
-
 	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
 	public String getPriority() {
 		return priority;
-	}
-
-	/**
-	 * set priority
-	 *
-	 * @param priority String
-	 */
-	public void setPriority(String priority) {
-		try {
-			Double.parseDouble(priority);
-			this.priority = Trigger.formatPriority(priority);
-		} catch (NumberFormatException e) {
-			this.priority = priority;
-		}
 	}
 
 	/**

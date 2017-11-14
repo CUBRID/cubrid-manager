@@ -167,7 +167,7 @@ public class BrokerConfigEditorPart extends
 				try {
 					persistUtil.writeBrokerConfig(saveAsFile, charset, contents);
 					openInformationBox(Messages.titleSuccess,
-							Messages.cubridBrokerConfEditorSaveSucessMsg);
+							Messages.cubridBrokerConfEditorSaveSuccessMsg);
 					setDirty(false);
 				} catch (Exception e) {
 					LOGGER.error(e.getMessage(), e);
@@ -205,7 +205,7 @@ public class BrokerConfigEditorPart extends
 			BrokerConfig brokerConf = editorComp.getBrokerConfig();
 			String contents = persistUtil.readBrokerConfig(brokerConf);
 			persistUtil.writeBrokerConfig(confFile, charset, contents);
-			openInformationBox(Messages.titleSuccess, Messages.cubridBrokerConfEditorSaveSucessMsg);
+			openInformationBox(Messages.titleSuccess, Messages.cubridBrokerConfEditorSaveSuccessMsg);
 			setDirty(false);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);

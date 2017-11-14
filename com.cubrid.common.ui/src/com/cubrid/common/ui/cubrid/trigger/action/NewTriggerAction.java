@@ -171,8 +171,10 @@ public class NewTriggerAction extends
 					Locale.getDefault());
 			String id = folderNode.getId() + ICubridNodeLoader.NODE_SEPARATOR
 					+ triggerName;
-			Trigger trigger = new Trigger();
-			trigger.setName(triggerName);
+			Trigger trigger = new Trigger
+				.Builder()
+				.name(triggerName)
+				.build();
 			ICubridNode newNode = CubridTriggerFolderLoader.createTriggerNode(
 					id, trigger);
 			CommonUITool.addNodeToTree(treeViewer, folderNode, newNode);

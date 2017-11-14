@@ -118,11 +118,11 @@ public class ClientNode extends
 				return;
 			}
 			for (ApplyServerInfo asi : bsi.getAsinfo()) {
-				if (StringUtil.isEmpty(asi.getAs_client_ip())
-						|| clientList.contains(asi.getAs_client_ip())) {
+				if (StringUtil.isEmpty(asi.getAsClientIp())
+						|| clientList.contains(asi.getAsClientIp())) {
 					continue;
 				}
-				clientList.add(asi.getAs_client_ip());
+				clientList.add(asi.getAsClientIp());
 			}
 			fireStructureChange(PROP_CLIENT_LIST, clientList);
 		}

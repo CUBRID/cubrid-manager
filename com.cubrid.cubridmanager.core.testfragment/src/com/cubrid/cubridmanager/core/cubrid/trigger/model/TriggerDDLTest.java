@@ -60,12 +60,14 @@ public class TriggerDDLTest extends
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		trigger = new Trigger();
+		trigger = new Trigger
+			.Builder()
+			.build();
 		name = "name";
 		conditionTime = "conditionTime";
 		eventType = "eventType";
-		targetClass = "target_class";
-		targetAttribute = "target_attribute";
+		targetClass = "targetClass";
+		targetAttribute = "targetAttribute";
 		condition = "condition";
 		actionTime = "actionTime";
 		actionType = "actionType";
@@ -80,80 +82,100 @@ public class TriggerDDLTest extends
 	 * .
 	 */
 	public void testGetDDL() {
-		trigger.setName(null);
-		trigger.setConditionTime(conditionTime);
-		trigger.setEventType(eventType);
-		trigger.setTarget_class("");
-		trigger.setTarget_att(targetAttribute);
-		trigger.setCondition("");
-		trigger.setActionTime("");
-		trigger.setActionType("REJECT");
-		trigger.setAction("REJECT");
-		trigger.setStatus(status);
-		trigger.setPriority(priority);
+		trigger = new Trigger
+			.Builder()
+			.name(null)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass("")
+			.targetAttribute(targetAttribute)
+			.condition("")
+			.actionTime("")
+			.actionType("REJECT")
+			.action("REJECT")
+			.status(status)
+			.priority(priority)
+			.build();
 		TriggerDDL.getDDL(trigger);
-		trigger.setName(name);
-		trigger.setConditionTime(conditionTime);
-		trigger.setEventType(eventType);
-		trigger.setTarget_class(targetClass);
-		trigger.setTarget_att(targetAttribute);
-		trigger.setCondition(condition);
-		trigger.setActionTime(actionTime);
-		trigger.setActionType(actionType);
-		trigger.setAction(action);
-		trigger.setStatus(status);
-		trigger.setPriority(priority);
+		
+		trigger = new Trigger
+			.Builder()
+			.name(name)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass(targetClass)
+			.targetAttribute(targetAttribute)
+			.condition(condition)
+			.actionTime(actionTime)
+			.actionType(actionType)
+			.action(action)
+			.status(status)
+			.priority(priority)
+			.build();
 		TriggerDDL.getDDL(trigger);
-		trigger.setName(null);
-		trigger.setConditionTime(conditionTime);
-		trigger.setEventType(eventType);
-		trigger.setTarget_class("");
-		trigger.setTarget_att(targetAttribute);
-		trigger.setCondition("");
-		trigger.setActionTime("AFTER");
-		trigger.setActionType("REJECT");
-		trigger.setAction("REJECT");
-		trigger.setStatus(status);
-		trigger.setPriority(priority);
-		TriggerDDL.getDDL(trigger);
-
-		trigger.setName(name);
-		trigger.setConditionTime(conditionTime);
-		trigger.setEventType(eventType);
-		trigger.setTarget_class(targetClass);
-		trigger.setTarget_att(targetAttribute);
-		trigger.setCondition(condition);
-		trigger.setActionTime(actionTime);
-		trigger.setActionType("PRINT");
-		trigger.setAction("PRINT_action");
-		trigger.setStatus(status);
-		trigger.setPriority(priority);
+		
+		trigger = new Trigger
+			.Builder()
+			.name(null)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass("")
+			.targetAttribute(targetAttribute)
+			.condition("")
+			.actionTime("AFTER")
+			.actionType("REJECT")
+			.action("REJECT")
+			.status(status)
+			.priority(priority)
+			.build();
 		TriggerDDL.getDDL(trigger);
 
-		trigger.setName(name);
-		trigger.setConditionTime(conditionTime);
-		trigger.setEventType(eventType);
-		trigger.setTarget_class(targetClass);
-		trigger.setTarget_att(targetAttribute);
-		trigger.setCondition(condition);
-		trigger.setActionTime(actionTime);
-		trigger.setActionType("PRINT");
-		trigger.setAction("PRINT_action");
-		trigger.setStatus(status);
-		trigger.setPriority("100");
+		trigger = new Trigger
+			.Builder()
+			.name(name)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass(targetClass)
+			.targetAttribute(targetAttribute)
+			.condition(condition)
+			.actionTime(actionTime)
+			.actionType("PRINT")
+			.action("PRINT_action")
+			.status(status)
+			.priority(priority)
+			.build();
 		TriggerDDL.getDDL(trigger);
 
-		trigger.setName(name);
-		trigger.setConditionTime(conditionTime);
-		trigger.setEventType(eventType);
-		trigger.setTarget_class(targetClass);
-		trigger.setTarget_att(targetAttribute);
-		trigger.setCondition(condition);
-		trigger.setActionTime(actionTime);
-		trigger.setActionType(actionType);
-		trigger.setAction(action);
-		trigger.setStatus(status);
-		trigger.setPriority("null");
+		trigger = new Trigger
+			.Builder()
+			.name(name)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass(targetClass)
+			.targetAttribute(targetAttribute)
+			.condition(condition)
+			.actionTime(actionTime)
+			.actionType("PRINT")
+			.action("PRINT_action")
+			.status(status)
+			.priority("100")
+			.build();
+		TriggerDDL.getDDL(trigger);
+
+		trigger = new Trigger
+			.Builder()
+			.name(name)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass(targetClass)
+			.targetAttribute(targetAttribute)
+			.condition(condition)
+			.actionTime(actionTime)
+			.actionType(actionType)
+			.action(action)
+			.status(status)
+			.priority("null")
+			.build();
 		TriggerDDL.getDDL(trigger);
 
 	}
@@ -164,52 +186,64 @@ public class TriggerDDLTest extends
 	 * .
 	 */
 	public void testGetAlterDDL() {
-		Trigger newTrigger = new Trigger();
-		trigger.setName(name);
-		trigger.setConditionTime(conditionTime);
-		trigger.setEventType(eventType);
-		trigger.setTarget_class(targetClass);
-		trigger.setTarget_att(targetAttribute);
-		trigger.setCondition(condition);
-		trigger.setActionTime(actionTime);
-		trigger.setActionType(actionType);
-		trigger.setAction(action);
-		trigger.setStatus(status);
-		trigger.setPriority(priority);
-		newTrigger.setName(null);
-		newTrigger.setConditionTime(conditionTime);
-		newTrigger.setEventType(eventType);
-		newTrigger.setTarget_class(targetClass);
-		newTrigger.setTarget_att(targetAttribute);
-		newTrigger.setCondition("");
-		newTrigger.setActionTime("aaa");
-		newTrigger.setActionType("PRINT");
-		newTrigger.setAction(action);
-		newTrigger.setStatus(status);
-		newTrigger.setPriority(priority);
+		trigger = new Trigger
+			.Builder()
+			.name(name)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass(targetClass)
+			.targetAttribute(targetAttribute)
+			.condition(condition)
+			.actionTime(actionTime)
+			.actionType(actionType)
+			.action(action)
+			.status(status)
+			.priority(priority)
+			.build();
+		Trigger newTrigger = new Trigger
+			.Builder()
+			.name(null)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass(targetClass)
+			.targetAttribute(targetAttribute)
+			.condition("")
+			.actionTime("aaa")
+			.actionType("PRINT")
+			.action(action)
+			.status(status)
+			.priority(priority)
+			.build();
 		TriggerDDL.getAlterDDL(trigger, newTrigger);
-		trigger.setName(name);
-		trigger.setConditionTime(conditionTime);
-		trigger.setEventType(eventType);
-		trigger.setTarget_class(targetClass);
-		trigger.setTarget_att(targetAttribute);
-		trigger.setCondition(condition);
-		trigger.setActionTime(actionTime);
-		trigger.setActionType(actionType);
-		trigger.setAction(action);
-		trigger.setStatus(status);
-		trigger.setPriority(priority);
-		newTrigger.setName(null);
-		newTrigger.setConditionTime(conditionTime);
-		newTrigger.setEventType(eventType);
-		newTrigger.setTarget_class(targetClass);
-		newTrigger.setTarget_att(targetAttribute);
-		newTrigger.setCondition("");
-		newTrigger.setActionTime("aaa");
-		newTrigger.setActionType("PRINT");
-		newTrigger.setAction(action);
-		newTrigger.setStatus("no");
-		newTrigger.setPriority("99");
+		
+		trigger = new Trigger
+			.Builder()
+			.name(name)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass(targetClass)
+			.targetAttribute(targetAttribute)
+			.condition(condition)
+			.actionTime(actionTime)
+			.actionType(actionType)
+			.action(action)
+			.status(status)
+			.priority(priority)
+			.build();
+		newTrigger = new Trigger
+			.Builder()
+			.name(null)
+			.conditionTime(conditionTime)
+			.eventType(eventType)
+			.targetClass(targetClass)
+			.targetAttribute(targetAttribute)
+			.condition("")
+			.actionTime("aaa")
+			.actionType("PRINT")
+			.action(action)
+			.status("no")
+			.priority("99")
+			.build();
 		TriggerDDL.getAlterDDL(trigger, newTrigger);
 	}
 

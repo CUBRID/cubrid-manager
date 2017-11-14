@@ -42,7 +42,7 @@ import java.util.List;
  */
 public class PlanTerm {
 	/**
-	 * The plan tem type
+	 * The plan term type
 	 *
 	 * @author pcraft
 	 * @version 1.0 - 2009-12-29 created by pangqiren

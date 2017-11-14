@@ -183,7 +183,7 @@ public class ExportHostStatusDialog extends
 			try {
 				if (saveAllData()) {
 					CommonUITool.openInformationBox(Messages.titleSuccess,
-							Messages.exportDashboardSucessMessage);
+							Messages.exportDashboardSuccessMessage);
 				}
 			} catch (Exception e) {
 				CommonUITool.openErrorBox(e.getMessage());

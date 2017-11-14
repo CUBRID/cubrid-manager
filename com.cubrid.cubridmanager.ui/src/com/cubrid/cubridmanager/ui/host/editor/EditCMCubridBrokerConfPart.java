@@ -181,7 +181,7 @@ public class EditCMCubridBrokerConfPart extends AbstractBrokerConfigEditorPart{
 					String contents = brokerConfPersistUtil.readBrokerConfig(cubridBrokerConfig);
 					try {
 						brokerConfPersistUtil.writeBrokerConfig(new File(fileFullName), defaultExportFileCharset, contents);
-						CommonUITool.openInformationBox(Messages.titleSuccess, Messages.cubridBrokerConfEditorSaveSucessMsg);
+						CommonUITool.openInformationBox(Messages.titleSuccess, Messages.cubridBrokerConfEditorSaveSuccessMsg);
 						setDirty(false);
 					} catch (Exception e) {
 						CommonUITool.openErrorBox(e.getMessage());

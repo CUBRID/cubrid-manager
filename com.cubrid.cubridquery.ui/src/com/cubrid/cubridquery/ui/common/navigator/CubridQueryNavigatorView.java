@@ -136,8 +136,6 @@ public class CubridQueryNavigatorView extends CubridNavigatorView {
 		IStructuredSelection selection = (IStructuredSelection) tv.getSelection();
 		if (selection == null || selection.isEmpty()) {
 			ActionManager.addActionToManager(menuManager, NewQueryConnAction.ID);
-//			menuManager.add(new Separator());
-//			ActionManager.addActionToManager(menuManager, OpenSchemaEditorAction.ID);
 			menuManager.add(new Separator());
 			return;
 		}

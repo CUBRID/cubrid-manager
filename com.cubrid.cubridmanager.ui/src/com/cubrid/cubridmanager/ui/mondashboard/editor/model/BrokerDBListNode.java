@@ -118,12 +118,12 @@ public class BrokerDBListNode extends
 				return;
 			}
 			for (ApplyServerInfo asi : bsi.getAsinfo()) {
-				if ("IDLE".equals(asi.getAs_status())
-						|| StringUtil.isEmpty(asi.getAs_dbname())
-						|| dbList.contains(asi.getAs_dbname())) {
+				if ("IDLE".equals(asi.getAsStatus())
+						|| StringUtil.isEmpty(asi.getAsDbName())
+						|| dbList.contains(asi.getAsDbName())) {
 					continue;
 				}
-				dbList.add(asi.getAs_dbname());
+				dbList.add(asi.getAsDbName());
 			}
 			fireStructureChange(PROP_DB_LIST, dbList);
 		}

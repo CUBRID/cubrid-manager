@@ -184,7 +184,7 @@ public class BrokerDashboardViewPart extends
 			public void menuAboutToShow(IMenuManager manager) {
 				IStructuredSelection selection = (IStructuredSelection) asTableViewer.getSelection();
 				ApplyServerInfo as = (ApplyServerInfo) (selection.toArray()[0]);
-				RestartAction restartAcion = new RestartAction(as.getAs_id());
+				RestartAction restartAcion = new RestartAction(as.getAsId());
 				manager.add(restartAcion);
 			}
 		});

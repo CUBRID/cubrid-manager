@@ -54,7 +54,7 @@ public class GetClassListTaskTest extends
 		task.execute();
 		assertEquals(true, task.isSuccess());
 		DBClasses db = task.getDbClassInfo();
-		assertEquals(testDbName, db.getDbname());
+		assertEquals(testDbName, db.getDbName());
 
 	}
 

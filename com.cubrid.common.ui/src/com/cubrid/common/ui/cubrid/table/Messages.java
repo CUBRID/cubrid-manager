@@ -747,7 +747,7 @@ public class Messages extends
 	public static String tablesDetailInfoPartCloseAllMenu;
 	public static String tablesDetailInfoPartCloseOthersMenu;
 	public static String tablesDetailInfoPartAlertNotSelected;
-	public static String importResultDialogWriteExcelSucessInfo;
+	public static String importResultDialogWriteExcelSuccessInfo;
 	public static String tablesDetailInfoPartRefreshMenu;
 	public static String tablesDetailInfoLoadingDataTitle;
 	public static String tablesDetailInfoLoadingData;

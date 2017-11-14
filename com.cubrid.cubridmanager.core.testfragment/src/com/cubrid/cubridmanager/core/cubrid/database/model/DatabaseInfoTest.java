@@ -164,8 +164,10 @@ public class DatabaseInfoTest extends
 	 * .
 	 */
 	public void testGetTrigger() {
-		Trigger trigger = new Trigger();
-		trigger.setName("trigger1");
+		Trigger trigger = new Trigger
+			.Builder()
+			.name("trigger1")
+			.build();
 		bean.setTriggerList(null);
 		bean.setTriggerList(new ArrayList<Trigger>());
 

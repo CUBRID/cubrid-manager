@@ -101,7 +101,7 @@ import com.cubrid.cubridmanager.ui.workspace.dialog.ChooseModeDialog;
  *
  * The workbench window advisor object is created in response to a workbench
  * window being created (one per window), and is used to configure the window.
- *
+ * 
  * @author pangqiren
  * @version 1.0 - 2009-12-23 created by pangqiren
  */
@@ -271,7 +271,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 						try {
 							Job.getJobManager().cancel(jobFamily);
 						} catch (Exception e) {
-							LOGGER.error("Stopping background jobs was failed.", e);
+							LOGGER.error("Stopping background jobs were failed.", e);
 						}
 					}
 				});
@@ -363,23 +363,11 @@ public class ApplicationWorkbenchWindowAdvisor extends
 		}
 	}
 
-	private void showDashboard() {
-		try {
-			if (GeneralPreference.isCheckNewInfoOnStartUp()) {
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-						new NoticeDashboardInput(CLIENT), NoticeDashboardEditor.ID);
-			}
-		} catch (Exception e) {
-			LOGGER.info("", e);
-		}
-	}
-
 	/**
 	 * Performs arbitrary actions after the window is opened.
 	 */
 	public void postWindowOpen() {
 		removePlatformDependencyActions();
-//		showDashboard();
 
 		/* Open the perspective */
 		String perspective = PerspectiveManager.getInstance().getSelectedPerspective();
@@ -403,83 +391,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 			PerspectiveManager.getInstance().openPerspective(perspective);
 		}
 
-		//		Display.getDefault().asyncExec(new Runnable() {
-		//			public void run() {
-		//				showNewsBrowser();
-		//				showNewFeatureBrowser();
-		//				showNoticeBrowser();
-
-		//			}
-
-		//			private void showNoticeBrowser () {
-		//				CubridNoticeUtil util = new CubridNoticeUtil();
-		//				String noticeContents = util.getNoticeURL("cm");
-		//				if (StringUtil.isNotEmpty(noticeContents)) {
-		//					try {
-		//						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-		//								new CubridNoticeInfoEditorInput(noticeContents), CubridNoticeInfoEditorPart.ID);
-		//					} catch (Exception ignored) {
-		//						LOGGER.info("", ignored);
-		//					}
-		//				}
-		//			}
-
-		//			private void showNewsBrowser() {
-		//				try {
-		//					String url = Platform.getNL().equals("ko_KR") ? UrlConnUtil.CHECK_NEW_INFO_URL_KO
-		//							: UrlConnUtil.CHECK_NEW_INFO_URL_EN;
-		//					if (GeneralPreference.isCheckNewInfoOnStartUp() && UrlConnUtil.isUrlExist(url)) {
-		//						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-		//								new CubridNewInfoEditorInput(), CubridNewInfoEditorPart.ID);
-		//
-		//					}
-		//				} catch (Exception e) {
-		//					LOGGER.info("Can not be opened web browser to connect the tools news site.", e);
-		//				}
-		//			}
-
-		//			private void showNewFeatureBrowser() {
-		//				try {
-		//					String ver = lastVersion();
-		//					if (ver != null && ver.length() > 0 && ver.equals(Version.buildVersionId)) {
-		//						return;
-		//					}
-		//
-		//					// http://www.cubrid.org/wiki_tools/entry/cubrid-manager-release-note-summary - global - not used
-		//					String url = com.cubrid.common.ui.common.Messages.msgCubridToolsNewFeatures;
-		//					if (url == null || url.length() == 0) {
-		//						return;
-		//					}
-		//
-		//					saveLastVersion(Version.buildVersionId);
-		//
-		//					NewFeatureEditorPart browserViewPart = null;
-		//					IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		//					IEditorReference[] editorReferences = window.getActivePage().getEditorReferences();
-		//
-		//					for (IEditorReference reference : editorReferences) {
-		//						if (reference.getId().equals(NewFeatureEditorPart.ID)) {
-		//							browserViewPart = (NewFeatureEditorPart) reference.getEditor(true);
-		//						}
-		//					}
-		//
-		//					if (browserViewPart == null) {
-		//						try {
-		//							browserViewPart = (NewFeatureEditorPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-		//									new BrowserEditorPartInput(), NewFeatureEditorPart.ID);
-		//						} catch (PartInitException e) {
-		//						}
-		//					}
-		//
-		//					if (browserViewPart != null) {
-		//						browserViewPart.go(url);
-		//						window.getActivePage().activate(browserViewPart);
-		//					}
-		//				} catch (Exception e) {
-		//					LOGGER.info("Can not be opened web browser to connect the introducing of new feature information site.", e);
-		//				}
-		//			}
-		//		});
+		
 
 		new Thread(new Runnable() {
 			public void run() {

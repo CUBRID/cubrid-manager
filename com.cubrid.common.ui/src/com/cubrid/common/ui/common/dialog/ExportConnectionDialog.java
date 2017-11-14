@@ -299,7 +299,7 @@ public class ExportConnectionDialog extends CMTitleAreaDialog {
 			Clipboard clipboard = CommonUITool.getClipboard();
 			clipboard.setContents(new Object[] { sb.toString() }, new Transfer[] { textTransfer });
 
-			CommonUITool.openInformationBox(Messages.titleSuccess, Messages.expConDialogCopySucessMsg);
+			CommonUITool.openInformationBox(Messages.titleSuccess, Messages.expConDialogCopySuccessMsg);
 			return;
 		} else if (buttonId == IDialogConstants.OK_ID) {
 			if (!verify()) {

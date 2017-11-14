@@ -45,7 +45,7 @@ public class PlanParserTest extends
 		return fileUrl == null ? null : fileUrl.getPath();
 	}
 
-	protected String loadPlanExmaple(String filepath) {
+	protected String loadPlanExample(String filepath) {
 		FileReader fr = null;
 		BufferedReader br = null;
 		try {
@@ -81,7 +81,7 @@ public class PlanParserTest extends
 	 * @throws Exception
 	 */
 	public void testExam01() throws Exception {
-		String planString = loadPlanExmaple("plan01.txt");
+		String planString = loadPlanExample("plan01.txt");
 
 		PlanParser parser = new PlanParser();
 		boolean bool = parser.doParse(planString);
@@ -132,7 +132,7 @@ public class PlanParserTest extends
 	 * @throws Exception
 	 */
 	public void testExam02() throws Exception {
-		String planString = loadPlanExmaple("plan02.txt");
+		String planString = loadPlanExample("plan02.txt");
 
 		PlanParser parser = new PlanParser();
 		boolean bool = parser.doParse(planString);
@@ -153,7 +153,7 @@ public class PlanParserTest extends
 	 * @throws Exception
 	 */
 	public void testExam03() throws Exception {
-		String planString = loadPlanExmaple("plan03.txt");
+		String planString = loadPlanExample("plan03.txt");
 
 		PlanParser parser = new PlanParser();
 		boolean bool = parser.doParse(planString);
@@ -174,7 +174,7 @@ public class PlanParserTest extends
 	 * @throws Exception
 	 */
 	public void testExam04() throws Exception {
-		String planString = loadPlanExmaple("plan04.txt");
+		String planString = loadPlanExample("plan04.txt");
 
 		PlanParser parser = new PlanParser();
 		boolean bool = parser.doParse(planString);
@@ -187,7 +187,7 @@ public class PlanParserTest extends
 	 * @throws Exception
 	 */
 	public void testExam05() throws Exception {
-		String planString = loadPlanExmaple("plan05.txt");
+		String planString = loadPlanExample("plan05.txt");
 
 		PlanParser parser = new PlanParser();
 		boolean bool = parser.doParse(planString);
@@ -200,7 +200,7 @@ public class PlanParserTest extends
 	 * @throws Exception
 	 */
 	public void testExam06() throws Exception {
-		String planString = loadPlanExmaple("plan06.txt");
+		String planString = loadPlanExample("plan06.txt");
 
 		PlanParser parser = new PlanParser();
 		boolean bool = parser.doParse(planString);
@@ -213,7 +213,7 @@ public class PlanParserTest extends
 	 * @throws Exception
 	 */
 	public void testExam07() throws Exception {
-		String planString = loadPlanExmaple("plan07.txt");
+		String planString = loadPlanExample("plan07.txt");
 
 		PlanParser parser = new PlanParser();
 		boolean bool = parser.doParse(planString);

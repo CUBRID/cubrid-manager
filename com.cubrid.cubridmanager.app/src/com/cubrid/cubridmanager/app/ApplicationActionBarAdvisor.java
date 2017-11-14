@@ -87,7 +87,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	// common actions
 	private IAction preferenceAction = null;
 	private IAction quitAction = null;
-	//private IAction checkNewVersionAction = null;
 	private IAction cubridOnlineForumAction = null;
 	private IAction cubridProjectSiteAction = null;
 	private AboutAction aboutAction = null;

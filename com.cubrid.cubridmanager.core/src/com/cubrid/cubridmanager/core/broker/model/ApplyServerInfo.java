@@ -35,176 +35,176 @@ package com.cubrid.cubridmanager.core.broker.model;
  */
 public class ApplyServerInfo implements
 		Cloneable {
-	private String as_id;
-	private String as_pid;
-	private String as_c; //reqest
-	private String as_psize;
-	private String as_port;
-	private String as_status;
-	private String as_cpu;
-	private String as_ctime;
-	private String as_lat;
-	private String as_cur; //execute sql statement
-	private String as_num_query;
-	private String as_num_tran;
-	private String as_long_query;
-	private String as_long_tran;
-	private String as_error_query;
-	private String as_dbname;
-	private String as_dbhost;
-	private String as_lct;
-	private String as_client_ip;
+	private String asId;
+	private String asPid;
+	private String asC; //reqest
+	private String asPsize;
+	private String asPort;
+	private String asStatus;
+	private String asCpu;
+	private String asCtime;
+	private String asLat;
+	private String asCur; //execute sql statement
+	private String asNumQuery;
+	private String asNumTran;
+	private String asLongQuery;
+	private String asLongTran;
+	private String asErrorQuery;
+	private String asDbName;
+	private String asDbHost;
+	private String asLct;
+	private String asClientIp;
 
-	public String getAs_id() {
-		return as_id;
+	public String getAsId() {
+		return asId;
 	}
 
-	public void setAs_id(String asId) {
-		this.as_id = asId;
+	public void setAsId(String asId) {
+		this.asId = asId;
 	}
 
-	public String getAs_pid() {
-		return as_pid;
+	public String getAsPid() {
+		return asPid;
 	}
 
-	public void setAs_pid(String asPid) {
-		this.as_pid = asPid;
+	public void setAsPid(String asPid) {
+		this.asPid = asPid;
 	}
 
-	public String getAs_c() {
-		return as_c;
+	public String getAsC() {
+		return asC;
 	}
 
-	public void setAs_c(String asc) {
-		this.as_c = asc;
+	public void setAsC(String asc) {
+		this.asC = asc;
 	}
 
-	public String getAs_port() {
-		return as_port;
+	public String getAsPort() {
+		return asPort;
 	}
 
-	public void setAs_port(String asPort) {
-		this.as_port = asPort;
+	public void setAsPort(String asPort) {
+		this.asPort = asPort;
 	}
 
-	public String getAs_psize() {
-		return as_psize;
+	public String getAsPsize() {
+		return asPsize;
 	}
 
-	public void setAs_psize(String asPsize) {
-		this.as_psize = asPsize;
+	public void setAsPsize(String asPsize) {
+		this.asPsize = asPsize;
 	}
 
-	public String getAs_status() {
-		return as_status;
+	public String getAsStatus() {
+		return asStatus;
 	}
 
-	public void setAs_status(String asStatus) {
-		this.as_status = asStatus;
+	public void setAsStatus(String asStatus) {
+		this.asStatus = asStatus;
 	}
 
-	public String getAs_cpu() {
-		return as_cpu;
+	public String getAsCpu() {
+		return asCpu;
 	}
 
-	public void setAs_cpu(String asCpu) {
-		this.as_cpu = asCpu;
+	public void setAsCpu(String asCpu) {
+		this.asCpu = asCpu;
 	}
 
-	public String getAs_ctime() {
-		return as_ctime;
+	public String getAsCtime() {
+		return asCtime;
 	}
 
-	public void setAs_ctime(String asCtime) {
-		this.as_ctime = asCtime;
+	public void setAsCtime(String asCtime) {
+		this.asCtime = asCtime;
 	}
 
-	public String getAs_lat() {
-		return as_lat;
+	public String getAsLat() {
+		return asLat;
 	}
 
-	public void setAs_lat(String asLat) {
-		this.as_lat = asLat;
+	public void setAsLat(String asLat) {
+		this.asLat = asLat;
 	}
 
-	public String getAs_cur() {
-		return as_cur;
+	public String getAsCur() {
+		return asCur;
 	}
 
-	public void setAs_cur(String asCur) {
-		this.as_cur = asCur;
+	public void setAsCur(String asCur) {
+		this.asCur = asCur;
 	}
 
-	public String getAs_num_query() {
-		return as_num_query;
+	public String getAsNumQuery() {
+		return asNumQuery;
 	}
 
-	public void setAs_num_query(String asNumQuery) {
-		this.as_num_query = asNumQuery;
+	public void setAsNumQuery(String asNumQuery) {
+		this.asNumQuery = asNumQuery;
 	}
 
-	public String getAs_num_tran() {
-		return as_num_tran;
+	public String getAsNumTran() {
+		return asNumTran;
 	}
 
-	public void setAs_num_tran(String asNumTran) {
-		this.as_num_tran = asNumTran;
+	public void setAsNumTran(String asNumTran) {
+		this.asNumTran = asNumTran;
 	}
 
-	public String getAs_long_query() {
-		return as_long_query;
+	public String getAsLongQuery() {
+		return asLongQuery;
 	}
 
-	public void setAs_long_query(String asLongQuery) {
-		this.as_long_query = asLongQuery;
+	public void setAsLongQuery(String asLongQuery) {
+		this.asLongQuery = asLongQuery;
 	}
 
-	public String getAs_long_tran() {
-		return as_long_tran;
+	public String getAsLongTran() {
+		return asLongTran;
 	}
 
-	public void setAs_long_tran(String asLongTran) {
-		this.as_long_tran = asLongTran;
+	public void setAsLongTran(String asLongTran) {
+		this.asLongTran = asLongTran;
 	}
 
-	public String getAs_error_query() {
-		return as_error_query;
+	public String getAsErrorQuery() {
+		return asErrorQuery;
 	}
 
-	public void setAs_error_query(String asErrorQuery) {
-		this.as_error_query = asErrorQuery;
+	public void setAsErrorQuery(String asErrorQuery) {
+		this.asErrorQuery = asErrorQuery;
 	}
 
-	public String getAs_dbname() {
-		return as_dbname;
+	public String getAsDbName() {
+		return asDbName;
 	}
 
-	public void setAs_dbname(String asDbname) {
-		this.as_dbname = asDbname;
+	public void setAsDbName(String asDbName) {
+		this.asDbName = asDbName;
 	}
 
-	public String getAs_dbhost() {
-		return as_dbhost;
+	public String getAsDbHost() {
+		return asDbHost;
 	}
 
-	public void setAs_dbhost(String asDbhost) {
-		this.as_dbhost = asDbhost;
+	public void setAsDbHost(String asDbHost) {
+		this.asDbHost = asDbHost;
 	}
 
-	public String getAs_lct() {
-		return as_lct;
+	public String getAsLct() {
+		return asLct;
 	}
 
-	public void setAs_lct(String asLct) {
-		this.as_lct = asLct;
+	public void setAsLct(String asLct) {
+		this.asLct = asLct;
 	}
 
-	public String getAs_client_ip() {
-		return as_client_ip;
+	public String getAsClientIp() {
+		return asClientIp;
 	}
 
-	public void setAs_client_ip(String asClientIp) {
-		this.as_client_ip = asClientIp;
+	public void setAsClientIp(String asClientIp) {
+		this.asClientIp = asClientIp;
 	}
 
 	/**
@@ -223,24 +223,24 @@ public class ApplyServerInfo implements
 	 * 
 	 */
 	public void clear() {
-		as_id = "";
-		as_pid = "";
-		as_c = "";
-		as_psize = "";
-		as_port = "";
-		as_status = "";
-		as_cpu = "";
-		as_ctime = "";
-		as_lat = "";
-		as_cur = "";
-		as_num_query = "";
-		as_num_tran = "";
-		as_long_query = "";
-		as_long_tran = "";
-		as_error_query = "";
-		as_dbname = "";
-		as_dbhost = "";
-		as_lct = "";
-		as_client_ip = "";
+		asId = "";
+		asPid = "";
+		asC = "";
+		asPsize = "";
+		asPort = "";
+		asStatus = "";
+		asCpu = "";
+		asCtime = "";
+		asLat = "";
+		asCur = "";
+		asNumQuery = "";
+		asNumTran = "";
+		asLongQuery = "";
+		asLongTran = "";
+		asErrorQuery = "";
+		asDbName = "";
+		asDbHost = "";
+		asLct = "";
+		asClientIp = "";
 	}
 }

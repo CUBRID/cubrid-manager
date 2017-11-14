@@ -47,65 +47,65 @@ public class ApplyServerInfoTest extends
 
 	public void setUp() {
 		asi = new ApplyServerInfo();
-		asi.setAs_id("as_id");
-		asi.setAs_c("as_c");
-		asi.setAs_cpu("as_cpu");
-		asi.setAs_ctime("2000/12/12");
-		asi.setAs_cur("as_cur");
-		asi.setAs_dbhost("as_dbhost");
-		asi.setAs_dbname("as_dbname");
-		asi.setAs_error_query("as_error_query");
-		asi.setAs_lat("as_lat");
-		asi.setAs_long_query("as_long_query");
-		asi.setAs_lct("as_lct");
-		asi.setAs_long_tran("as_long_tran");
-		asi.setAs_num_query("as_num_query");
-		asi.setAs_pid("as_pid");
-		asi.setAs_psize("as_psize");
-		asi.setAs_status("as_status");
-		asi.setAs_num_tran("as_num_tran");
-		asi.setAs_port("asPort");
-		asi.setAs_client_ip("asClientIp");
+		asi.setAsId("as_id");
+		asi.setAsC("as_c");
+		asi.setAsCpu("as_cpu");
+		asi.setAsCtime("2000/12/12");
+		asi.setAsCur("as_cur");
+		asi.setAsDbHost("as_dbhost");
+		asi.setAsDbName("as_dbname");
+		asi.setAsErrorQuery("as_error_query");
+		asi.setAsLat("as_lat");
+		asi.setAsLongQuery("as_long_query");
+		asi.setAsLct("as_lct");
+		asi.setAsLongTran("as_long_tran");
+		asi.setAsNumQuery("as_num_query");
+		asi.setAsPid("as_pid");
+		asi.setAsPsize("as_psize");
+		asi.setAsStatus("as_status");
+		asi.setAsNumTran("as_num_tran");
+		asi.setAsPort("asPort");
+		asi.setAsClientIp("asClientIp");
 	}
 
 	public void testGet() {
-		String temp = asi.getAs_id();
+		String temp = asi.getAsId();
 		assertEquals(temp, "as_id");
-		temp = asi.getAs_c();
+		temp = asi.getAsC();
 		assertEquals(temp, "as_c");
-		temp = asi.getAs_cpu();
+		temp = asi.getAsCpu();
 		assertEquals(temp, "as_cpu");
-		temp = asi.getAs_ctime();
+		temp = asi.getAsCtime();
 		assertEquals(temp, "2000/12/12");
-		temp = asi.getAs_cur();
+		temp = asi.getAsCur();
 		assertEquals(temp, "as_cur");
-		temp = asi.getAs_dbhost();
+		temp = asi.getAsDbHost();
 		assertEquals(temp, "as_dbhost");
-		temp = asi.getAs_dbname();
+		temp = asi.getAsDbName();
 		assertEquals(temp, "as_dbname");
-		temp = asi.getAs_error_query();
+		temp = asi.getAsErrorQuery();
 		assertEquals(temp, "as_error_query");
-		temp = asi.getAs_lat();
+		temp = asi.getAsLat();
 		assertEquals(temp, "as_lat");
-		temp = asi.getAs_long_query();
+		temp = asi.getAsLongQuery();
 		assertEquals(temp, "as_long_query");
-		temp = asi.getAs_lct();
+		temp = asi.getAsLct();
 		assertEquals(temp, "as_lct");
-		temp = asi.getAs_long_tran();
+		temp = asi.getAsLongTran();
 		assertEquals(temp, "as_long_tran");
-		temp = asi.getAs_num_query();
+		temp = asi.getAsNumQuery();
 		assertEquals(temp, "as_num_query");
-		temp = asi.getAs_pid();
+		temp = asi.getAsPid();
 		assertEquals(temp, "as_pid");
-		temp = asi.getAs_psize();
+		temp = asi.getAsPsize();
 		assertEquals(temp, "as_psize");
-		temp = asi.getAs_status();
+		temp = asi.getAsStatus();
 		assertEquals(temp, "as_status");
-		temp = asi.getAs_num_tran();
+		temp = asi.getAsNumTran();
 		assertEquals(temp, "as_num_tran");
-		temp = asi.getAs_port();
+		temp = asi.getAsPort();
 		assertEquals("asPort", temp);
-		temp = asi.getAs_client_ip();
+		temp = asi.getAsClientIp();
 		assertEquals("asClientIp", temp);
 	}
 
@@ -116,6 +116,6 @@ public class ApplyServerInfoTest extends
 	
 	public void testClear() {
 		asi.clear();
-		assertEquals("", asi.getAs_client_ip());
+		assertEquals("", asi.getAsClientIp());
 	}
 }

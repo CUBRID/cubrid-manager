@@ -350,7 +350,9 @@ public final class ModelUtil {
 			return triggerlist;
 		}
 		for (TreeNode triggerinfo : nodelist) {
-			Trigger trigger = new Trigger();
+			Trigger trigger = new Trigger
+				.Builder()
+				.build();
 			SocketTask.setFieldValue(triggerinfo, trigger);
 			triggerlist.add(trigger);
 		}

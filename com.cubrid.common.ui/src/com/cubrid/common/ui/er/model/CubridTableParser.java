@@ -302,17 +302,17 @@ public class CubridTableParser {
 	private List<String> getReferredColumns(SchemaInfo schemaInfo, Constraint fkConstaint) throws Exception {
 		List<String> resultList = new ArrayList<String>();
 		String refTable = getReferencedTableName(fkConstaint);
-		SchemaInfo referedSchemaInfo = getReferencedTable(refTable);
-		if (referedSchemaInfo != null) {
-			Constraint pkConstaint = referedSchemaInfo.getPK();
+		SchemaInfo referredSchemaInfo = getReferencedTable(refTable);
+		if (referredSchemaInfo != null) {
+			Constraint pkConstaint = referredSchemaInfo.getPK();
 			if (pkConstaint == null) {
 				throw new ERException(Messages.bind(Messages.errFKColumnMatch, new String[] {
 						schemaInfo.getClassname(), fkConstaint.getName() }));
 			}
 			List<String> pklist = pkConstaint.getAttributes();
 			for (int i = 0; i < pklist.size(); i++) {
-				String referedKey = pklist.get(i).replace(" ASC", "").replace(" DESC", "");
-				resultList.add(referedKey);
+				String referredKey = pklist.get(i).replace(" ASC", "").replace(" DESC", "");
+				resultList.add(referredKey);
 			}
 		}
 

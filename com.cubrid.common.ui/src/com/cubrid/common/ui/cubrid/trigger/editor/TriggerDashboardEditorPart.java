@@ -413,7 +413,7 @@ public class TriggerDashboardEditorPart extends CubridEditorPart {
 				if (trigger != null) {
 					switch (columnIndex) {
 						case 0 : return trigger.getName();
-						case 1 : return trigger.getTarget_class();
+						case 1 : return trigger.getTargetClass();
 						case 2 : return trigger.getEventType();
 						case 3 : 
 							return trigger.getStatus();
