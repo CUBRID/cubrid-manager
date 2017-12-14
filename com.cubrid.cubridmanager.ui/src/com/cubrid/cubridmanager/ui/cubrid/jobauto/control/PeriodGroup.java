@@ -264,13 +264,26 @@ public class PeriodGroup extends
 	}
 
 	private void addTimeItemToComp(Composite composite) {
-		final Label backupHourLabel = new Label(composite, SWT.RESIZE);
-		final GridData gdHoureLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false);
-		gdHoureLabel.widthHint = 80;
-		backupHourLabel.setLayoutData(gdHoureLabel);
+		Label backupHourLabel = null;
+		GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		gridData.widthHint = 80;
+
+		if (isBackupPlanDialog()) {
+			Composite backupTimeComp = new Composite(composite, SWT.RESIZE);
+			final GridLayout layout = new GridLayout(colCountPerLine, false);
+			backupTimeComp.setLayout(layout);
+			backupTimeComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+			backupHourLabel = new Label(backupTimeComp, SWT.RESIZE);
+			timeCombo = new Combo(backupTimeComp, SWT.BORDER);
+		} else {
+			backupHourLabel = new Label(composite, SWT.RESIZE);
+			timeCombo = new Combo(composite, SWT.BORDER);
+		}
+
+		backupHourLabel.setLayoutData(gridData);
 		backupHourLabel.setText(msgPeriodTimeLbl);
 
-		timeCombo = new Combo(composite, SWT.BORDER);
 		timeCombo.setItems(itemsOfTimeCombo);
 		final GridData gdTimeCombo = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gdTimeCombo.widthHint = 80;
@@ -279,11 +292,23 @@ public class PeriodGroup extends
 		timeCombo.setToolTipText(Messages.timeToolTip);
 		timeCombo.addVerifyListener(new TimeComboVerifyListener());
 		timeCombo.addModifyListener(new TimeModifyListener());
+		timeCombo.setEnabled(!isPeriodicEnabled);
+	}
+
+	private boolean isBackupPlanDialog() {
+		return msgPeriodTimeLbl.equals(Messages.msgPeriodTimeLbl);
 	}
 
 	private void addNewPeriodGroupItem(Composite composite) {
 		addDetailGroupToComp(composite);
+		if (isBackupPlanDialog()) {
+			addTimeItemToComp(composite);
+		} else {
+			addTimeTypeGroupForEditQuery(composite);
+		}
+	}
 
+	private void addTimeTypeGroupForEditQuery(Composite composite) {
 		final Group timeTypeGroup = new Group(composite, SWT.RESIZE);
 		GridLayout timeTypeGpLayout = new GridLayout();
 		timeTypeGpLayout.verticalSpacing = 0;
@@ -353,7 +378,6 @@ public class PeriodGroup extends
 		//set default status
 		btnSpecificRadio.setSelection(!isPeriodicEnabled);
 		btnPeriodicRadio.setSelection(isPeriodicEnabled);
-		timeCombo.setEnabled(!isPeriodicEnabled);
 		intervalCombo.setEnabled(isPeriodicEnabled);
 	}
 
