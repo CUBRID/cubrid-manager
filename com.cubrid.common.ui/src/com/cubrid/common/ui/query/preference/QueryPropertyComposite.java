@@ -66,7 +66,6 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
  */
 public class QueryPropertyComposite extends
 		Composite {
-	private Button searchUnitBtn;
 	private Combo unitCountCombo;
 	private Spinner loadSizeSpinner;
 	private final CubridServer server;
@@ -197,21 +196,9 @@ public class QueryPropertyComposite extends
 		gridLayout.numColumns = 2;
 		groupFirst.setLayout(gridLayout);
 
-		searchUnitBtn = new Button(groupFirst, SWT.CHECK);
-		final GridData gdSearchUnitBtn = new GridData(SWT.LEFT, SWT.CENTER,
-				true, false);
-		searchUnitBtn.setLayoutData(gdSearchUnitBtn);
-		searchUnitBtn.setText(Messages.searchUnitInstances);
-		searchUnitBtn.addSelectionListener(new SelectionAdapter() {
-			/**
-			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-			 * @param event an event containing information about the selection
-			 */
-			public void widgetSelected(SelectionEvent event) {
-				unitCountCombo.setEnabled(searchUnitBtn.getSelection());
-			}
+		final Label searchUnitLabel = new Label(groupFirst, SWT.NONE);
+		searchUnitLabel.setText(Messages.searchUnitInstances);
 
-		});
 		unitCountCombo = new Combo(groupFirst, SWT.READ_ONLY);
 		unitCountCombo.setItems(new String[] { "100", "200", "500", "1000", "2000", "5000" });
 		final GridData gdUnitCountSpinner = new GridData(SWT.RIGHT, SWT.CENTER,
