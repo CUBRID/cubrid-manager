@@ -309,7 +309,7 @@ public class ActionBuilder {
 
 		IAction tableSelectAllAction = new TableSelectAllAction(
 				shell,
-				Messages.tableSelectAllActionName,
+				Messages.tableSelectActionName,
 				loadImage("icons/action/table_select_all.png"));
 		registerAction(tableSelectAllAction);
 

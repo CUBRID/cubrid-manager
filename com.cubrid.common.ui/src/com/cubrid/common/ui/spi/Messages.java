@@ -113,7 +113,7 @@ public class Messages extends
 	public static String deleteAllRecordsActionName;
 	public static String createLikeTableActionName;
 	public static String tableSelectCountActionName;
-	public static String tableSelectAllActionName;
+	public static String tableSelectActionName;
 	public static String tableInsertActionName;
 	public static String toolsActionName;
 	public static String tableExportActionName;
