@@ -1841,7 +1841,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 			return sql.replace(
 					SqlParser.ROWNUM_CONDITION_MARK, "\r\nWHERE ROWNUM BETWEEN " +
 							String.valueOf(start) + " AND " +
-							String.valueOf(start + recordLimit - 1));
+							String.valueOf(start + filterResultContrItem.getSearchUnit() - 1));
 		} else {
 			return sql;
 		}

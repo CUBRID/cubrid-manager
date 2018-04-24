@@ -520,4 +520,8 @@ public class FilterResultContrItem extends ControlContribution {
 	public boolean isUseFilter() {
 		return (text == null || text.isDisposed()) ? false : text.getText().length() > 0;
 	}
+
+	public int getSearchUnit() {
+		return pageLimitCombo == null ? pageLimit : Integer.parseInt(pageLimitCombo.getText());
+	}
 }
