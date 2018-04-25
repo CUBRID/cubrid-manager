@@ -47,10 +47,10 @@ public final class ImportFileConstants {
 	public static final int XLS_COLUMN_LIMIT = 256;
 	public static final int XLS_CELL_CHAR_LIMIT = 32767;
 
-	private static final String[] FILTER_EXTS = new String[]{"*.*", "*.csv", "*.xls",
+	private static final String[] FILTER_EXTS = new String[]{"*.csv", "*.xls",
 			"*.xlsx" };
 	private static final String[] FILETER_NAMES = new String[]{
-			Messages.allFileType, Messages.csvFileType, Messages.xlsFileType, Messages.xlsxFileType };
+			Messages.csvFileType, Messages.xlsFileType, Messages.xlsxFileType };
 
 	private ImportFileConstants() {
 
