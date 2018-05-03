@@ -151,7 +151,7 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 				return editableMode ? UNCHECK_IMAGE : null;
 			}
 
-		// MEMO
+		// INHERIT
 		case 8:
 			return null;
 
@@ -213,9 +213,9 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 		// SHARED
 		case 7:
 			return null;
-		// MEMO
+		// INHERIT
 		case 8:
-			return dbAttribute.getDescription();
+			return dbAttribute.getInherit();
 		default:
 			break;
 		}
