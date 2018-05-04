@@ -63,7 +63,7 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 	private final static int UK = 6;
 	private final static int SHARED = 7;
 	private final static int INHERIT = 8;
-	
+
 	private final static Image PK_IMAGE = CommonUIPlugin.getImage("icons/primary_key.png");
 	private final static Image CHECK_IMAGE = CommonUIPlugin.getImage("icons/checked.gif");
 	private final static Image UNCHECK_IMAGE = CommonUIPlugin.getImage("icons/unchecked.gif");
@@ -97,8 +97,8 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 		}
 
 		switch (columnIndex) {
-		// PK
-		case 0: {
+
+		case PK: {
 			String attrName = dbAttribute.getName();
 			Constraint pk = schema.getPK(supers);
 			if (null != pk && pk.getAttributes().contains(attrName)) {
@@ -107,28 +107,23 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 			return editableMode ? UNCHECK_IMAGE : null;
 		}
 
-		// NAME
-		case 1:
+		case NAME:
 			return null;
 
-		// DATATYPE
-		case 2:
+		case DATA_TYPE:
 			return null;
 
-		// DEFAULT
-		case 3:
+		case DEFAULT:
 			return null;
 
-		// AUTO INCREMENT
-		case 4:
+		case AUTO_INCREMENT:
 //			SerialInfo autoIncrement = dbAttribute.getAutoIncrement();
 //			if (null != autoIncrement) {
 //				return CHECK_IMAGE;
 //			}
 			return null;
 
-		// NOT NULL
-		case 5: {
+		case NOT_NULL: {
 			String attrName = dbAttribute.getName();
 			Constraint pk = schema.getPK(supers);
 			if (null != pk && pk.getAttributes().contains(attrName)) {
@@ -141,8 +136,7 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 			}
 		}
 
-		// UK
-		case 6: {
+		case UK: {
 			String attrName = dbAttribute.getName();
 			Constraint pk = schema.getPK(supers);
 			if (null != pk && pk.getAttributes().contains(attrName)) {
@@ -155,16 +149,14 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 			}
 		}
 
-		// SHARED
-		case 7:
+		case SHARED:
 			if (dbAttribute.isShared()) {
 				return editableMode ? CHECK_IMAGE : DISABLED_CHECK_IMAGE;
 			} else {
 				return editableMode ? UNCHECK_IMAGE : null;
 			}
 
-		// INHERIT
-		case 8:
+		case INHERIT:
 			return null;
 
 		default:
@@ -185,21 +177,21 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 		}
 
 		switch (columnIndex) {
-		// PK
-		case 0:
+
+		case PK:
 			return null;
-		// NAME
-		case 1:
+
+		case NAME:
 			return dbAttribute.getName();
-		// DATATYPE
-		case 2:
+
+		case DATA_TYPE:
 			if (DataType.DATATYPE_ENUM.equalsIgnoreCase(dbAttribute.getType())) {
 				String type = StringUtil.toUpper(dbAttribute.getType()) + dbAttribute.getEnumeration();
 				return DataType.getShownType(type);
 			}
 			return DataType.getShownType(dbAttribute.getType());
-		// DEFAULT
-		case 3:
+
+		case DEFAULT:
 			String defaultValue = dbAttribute.getDefault();
 			if (defaultValue == null) {
 				return "";
@@ -209,28 +201,30 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 				return "''";
 			}
 			return defaultValue;
-		// AUTO INCREMENT
-		case 4:
+
+		case AUTO_INCREMENT:
 			SerialInfo serial = dbAttribute.getAutoIncrement();
 			if (serial == null) {
 				return "";
 			}
 			return serial.getMinValue() + "," + serial.getIncrementValue();
-		// NOT NULL
-		case 5:
+
+		case NOT_NULL:
 			return null;
-		// UK
-		case 6:
+
+		case UK:
 			return null;
-		// SHARED
-		case 7:
+
+		case SHARED:
 			return null;
-		// INHERIT
-		case 8:
+
+		case INHERIT:
 			return dbAttribute.getInherit();
+			
 		default:
 			break;
 		}
+		
 		return null;
 	}
 
@@ -269,7 +263,7 @@ public class AttributeTableViewerLabelProvider implements ITableLabelProvider, I
 			return null;
 		}
 		DBAttribute attr = (DBAttribute) element;
-		if (columnIndex == 4) {
+		if (columnIndex == AUTO_INCREMENT) {
 			DBAttribute aiAttr = schema.getAutoIncrementColumn();
 			if (aiAttr != null && aiAttr != attr) {
 				return DISABLED_COLOR;
