@@ -53,11 +53,23 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.SuperClassUtil;
  * @author robin 2009-6-4
  */
 public class AttributeTableViewerLabelProvider implements ITableLabelProvider, ITableColorProvider {
+
+	private final static int PK = 0;
+	private final static int NAME = 1;
+	private final static int DATA_TYPE = 2;
+	private final static int DEFAULT = 3;
+	private final static int AUTO_INCREMENT = 4;
+	private final static int NOT_NULL = 5;
+	private final static int UK = 6;
+	private final static int SHARED = 7;
+	private final static int INHERIT = 8;
+	
 	private final static Image PK_IMAGE = CommonUIPlugin.getImage("icons/primary_key.png");
 	private final static Image CHECK_IMAGE = CommonUIPlugin.getImage("icons/checked.gif");
 	private final static Image UNCHECK_IMAGE = CommonUIPlugin.getImage("icons/unchecked.gif");
 	private final static Image DISABLED_CHECK_IMAGE = CommonUIPlugin.getImage("icons/disabled_checked.gif");
 	private final static Color DISABLED_COLOR =  Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
+	
 	private SchemaInfo schema;
 	private List<SchemaInfo> supers;
 	private DatabaseInfo database;
