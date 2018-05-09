@@ -116,7 +116,7 @@ public class DeleteDatabaseConfirmDialog extends
 	 */
 	protected void constrainShellSize() {
 		super.constrainShellSize();
-		getShell().setSize(300, 220);
+		getShell().setSize(500, 220);
 		CommonUITool.centerShell(getShell());
 		getShell().setText(Messages.titleDeleteDbConfirmDialog);
 
