@@ -10,7 +10,7 @@
 !include 'LogicLib.nsh'
 
 ###################################################
-# Defines 
+# Defines
 ###################################################
 
 ;------------------------------------
@@ -23,7 +23,7 @@
 ;!define OUTFILE_PATH '.'
 
 !define PRODUCT_NAME 'CUBRID Manager'
-!define PRODUCT_VERSION '2017'
+!define PRODUCT_VERSION '10.1.0'
 !define PRODUCT_EXE_NAME 'cubridmanager'
 
 !define SHORTCUT_NAME '${PRODUCT_NAME}'
@@ -47,7 +47,7 @@ Var uninstall_name
 ###################################################
 
 Name '${PRODUCT_NAME} ${PRODUCT_VERSION}'
-OutFile '${OUTFILE_PATH}\CUBRIDManager-${INTERNAL_VERSION}-windows-i386-with-jre.exe'
+OutFile '${OUTFILE_PATH}\CUBRIDManager-${INTERNAL_VERSION}-windows-i386.exe'
 BrandingText 'http://www.cubrid.org'
 
 ;---------------------------------------------------
@@ -96,7 +96,7 @@ RequestExecutionLevel user
 !define MUI_UNABORTWARNING
 
 ;---------------------------------------------------
-; don't automatically jump to finish page, 
+; don't automatically jump to finish page,
 ; allow user to check the install/un-install log.
 ;---------------------------------------------------
 
@@ -114,7 +114,7 @@ RequestExecutionLevel user
 ;---------------------------------------------
 
 ;!define MUI_LANGDLL_REGISTRY_ROOT 'HKLM'
-;!define MUI_LANGDLL_REGISTRY_KEY "Software\Modern UI Test" 
+;!define MUI_LANGDLL_REGISTRY_KEY "Software\Modern UI Test"
 ;!define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
 ###################################################
@@ -180,7 +180,6 @@ RequestExecutionLevel user
 Section '${PRODUCT_NAME}' SEC_CUBRIDManager
   Call WindowsArchCheck
   Call CUBRIDManagerExist
-  Call JAVAVersionCheck
 
   SectionIn RO ; section read only
 
@@ -242,7 +241,7 @@ SectionGroupEnd
   Call StrRep
   Pop $0
 !macroend
- 
+
 !define StrReplace '!insertmacro "StrReplaceConstructor"'
 
 ;--------------------------------
@@ -270,32 +269,32 @@ SectionGroupEnd
 Function .onInit
   ; UAS plug-in init
   UAC_Elevate:
-    UAC::RunElevated 
+    UAC::RunElevated
     StrCmp 1223 $0 UAC_ElevationAborted ; UAC dialog aborted by user?
     StrCmp 0 $0 0 UAC_Err ; Error?
     StrCmp 1 $1 0 UAC_Success ;Are we the real deal or just the wrapper?
     Quit
- 
+
   UAC_Err:
     MessageBox mb_iconstop "Unable to elevate, error $0"
     Abort
- 
+
   UAC_ElevationAborted:
     # elevation was aborted, run as normal?
     MessageBox mb_iconstop "This installer requires admin access, aborting!"
     Abort
- 
+
   UAC_Success:
     StrCmp 1 $3 +4 ;Admin?
     StrCmp 3 $1 0 UAC_ElevationAborted ;Try again?
     MessageBox mb_iconstop "This installer requires admin access, try again"
-    goto UAC_Elevate 
+    goto UAC_Elevate
 
   !insertmacro MUI_LANGDLL_DISPLAY ; multi-language select
 
   StrCpy $start_menu_folder '${START_MENU_FOLDER}'
   ReadEnvStr $R1 'CUBRID'
-  
+
   GetVersion::WindowsPlatformArchitecture
   Pop $R0
   StrCmp '32' $R0 isX86 isX64
@@ -309,7 +308,7 @@ Function .onInit
       Return
     lable_cubrid_env_set_x86:
       ${StrReplace} $R1 "//" "\"
-  	  Strcpy $R3 $0  
+  	  Strcpy $R3 $0
       StrCpy $INSTDIR '$R3\cubridmanager'
       Return
   isX64:
@@ -322,7 +321,7 @@ Function .onInit
       Return
     lable_cubrid_env_set_x64:
       ${StrReplace} $R1 "//" "\"
-  	  Strcpy $R4 $0  
+  	  Strcpy $R4 $0
       StrCpy $INSTDIR '$R4\cubridmanager x86'
       Return
 FunctionEnd
@@ -336,13 +335,12 @@ Function WindowsArchCheck
   Pop $R0
   StrCmp '32' $R0 isX86 isX64
   isX64:
-    MessageBox mb_iconstop $(msgWindowsArchError) 
-    Quit
+    MessageBox mb_iconstop $(msgWindowsArchError2)
   isX86:
 FunctionEnd
 
 ;---------------------------------------------------------------------
-; Check if the same version CUBRIDManager is already installed 
+; Check if the same version CUBRIDManager is already installed
 ; on this system
 ;---------------------------------------------------------------------
 
@@ -355,34 +353,6 @@ Function CUBRIDManagerExist
       label_abort:
         Quit
     label_continue:
-FunctionEnd
-
-;---------------------------------------------------------------------
-; Check if JAVA 1.6 or later version is installed
-;---------------------------------------------------------------------
-
-Function JAVAVersionCheck
-  Var /GLOBAL JAVA_VER
-  ; check JRE version
-  ReadRegStr $JAVA_VER HKLM 'SOFTWARE\JavaSoft\Java Runtime Environment' 'CurrentVersion'
- 
-  StrCmp $JAVA_VER '' label_jdk_check label_version_check
-  label_jdk_check:
-    ; check JDK version
-    ReadRegStr $JAVA_VER HKLM 'SOFTWARE\JavaSoft\Java Development Kit' 'CurrentVersion'
-    StrCmp $JAVA_VER '' label_not_install label_version_check
-  label_not_install:
-    MessageBox MB_OKCANCEL|MB_ICONQUESTION $(msgJAVANotInstall) IDOK label_continue IDCANCEL label_abort
-  label_version_check:
-    StrCpy $2 $JAVA_VER 1 0
-    StrCpy $3 $JAVA_VER 1 2
-    StrCpy $JAVA_VER '$2$3'
-    IntCmp 16 $JAVA_VER label_continue label_continue label_version_error
-      label_version_error:
-        MessageBox MB_OKCANCEL|MB_ICONQUESTION $(msgJAVAVersionError) IDOK label_continue IDCANCEL label_abort
-        label_abort:
-          Quit   
-  label_continue:
 FunctionEnd
 
 ;-----------------------------------------------------
@@ -408,7 +378,7 @@ Function regUninstallInfo
   isX64:
     Strcpy $R2  '${PRODUCT_NAME} ${PRODUCT_VERSION} x86'
 
-  WriteRegStr HKLM $R0 'DisplayName' $R2 
+  WriteRegStr HKLM $R0 'DisplayName' $R2
   WriteRegStr HKLM $R0 'UninstallString' '$INSTDIR\Uninstall.exe'
 
   WriteRegStr HKLM $R0 'Publisher' 'CUBRID'
@@ -422,7 +392,7 @@ FunctionEnd
 Function .OnInstFailed
     UAC::Unload ;Must call unload!
 FunctionEnd
- 
+
 Function .OnInstSuccess
     UAC::Unload ;Must call unload!
 FunctionEnd
@@ -447,6 +417,7 @@ Section 'Uninstall'
   RMDir /r '$INSTDIR\dropins'
   RMDir /r '$INSTDIR\p2'
   RMDir /r '$INSTDIR\logs'
+  RMDir /r '$INSTDIR\jre'
 
   Delete '$INSTDIR\Uninstall.exe'
 
@@ -472,26 +443,26 @@ SectionEnd
 Function un.onInit
   ; UAS plug-in init
   UAC_Elevate:
-    UAC::RunElevated 
+    UAC::RunElevated
     StrCmp 1223 $0 UAC_ElevationAborted ; UAC dialog aborted by user?
     StrCmp 0 $0 0 UAC_Err ; Error?
     StrCmp 1 $1 0 UAC_Success ;Are we the real deal or just the wrapper?
     Quit
- 
+
   UAC_Err:
     MessageBox mb_iconstop "Unable to elevate, error $0"
     Abort
- 
+
   UAC_ElevationAborted:
     # elevation was aborted, run as normal?
     MessageBox mb_iconstop "This installer requires admin access, aborting!"
     Abort
- 
+
   UAC_Success:
     StrCmp 1 $3 +4 ;Admin?
     StrCmp 3 $1 0 UAC_ElevationAborted ;Try again?
     MessageBox mb_iconstop "This installer requires admin access, try again"
-    goto UAC_Elevate 
+    goto UAC_Elevate
 
     !insertmacro MUI_UNGETLANGUAGE
 
@@ -531,7 +502,7 @@ Function un.DetectProcessRunning
   StrCmp $2 "$\r$\n${PRODUCT_EXE_NAME}" running not_running
   running:
     MessageBox mb_iconstop $(msgStillRunning)
-    Quit   
+    Quit
   not_running:
 FunctionEnd
 
