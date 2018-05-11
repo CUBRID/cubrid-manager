@@ -83,3 +83,6 @@ You can download our modified Eclipse project source code
  * jface text from https://github.com/CUBRID/cubrid-manager-lib/tree/master/external-lib/src/com/cubrid/common/ui/query/control/jface
  * swf snippets from https://github.com/CUBRID/cubrid-manager-lib/blob/master/external-lib/src/org/eclipse/swt/BufferedImageUtil.java
  * equinox from https://github.com/CUBRID/cubrid-manager-lib/blob/master/external-update-lib/src/com/cubrid/common/update/p2/handler/PreloadingRepositoryHandler.java
+
+- Redistribution for Oracle's JRE from http://www.oracle.com/technetwork/java/javase/terms/license/index.html
+Use of the Commercial Features for any commercial or production purpose requires a separate license from Oracle. “Commercial Features” means those features that are identified as such in the Licensing Information User Manual – Oracle Java SE and Oracle Java Embedded Products Document, accessible at http://www.oracle.com/technetwork/java/javase/documentation/index.html, under the “Description of Product Editions and Permitted Features” section.
