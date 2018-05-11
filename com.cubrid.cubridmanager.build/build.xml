@@ -28,6 +28,10 @@
 	<property name="product.macosx.carbon" value="${deploy.home}/carbon/${archivePrefix}" />
 	-->
 	<property name="product.macosx.cocoa" value="${deploy.home}/cocoa/${archivePrefix}" />
+	<property name="jre.linux.32" value="${eclipse.home}/jre/linux32.zip" />
+	<property name="jre.linux.64" value="${eclipse.home}/jre/linux64.zip" />
+	<property name="jre.win.32" value="${eclipse.home}/jre/win32.zip" />
+	<property name="jre.win.64" value="${eclipse.home}/jre/win64.zip" />
 	<property name="installer.win" value="${build.dir}/installer/win" />
 	<!--
 	<property name="installer.linux" value="${build.dir}/installer/linux" />
@@ -123,6 +127,7 @@
 				<include name="*.txt" />
 			</fileset>
 		</copy>
+		<unzip src="${jre.win.32}" dest="${product.win.32}" />
 		<signjar alias="${sign.alias}" keystore="${sign.keystore}"
 		    storepass="${sign.storepass}" keypass="${sign.keypass}">
 		  <path>
@@ -160,6 +165,7 @@
 				<include name="*.txt" />
 			</fileset>
 		</copy>
+		<unzip src="${jre.win.64}" dest="${product.win.64}" />
 		<signjar alias="${sign.alias}" keystore="${sign.keystore}"
 		    storepass="${sign.storepass}" keypass="${sign.keypass}">
 		  <path>
@@ -198,6 +204,8 @@
 				<include name="*.txt" />
 			</fileset>
 		</copy>
+		<unzip src="${jre.linux.32}" dest="${product.linux.32}" />
+		<chmod file="${product.linux.32}/jre/bin/**" perm="755" type="both" />
 		<signjar alias="${sign.alias}" keystore="${sign.keystore}"
 		    storepass="${sign.storepass}" keypass="${sign.keypass}">
 		  <path>
@@ -236,6 +244,7 @@
 				<include name="*.txt" />
 			</fileset>
 		</copy>
+		<unzip src="${jre.linux.64}" dest="${product.linux.64}" />
 		<signjar alias="${sign.alias}" keystore="${sign.keystore}"
 		    storepass="${sign.storepass}" keypass="${sign.keypass}">
 		  <path>
@@ -357,6 +366,10 @@
 		<tar destfile="${deploy.home}/${product.name}-${product.version}-linux-i386.tar">
 			<tarfileset dir="${product.linux.32}" prefix="cubridmanager" />
 			<tarfileset file="${product.linux.32}/${launcher.name}" filemode="755" prefix="cubridmanager" />
+			<tarfileset dir="${product.linux.32}/jre" prefix="cubridmanager/jre" >
+				<exclude name="**/bin/**" />
+			</tarfileset>
+			<tarfileset dir="${product.linux.32}/jre/bin" prefix="cubridmanager/jre/bin" filemode="755" />
 		</tar>
 		<gzip src="${deploy.home}/${product.name}-${product.version}-linux-i386.tar" destfile="${output.path}/${product.name}-${product.version}-linux-i386${debug}.tar.gz" />
 	</target>
@@ -368,6 +381,10 @@
 		<tar destfile="${deploy.home}/${product.name}-${product.version}-linux-x86_64.tar">
 			<tarfileset dir="${product.linux.64}" prefix="cubridmanager" />
 			<tarfileset file="${product.linux.64}/${launcher.name}" filemode="755" prefix="cubridmanager" />
+			<tarfileset dir="${product.linux.64}/jre" prefix="cubridmanager/jre" >
+				<exclude name="**/bin/**" />
+			</tarfileset>
+			<tarfileset dir="${product.linux.64}/jre/bin" prefix="cubridmanager/jre/bin" filemode="755" />
 		</tar>
 		<gzip src="${deploy.home}/${product.name}-${product.version}-linux-x86_64.tar" destfile="${output.path}/${product.name}-${product.version}-linux-x86_64${debug}.tar.gz" />
 	</target>
@@ -452,7 +469,7 @@
 	  		<arg value="/DINTERNAL_VERSION=${product.version}" />
 	  		<arg value="/DINFILE_PATH=${makensis.input.path}/win32/${archivePrefix}" />
 	  		<arg value="/DOUTFILE_PATH=${makensis.output.path}" />
-	  		<arg value="CUBRIDManager.nsi" />
+			<arg value="CUBRIDManager_with_jre.nsi" />
 		</exec>
 	</target>
 
@@ -466,7 +483,7 @@
 	  		<arg value="/DINTERNAL_VERSION=${product.version}" />
 	  		<arg value="/DINFILE_PATH=${makensis.input.path}/win64/${archivePrefix}" />
 	  		<arg value="/DOUTFILE_PATH=${makensis.output.path}" />
-	  		<arg value="CUBRIDManager_x64.nsi" />
+			<arg value="CUBRIDManager_x64_with_jre.nsi" />
 		</exec>
 	</target>
 
