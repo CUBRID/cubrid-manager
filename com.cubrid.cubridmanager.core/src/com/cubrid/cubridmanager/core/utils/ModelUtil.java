@@ -352,9 +352,24 @@ public final class ModelUtil {
 		for (TreeNode triggerinfo : nodelist) {
 			Trigger trigger = new Trigger();
 			SocketTask.setFieldValue(triggerinfo, trigger);
+			correctTriggerValues(trigger);
 			triggerlist.add(trigger);
 		}
 		return triggerlist;
+	}
+	
+	/**
+	 * correctTriggerValues
+	 * @param trigger
+	 */
+	private static void correctTriggerValues(Trigger trigger) {
+		String actionTime = trigger.getActionTime();
+		String conditionTime = trigger.getConditionTime();
+		
+		if (conditionTime == null) {
+			trigger.setConditionTime(actionTime);
+			trigger.setActionTime("DEFAULT");
+		}
 	}
 
 	/**
