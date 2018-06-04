@@ -107,12 +107,6 @@ public class SchemaCommentInstallAction extends SelectionAction {
 
 		DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
 
-		if (CompatibleUtil.isCommentSupports(dbInfo)) {
-			CommonUITool.openInformationBox(Messages.msgTableCommentAlertTitle,
-					Messages.msgTableCommentInstallNotSupport);
-			return;
-		}
-
 		String msg = Messages.bind(Messages.msgTableCommentConfirm, 
 				ConstantsUtil.SCHEMA_DESCRIPTION_TABLE);
 		boolean needToCreate = CommonUITool.openConfirmBox(msg);
