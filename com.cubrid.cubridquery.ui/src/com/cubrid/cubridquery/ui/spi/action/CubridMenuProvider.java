@@ -31,6 +31,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.ui.common.action.OIDNavigatorAction;
 import com.cubrid.common.ui.common.action.ShowHiddenElementsAction;
 import com.cubrid.common.ui.compare.data.action.DataCompareWizardAction;
@@ -48,8 +49,10 @@ import com.cubrid.common.ui.query.control.DatabaseNavigatorMenu;
 import com.cubrid.common.ui.schemacomment.action.SchemaCommentInstallAction;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.action.MenuProvider;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.NodeType;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridquery.ui.common.action.PropertyAction;
 import com.cubrid.cubridquery.ui.common.control.CQDatabaseNavigatorMenu;
 import com.cubrid.cubridquery.ui.connection.action.NewQueryConnAction;
@@ -76,7 +79,7 @@ public class CubridMenuProvider extends
 	public void buildMenu(IMenuManager manager, ICubridNode node) {
 		String type = node.getType();
 		if (NodeType.DATABASE.equals(type)) {
-			buildDatabaseMenu(manager);
+			buildDatabaseMenu(manager, node);
 		} else if (NodeType.GROUP.equals(type)) {
 			addActionToManager(manager, getAction(NewQueryConnAction.ID));
 			addActionToManager(manager, getAction(OpenQueryConnAction.ID));
@@ -109,7 +112,7 @@ public class CubridMenuProvider extends
 	 *
 	 * @param manager the parent menu manager
 	 */
-	private void buildDatabaseMenu(IMenuManager manager) {
+	private void buildDatabaseMenu(IMenuManager manager, ICubridNode node) {
 		// Query Editor & Comparing Schema
 		manager.add(new Separator());
 		addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
@@ -130,8 +133,10 @@ public class CubridMenuProvider extends
 		manager.add(new Separator());
 
 		// Install Schema Comment
-		addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
-		manager.add(new Separator());
+		if (!CompatibleUtil.isCommentSupports(((CubridDatabase) node).getDatabaseInfo())) {
+			addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
+			manager.add(new Separator());
+		}
 
 //		addActionToManager(manager, getAction(RunSQLFileAction.ID));
 //		manager.add(new Separator());

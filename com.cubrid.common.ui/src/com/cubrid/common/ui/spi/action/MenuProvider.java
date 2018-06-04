@@ -88,6 +88,8 @@ import com.cubrid.common.ui.query.action.DatabaseQueryNewAction;
 import com.cubrid.common.ui.query.control.DatabaseNavigatorMenu;
 import com.cubrid.common.ui.schemacomment.action.SchemaCommentInstallAction;
 import com.cubrid.common.ui.spi.Messages;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.ISchemaNode;
 import com.cubrid.common.ui.spi.model.NodeType;
@@ -148,8 +150,10 @@ public class MenuProvider implements
 			manager.add(new Separator());
 
 			// Install Schema Comment
-			addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
-			manager.add(new Separator());
+			if (!CompatibleUtil.isCommentSupports(((DefaultSchemaNode) node).getDatabase().getDatabaseInfo())) {
+				addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
+				manager.add(new Separator());
+			}
 
 			IMenuManager perparedMenu = new MenuManager(Messages.preparedTableDataMenuName);
 			manager.add(perparedMenu);
@@ -292,8 +296,10 @@ public class MenuProvider implements
 		manager.add(new Separator());
 
 		// Install Schema Comment
-		addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
-		manager.add(new Separator());
+		if (!CompatibleUtil.isCommentSupports(((CubridDatabase) node).getDatabaseInfo())) {
+			addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
+			manager.add(new Separator());
+		}
 
 		// View data
 		IMenuManager viewDataMenu = new MenuManager(Messages.viewDataMenuName);

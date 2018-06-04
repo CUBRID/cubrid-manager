@@ -518,8 +518,10 @@ public class CubridMenuProvider extends MenuProvider {
 		addActionToManager(manager, getAction(ExportTableDefinitionAction.ID));
 
 		// Install Schema Comment
-		addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
-		manager.add(new Separator());
+		if (!CompatibleUtil.isCommentSupports(((CubridDatabase) node).getDatabaseInfo())) {
+			addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
+			manager.add(new Separator());
+		}
 
 //		manager.add(new Separator());
 //		addActionToManager(manager, getAction(RunSQLFileAction.ID));

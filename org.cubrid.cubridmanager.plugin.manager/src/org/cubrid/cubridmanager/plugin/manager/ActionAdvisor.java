@@ -43,6 +43,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 
 import com.cubrid.common.core.util.ApplicationType;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.ui.common.action.BrokerLogParserAction;
 import com.cubrid.common.ui.common.action.BrokerLogTopMergeAction;
 import com.cubrid.common.ui.common.action.DropDownAction;
@@ -72,6 +73,8 @@ import com.cubrid.common.ui.query.tuner.action.QueryTunerAction;
 import com.cubrid.common.ui.schemacomment.action.SchemaCommentInstallAction;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.action.IActionConstants;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.ui.broker.action.StartBrokerEnvAction;
 import com.cubrid.cubridmanager.ui.broker.action.StopBrokerEnvAction;
 import com.cubrid.cubridmanager.ui.common.action.QueryNewAction;
@@ -105,6 +108,7 @@ import com.cubrid.cubridmanager.ui.host.action.UnifyHostConfigAction;
 import com.cubrid.cubridmanager.ui.service.action.ServiceDashboardAction;
 import com.cubrid.cubridmanager.ui.spi.Version;
 import com.cubrid.cubridmanager.ui.spi.action.CubridActionBuilder;
+import com.cubrid.cubridmanager.ui.spi.action.CubridMenuProvider;
 
 /**
  *
@@ -461,7 +465,13 @@ public class ActionAdvisor extends AbsActionAdvisor {
 		toolsMenu.add(manager.getAction(BrokerLogParserAction.ID));
 		toolsMenu.add(manager.getAction(BrokerLogTopMergeAction.ID));
 		toolsMenu.add(new Separator());
-		toolsMenu.add(manager.getAction(SchemaCommentInstallAction.ID));
+
+		DatabaseInfo info = ((CubridDatabase) manager.getMenuProvider()
+				.getDatabaseNavigatorMenu().getSelectedDb()).getDatabaseInfo();
+		if (info != null && !CompatibleUtil.isCommentSupports(info)) {
+			toolsMenu.add(manager.getAction(SchemaCommentInstallAction.ID));
+		}
+
 		toolsMenu.add(manager.getAction(ServiceDashboardAction.ID));
 
 		menuManager.insertBefore(getMenuInsertPoint(menuManager), fileMenu);

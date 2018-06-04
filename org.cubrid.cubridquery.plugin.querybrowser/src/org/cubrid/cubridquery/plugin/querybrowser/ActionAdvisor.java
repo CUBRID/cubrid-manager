@@ -43,6 +43,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 
 import com.cubrid.common.core.util.ApplicationType;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.ui.CommonUIPlugin;
 import com.cubrid.common.ui.common.action.BrokerConfOpenFileAction;
 import com.cubrid.common.ui.common.action.BrokerLogParserAction;
@@ -77,6 +78,8 @@ import com.cubrid.common.ui.query.tuner.action.QueryTunerAction;
 import com.cubrid.common.ui.schemacomment.action.SchemaCommentInstallAction;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.action.IActionConstants;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridquery.ui.common.action.QueryNewAction;
 import com.cubrid.cubridquery.ui.common.action.QueryNewCustomAction;
 import com.cubrid.cubridquery.ui.common.action.QuitAction;
@@ -476,8 +479,13 @@ public class ActionAdvisor extends AbsActionAdvisor {
 		toolsMenu.add(manager.getAction(BrokerLogParserAction.ID));
 		toolsMenu.add(manager.getAction(BrokerLogTopMergeAction.ID));
 		toolsMenu.add(manager.getAction(BrokerConfOpenFileAction.ID));
-		toolsMenu.add(new Separator());
-		toolsMenu.add(manager.getAction(SchemaCommentInstallAction.ID));
+
+		DatabaseInfo info = ((CubridDatabase) manager.getMenuProvider()
+				.getDatabaseNavigatorMenu().getSelectedDb()).getDatabaseInfo();
+		if (info != null && !CompatibleUtil.isCommentSupports(info)) {
+			toolsMenu.add(new Separator());
+			toolsMenu.add(manager.getAction(SchemaCommentInstallAction.ID));
+		}
 
 		menuManager.insertBefore(getMenuInsertPoint(menuManager), fileMenu);
 		menuManager.insertBefore(getMenuInsertPoint(menuManager), editMenu);
