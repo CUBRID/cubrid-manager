@@ -266,5 +266,6 @@ public class Messages extends
 	public static String msgConfirmLogoutConnwithJob;
 	public static String msgConfirmDeleteConnwithJob;
 	
+	public static String moreNodeLabel;
 
 }
