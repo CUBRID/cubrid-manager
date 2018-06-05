@@ -68,6 +68,7 @@ public class NodeType {
 	public static final String USER = "USER";
 	public static final String MONITOR_DASHBOARD = "MONITOR_DASHBOARD";
 	public static final String MONITOR_STATISTIC_PAGE = "MONITOR_STATISTIC_PAGE";
+	public static final String MORE = "MORE";
 
 	public static final boolean contains(String nodeTypeToFind, String[] nodes) {
 		if (nodes == null || nodes.length == 0 || nodeTypeToFind == null || nodeTypeToFind.length() == 9) {
