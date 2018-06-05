@@ -133,7 +133,8 @@ public class CubridMenuProvider extends
 		manager.add(new Separator());
 
 		// Install Schema Comment
-		if (!CompatibleUtil.isCommentSupports(((CubridDatabase) node).getDatabaseInfo())) {
+		if (node instanceof CubridDatabase
+				&& !CompatibleUtil.isCommentSupports(((CubridDatabase) node).getDatabaseInfo())) {
 			addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
 			manager.add(new Separator());
 		}
