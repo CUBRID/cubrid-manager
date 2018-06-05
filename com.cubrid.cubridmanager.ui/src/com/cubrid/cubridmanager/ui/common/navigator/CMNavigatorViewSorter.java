@@ -114,6 +114,9 @@ public class CMNavigatorViewSorter extends
 				|| CubridNodeType.LOGS_MANAGER_ERROR_LOG.equals(type)) {
 			return 12;
 		}
+		if (NodeType.MORE.equals(type)) {
+			return 13;
+		}
 		return -1;
 	}
 }
