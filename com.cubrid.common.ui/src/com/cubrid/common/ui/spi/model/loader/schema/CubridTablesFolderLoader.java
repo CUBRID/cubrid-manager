@@ -166,26 +166,8 @@ public class CubridTablesFolderLoader extends
 		for (ClassInfo classInfo : allClassInfoList) {
 			String id = parent.getId() + NODE_SEPARATOR
 					+ classInfo.getClassName();
-			ICubridNode classNode = new DefaultSchemaNode(id,
-					classInfo.getClassName(),
-					"icons/navigator/schema_table_item.png");
-			classNode.setEditorId(SchemaInfoEditorPart.ID);
-			classNode.setContainer(true);
-			classNode.setModelObj(classInfo);
-			classNode.setType(NodeType.USER_TABLE);
+			ICubridNode classNode = createClassNode(id, classInfo, level);
 			parent.addChild(classNode);
-
-			ICubridNodeLoader loader = null;
-			if (classInfo.isPartitionedClass()) {
-				classNode.setType(NodeType.USER_PARTITIONED_TABLE_FOLDER);
-				classNode.setIconPath("icons/navigator/schema_table_partition.png");
-				classNode.setContainer(true);
-				loader = new CubridPartitionedTableLoader();
-			} else {
-				loader = new CubridUserTableLoader();
-			}
-			loader.setLevel(level);
-			classNode.setLoader(loader);
 			tables.add(classInfo.getClassName());
 		}
 		if (level == DEFINITE_LEVEL) {
@@ -227,6 +209,30 @@ public class CubridTablesFolderLoader extends
 		}
 	}
 
+	private static ICubridNode createClassNode(String id, ClassInfo classInfo, int level) {
+		ICubridNode classNode = new DefaultSchemaNode(id,
+				classInfo.getClassName(),
+				"icons/navigator/schema_table_item.png");
+		classNode.setEditorId(SchemaInfoEditorPart.ID);
+		classNode.setContainer(true);
+		classNode.setModelObj(classInfo);
+		classNode.setType(NodeType.USER_TABLE);
+
+		ICubridNodeLoader loader = null;
+		if (classInfo.isPartitionedClass()) {
+			classNode.setType(NodeType.USER_PARTITIONED_TABLE_FOLDER);
+			classNode.setIconPath("icons/navigator/schema_table_partition.png");
+			classNode.setContainer(true);
+			loader = new CubridPartitionedTableLoader();
+		} else {
+			loader = new CubridUserTableLoader();
+		}
+		loader.setLevel(level);
+		classNode.setLoader(loader);
+
+		return classNode;
+	}
+
 	/**
 	 * 
 	 * Create user table node for other type
@@ -240,26 +246,8 @@ public class CubridTablesFolderLoader extends
 	 */
 	public static ICubridNode createUserTableNode(ICubridNode parent,
 			String id, ClassInfo classInfo, int level, IProgressMonitor monitor) {
-		ICubridNode classNode = new DefaultSchemaNode(id,
-				classInfo.getClassName(),
-				"icons/navigator/schema_table_item.png");
-		classNode.setEditorId(SchemaInfoEditorPart.ID);
-		classNode.setContainer(true);
-		classNode.setModelObj(classInfo);
-		classNode.setType(NodeType.USER_TABLE);
+		ICubridNode classNode = createClassNode(id, classInfo, level);
 		parent.addChild(classNode);
-
-		ICubridNodeLoader loader = null;
-		if (classInfo.isPartitionedClass()) {
-			classNode.setType(NodeType.USER_PARTITIONED_TABLE_FOLDER);
-			classNode.setIconPath("icons/navigator/schema_table_partition.png");
-			classNode.setContainer(true);
-			loader = new CubridPartitionedTableLoader();
-		} else {
-			loader = new CubridUserTableLoader();
-		}
-		loader.setLevel(level);
-		classNode.setLoader(loader);
 		if (level == DEFINITE_LEVEL) {
 			classNode.getChildren(monitor);
 		}
