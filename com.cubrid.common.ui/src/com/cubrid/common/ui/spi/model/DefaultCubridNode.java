@@ -597,6 +597,9 @@ public class DefaultCubridNode implements
 		if (obj == null) {
 			return 1;
 		}
+		if (NodeType.USER_TABLE.equals(obj.getType())) {
+			return 0;
+		}
 
 		// sort for server, the "localhost" is the first
 		if (NodeType.SERVER.equals(getType()) && "localhost".equals(getLabel())) {
