@@ -60,9 +60,7 @@ public class MoreNodeTreeEvent implements ITreeViewerListener {
 				public void run() {
 					MoreTablesNode model = new MoreTablesNode(
 							treeViewer, (DefaultSchemaNode) element);
-					model.makeChildren();
-					model.addChildrenToTreeViewer();
-					model.makeNewMoreNode();
+					model.expandMoreTables();
 				}
 			});
 		}

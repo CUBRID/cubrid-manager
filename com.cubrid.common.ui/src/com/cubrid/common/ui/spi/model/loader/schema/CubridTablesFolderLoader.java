@@ -248,7 +248,9 @@ public class CubridTablesFolderLoader extends
 		classNode.setType(NodeType.MORE);
 		classNode.setContainer(true);
 		classNode.setParent(parent);
-		((DefaultSchemaNode) classNode).setDatabase(((DefaultSchemaNode) parent).getDatabase());
+		CubridDatabase database = ((DefaultSchemaNode) parent).getDatabase();
+		((DefaultSchemaNode) classNode).setDatabase(database);
+		((DefaultSchemaNode) classNode).setServer(database.getServer());
 		return classNode;
 	}
 

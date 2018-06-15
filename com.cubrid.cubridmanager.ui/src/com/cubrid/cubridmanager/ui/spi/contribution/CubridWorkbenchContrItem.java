@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -70,6 +71,7 @@ import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.ISchemaNode;
+import com.cubrid.common.ui.spi.model.MoreTablesNode;
 import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.part.CubridViewPart;
 import com.cubrid.common.ui.spi.persist.CubridJdbcManager;
@@ -252,6 +254,14 @@ public final class CubridWorkbenchContrItem extends WorkbenchContrItem {
 
 		/*Other node*/
 		if (!LayoutManager.getInstance().isUseClickOnce()) {
+			if (NodeType.MORE.equals(cubridNode.getType())) {
+				AbstractTreeViewer viewer = (AbstractTreeViewer) event.getSource();
+				MoreTablesNode model = new MoreTablesNode(
+						viewer, (DefaultSchemaNode) cubridNode);
+				model.expandMoreTables();
+				viewer.remove(cubridNode);
+				return;
+			}
 			boolean useSelectQuery = ActionSupportUtil.isSupportMultiSelection(obj, new String[] {
 					NodeType.USER_TABLE, NodeType.USER_VIEW,
 					NodeType.SYSTEM_TABLE, NodeType.SYSTEM_VIEW,

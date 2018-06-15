@@ -61,6 +61,12 @@ public class MoreTablesNode {
 		this.children = new ICubridNode[nextIndex - currentIndex];
 	}
 
+	public void expandMoreTables() {
+		makeChildren();
+		addChildrenToTreeViewer();
+		makeNewMoreNode();
+	}
+
 	/**
 	 * Create and add child nodes to the 'Tables' model 
 	 */
