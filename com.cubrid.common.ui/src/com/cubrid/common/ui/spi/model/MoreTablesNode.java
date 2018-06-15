@@ -61,6 +61,10 @@ public class MoreTablesNode {
 		this.children = new ICubridNode[nextIndex - currentIndex];
 	}
 
+	/**
+	 * Make the children and add the children to the TreeViewer
+	 *  and refresh the 'More tables...' node
+	 */
 	public void expandMoreTables() {
 		makeChildren();
 		addChildrenToTreeViewer();
@@ -70,7 +74,7 @@ public class MoreTablesNode {
 	/**
 	 * Create and add child nodes to the 'Tables' model 
 	 */
-	public void makeChildren() {
+	private void makeChildren() {
 		for (int i = currentIndex; i < nextIndex; i++) {
 			ClassInfo classInfo = allTablesList.get(i);
 			String id = moreNode.getId() + ICubridNodeLoader
@@ -85,11 +89,15 @@ public class MoreTablesNode {
 	/**
 	 * Add child nodes to the 'Tables' node of 'TreeViewer'
 	 */
-	public void addChildrenToTreeViewer() {
+	private void addChildrenToTreeViewer() {
 		removeMoreNode();
 		treeViewer.add(tablesNode, children);
 	}
 
+	/**
+	 * Find and remove the 'More tables ...' node
+	 * among the expanded nodes in the TreeViewer
+	 */
 	private void removeMoreNode() {
 		Object[] elements = treeViewer.getExpandedElements();
 		for (Object o : elements) {
@@ -102,7 +110,7 @@ public class MoreTablesNode {
 	/**
 	 * Create a new 'More Tables ...' node in the 'TreeViewer'
 	 */
-	public void makeNewMoreNode() {
+	private void makeNewMoreNode() {
 		updateTablesCount();
 		if (hasMoreNode) {
 			treeViewer.add(tablesNode,
@@ -111,6 +119,9 @@ public class MoreTablesNode {
 		}
 	}
 
+	/**
+	 * Updated the number of tables currently displayed in the 'Tables' node
+	 */
 	private void updateTablesCount() {
 		Object[] elements = treeViewer.getExpandedElements();
 		for (Object o : elements) {
