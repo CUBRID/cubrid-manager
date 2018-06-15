@@ -85,8 +85,8 @@ public class MoreTablesNode {
 	}
 
 	private void removeMoreNode() {
-		Object[] expandedElements = treeViewer.getExpandedElements();
-		for (Object o : expandedElements) {
+		Object[] elements = treeViewer.getExpandedElements();
+		for (Object o : elements) {
 			if (NodeType.MORE.equals(((ICubridNode) o).getType())) {
 				treeViewer.remove(o);
 			}
@@ -97,10 +97,23 @@ public class MoreTablesNode {
 	 * Create a new 'More Tables ...' node in the 'TreeViewer'
 	 */
 	public void makeNewMoreNode() {
+		updateTablesCount();
 		if (hasMoreNode) {
 			treeViewer.add(tablesNode,
 					CubridTablesFolderLoader
 					.createMoreNode(tablesNode, nextIndex));
+		}
+	}
+
+	private void updateTablesCount() {
+		Object[] elements = treeViewer.getExpandedElements();
+		for (Object o : elements) {
+			if (NodeType.TABLE_FOLDER.equals(((ICubridNode) o).getType())) {
+				ICubridNode node = (ICubridNode) o;
+				String label = node.getLabel().substring(0, 6);
+				node.setLabel(String.format("%s(%d)", label, nextIndex));
+				treeViewer.update(node, null);
+			}
 		}
 	}
 }
