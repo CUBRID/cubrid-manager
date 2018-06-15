@@ -26,25 +26,25 @@
  */
 package com.cubrid.common.ui.spi.model.loader.schema.event;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.swt.widgets.Display;
 
-import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
-import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.model.ICubridNodeLoader;
+import com.cubrid.common.ui.spi.model.MoreTablesNode;
 import com.cubrid.common.ui.spi.model.NodeType;
-import com.cubrid.common.ui.spi.model.loader.schema.CubridTablesFolderLoader;
-import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
 
+/**
+ * An event class that adds new tables to the 'TreeViewer' 
+ * when the tree of the 'More Tables ...' node is expanded.
+ *
+ * @author hun-a
+ *
+ */
 public class MoreNodeTreeEvent implements ITreeViewerListener {
-	private final int MAX_TABLES_COUNT = 100;
 	private final AbstractTreeViewer treeViewer;
-	
+
 	public MoreNodeTreeEvent(AbstractTreeViewer viewer) {
 		this.treeViewer = viewer;
 	}
@@ -58,39 +58,13 @@ public class MoreNodeTreeEvent implements ITreeViewerListener {
 
 				@Override
 				public void run() {
-					DefaultSchemaNode parent = (DefaultSchemaNode) element;
-					CubridDatabase database = parent.getDatabase();
-					List<ClassInfo> allClassInfoList = database.getDatabaseInfo().getClassInfoList();
-					int index = CubridTablesFolderLoader.moreNodeIndex(parent.getId());
-					boolean hasMoreNode = allClassInfoList.size() > index + MAX_TABLES_COUNT;
-					int length = hasMoreNode ? index + MAX_TABLES_COUNT : allClassInfoList.size();
-					ICubridNode[] children = new ICubridNode[length - index];
-					ICubridNode tablesTree = parent.getParent();
-
-					for (int i = index; i < length; i++) {
-						ClassInfo classInfo = allClassInfoList.get(i);
-						String id = parent.getId() + ICubridNodeLoader.NODE_SEPARATOR
-								+ classInfo.getClassName();
-						ICubridNode child = CubridTablesFolderLoader.createClassNode(id, classInfo, 1);
-						children[i % MAX_TABLES_COUNT] = child;
-						tablesTree.addChild(child);
-					}
-
-					treeViewer.add(tablesTree, children);
-					Object[] expandedElements = treeViewer.getExpandedElements();
-					for (Object o : expandedElements) {
-						if (NodeType.MORE.equals(((ICubridNode) o).getType())) {
-							treeViewer.remove(o);
-						}
-					}
-
-					if (hasMoreNode) {
-						treeViewer.add(tablesTree,
-								CubridTablesFolderLoader.createMoreNode(tablesTree, length));
-					}
+					MoreTablesNode model = new MoreTablesNode(
+							treeViewer, (DefaultSchemaNode) element);
+					model.makeChildren();
+					model.addChildrenToTreeViewer();
+					model.makeNewMoreNode();
 				}
 			});
-
 		}
 	}
 
