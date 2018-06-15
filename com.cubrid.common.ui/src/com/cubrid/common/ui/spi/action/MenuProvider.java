@@ -150,7 +150,8 @@ public class MenuProvider implements
 			manager.add(new Separator());
 
 			// Install Schema Comment
-			if (!CompatibleUtil.isCommentSupports(((DefaultSchemaNode) node).getDatabase().getDatabaseInfo())) {
+			if (node instanceof DefaultSchemaNode
+					&& !CompatibleUtil.isCommentSupports(((DefaultSchemaNode) node).getDatabase().getDatabaseInfo())) {
 				addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
 				manager.add(new Separator());
 			}
@@ -296,7 +297,8 @@ public class MenuProvider implements
 		manager.add(new Separator());
 
 		// Install Schema Comment
-		if (!CompatibleUtil.isCommentSupports(((CubridDatabase) node).getDatabaseInfo())) {
+		if (node instanceof CubridDatabase
+				&& !CompatibleUtil.isCommentSupports(((CubridDatabase) node).getDatabaseInfo())) {
 			addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
 			manager.add(new Separator());
 		}
