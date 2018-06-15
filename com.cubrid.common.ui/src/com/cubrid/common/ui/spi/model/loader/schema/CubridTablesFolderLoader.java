@@ -30,6 +30,8 @@ package com.cubrid.common.ui.spi.model.loader.schema;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
@@ -163,12 +165,17 @@ public class CubridTablesFolderLoader extends
 			List<ClassInfo> allClassInfoList, int level,
 			IProgressMonitor monitor) {
 		List<String> tables = new ArrayList<String>();
-		for (ClassInfo classInfo : allClassInfoList) {
+		final int TABLE_COUNT = allClassInfoList.size() <= 100 ? allClassInfoList.size() : 100;
+		for (int i = 0; i < TABLE_COUNT; i++) {
+			ClassInfo classInfo = allClassInfoList.get(i);
 			String id = parent.getId() + NODE_SEPARATOR
 					+ classInfo.getClassName();
 			ICubridNode classNode = createClassNode(id, classInfo, level);
 			parent.addChild(classNode);
 			tables.add(classInfo.getClassName());
+		}
+		if (allClassInfoList.size() > TABLE_COUNT) {
+			parent.addChild(createMoreNode(parent, TABLE_COUNT));
 		}
 		if (level == DEFINITE_LEVEL) {
 			CubridDatabase database = ((ISchemaNode) parent).getDatabase();
@@ -209,7 +216,7 @@ public class CubridTablesFolderLoader extends
 		}
 	}
 
-	private static ICubridNode createClassNode(String id, ClassInfo classInfo, int level) {
+	public static ICubridNode createClassNode(String id, ClassInfo classInfo, int level) {
 		ICubridNode classNode = new DefaultSchemaNode(id,
 				classInfo.getClassName(),
 				"icons/navigator/schema_table_item.png");
@@ -230,6 +237,18 @@ public class CubridTablesFolderLoader extends
 		loader.setLevel(level);
 		classNode.setLoader(loader);
 
+		return classNode;
+	}
+
+	public static ICubridNode createMoreNode(ICubridNode parent, int endOfNodePosition) {
+		String id = parent.getId() + NODE_SEPARATOR + endOfNodePosition;
+		ICubridNode classNode = new DefaultSchemaNode(id,
+				Messages.moreNodeLabel, "icons/navigator/schema_table_item.png");
+		classNode.setEditorId(SchemaInfoEditorPart.ID);
+		classNode.setType(NodeType.MORE);
+		classNode.setContainer(true);
+		classNode.setParent(parent);
+		((DefaultSchemaNode) classNode).setDatabase(((DefaultSchemaNode) parent).getDatabase());
 		return classNode;
 	}
 
@@ -254,4 +273,12 @@ public class CubridTablesFolderLoader extends
 		return classNode;
 	}
 
+	public static int moreNodeIndex(String input) {
+		Pattern pattern = Pattern.compile("\\/\\d+$");
+		Matcher matcher = pattern.matcher(input);
+		if (matcher.find()) {
+			return Integer.parseInt(matcher.group().substring(1));
+		}
+		return 0;
+	}
 }
