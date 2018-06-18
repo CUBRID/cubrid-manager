@@ -24,11 +24,11 @@ ITableLabelProvider {
 					case 0 : return tableDetail.getTableName();
 					case 1 : return tableDetail.getTableDesc();
 					case 2 : return String.valueOf(tableDetail.getRecordsCount() < 0? Messages.tablesDetailInfoPartNotEstimated : tableDetail.getRecordsCount());
-					case 3 : return String.valueOf(tableDetail.getColumnsCount());
-					case 4 : return String.valueOf(tableDetail.getPkCount() <= 0 ? "" : "Y");
-					case 5 : return String.valueOf(tableDetail.getUkCount() <= 0 ? "" : tableDetail.getUkCount());
-					case 6 : return String.valueOf(tableDetail.getFkCount() <= 0 ? "" : tableDetail.getFkCount());
-					case 7 : return String.valueOf(tableDetail.getIndexCount() <= 0 ? "" : tableDetail.getIndexCount());
+					case 3 : return String.valueOf(tableDetail.getColumnsCount() == 0 ? Messages.tablesDetailInfoPartNotRunColumn : tableDetail.getColumnsCount());
+					case 4 : return String.valueOf(tableDetail.getPkCount() <= 0 ? Messages.tablesDetailInfoPartNotRunKey : "Y");
+					case 5 : return String.valueOf(tableDetail.getUkCount() <= 0 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getUkCount());
+					case 6 : return String.valueOf(tableDetail.getFkCount() <= 0 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getFkCount());
+					case 7 : return String.valueOf(tableDetail.getIndexCount() <= 0 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getIndexCount());
 					case 8 : return convertSize(tableDetail.getRecordsSize(), tableDetail.isHasUnCountColumnSize());
 				}
 			}
@@ -37,6 +37,10 @@ ITableLabelProvider {
 	}
 
 	private String convertSize (BigDecimal size, boolean hasUncountedColumnSize) { // FIXME move this logic to core module
+		if (size == null) {
+			return Messages.tablesDetailInfoPartNotRunSize;
+		}
+
 		String result = "";
 
 		BigDecimal kbytes = new BigDecimal(1024);

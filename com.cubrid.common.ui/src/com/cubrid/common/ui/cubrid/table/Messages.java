@@ -741,6 +741,10 @@ public class Messages extends
 	public static String tablesDetailInfoPartBtnCopySuccessMsg;
 	public static String tablesDetailInfoPartBtnCopySuccessFailed;
 	public static String tablesDetailInfoPartNotEstimated;
+	public static String tablesDetailInfoPartNotRunColumn;
+	public static String tablesDetailInfoPartNotRunKey;
+	public static String tablesDetailInfoPartNotRunSize;
+
 	public static String tablesDetailInfoPartRefreshConfirm;
 	public static String tablesDetailInfoPartRefreshBtn;
 	public static String tablesDetailInfoPartCloseMenu;
