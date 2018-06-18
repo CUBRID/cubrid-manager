@@ -42,8 +42,59 @@ public class OpenTablesDetailInfoPartProgress implements IRunnableWithProgress {
 	}
 
 	public boolean loadUserSchemaList(Connection conn, Map<String, TableDetailInfo> tablesMap) { // FIXME move this logic to core module
+		final int LIMIT_TABLE_COUNT = 500;
+
 		StringBuilder sql = new StringBuilder()
 		.append("SELECT \n")
+		.append("    class_name, \n")
+		.append("    class_type, \n")
+		.append("    partitioned \n")
+		.append("FROM \n")
+		.append("    db_class \n")
+		.append("WHERE \n")
+		.append("    is_system_class = 'NO'");
+
+		String query = sql.toString();
+
+		// [TOOLS-2425]Support shard broker
+		if (CubridDatabase.hasValidDatabaseInfo(database)) {
+			query = database.getDatabaseInfo().wrapShardQuery(query);
+		}
+
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			rs = stmt.executeQuery(query);
+			int recordsCount = rs.last() ? rs.getRow() : 0;
+			if (recordsCount >= LIMIT_TABLE_COUNT) {
+				rs.first();
+				while (rs.next()) {
+					String tableName = rs.getString(1);
+					String classType = rs.getString(2);
+					String partitioned = rs.getString(3);
+
+					TableDetailInfo info = new TableDetailInfo();
+					tablesMap.put(tableName, info);
+
+					info.setTableName(tableName);
+					info.setClassType(classType);
+					info.setPartitioned(partitioned);
+				}
+				return true;
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			return false;
+		} finally {
+			QueryUtil.freeQuery(stmt, rs);
+		}
+
+		QueryUtil.freeQuery(stmt, rs);
+		sql.setLength(0);
+		sql.append("SELECT \n")
 		.append("    c.class_name, \n")
 		.append("    COUNT(*) AS count_column, \n")
 		.append("    CAST(SUM(\n")
@@ -113,15 +164,15 @@ public class OpenTablesDetailInfoPartProgress implements IRunnableWithProgress {
 		.append("    a.from_class_name IS NULL \n")
 		.append("GROUP BY c.class_name\n");
 
-		String query = sql.toString();
+		query = sql.toString();
 
 		// [TOOLS-2425]Support shard broker
 		if (CubridDatabase.hasValidDatabaseInfo(database)) {
 			query = database.getDatabaseInfo().wrapShardQuery(query);
 		}
 
-		Statement stmt = null;
-		ResultSet rs = null;
+		stmt = null;
+		rs = null;
 		try {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);
@@ -155,8 +206,8 @@ public class OpenTablesDetailInfoPartProgress implements IRunnableWithProgress {
 			QueryUtil.freeQuery(stmt, rs);
 		}
 
-		sql = new StringBuilder()
-		.append("SELECT \n")
+		sql.setLength(0);
+		sql.append("SELECT \n")
 		.append("    c.class_name, \n")
 		.append("    SUM(\n")
 		.append("    CASE \n")
