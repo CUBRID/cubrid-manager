@@ -130,6 +130,7 @@ import com.cubrid.common.ui.spi.progress.CommonTaskExec;
 import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableColumnsProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableDetailInfoTask;
+import com.cubrid.common.ui.spi.progress.LoadTableProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableRecordCountsProgress;
 import com.cubrid.common.ui.spi.progress.OpenTablesDetailInfoPartProgress;
 import com.cubrid.common.ui.spi.table.button.ITableButtonSupportEvent;
@@ -189,9 +190,11 @@ public class TableDashboardPart extends CubridEditorPart implements ITableButton
 				}
 
 				if (CommonUITool.openConfirmBox(Messages.tablesDetailInfoPartBtnEsitmateRecordAlert)) {
-					LoadTableRecordCountsProgress progress = new LoadTableRecordCountsProgress(
-							database, list);
-					progress.getTableCounts();
+					LoadTableProgress progress = new LoadTableRecordCountsProgress(
+							database, list,
+							Messages.loadTableRecordCountsProgressTaskName,
+							Messages.loadTableRecordCountsProgressSubTaskName);
+					progress.getCount();
 					tableListView.refresh();
 				}
 			}
@@ -216,12 +219,14 @@ public class TableDashboardPart extends CubridEditorPart implements ITableButton
 					CommonUITool.openWarningBox(Messages.tablesDetailInfoPartAlertNotSelected);
 					return;
 				}
-				
+
 				if (CommonUITool.openConfirmBox(Messages.bind(
 						Messages.tablesDetailInfoPartBtnEsitmateAlert, "Columns"))) {
-					LoadTableColumnsProgress progress = new LoadTableColumnsProgress(
-							database, list);
-					progress.getTableColumns();
+					LoadTableProgress progress = new LoadTableColumnsProgress(
+							database, list,
+							Messages.loadTableColumnsProgressTaskName,
+							Messages.loadTableColumnsProgressSubTaskName);
+					progress.getCount();
 					tableListView.refresh();
 				}
 			}

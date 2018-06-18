@@ -28,72 +28,27 @@
 
 package com.cubrid.common.ui.spi.progress;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.TableDetailInfo;
-import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.ui.query.control.QueryExecuter;
-import com.cubrid.common.ui.spi.Messages;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
 
-public class LoadTableRecordCountsProgress implements IRunnableWithProgress {
-	private static final Logger LOGGER = LogUtil.getLogger(LoadTableRecordCountsProgress.class);
-	private final CubridDatabase database;
-	private final List<TableDetailInfo> tableList;
-	private boolean success = false;
+public class LoadTableRecordCountsProgress extends LoadTableProgress {
 
-	public LoadTableRecordCountsProgress(CubridDatabase database, List<TableDetailInfo> tableList) {
-		this.database = database;
-		this.tableList = tableList;
+	public LoadTableRecordCountsProgress(CubridDatabase database,
+			List<TableDetailInfo> tableList, String taskName, String subTaskName) {
+		super(database, tableList, taskName, subTaskName);
 	}
 
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,
-			InterruptedException {
-		Connection conn = null;
-		monitor.beginTask(Messages.loadTableRecordCountsProgressTaskName,
-				tableList.size());
-		try {
-			conn = JDBCConnectionManager.getConnection(
-					database.getDatabaseInfo(), true);
-			
-			for (TableDetailInfo tablesDetailInfo : tableList) {
-				monitor.subTask(Messages.bind(
-						Messages.loadTableRecordCountsProgressSubTaskName,
-						tablesDetailInfo.getTableName()));
-				
-				int recordCount = getRecordsCount(conn,
-						tablesDetailInfo.getTableName());
-				tablesDetailInfo.setRecordsCount(recordCount);
-				
-				monitor.worked(1);
-				if (monitor.isCanceled()) {
-					break;
-				}
-			}
-			success = true;
-		} catch (Exception e) {
-			LOGGER.error("", e);
-		} finally {
-			QueryUtil.freeQuery(conn);
-			monitor.done();
-		}
-	}
-
-	protected int getRecordsCount(Connection conn, String tableName) {
+	@Override
+	protected int count(Connection conn, String tableName) {
 		int recordsCount = 0;
 		try {
 			if (conn == null || conn.isClosed()) {
@@ -127,27 +82,9 @@ public class LoadTableRecordCountsProgress implements IRunnableWithProgress {
 
 		return recordsCount;
 	}
-	
-	/**
-	 * loadTablesInfo
-	 * 
-	 * @return Catalog
-	 */
-	public void getTableCounts() {
-		Display display = Display.getDefault();
-		display.syncExec(new Runnable() {
-			public void run() {
-				try {
-					new ProgressMonitorDialog(null).run(true, true,
-							LoadTableRecordCountsProgress.this);
-				} catch (Exception e) {
-					LOGGER.error("", e);
-				}
-			}
-		});
-	}
-	
-	public boolean isSuccess() {
-		return success;
+
+	@Override
+	protected void setCount(TableDetailInfo tablesDetailInfo, int count) {
+		tablesDetailInfo.setRecordsCount(count);
 	}
 }

@@ -762,6 +762,16 @@ public class Messages extends
 	public static String tablesDetailInfoPartRefreshMenu;
 	public static String tablesDetailInfoLoadingDataTitle;
 	public static String tablesDetailInfoLoadingData;
+
+	public static String loadTableRecordCountsProgressTaskName;
+	public static String loadTableColumnsProgressTaskName;
+	public static String loadTableKeysProgressTaskName;
+	public static String loadTableRecordSizeProgressTaskName;
+	public static String loadTableRecordCountsProgressSubTaskName;
+	public static String loadTableColumnsProgressSubTaskName;
+	public static String loadTableKeysProgressSubTaskName;
+	public static String loadTableRecordSizeProgressSubTaskName;
+
 	
 	public static String errGetSchemaInfo;
 	

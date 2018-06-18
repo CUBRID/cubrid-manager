@@ -27,77 +27,32 @@
 
 package com.cubrid.common.ui.spi.progress;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.TableDetailInfo;
-import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.ui.query.control.QueryExecuter;
-import com.cubrid.common.ui.spi.Messages;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
 
 /**
- * A class that implements 'IRunnableWithProgress' to query
- * the number of columns in the table.
+ * The Progress class that gets the number of columns in the table.
  *
  * @author hun-a
  *
  */
-public class LoadTableColumnsProgress implements IRunnableWithProgress {
-	private static final Logger LOGGER = LogUtil.getLogger(LoadTableColumnsProgress.class);
-	private final CubridDatabase database;
-	private final List<TableDetailInfo> tableList;
-	private boolean success = false;
+public class LoadTableColumnsProgress extends LoadTableProgress {
 
-	public LoadTableColumnsProgress(CubridDatabase database, List<TableDetailInfo> tableList) {
-		this.database = database;
-		this.tableList = tableList;
+	public LoadTableColumnsProgress(CubridDatabase database,
+			List<TableDetailInfo> tableList, String taskName, String subTaskName) {
+		super(database, tableList, taskName, subTaskName);
 	}
 
 	@Override
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,
-			InterruptedException {
-		Connection conn = null;
-		monitor.beginTask(Messages.loadTableColumnsProgressTaskName, tableList.size());
-
-		try {
-			conn = JDBCConnectionManager.getConnection(
-					database.getDatabaseInfo(), true);
-
-			for (TableDetailInfo tablesDetailInfo: tableList) {
-				monitor.subTask(Messages.bind(
-						Messages.loadTableColumnsProgressSubTaskName,
-						tablesDetailInfo.getTableName()));
-
-				int columnCount = getColumnsCount(conn, tablesDetailInfo.getTableName());
-				tablesDetailInfo.setColumnsCount(columnCount);
-
-				monitor.worked(1);
-				if (monitor.isCanceled()) {
-					break;
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.error("", e);
-		} finally {
-			QueryUtil.freeQuery(conn);
-			monitor.done();
-		}
-	}
-
-	private int getColumnsCount(Connection conn, String tableName) {
+	protected int count(Connection conn, String tableName) {
 		int columnsCount = 0;
 		try {
 			if (conn == null || conn.isClosed()) {
@@ -133,24 +88,8 @@ public class LoadTableColumnsProgress implements IRunnableWithProgress {
 		return columnsCount;
 	}
 
-	/**
-	 * Loading table columns
-	 */
-	public void getTableColumns() {
-		Display display = Display.getDefault();
-		display.syncExec(new Runnable() {
-			public void run() {
-				try {
-					new ProgressMonitorDialog(null).run(true, true,
-							LoadTableColumnsProgress.this);
-				} catch (Exception e) {
-					LOGGER.error("", e);
-				}
-			}
-		});
-	}
-
-	public boolean isSuccess() {
-		return success;
+	@Override
+	protected void setCount(TableDetailInfo tablesDetailInfo, int count) {
+		tablesDetailInfo.setColumnsCount(count);
 	}
 }

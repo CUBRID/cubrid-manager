@@ -198,14 +198,6 @@ public class Messages extends
 	public static String brokerLogTopMergeProgressSuccess;
 
 	public static String tablesDetailInfoPartProgressTaskName;
-	public static String loadTableRecordCountsProgressTaskName;
-	public static String loadTableColumnsProgressTaskName;
-	public static String loadTableKeysProgressTaskName;
-	public static String loadTableRecordSizeProgressTaskName;
-	public static String loadTableRecordCountsProgressSubTaskName;
-	public static String loadTableColumnsProgressSubTaskName;
-	public static String loadTableKeysProgressSubTaskName;
-	public static String loadTableRecordSizeProgressSubTaskName;
 
 	//table cell editor
 	public static String msgFileExist;
