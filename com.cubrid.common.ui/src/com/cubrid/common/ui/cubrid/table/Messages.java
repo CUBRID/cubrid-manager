@@ -730,11 +730,18 @@ public class Messages extends
 	public static String tablesDetailInfoPartBtnViewDataTip;
 	public static String tablesDetailInfoPartBtnViewDataSelectOne;
 	public static String tablesDetailInfoPartBtnEsitmateRecord;
+	public static String tablesDetailInfoPartBtnEsitmateColumn;
+	public static String tablesDetailInfoPartBtnEsitmateKey;
+	public static String tablesDetailInfoPartBtnEsitmateRecordSize;
 	public static String tablesDetailInfoPartBtnEsitmateRecordAlert;
+	public static String tablesDetailInfoPartBtnEsitmateAlert;
 	public static String tablesDetailInfoPartBtnCopyTableNames;
 	public static String tablesDetailInfoPartBtnCopyColumnNames;
 	public static String tablesDetailInfoPartBtnRefreshTip;
 	public static String tablesDetailInfoPartBtnEsitmateRecordTip;
+	public static String tablesDetailInfoPartBtnEsitmateColumnTip;
+	public static String tablesDetailInfoPartBtnEsitmateKeyTip;
+	public static String tablesDetailInfoPartBtnEsitmateRecordSizeTip;
 	public static String tablesDetailInfoPartBtnCopyTableNamesTip;
 	public static String tablesDetailInfoPartBtnCopyColumnNamesTip;
 	public static String tablesDetailInfoPartBtnCopySuccessTitle;
