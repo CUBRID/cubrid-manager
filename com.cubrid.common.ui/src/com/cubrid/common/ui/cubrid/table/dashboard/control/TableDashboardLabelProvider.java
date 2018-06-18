@@ -25,10 +25,10 @@ ITableLabelProvider {
 					case 1 : return tableDetail.getTableDesc();
 					case 2 : return String.valueOf(tableDetail.getRecordsCount() < 0? Messages.tablesDetailInfoPartNotEstimated : tableDetail.getRecordsCount());
 					case 3 : return String.valueOf(tableDetail.getColumnsCount() == 0 ? Messages.tablesDetailInfoPartNotRunColumn : tableDetail.getColumnsCount());
-					case 4 : return String.valueOf(tableDetail.getPkCount() <= 0 ? Messages.tablesDetailInfoPartNotRunKey : "Y");
-					case 5 : return String.valueOf(tableDetail.getUkCount() <= 0 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getUkCount());
-					case 6 : return String.valueOf(tableDetail.getFkCount() <= 0 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getFkCount());
-					case 7 : return String.valueOf(tableDetail.getIndexCount() <= 0 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getIndexCount());
+					case 4 : return String.valueOf(tableDetail.getPkCount() == -1 ? Messages.tablesDetailInfoPartNotRunKey : "Y");
+					case 5 : return String.valueOf(tableDetail.getUkCount() == -1 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getUkCount());
+					case 6 : return String.valueOf(tableDetail.getFkCount() == -1 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getFkCount());
+					case 7 : return String.valueOf(tableDetail.getIndexCount() == -1 ? Messages.tablesDetailInfoPartNotRunKey : tableDetail.getIndexCount());
 					case 8 : return convertSize(tableDetail.getRecordsSize(), tableDetail.isHasUnCountColumnSize());
 				}
 			}

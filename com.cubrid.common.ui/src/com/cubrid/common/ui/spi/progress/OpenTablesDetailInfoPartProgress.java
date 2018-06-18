@@ -71,6 +71,7 @@ public class OpenTablesDetailInfoPartProgress implements IRunnableWithProgress {
 			int recordsCount = rs.last() ? rs.getRow() : 0;
 			if (recordsCount >= LIMIT_TABLE_COUNT) {
 				rs.first();
+				final int NOT_EXECUTED_VALUE = -1;
 				while (rs.next()) {
 					String tableName = rs.getString(1);
 					String classType = rs.getString(2);
@@ -82,6 +83,10 @@ public class OpenTablesDetailInfoPartProgress implements IRunnableWithProgress {
 					info.setTableName(tableName);
 					info.setClassType(classType);
 					info.setPartitioned(partitioned);
+					info.setPkCount(NOT_EXECUTED_VALUE);
+					info.setUkCount(NOT_EXECUTED_VALUE);
+					info.setFkCount(NOT_EXECUTED_VALUE);
+					info.setIndexCount(NOT_EXECUTED_VALUE);
 				}
 				return true;
 			}
