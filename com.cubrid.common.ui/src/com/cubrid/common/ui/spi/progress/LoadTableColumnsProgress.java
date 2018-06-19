@@ -52,7 +52,7 @@ public class LoadTableColumnsProgress extends LoadTableProgress {
 	}
 
 	@Override
-	protected int count(Connection conn, String tableName) {
+	protected Object count(Connection conn, String tableName) {
 		int columnsCount = 0;
 		try {
 			if (conn == null || conn.isClosed()) {
@@ -89,7 +89,7 @@ public class LoadTableColumnsProgress extends LoadTableProgress {
 	}
 
 	@Override
-	protected void setCount(TableDetailInfo tablesDetailInfo, int count) {
-		tablesDetailInfo.setColumnsCount(count);
+	protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
+		tablesDetailInfo.setColumnsCount((int) count);
 	}
 }

@@ -48,7 +48,7 @@ public class LoadTableRecordCountsProgress extends LoadTableProgress {
 	}
 
 	@Override
-	protected int count(Connection conn, String tableName) {
+	protected Object count(Connection conn, String tableName) {
 		int recordsCount = 0;
 		try {
 			if (conn == null || conn.isClosed()) {
@@ -84,7 +84,7 @@ public class LoadTableRecordCountsProgress extends LoadTableProgress {
 	}
 
 	@Override
-	protected void setCount(TableDetailInfo tablesDetailInfo, int count) {
-		tablesDetailInfo.setRecordsCount(count);
+	protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
+		tablesDetailInfo.setRecordsCount((int) count);
 	}
 }

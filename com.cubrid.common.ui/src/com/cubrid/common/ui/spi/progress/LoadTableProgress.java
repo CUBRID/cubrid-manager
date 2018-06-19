@@ -81,7 +81,7 @@ public abstract class LoadTableProgress implements IRunnableWithProgress {
 			for (TableDetailInfo tablesDetailInfo : tableList) {
 				monitor.subTask(Messages.bind(subTaskName, tablesDetailInfo.getTableName()));
 
-				int count = count(conn,
+				Object count = count(conn,
 						tablesDetailInfo.getTableName());
 				setCount(tablesDetailInfo, count);
 
@@ -107,7 +107,7 @@ public abstract class LoadTableProgress implements IRunnableWithProgress {
 	 * @param tableName
 	 * @return count
 	 */
-	protected abstract int count(Connection conn, String tableName);
+	protected abstract Object count(Connection conn, String tableName);
 
 	/**
 	 * You must implement this method to put the specific value
@@ -118,7 +118,7 @@ public abstract class LoadTableProgress implements IRunnableWithProgress {
 	 * @param tablesDetailInfo
 	 * @param count
 	 */
-	protected abstract void setCount(TableDetailInfo tablesDetailInfo, int count);
+	protected abstract void setCount(TableDetailInfo tablesDetailInfo, Object count);
 
 	/**
 	 * loadTablesInfo
