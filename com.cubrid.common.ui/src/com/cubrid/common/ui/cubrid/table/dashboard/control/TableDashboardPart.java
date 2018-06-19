@@ -130,6 +130,7 @@ import com.cubrid.common.ui.spi.progress.CommonTaskExec;
 import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableColumnsProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableDetailInfoTask;
+import com.cubrid.common.ui.spi.progress.LoadTableKeysProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableRecordCountsProgress;
 import com.cubrid.common.ui.spi.progress.OpenTablesDetailInfoPartProgress;
@@ -226,6 +227,38 @@ public class TableDashboardPart extends CubridEditorPart implements ITableButton
 							database, list,
 							Messages.loadTableColumnsProgressTaskName,
 							Messages.loadTableColumnsProgressSubTaskName);
+					progress.getCount();
+					tableListView.refresh();
+				}
+			}
+		});
+
+		new ToolItem(toolBar, SWT.SEPARATOR);
+		ToolItem keyItem = new ToolItem(toolBar, SWT.PUSH);
+		keyItem.setText(Messages.tablesDetailInfoPartBtnEsitmateKey);
+		keyItem.setToolTipText(Messages.tablesDetailInfoPartBtnEsitmateKeyTip);
+		keyItem.setImage(CommonUIPlugin.getImage("icons/action/key.png"));
+		keyItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<TableDetailInfo> list = new ArrayList<TableDetailInfo>();
+				TableItem[] items = tableListView.getTable().getSelection();
+				for (TableItem item : items) {
+					list.add((TableDetailInfo) item.getData());
+				}
+
+				// Check selected size and confirm
+				if (list.size() == 0) {
+					CommonUITool.openWarningBox(Messages.tablesDetailInfoPartAlertNotSelected);
+					return;
+				}
+
+				if (CommonUITool.openConfirmBox(Messages.bind(
+						Messages.tablesDetailInfoPartBtnEsitmateAlert, "Keys"))) {
+					LoadTableProgress progress = new LoadTableKeysProgress(
+							database, list,
+							Messages.loadTableKeysProgressTaskName,
+							Messages.loadTableKeysProgressSubTaskName);
 					progress.getCount();
 					tableListView.refresh();
 				}
