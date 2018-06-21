@@ -29,6 +29,8 @@
  */
 package com.cubrid.common.ui.query.editor;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +51,7 @@ import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
 import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.util.ConstantsUtil;
 import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.ui.spi.CubridNodeManager;
 import com.cubrid.common.ui.spi.event.CubridNodeChangedEvent;
 import com.cubrid.common.ui.spi.event.CubridNodeChangedEventType;
@@ -57,6 +60,7 @@ import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.NodeType;
+import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetAllSchemaTask;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetSchemaTask;
@@ -103,6 +107,10 @@ public class ColumnProposalAdvisor implements
 		ColumnProposal proposal = null;
 
 		synchronized (ColumnProposalAdvisor.class) {
+			// TOOLS-4290, Performance issue
+			if (isMoreThan500Tables(dbInfo)) {
+				return null;
+			}
 			/*Judge whether loading*/
 			if (collectingKeys.contains(key)) {
 				return null;
@@ -115,6 +123,20 @@ public class ColumnProposalAdvisor implements
 		}
 
 		return proposal;
+	}
+
+	private boolean isMoreThan500Tables(DatabaseInfo dbInfo) {
+		int count = 0;
+		Connection conn = null;
+		try {
+			conn = JDBCConnectionManager.getConnection(dbInfo, true);
+			count = (int) QueryUtil.countRecords(conn, "db_class");
+		} catch (SQLException e) {
+			LOGGER.error("", e);
+		} finally {
+			QueryUtil.freeQuery(conn);
+		}
+		return count > 500;
 	}
 
 	/**
