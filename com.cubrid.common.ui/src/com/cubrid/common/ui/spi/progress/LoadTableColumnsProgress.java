@@ -90,6 +90,6 @@ public class LoadTableColumnsProgress extends LoadTableProgress {
 
 	@Override
 	protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
-		tablesDetailInfo.setColumnsCount((int) count);
+		tablesDetailInfo.setColumnsCount(Integer.parseInt(count.toString()));
 	}
 }

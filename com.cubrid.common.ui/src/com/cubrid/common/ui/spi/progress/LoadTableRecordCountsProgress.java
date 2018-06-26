@@ -85,6 +85,6 @@ public class LoadTableRecordCountsProgress extends LoadTableProgress {
 
 	@Override
 	protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
-		tablesDetailInfo.setRecordsCount((int) count);
+		tablesDetailInfo.setRecordsCount(Integer.parseInt(count.toString()));
 	}
 }

@@ -152,7 +152,7 @@ public class LoadTableRecordSizeProgress extends LoadTableProgress {
 	protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
 		Object[] values = (Object[]) count;
 		tablesDetailInfo.setRecordsSize((BigDecimal) values[RECORD_SIZE]);
-		tablesDetailInfo.setHasUnCountColumnSize((boolean) values[UNCOUNT_COLUMN_SIZE]);
+		tablesDetailInfo.setHasUnCountColumnSize(Boolean.parseBoolean((values[UNCOUNT_COLUMN_SIZE]).toString()));
 	}
 
 }
