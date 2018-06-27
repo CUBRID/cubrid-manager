@@ -46,7 +46,7 @@ public class RecentlyUsedSQLDetailPersistUtils {
 	private static final Logger LOGGER = LogUtil.getLogger(RecentlyUsedSQLDetailPersistUtils.class);
 
 	private final static HashMap<String, LinkedList<SQLHistoryDetail>> logs = new HashMap<String, LinkedList<SQLHistoryDetail>>();
-	private static final String[] SUPPORTSQL = {"select", "update", "insert", "delete"};
+	private static final String[] SUPPORTSQL = {"select", "update", "insert", "delete", "with"};
 	private static final int MAXSQLCOUNT = 100;
 	private static final Object LOCK = new Object();
 

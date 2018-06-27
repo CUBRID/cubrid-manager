@@ -22,7 +22,7 @@ public class RecentlyUsedSQLContentPersistUtils {
 	private static HashMap<String,LinkedList<String>> recentlyUsedSQLContent = new HashMap<String,LinkedList<String>>();
 	private static final Logger LOGGER = LogUtil.getLogger(RecentlyUsedSQLContentPersistUtils.class);
 	private static final int MAXSQLCOUNT = 30;
-	public static final String[] SUPPORTSQL = {"select", "select * from", "update", "insert into", "delete from"};
+	public static final String[] SUPPORTSQL = {"select", "select * from", "update", "insert into", "delete from", "with"};
 	
 	/**
 	 * get recently used SQL list by id 
