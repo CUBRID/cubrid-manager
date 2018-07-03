@@ -48,7 +48,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -493,6 +492,8 @@ public abstract class AbsExportDataHandler {
 
 				schemaInfoList.add(schemaInfo);
 			}
+
+			// write serials to a schemaFile
 
 			// write PKs, indexes to a file
 			if (schemaInfoList != null) {

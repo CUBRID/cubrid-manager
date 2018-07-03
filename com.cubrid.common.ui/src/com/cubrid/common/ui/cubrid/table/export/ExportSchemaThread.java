@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -237,8 +236,9 @@ public class ExportSchemaThread extends
 			if (exportConfig.isExportSerial()) {
 				GetSerialInfoListTask task = new GetSerialInfoListTask(dbInfo);
 				task.execute();
+				boolean isSupportCache = CompatibleUtil.isSupportCache(dbInfo);
 				for (SerialInfo serial : task.getSerialInfoList()) {
-					fs.write(createSerialSQLScript(serial, dbInfo));
+					fs.write(QueryUtil.createSerialSQLScript(serial, isSupportCache));
 					fs.write(StringUtil.NEWLINE);
 					hasSerial = true;
 				}
@@ -258,88 +258,6 @@ public class ExportSchemaThread extends
 				}
 			}
 		}
-	}
-
-	/**
-	 * create serial sql
-	 *
-	 * @param SerialInfo serial
-	 * @param DatabaseInfo databaseInfo
-	 */
-	private String createSerialSQLScript(SerialInfo serial, DatabaseInfo databaseInfo) { // FIXME move this logic to core module
-		//databaseInfo.getServerInfo().compareVersionKey("8.2.2") >= 0;
-		boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
-		String sql = "CREATE SERIAL " + QuerySyntax.escapeKeyword(serial.getName());
-		String startVal = serial.getStartedValue();
-		String currentVal = serial.getCurrentValue();
-		String minVal = serial.getMinValue();
-		String incrementVal = serial.getIncrementValue();
-
-		startVal = getSerialStartValue(currentVal, startVal, minVal, incrementVal);
-
-		if (startVal != null && startVal.trim().length() > 0) {
-			sql += " START WITH " + startVal;
-		}
-
-		if (incrementVal != null && incrementVal.trim().length() > 0) {
-			sql += " INCREMENT BY " + incrementVal;
-		}
-
-		if (minVal == null || minVal.equals("")) {
-			sql += " NOMINVALUE ";
-		} else if (minVal != null && minVal.trim().length() > 0) {
-			sql += " MINVALUE " + minVal;
-		}
-		String maxVal = serial.getMaxValue();
-		if (maxVal == null || maxVal.equals("")) {
-			sql += " NOMAXVALUE ";
-		} else if (maxVal != null && maxVal.trim().length() > 0) {
-			sql += " MAXVALUE " + maxVal;
-		}
-
-		if (serial.isCyclic()) {
-			sql += " CYCLE";
-		} else {
-			sql += " NOCYCLE";
-		}
-		if (isSupportCache) {
-			String cacheCount = serial.getCacheCount();
-			if (cacheCount == null || cacheCount.equals("0")) {
-				sql += " NOCACHE";
-			} else if (cacheCount != null && cacheCount.length() > 0) {
-				sql += " CACHE " + cacheCount;
-			}
-		}
-		return sql;
-	}
-
-	/**
-	 * get start value, start value should bigger than the min value,if started
-	 * value is 1 ,add increment value
-	 *
-	 * @param currentVal current value of the serial
-	 * @param startVal whether start value
-	 * @param minVal minimum value
-	 * @param incrementVal increment value
-	 * @return
-	 */
-	public String getSerialStartValue(String currentVal, String startVal, String minVal,
-			String incrementVal) { // FIXME move this logic to core module
-		if (StringUtil.isEmpty(currentVal) || StringUtil.isEmpty(startVal)) {
-			return startVal;
-		}
-
-		double current = Double.parseDouble(currentVal);
-		double min = Double.parseDouble(minVal);
-
-		if (min > current) {
-			return minVal;
-		}
-		if ("1".equals(startVal) && StringUtil.isNotEmpty(incrementVal)) {
-			double increment = Double.parseDouble(incrementVal);
-			current += increment;
-		}
-		return new DecimalFormat("#").format(current);
 	}
 
 	private List<String> getAllViewsDDL() { // FIXME move this logic to core module
