@@ -768,9 +768,10 @@ public final class QueryUtil {
 	 * @param SerialInfo serial
 	 * @param DatabaseInfo databaseInfo
 	 */
-	public static String createSerialSQLScript(SerialInfo serial, boolean isSupportCache) { // FIXME move this logic to core module
-		//databaseInfo.getServerInfo().compareVersionKey("8.2.2") >= 0;
-		String sql = "CREATE SERIAL " + QuerySyntax.escapeKeyword(serial.getName());
+	public static String createSerialSQLScript(SerialInfo serial, boolean isSupportCache) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("CREATE SERIAL ");
+		sql.append(QuerySyntax.escapeKeyword(serial.getName()));
 		String startVal = serial.getStartedValue();
 		String currentVal = serial.getCurrentValue();
 		String minVal = serial.getMinValue();
@@ -779,39 +780,39 @@ public final class QueryUtil {
 		startVal = getSerialStartValue(currentVal, startVal, minVal, incrementVal);
 
 		if (startVal != null && startVal.trim().length() > 0) {
-			sql += " START WITH " + startVal;
+			sql.append(" START WITH " + startVal);
 		}
 
 		if (incrementVal != null && incrementVal.trim().length() > 0) {
-			sql += " INCREMENT BY " + incrementVal;
+			sql.append(" INCREMENT BY " + incrementVal);
 		}
 
 		if (minVal == null || minVal.equals("")) {
-			sql += " NOMINVALUE ";
+			sql.append(" NOMINVALUE ");
 		} else if (minVal != null && minVal.trim().length() > 0) {
-			sql += " MINVALUE " + minVal;
+			sql.append(" MINVALUE " + minVal);
 		}
 		String maxVal = serial.getMaxValue();
 		if (maxVal == null || maxVal.equals("")) {
-			sql += " NOMAXVALUE ";
+			sql.append(" NOMAXVALUE ");
 		} else if (maxVal != null && maxVal.trim().length() > 0) {
-			sql += " MAXVALUE " + maxVal;
+			sql.append(" MAXVALUE " + maxVal);
 		}
 
 		if (serial.isCyclic()) {
-			sql += " CYCLE";
+			sql.append(" CYCLE");
 		} else {
-			sql += " NOCYCLE";
+			sql.append(" NOCYCLE");
 		}
 		if (isSupportCache) {
 			String cacheCount = serial.getCacheCount();
 			if (cacheCount == null || cacheCount.equals("0")) {
-				sql += " NOCACHE";
+				sql.append(" NOCACHE");
 			} else if (cacheCount != null && cacheCount.length() > 0) {
-				sql += " CACHE " + cacheCount;
+				sql.append(" CACHE " + cacheCount);
 			}
 		}
-		return sql;
+		return sql.toString();
 	}
 
 	/**
