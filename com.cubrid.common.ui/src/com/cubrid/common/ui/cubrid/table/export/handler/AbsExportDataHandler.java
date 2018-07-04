@@ -433,7 +433,8 @@ public abstract class AbsExportDataHandler {
 	 */
 	public static void exportSchemaToOBSFile(DatabaseInfo databaseInfo,
 			IExportDataEventHandler exportDataEventHandler, Set<String> tableNameList,
-			String schemaFile, String indexFile, String fileCharset, boolean exportStartValue) throws SQLException,
+			String schemaFile, String indexFile, String fileCharset, boolean exportStartValue,
+			boolean isLoadDB) throws SQLException,
 			IOException { // FIXME move this logic to core module
 		if (schemaFile == null && indexFile == null) {
 			return;
@@ -496,14 +497,16 @@ public abstract class AbsExportDataHandler {
 			}
 
 			// TOOLS-4299, write the serial to the schema file
-			GetSerialInfoListTask task = new GetSerialInfoListTask(databaseInfo);
-			task.execute();
-			boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
-			for (SerialInfo serial : task.getSerialInfoList()) {
-				schemaWriter.write(QueryUtil.createSerialSQLScript(serial, isSupportCache));
-				schemaWriter.write(StringUtil.NEWLINE);
+			if (isLoadDB) {
+				GetSerialInfoListTask task = new GetSerialInfoListTask(databaseInfo);
+				task.execute();
+				boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
+				for (SerialInfo serial : task.getSerialInfoList()) {
+					schemaWriter.write(QueryUtil.createSerialSQLScript(serial, isSupportCache));
+					schemaWriter.write(StringUtil.NEWLINE);
+				}
+				schemaWriter.flush();
 			}
-			schemaWriter.flush();
 
 			// write PKs, indexes to a file
 			if (schemaInfoList != null) {

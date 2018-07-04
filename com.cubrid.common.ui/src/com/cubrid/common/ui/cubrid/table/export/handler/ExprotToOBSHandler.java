@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -90,7 +89,7 @@ public class ExprotToOBSHandler extends
 
 				exportSchemaToOBSFile(dbInfo, exportDataEventHandler, tableSet, schemaFile,
 						indexFile, exportConfig.getFileCharset(),
-						exportConfig.isExportSerialStartValue());
+						exportConfig.isExportSerialStartValue(), false);
 
 				if (exportConfig.isExportSchema()) {
 					exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(schemaFile));

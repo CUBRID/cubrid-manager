@@ -119,7 +119,7 @@ public class ExportSchemaThread extends
 			tableSet.addAll(exportConfig.getTableNameList());
 			ExprotToOBSHandler.exportSchemaToOBSFile(dbInfo, exportDataEventHandler, tableSet,
 					schemaFile, indexFile, exportConfig.getFileCharset(),
-					exportConfig.isExportSerialStartValue());
+					exportConfig.isExportSerialStartValue(), false);
 
 			if (exportConfig.isExportSchema()) {
 				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(

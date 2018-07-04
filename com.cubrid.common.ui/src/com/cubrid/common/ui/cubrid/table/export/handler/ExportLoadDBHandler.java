@@ -106,7 +106,7 @@ public class ExportLoadDBHandler extends
 			Set<String> tableSet = new HashSet<String>();
 			tableSet.addAll(exportConfig.getTableNameList());
 			exportSchemaToOBSFile(dbInfo, exportDataEventHandler, tableSet, schemaFile, indexFile,
-					exportConfig.getFileCharset(), exportConfig.isExportSerialStartValue());
+					exportConfig.getFileCharset(), exportConfig.isExportSerialStartValue(), true);
 
 			if (exportConfig.isExportSchema()) {
 				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(schemaFile));
