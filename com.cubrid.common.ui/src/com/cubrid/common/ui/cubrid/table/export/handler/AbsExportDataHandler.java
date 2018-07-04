@@ -57,6 +57,7 @@ import org.slf4j.Logger;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.common.model.SerialInfo;
 import com.cubrid.common.core.util.Closer;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.FileUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
@@ -69,6 +70,7 @@ import com.cubrid.common.ui.query.control.QueryExecuter;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import com.cubrid.cubridmanager.core.cubrid.serial.task.GetSerialInfoListTask;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaChangeManager;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaDDL;
 import com.cubrid.jdbc.proxy.driver.CUBRIDBlobProxy;
@@ -493,7 +495,15 @@ public abstract class AbsExportDataHandler {
 				schemaInfoList.add(schemaInfo);
 			}
 
-			// write serials to a schemaFile
+			// TOOLS-4299, write the serial to the schema file
+			GetSerialInfoListTask task = new GetSerialInfoListTask(databaseInfo);
+			task.execute();
+			boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
+			for (SerialInfo serial : task.getSerialInfoList()) {
+				schemaWriter.write(QueryUtil.createSerialSQLScript(serial, isSupportCache));
+				schemaWriter.write(StringUtil.NEWLINE);
+			}
+			schemaWriter.flush();
 
 			// write PKs, indexes to a file
 			if (schemaInfoList != null) {
