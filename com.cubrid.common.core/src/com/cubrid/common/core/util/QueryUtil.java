@@ -812,6 +812,7 @@ public final class QueryUtil {
 				sql.append(" CACHE " + cacheCount);
 			}
 		}
+		sql.append(";");
 		return sql.toString();
 	}
 
