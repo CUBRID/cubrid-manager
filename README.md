@@ -14,7 +14,7 @@ CUBRID Official Site: http://www.cubrid.org and http://www.cubrid.com
 CM can be found here:
 
 - http://www.cubrid.org/downloads/os-select/64-bit/tools/manager
-- ftp://ftp.cubrid.org/CUBRID_Tools/CUBRID_Manager/
+- http://ftp.cubrid.org/CUBRID_Tools/CUBRID_Manager/
 
 ## How to run CUBRID Manager on Eclipse
 
