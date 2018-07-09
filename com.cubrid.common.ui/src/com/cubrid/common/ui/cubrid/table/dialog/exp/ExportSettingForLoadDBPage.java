@@ -111,6 +111,10 @@ public class ExportSettingForLoadDBPage extends
 	private Text indexPathText;
 	private Button indexBrowseButton;
 
+	private Button triggerButton;
+	private Text triggerPathText;
+	private Button triggerBrowseButton;
+
 	private Button dataButton;
 	private Text dataPathText;
 	private Button dataBrowseButton;
@@ -342,6 +346,50 @@ public class ExportSettingForLoadDBPage extends
 			}
 		});
 
+		triggerButton = new Button(fileOptionGroup, SWT.CHECK);
+		triggerButton.setText("Trigger");
+		triggerButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+		triggerButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				if (triggerButton.getSelection()) {
+					triggerPathText.setEnabled(true);
+					triggerBrowseButton.setEnabled(true);
+				} else {
+					triggerPathText.setEnabled(false);
+					triggerBrowseButton.setEnabled(false);
+				}
+				updateDialogStatus();	// TODO update for trigger
+			}
+		});
+
+		triggerPathText = new Text(fileOptionGroup, SWT.BORDER);
+		triggerPathText.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1,
+				-1));
+		triggerPathText.setEnabled(true);
+		triggerPathText.setEditable(false);
+		triggerPathText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				updateDialogStatus();
+			}
+		});
+
+		triggerBrowseButton = new Button(fileOptionGroup, SWT.None);
+		triggerBrowseButton.setText(Messages.btnBrowse);
+		triggerBrowseButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+		triggerBrowseButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				DatabaseInfo databaseInfo = getDatabase().getDatabaseInfo();
+				String databaseName = databaseInfo.getDbName();
+				String fileNameForLoaddbTrigger = databaseName + "_triggers";
+				File savedFile = TableUtil.getSavedFile(getShell(), new String[]{"*.*" },
+						new String[]{"All Files" }, fileNameForLoaddbTrigger, null, null);
+				if (savedFile != null) {
+					triggerPathText.setText(savedFile.getAbsolutePath());
+				}
+				updateDialogStatus();
+			}
+		});
+
 		dataButton = new Button(fileOptionGroup, SWT.CHECK);
 		dataButton.setText("Data");
 		dataButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
@@ -479,6 +527,7 @@ public class ExportSettingForLoadDBPage extends
 			schemaButton.setSelection(true);
 			indexButton.setSelection(true);
 			dataButton.setSelection(true);
+			triggerButton.setSelection(true);
 			startValueButton.setSelection(true);
 		}
 
@@ -591,7 +640,7 @@ public class ExportSettingForLoadDBPage extends
 			return;
 		}
 		if (!schemaButton.getSelection() && !indexButton.getSelection()
-				&& !dataButton.getSelection()) {
+				&& !triggerButton.getSelection() && !dataButton.getSelection()) {
 			setErrorMessage(Messages.exportWizardLoadDBPageErrMsg1);
 			setPageComplete(false);
 			return;
@@ -621,6 +670,11 @@ public class ExportSettingForLoadDBPage extends
 			} else if (dataButton.getSelection()
 					&& schemaPathText.getText().equals(dataPathText.getText())) {
 				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
+				setPageComplete(false);
+				return;
+			} else if (triggerButton.getSelection()
+					&& schemaPathText.getText().equals(triggerPathText.getText())) {
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
 				setPageComplete(false);
 				return;
 			}
@@ -653,6 +707,11 @@ public class ExportSettingForLoadDBPage extends
 				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
 				setPageComplete(false);
 				return;
+			} else if (triggerButton.getSelection()
+					&& indexPathText.getText().equals(triggerPathText.getText())) {
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setPageComplete(false);
+				return;
 			}
 		}
 		if (dataButton.getSelection()) {
@@ -678,6 +737,43 @@ public class ExportSettingForLoadDBPage extends
 			} else if (indexButton.getSelection()
 					&& indexPathText.getText().equals(dataPathText.getText())) {
 				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
+				setPageComplete(false);
+				return;
+			} else if (triggerButton.getSelection()
+					&& triggerPathText.getText().equals(dataPathText.getText())) {
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setPageComplete(false);
+				return;
+			}
+		}
+		if (triggerButton.getSelection()) {
+			String triggerPath = triggerPathText.getText().trim();
+			if (triggerPath.length() == 0) {
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg4);
+				setPageComplete(false);
+				return;
+			}
+			if (getExportConfig().isHistory()) {
+				File testFile = new File(triggerPathText.getText());
+				if (!testFile.getParentFile().exists()) {
+					setErrorMessage(Messages.exportWizardLoadDBPageFilepathErrMsg3);
+					setPageComplete(false);
+					return;
+				}
+			}
+			if (schemaButton.getSelection()
+					&& schemaPathText.getText().equals(triggerPathText.getText())) {
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setPageComplete(false);
+				return;
+			} else if (indexButton.getSelection()
+					&& indexPathText.getText().equals(triggerPathText.getText())) {
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setPageComplete(false);
+				return;
+			} else if (dataButton.getSelection()
+					&& dataPathText.getText().equals(triggerPathText.getText())) {
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
 				setPageComplete(false);
 				return;
 			}
@@ -768,6 +864,15 @@ public class ExportSettingForLoadDBPage extends
 					dataPathText.getText().trim());
 		} else {
 			exportConfig.setExportData(false);
+		}
+
+		if (triggerButton.getSelection()) {
+			exportConfig.setExportTrigger(true);
+			exportConfig.setTriggerFilePath(triggerPathText.getText().trim());
+			exportConfig.setDataFilePath(ExportConfig.LOADDB_TRIGGERFILEKEY,
+					triggerPathText.getText().trim());
+		} else {
+			exportConfig.setExportTrigger(false);
 		}
 		exportConfig.setExportSerialStartValue(startValueButton.getSelection());
 		exportConfig.setFileCharset(fileCharsetCombo.getText());
@@ -924,6 +1029,8 @@ public class ExportSettingForLoadDBPage extends
 		indexPathText.setText("");
 		dataButton.setSelection(false);
 		dataPathText.setText("");
+		triggerButton.setSelection(false);
+		triggerPathText.setText("");
 		Object[] objects = ctv.getCheckedElements();
 		for (Object o : objects) {
 			ctv.setChecked(o, false);

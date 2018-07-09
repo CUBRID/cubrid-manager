@@ -506,6 +506,8 @@ public abstract class AbsExportDataHandler {
 					schemaWriter.write(StringUtil.NEWLINE);
 				}
 				schemaWriter.flush();
+				
+				// export the trigger
 			}
 
 			// write PKs, indexes to a file

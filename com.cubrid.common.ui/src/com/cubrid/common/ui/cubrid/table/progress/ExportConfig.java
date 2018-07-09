@@ -64,11 +64,13 @@ public class ExportConfig implements
 	public static final String LOADDB_DATAFILEKEY = "_LOADDBDATAFILENAME";
 	public static final String LOADDB_SCHEMAFILEKEY = "_LOADDBSCHEMAFILENAME";
 	public static final String LOADDB_INDEXFILEKEY = "_LOADDBINDEXFILENAME";
+	public static final String LOADDB_TRIGGERFILEKEY = "_LOADDBTRIGGERFILENAME";
 
 	public static final String TASK_NAME_SCHEMA = "schema.sql";
 	public static final String TASK_NAME_INDEX = "index.sql";
 	public static final String TASK_NAME_SERIAL = "serial.sql";
 	public static final String TASK_NAME_VIEW = "view.sql";
+	public static final String TASK_NAME_TRIGGER = "trigger.sql";
 
 	public static final int COUNT_UNKNOW = -1;
 
@@ -81,9 +83,11 @@ public class ExportConfig implements
 	private boolean isExportIndex;
 	private boolean isExportSerial;
 	private boolean isExportView;
+	private boolean isExportTrigger;
 	private String dataFolderPath;
 	private String indexFilePath;
 	private String schemaFilePath;
+	private String triggerFilePath;
 	private String fileCharset;
 	private boolean isFirstRowAsColumnName;
 	private String nullValueTranslation;
@@ -139,6 +143,10 @@ public class ExportConfig implements
 		this.isExportView = isExportView;
 	}
 
+	public void setExportTrigger(boolean isExportTrigger) {
+		this.isExportTrigger = isExportTrigger;
+	}
+
 	public void setTableNameList(List<String> tableNameList) {
 		this.tableNameList = tableNameList;
 	}
@@ -165,6 +173,10 @@ public class ExportConfig implements
 
 	public void setIndexFilePath(String path) {
 		this.indexFilePath = path;
+	}
+
+	public void setTriggerFilePath(String path) {
+		this.triggerFilePath = path;
 	}
 
 	public void setFileCharset(String charset) {
@@ -209,6 +221,10 @@ public class ExportConfig implements
 
 	public boolean isExportSerial() {
 		return isExportSerial;
+	}
+
+	public boolean isExportTrigger() {
+		return isExportTrigger;
 	}
 
 	public boolean isExportSerialValue() {
@@ -275,6 +291,10 @@ public class ExportConfig implements
 
 	public String getIndexFilePath() {
 		return indexFilePath;
+	}
+
+	public String getTriggerFilePath() {
+		return triggerFilePath;
 	}
 
 	public String getFileCharset() {
