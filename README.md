@@ -3,7 +3,7 @@
 
 The management function of CUBRID Manager can only be used in the environment where the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server) running on the server on which the CUBRID DBMS is installed, but the query function can be executed without running the CUBRID Manager server.
 
-The [CUBRID Manager](https://github.com/CUBRID/cubrid-manager) is a Java application based on [Eclipse RCP](https://wiki.eclipse.org/Rich_Client_Platform) that runs only on JRE or JDK 1.6 or later, and the recommended JRE version is 1.7.
+The CUBRID Manager is a Java application based on [Eclipse RCP](https://wiki.eclipse.org/Rich_Client_Platform) that runs only on JRE or JDK 1.6 or later, and the recommended JRE version is 1.7.
 
 ## MAJOR REFERENCES
 
