@@ -120,6 +120,7 @@ public class ExportSettingPage extends
 	private Button indexButton;
 	private Button serialButton;
 	private Button viewButton;
+	private Button triggerButton;
 	private Button startValueButton;
 	private Button exportLobButton;
 
@@ -300,6 +301,7 @@ public class ExportSettingPage extends
 				indexButton.setEnabled(selection);
 				serialButton.setEnabled(selection);
 				viewButton.setEnabled(selection);
+				triggerButton.setEnabled(selection);
 				startValueButton.setEnabled(selection);
 				updateDialogStatus(null);
 			}
@@ -326,6 +328,9 @@ public class ExportSettingPage extends
 
 		viewButton = new Button(exportOptionGroup, SWT.CHECK);
 		viewButton.setText(Messages.lblExportTargetView);
+
+		triggerButton = new Button(exportOptionGroup, SWT.CHECK);
+		triggerButton.setText(Messages.lblExportTargetTrigger);
 
 		exportLobButton = new Button(exportOptionGroup, SWT.CHECK);
 		exportLobButton.setText(Messages.lblExportLobData);
@@ -707,6 +712,7 @@ public class ExportSettingPage extends
 				indexButton.setEnabled(true);
 				serialButton.setEnabled(true);
 				viewButton.setEnabled(true);
+				triggerButton.setEnabled(true);
 				startValueButton.setEnabled(true);
 				if (exportConfig.isExportIndex()) {
 					indexButton.setSelection(true);
@@ -716,6 +722,9 @@ public class ExportSettingPage extends
 				}
 				if (exportConfig.isExportView()) {
 					viewButton.setSelection(true);
+				}
+				if (exportConfig.isExportTrigger()) {
+					triggerButton.setSelection(true);
 				}
 				if (exportConfig.isExportSerialStartValue()) {
 					startValueButton.setSelection(true);
@@ -816,6 +825,7 @@ public class ExportSettingPage extends
 			indexButton.setSelection(true);
 			serialButton.setSelection(true);
 			viewButton.setSelection(true);
+			triggerButton.setSelection(true);
 			startValueButton.setSelection(true);
 
 			sqlButton.setSelection(true);
@@ -1170,6 +1180,7 @@ public class ExportSettingPage extends
 		exportConfig.setExportIndex(indexButton.getSelection());
 		exportConfig.setExportSerial(serialButton.getSelection());
 		exportConfig.setExportView(viewButton.getSelection());
+		exportConfig.setExportTrigger(triggerButton.getSelection());
 		exportConfig.setExportSerialStartValue(startValueButton.getSelection());
 
 		int fileType = ExportConfig.FILE_TYPE_SQL;
@@ -1303,6 +1314,8 @@ public class ExportSettingPage extends
 		serialButton.setEnabled(true);
 		viewButton.setSelection(false);
 		viewButton.setEnabled(true);
+		triggerButton.setSelection(false);
+		triggerButton.setEnabled(true);
 		startValueButton.setSelection(false);
 		startValueButton.setEnabled(true);
 
