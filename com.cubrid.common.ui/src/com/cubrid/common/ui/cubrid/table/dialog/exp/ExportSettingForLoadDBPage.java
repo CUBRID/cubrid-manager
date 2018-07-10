@@ -674,7 +674,7 @@ public class ExportSettingForLoadDBPage extends
 				return;
 			} else if (triggerButton.getSelection()
 					&& schemaPathText.getText().equals(triggerPathText.getText())) {
-				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
 				setPageComplete(false);
 				return;
 			}
@@ -709,7 +709,7 @@ public class ExportSettingForLoadDBPage extends
 				return;
 			} else if (triggerButton.getSelection()
 					&& indexPathText.getText().equals(triggerPathText.getText())) {
-				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
 				setPageComplete(false);
 				return;
 			}
@@ -741,7 +741,7 @@ public class ExportSettingForLoadDBPage extends
 				return;
 			} else if (triggerButton.getSelection()
 					&& triggerPathText.getText().equals(dataPathText.getText())) {
-				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
 				setPageComplete(false);
 				return;
 			}
@@ -749,7 +749,7 @@ public class ExportSettingForLoadDBPage extends
 		if (triggerButton.getSelection()) {
 			String triggerPath = triggerPathText.getText().trim();
 			if (triggerPath.length() == 0) {
-				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg4);
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg8);
 				setPageComplete(false);
 				return;
 			}
@@ -763,17 +763,17 @@ public class ExportSettingForLoadDBPage extends
 			}
 			if (schemaButton.getSelection()
 					&& schemaPathText.getText().equals(triggerPathText.getText())) {
-				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
 				setPageComplete(false);
 				return;
 			} else if (indexButton.getSelection()
 					&& indexPathText.getText().equals(triggerPathText.getText())) {
-				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
 				setPageComplete(false);
 				return;
 			} else if (dataButton.getSelection()
 					&& dataPathText.getText().equals(triggerPathText.getText())) {
-				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);	// TODO change this message
+				setErrorMessage(Messages.exportWizardLoadDBPageErrMsg7);
 				setPageComplete(false);
 				return;
 			}
