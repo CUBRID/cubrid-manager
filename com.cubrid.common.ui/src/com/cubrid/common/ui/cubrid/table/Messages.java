@@ -361,6 +361,7 @@ public class Messages extends
 	public static String exportWizardLoadDBPageErrMsg5;
 	public static String exportWizardLoadDBPageErrMsg6;
 	public static String exportWizardLoadDBPageErrMsg7;
+	public static String exportWizardLoadDBPageErrMsg8;
 	public static String exportWizardSettngPageFilepathErrMsg;
 	public static String exportWizardLoadDBPageFilepathErrMsg1;
 	public static String exportWizardLoadDBPageFilepathErrMsg2;
@@ -887,6 +888,7 @@ public class Messages extends
 	public static String lblExportTargetData;
 	public static String lblExportTargetSerial;
 	public static String lblExportTargetView;
+	public static String lblExportTargetTrigger;
 	public static String lblExportTargetStartValue;
 	public static String tipExportTargetStartValue;
 	public static String lblExportLobData;
