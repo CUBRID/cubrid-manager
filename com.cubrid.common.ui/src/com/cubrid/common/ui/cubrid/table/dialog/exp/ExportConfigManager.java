@@ -30,7 +30,6 @@
 package com.cubrid.common.ui.cubrid.table.dialog.exp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -98,6 +97,7 @@ public class ExportConfigManager {
 				boolean isExportData = children[i].getBoolean("exportData");
 				boolean isExportSerial = children[i].getBoolean("exportSerial");
 				boolean isExportView = children[i].getBoolean("exportView");
+				boolean isExportTrigger = children[i].getBoolean("exportTrigger");
 				boolean isExportStartValue = children[i].getBoolean("exportStartValue");
 				boolean isExportLobData = children[i].getBoolean("exportLob");
 				String schemaFilePath = children[i].getString("schemaFile");
@@ -134,6 +134,7 @@ public class ExportConfigManager {
 				model.setExportSchema(isExportSchema);
 				model.setExportSerial(isExportSerial);
 				model.setExportView(isExportView);
+				model.setExportTrigger(isExportTrigger);
 				model.setExportSerialStartValue(isExportStartValue);
 				model.setExportLob(isExportLobData);
 				model.setSchemaFilePath(schemaFilePath);
@@ -180,6 +181,7 @@ public class ExportConfigManager {
 				configMemento.putBoolean("exportSchema", model.isExportSchema());
 				configMemento.putBoolean("exportSerial", model.isExportSerial());
 				configMemento.putBoolean("exportView", model.isExportView());
+				configMemento.putBoolean("exportTrigger", model.isExportTrigger());
 				configMemento.putBoolean("exportStartValue", model.isExportSerialStartValue());
 				configMemento.putBoolean("exportLob", model.isExportLob());
 				configMemento.putString("schemaFile", model.getSchemaFilePath());

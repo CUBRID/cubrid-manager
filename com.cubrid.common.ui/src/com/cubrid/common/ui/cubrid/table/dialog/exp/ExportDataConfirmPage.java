@@ -111,6 +111,11 @@ public class ExportDataConfirmPage extends
 				info.append(" - ");
 				info.append(exportConfigModel.getIndexFilePath()).append(NEW_LINE);
 			}
+			if (exportConfigModel.isExportTrigger()) {
+				info.append(TAB_SPACE).append(Messages.lblExportConfirmTrigger);
+				info.append(" - ");
+				info.append(exportConfigModel.getTriggerFilePath()).append(NEW_LINE);
+			}
 			if (exportConfigModel.isExportData()) {
 				info.append(TAB_SPACE).append(Messages.lblExportConfirmData);
 				info.append(" - ");
@@ -138,6 +143,9 @@ public class ExportDataConfirmPage extends
 				}
 				if (exportConfigModel.isExportView()) {
 					info.append(TAB_SPACE).append(Messages.lblExportConfirmView).append(NEW_LINE);
+				}
+				if (exportConfigModel.isExportTrigger()) {
+					info.append(TAB_SPACE).append(Messages.lblExportConfirmTrigger).append(NEW_LINE);
 				}
 			}
 			info.append(NEW_LINE);

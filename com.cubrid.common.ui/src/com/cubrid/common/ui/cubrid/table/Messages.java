@@ -926,6 +926,7 @@ public class Messages extends
 	public static String lblExportConfirmData;
 	public static String lblExportConfirmSerial;
 	public static String lblExportConfirmView;
+	public static String lblExportConfirmTrigger;
 	public static String lblImportConfirmImportType;
 	public static String lblImportConfirmCommitCount;
 	public static String lblImportConfirmThreads;
