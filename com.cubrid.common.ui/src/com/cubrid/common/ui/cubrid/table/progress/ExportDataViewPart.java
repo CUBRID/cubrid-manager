@@ -314,6 +314,11 @@ public class ExportDataViewPart extends
 					viewPo.setTotalCount(1);
 					monitorList.add(viewPo);
 				}
+				if (exportConfig.isExportTrigger()) {
+					ExportMonitor triggerPo = new ExportMonitor(ExportConfig.TASK_NAME_TRIGGER);
+					triggerPo.setTotalCount(1);
+					monitorList.add(triggerPo);
+				}
 			}
 			if (exportConfig.isExportData()) {
 				for (String table : exportConfig.getTableNameList()) {
@@ -342,7 +347,12 @@ public class ExportDataViewPart extends
 				schemaPo.setTotalCount(1);
 				monitorList.add(schemaPo);
 			}
-
+			if (exportConfig.isExportTrigger()) {
+				ExportMonitor triggerPo = new ExportMonitor(
+						exportConfig.getDataFilePath(ExportConfig.LOADDB_TRIGGERFILEKEY));
+				triggerPo.setTotalCount(1);
+				monitorList.add(triggerPo);
+			}
 			if (exportConfig.isExportData()) {
 				ExportMonitor po = new ExportMonitor(
 						exportConfig.getDataFilePath(ExportConfig.LOADDB_DATAFILEKEY));
