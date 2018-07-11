@@ -104,6 +104,7 @@ public class ExportSchemaThread extends
 		try {
 			String schemaFile = null;
 			String indexFile = null;
+			String triggerFile = null;
 			if (exportConfig.isExportSchema()) {
 				schemaFile = dirFile + File.separator + "schema.sql";
 				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
@@ -114,11 +115,16 @@ public class ExportSchemaThread extends
 				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
 						ExportConfig.TASK_NAME_INDEX));
 			}
+			if (exportConfig.isExportTrigger()) {
+				triggerFile = dirFile + File.separator + "trigger.sql";
+				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
+						ExportConfig.TASK_NAME_TRIGGER));
+			}
 
 			Set<String> tableSet = new HashSet<String>();
 			tableSet.addAll(exportConfig.getTableNameList());
 			ExprotToOBSHandler.exportSchemaToOBSFile(dbInfo, exportDataEventHandler, tableSet,
-					schemaFile, indexFile, exportConfig.getFileCharset(),
+					schemaFile, indexFile, triggerFile, exportConfig.getFileCharset(),
 					exportConfig.isExportSerialStartValue(), false);
 
 			if (exportConfig.isExportSchema()) {
@@ -132,6 +138,12 @@ public class ExportSchemaThread extends
 						ExportConfig.TASK_NAME_INDEX));
 				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(
 						ExportConfig.TASK_NAME_INDEX));
+			}
+			if (exportConfig.isExportTrigger()) {
+				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(
+						ExportConfig.TASK_NAME_TRIGGER));
+				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(
+						ExportConfig.TASK_NAME_TRIGGER));
 			}
 		} catch (Exception e) {
 			if (exportConfig.isExportSchema()) {

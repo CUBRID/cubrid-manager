@@ -77,6 +77,7 @@ public class ExportLoadDBHandler extends
 
 		String schemaFile = exportConfig.getDataFilePath(ExportConfig.LOADDB_SCHEMAFILEKEY);
 		String indexFile = exportConfig.getDataFilePath(ExportConfig.LOADDB_INDEXFILEKEY);
+		String triggerFile = exportConfig.getDataFilePath(ExportConfig.LOADDB_TRIGGERFILEKEY);
 		String dataTablesName = exportConfig.getDataFilePath(ExportConfig.LOADDB_DATAFILEKEY);
 		// Get connection
 		try {
@@ -103,10 +104,13 @@ public class ExportLoadDBHandler extends
 			if (exportConfig.isExportIndex()) {
 				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(indexFile));
 			}
+			if (exportConfig.isExportTrigger()) {
+				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(triggerFile));
+			}
 			Set<String> tableSet = new HashSet<String>();
 			tableSet.addAll(exportConfig.getTableNameList());
 			exportSchemaToOBSFile(dbInfo, exportDataEventHandler, tableSet, schemaFile, indexFile,
-					exportConfig.getFileCharset(), exportConfig.isExportSerialStartValue(), true);
+					triggerFile, exportConfig.getFileCharset(), exportConfig.isExportSerialStartValue(), true);
 
 			if (exportConfig.isExportSchema()) {
 				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(schemaFile));
@@ -115,6 +119,10 @@ public class ExportLoadDBHandler extends
 			if (exportConfig.isExportIndex()) {
 				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(indexFile));
 				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(indexFile));
+			}
+			if (exportConfig.isExportTrigger()) {
+				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(triggerFile));
+				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(triggerFile));
 			}
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);

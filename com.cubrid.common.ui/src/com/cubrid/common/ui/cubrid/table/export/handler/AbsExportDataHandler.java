@@ -48,6 +48,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +57,7 @@ import org.slf4j.Logger;
 
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.common.model.SerialInfo;
+import com.cubrid.common.core.common.model.Trigger;
 import com.cubrid.common.core.util.Closer;
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.FileUtil;
@@ -73,6 +75,9 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.serial.task.GetSerialInfoListTask;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaChangeManager;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaDDL;
+import com.cubrid.cubridmanager.core.cubrid.trigger.model.TriggerDDL;
+import com.cubrid.cubridmanager.core.cubrid.trigger.task.GetTriggerListTask;
+import com.cubrid.cubridmanager.core.cubrid.trigger.task.JDBCGetTriggerInfoTask;
 import com.cubrid.jdbc.proxy.driver.CUBRIDBlobProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDClobProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
@@ -433,8 +438,8 @@ public abstract class AbsExportDataHandler {
 	 */
 	public static void exportSchemaToOBSFile(DatabaseInfo databaseInfo,
 			IExportDataEventHandler exportDataEventHandler, Set<String> tableNameList,
-			String schemaFile, String indexFile, String fileCharset, boolean exportStartValue,
-			boolean isLoadDB) throws SQLException,
+			String schemaFile, String indexFile, String triggerFile, String fileCharset,
+			boolean exportStartValue, boolean isLoadDB) throws SQLException,
 			IOException { // FIXME move this logic to core module
 		if (schemaFile == null && indexFile == null) {
 			return;
@@ -443,7 +448,9 @@ public abstract class AbsExportDataHandler {
 		Connection conn = null;
 		BufferedWriter schemaWriter = null;
 		BufferedWriter indexWriter = null;
+		BufferedWriter triggerWriter = null;
 		LinkedList<SchemaInfo> schemaInfoList = null;
+		List<Trigger> triggerList = null;
 		boolean hasDataInIndexFile = false;
 		try {
 			if (schemaFile != null) {
@@ -453,6 +460,11 @@ public abstract class AbsExportDataHandler {
 			if (indexFile != null) {
 				indexWriter = getBufferedWriter(indexFile, fileCharset);
 				schemaInfoList = new LinkedList<SchemaInfo>();
+			}
+
+			if (triggerFile != null) {
+				triggerWriter = getBufferedWriter(triggerFile, fileCharset);
+				triggerList = new ArrayList<Trigger>();
 			}
 
 			SchemaDDL schemaDDL = new SchemaDDL(new SchemaChangeManager(databaseInfo, true),
@@ -506,8 +518,6 @@ public abstract class AbsExportDataHandler {
 					schemaWriter.write(StringUtil.NEWLINE);
 				}
 				schemaWriter.flush();
-				
-				// export the trigger
 			}
 
 			// write PKs, indexes to a file
@@ -553,10 +563,25 @@ public abstract class AbsExportDataHandler {
 					indexWriter.flush();
 				}
 			}
+
+			// TOOLS-4299 export the triggers
+			if (triggerList != null) {
+				GetTriggerListTask triggerNameTask = new GetTriggerListTask(databaseInfo.getServerInfo());
+				triggerNameTask.setDbName(databaseInfo.getDbName());
+				triggerNameTask.execute();
+				triggerList = triggerNameTask.getTriggerInfoList();
+				JDBCGetTriggerInfoTask triggerTask = new JDBCGetTriggerInfoTask(databaseInfo);
+				for (Trigger t: triggerList) {
+					triggerWriter.write(TriggerDDL.getDDL(triggerTask.getTriggerInfo(t.getName())));
+					triggerWriter.write(StringUtil.NEWLINE);
+				}
+				triggerWriter.flush();
+			}
 		} finally {
 			QueryUtil.freeQuery(conn);
 			FileUtil.close(schemaWriter);
 			FileUtil.close(indexWriter);
+			FileUtil.close(triggerWriter);
 			if (!hasDataInIndexFile) {
 				FileUtil.delete(indexFile);
 			}
