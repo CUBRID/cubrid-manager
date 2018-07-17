@@ -154,7 +154,11 @@ public class ExportSchemaThread extends
 				exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(
 						ExportConfig.TASK_NAME_INDEX));
 			}
-			LOGGER.error("create schema index error : ", e);
+			if (exportConfig.isExportTrigger()) {
+				exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(
+						ExportConfig.TASK_NAME_TRIGGER));
+			}
+			LOGGER.error("create schema index trigger error : ", e);
 		}
 
 		try {
