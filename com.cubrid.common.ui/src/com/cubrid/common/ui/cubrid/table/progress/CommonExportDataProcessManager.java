@@ -124,6 +124,9 @@ public class CommonExportDataProcessManager implements
 				if (exportConfig.isExportSerial()) {
 					totalSchemasCount++;
 				}
+				if (exportConfig.isExportTrigger()) {
+					totalSchemasCount++;
+				}
 				if (exportConfig.isExportView()) {
 					totalSchemasCount++;
 				}
