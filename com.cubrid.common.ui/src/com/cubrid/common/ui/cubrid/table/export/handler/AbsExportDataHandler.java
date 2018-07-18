@@ -570,8 +570,8 @@ public abstract class AbsExportDataHandler {
 				triggerNameTask.setDbName(databaseInfo.getDbName());
 				triggerNameTask.execute();
 				triggerList = triggerNameTask.getTriggerInfoList();
-				JDBCGetTriggerInfoTask triggerTask = new JDBCGetTriggerInfoTask(databaseInfo);
 				for (Trigger t: triggerList) {
+					JDBCGetTriggerInfoTask triggerTask = new JDBCGetTriggerInfoTask(databaseInfo);
 					triggerWriter.write(TriggerDDL.getDDL(triggerTask.getTriggerInfo(t.getName())));
 					triggerWriter.write(StringUtil.NEWLINE);
 				}
