@@ -444,7 +444,7 @@ public final class FieldHandlerUtils {
 			values.append(rs.getString(colNumber));
 		} else if (DataType.DATATYPE_BIT.equals(colType)
 				|| DataType.DATATYPE_BIT_VARYING.equals(colType)) {
-			byte[] bytes = (byte[]) rs.getObject(colNumber);
+			byte[] bytes = rs.getBytes(colNumber);
 			String bitString = DBAttrTypeFormatter.getHexString(bytes);
 			values.append(" X'");
 			values.append(bitString);
