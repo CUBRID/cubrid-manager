@@ -104,6 +104,8 @@ public class GetAllClassListTask extends JDBCTask {
 				sql += " OR class_name='" + ConstantsUtil.CUNITOR_HA_TABLE + "'";
 			}
 			
+			sql += " AND class_name > ''";
+			
 			sql = databaseInfo.wrapShardQuery(sql);
 
 			boolean existSchemaCommentTable = false;
