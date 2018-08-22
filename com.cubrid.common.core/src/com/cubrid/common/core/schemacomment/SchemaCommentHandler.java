@@ -243,8 +243,8 @@ public class SchemaCommentHandler {
 					+ "SELECT class_name as table_name, attr_name as column_name, comment as description "
 					+ "FROM db_attribute %s";
 			if (StringUtil.isNotEmpty(tableName)) {
-				tableCondition = "AND class_name = '" + QuerySyntax.escapeKeyword(tableName) + "' ";
-				columnCondition = "WHERE class_name = '" + QuerySyntax.escapeKeyword(tableName) + "'";
+				tableCondition = "AND class_name = '" + tableName + "' ";
+				columnCondition = "WHERE class_name = '" + tableName + "'";
 			} else {
 				tableCondition = "AND comment is not null ";
 				columnCondition = "WHERE comment is not null";
