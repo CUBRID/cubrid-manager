@@ -86,7 +86,7 @@ public class NoticeDashboardPage extends FormPage {
 
 	private static final Logger LOGGER = LogUtil.getLogger(NoticeDashboardPage.class);
 
-	private static final String rsssource = "http://ftp.cubrid.org/sites/inf/";
+	private static final String rsssource = "https://cubrid.github.io/";
 	private static String language = Platform.getNL();
 	static {
 		if (language.equals("ko_KR")) {
