@@ -44,7 +44,7 @@ public class MoreTablesNode {
 	private final AbstractTreeViewer treeViewer;
 	private DefaultSchemaNode moreNode;
 	private ICubridNode tablesNode;
-	private List<ClassInfo> allTablesList;
+	private List<ClassInfo> userTableInfoList;
 	private int currentIndex;
 	private int nextIndex;
 	private boolean hasMoreNode;
@@ -54,10 +54,10 @@ public class MoreTablesNode {
 		this.treeViewer = viewer;
 		this.moreNode = node;
 		this.tablesNode = node.getParent();
-		this.allTablesList = node.getDatabase().getDatabaseInfo().getClassInfoList();
+		this.userTableInfoList = node.getDatabase().getDatabaseInfo().getUserTableInfoList();
 		this.currentIndex = CubridTablesFolderLoader.moreNodeIndex(node.getId());
-		this.hasMoreNode = allTablesList.size() > currentIndex + MAX_TABLES_COUNT;
-		this.nextIndex = hasMoreNode ? currentIndex + MAX_TABLES_COUNT : allTablesList.size();
+		this.hasMoreNode = userTableInfoList.size() > currentIndex + MAX_TABLES_COUNT;
+		this.nextIndex = hasMoreNode ? currentIndex + MAX_TABLES_COUNT : userTableInfoList.size();
 		this.children = new ICubridNode[nextIndex - currentIndex];
 	}
 
@@ -76,7 +76,7 @@ public class MoreTablesNode {
 	 */
 	private void makeChildren() {
 		for (int i = currentIndex; i < nextIndex; i++) {
-			ClassInfo classInfo = allTablesList.get(i);
+			ClassInfo classInfo = userTableInfoList.get(i);
 			String id = moreNode.getId() + ICubridNodeLoader
 					.NODE_SEPARATOR + classInfo.getClassName();
 			ICubridNode child = CubridTablesFolderLoader
