@@ -29,6 +29,7 @@ package com.cubrid.cubridmanager.ui.cubrid.database.control;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -249,7 +250,6 @@ public class GeneralInfoPage extends
 				false);
 		enIsoRadio.setLayoutData(gdEnIsoRadio);
 		enIsoRadio.setText(CHARSET_EN_US_ISO88591);
-		enIsoRadio.setSelection(true);
 
 		enUtfRadio = new Button(charsetGroup, SWT.RADIO);
 		final GridData gdEnUtfRadio = new GridData(SWT.FILL, SWT.CENTER, true,
@@ -268,7 +268,7 @@ public class GeneralInfoPage extends
 				false);
 		koUtfRadio.setLayoutData(gdKoUtfRadio);
 		koUtfRadio.setText(CHARSET_KO_KR_UTF8);
-
+		
 		userDefinedRadio = new Button(charsetGroup, SWT.RADIO);
 		final GridData gdUserDefinedRadio = new GridData(SWT.FILL, SWT.CENTER,
 				true, false);
@@ -725,6 +725,21 @@ public class GeneralInfoPage extends
 		databaseNameText.addModifyListener(this);
 		genericVolumePathText.addModifyListener(this);
 		logVolumePathText.addModifyListener(this);
+		
+		selectDefaultCollation();
+	}
+
+	/**
+	 * select a default collation
+	 */
+	private void selectDefaultCollation() {
+		Locale locale = Locale.getDefault();
+
+		if (locale.equals(Locale.KOREA) || locale.equals(Locale.KOREAN)) {
+			koUtfRadio.setSelection(true);
+		} else {
+			enIsoRadio.setSelection(true);
+		}
 	}
 
 	/**

@@ -102,7 +102,7 @@ public class CreateDatabaseAction extends SelectionAction {
 		String serverNameKey = node.getServer().getId() + ICubridNodeLoader.NODE_SEPARATOR + CubridServerLoader.DATABASE_FOLDER_ID;
 		ICubridNode cubridServer = node.getServer().getChild(serverNameKey);
 		CMWizardDialog dialog = new CMWizardDialog(getShell(), new CreateDatabaseWizard(server, viewer, cubridServer));
-		dialog.setPageSize(580, 420);
+		dialog.setPageSize(580, 460);
 		dialog.open();
 	}
 }
