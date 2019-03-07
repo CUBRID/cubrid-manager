@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 
+import com.cubrid.common.ui.spi.Messages;
 import com.cubrid.common.ui.spi.model.loader.schema.CubridTablesFolderLoader;
 import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
 
@@ -127,7 +128,7 @@ public class MoreTablesNode {
 		for (Object o : elements) {
 			if (NodeType.TABLE_FOLDER.equals(((ICubridNode) o).getType())) {
 				ICubridNode node = (ICubridNode) o;
-				String label = node.getLabel().substring(0, 6);
+				String label = Messages.msgTablesFolderName;
 				node.setLabel(String.format("%s(%d)", label, nextIndex));
 				treeViewer.update(node, null);
 			}
