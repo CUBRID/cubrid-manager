@@ -726,13 +726,13 @@ public class GeneralInfoPage extends
 		genericVolumePathText.addModifyListener(this);
 		logVolumePathText.addModifyListener(this);
 		
-		selectDefaultCollation();
+		selectInitialDatabaseCollationAndCharset();
 	}
 
 	/**
 	 * select a default collation
 	 */
-	private void selectDefaultCollation() {
+	private void selectInitialDatabaseCollationAndCharset() {
 		Locale locale = Locale.getDefault();
 
 		if (locale.equals(Locale.KOREA) || locale.equals(Locale.KOREAN)) {
