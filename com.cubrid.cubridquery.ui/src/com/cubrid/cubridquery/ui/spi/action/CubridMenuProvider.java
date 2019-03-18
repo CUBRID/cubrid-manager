@@ -132,18 +132,36 @@ public class CubridMenuProvider extends
 		addActionToManager(manager, getAction(ExportTableDefinitionAction.ID));
 		manager.add(new Separator());
 
-		// Install Schema Comment
-		if (node instanceof CubridDatabase
-				&& !CompatibleUtil.isCommentSupports(((CubridDatabase) node).getDatabaseInfo())) {
-			addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
-			manager.add(new Separator());
-		}
+		addInstallSchemaCommentAction(manager, node);
 
 //		addActionToManager(manager, getAction(RunSQLFileAction.ID));
 //		manager.add(new Separator());
 		addActionToManager(manager, getAction(ViewDatabaseVersionAction.ID));
 		addActionToManager(manager, getAction(OIDNavigatorAction.ID));
 		addActionToManager(manager, getAction(PropertyAction.ID));
+	}
+
+	/**
+	 * addInstallSchemaCommentAction
+	 * @param manager
+	 * @param node
+	 */
+	private void addInstallSchemaCommentAction(IMenuManager manager, ICubridNode node) {
+
+		// Install Schema Comment
+		if (node instanceof CubridDatabase) {
+
+			CubridDatabase cubridDatabase = (CubridDatabase) node;
+
+			if (!cubridDatabase.isLogined()) {
+				return;
+			}
+
+			if (!CompatibleUtil.isCommentSupports(cubridDatabase.getDatabaseInfo())) {
+				addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
+				manager.add(new Separator());
+			}
+		}
 	}
 
 	/**
