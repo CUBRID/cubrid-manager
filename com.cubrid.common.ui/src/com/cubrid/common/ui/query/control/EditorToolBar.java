@@ -32,13 +32,9 @@ import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -59,10 +55,8 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 public final class EditorToolBar extends ToolBar {
 	
 	private CLabel selectDbLabel;
-	private Button dropDownButton;
 	private final DatabaseNavigatorMenu dbMenu;
 	private int SELECTDBLABEL_LENTH = 180;
-	private int SELECTDBBUTTON_LENTH = 20;
 
 	/**
 	 * Create the composite
@@ -82,7 +76,7 @@ public final class EditorToolBar extends ToolBar {
 		ToolItem selectDbItem = new ToolItem(this, SWT.SEPARATOR);
 		Composite comp = createDropDownComp();
 		selectDbItem.setControl(comp);
-		selectDbItem.setWidth(SELECTDBLABEL_LENTH + SELECTDBBUTTON_LENTH);
+		selectDbItem.setWidth(SELECTDBLABEL_LENTH);
 		new ToolItem(this, SWT.SEPARATOR | SWT.VERTICAL);
 	}
 
@@ -90,20 +84,6 @@ public final class EditorToolBar extends ToolBar {
 		dbMenu.setParent(parent);
 		dbMenu.setSelectDbLabel(selectDbLabel);
 		dbMenu.loadDatabaseMenu();
-		//dbMenu.selectMenuItem(dbMenu.getNullDbMenuItem());
-
-			dropDownButton.addListener(SWT.Selection, new Listener() {
-				
-				public void handleEvent(Event event) {
-					handleSelectionEvent();
-				}
-			});
-			selectDbLabel.addListener(SWT.MouseUp, new Listener() {
-				
-				public void handleEvent(Event event) {
-					handleSelectionEvent();
-				}
-			});
 	}
 
 	/**
@@ -113,19 +93,6 @@ public final class EditorToolBar extends ToolBar {
 	 */
 	public static DatabaseNavigatorMenu loadDbNavigatorMenu() {
 		return ActionManager.getInstance().getMenuProvider().getDatabaseNavigatorMenu();
-	}
-
-	/**
-	 * Handle selection event.
-	 * 
-	 */
-	private void handleSelectionEvent() {
-		Rectangle rect = selectDbLabel.getBounds();
-		Point pt = new Point(rect.x, rect.y + rect.height);
-		pt = selectDbLabel.toDisplay(pt);
-		dbMenu.loadDatabaseMenu();
-		dbMenu.getDbSelectionMenu().setLocation(pt);
-		dbMenu.getDbSelectionMenu().setVisible(true);
 	}
 
 	/**
@@ -145,8 +112,6 @@ public final class EditorToolBar extends ToolBar {
 		selectDbLabel = new CLabel(comp, SWT.CENTER | SWT.SHADOW_OUT);
 		selectDbLabel.setLayoutData(CommonUITool.createGridData(1, 1, SELECTDBLABEL_LENTH, -1));
 		selectDbLabel.setText(DatabaseNavigatorMenu.NO_DATABASE_SELECTED_LABEL);
-		dropDownButton = new Button(comp, SWT.FLAT | SWT.ARROW | SWT.DOWN);
-		dropDownButton.setLayoutData(CommonUITool.createGridData(1, 1, SELECTDBBUTTON_LENTH, -1));
 		return comp;
 	}
 
