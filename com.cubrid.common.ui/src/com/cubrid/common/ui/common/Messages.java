@@ -545,4 +545,7 @@ public class Messages extends NLS {
 	public static String btnShowDashboard;
 	public static String titleShowDashboard;
 	public static String databaseDashboardAutoRefreshConfErrMsg;
+
+	public static String grpNavigator;
+	public static String lblTablesFetchSize;
 }
