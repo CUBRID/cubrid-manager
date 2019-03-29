@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 
+import com.cubrid.common.ui.common.preference.GeneralPreference;
 import com.cubrid.common.ui.spi.Messages;
 import com.cubrid.common.ui.spi.model.loader.schema.CubridTablesFolderLoader;
 import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
@@ -41,7 +42,7 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
  *
  */
 public class MoreTablesNode {
-	private final static int MAX_TABLES_COUNT = 100;
+	private int MAX_TABLES_COUNT = Integer.valueOf(GeneralPreference.getTablesFetchSize());
 	private final AbstractTreeViewer treeViewer;
 	private DefaultSchemaNode moreNode;
 	private ICubridNode tablesNode;
@@ -76,13 +77,13 @@ public class MoreTablesNode {
 	 * Create and add child nodes to the 'Tables' model 
 	 */
 	private void makeChildren() {
-		for (int i = currentIndex; i < nextIndex; i++) {
+		for (int i = currentIndex, j = 0; i < nextIndex; i++, j++) {
 			ClassInfo classInfo = userTableInfoList.get(i);
 			String id = moreNode.getId() + ICubridNodeLoader
 					.NODE_SEPARATOR + classInfo.getClassName();
 			ICubridNode child = CubridTablesFolderLoader
 					.createClassNode(id, classInfo, 1);
-			children[i % MAX_TABLES_COUNT] = child;
+			children[j] = child;
 			tablesNode.addChild(child);
 		}
 	}
