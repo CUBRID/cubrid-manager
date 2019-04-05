@@ -63,7 +63,6 @@ public final class GeneralPreference {
 	public static final String EXTERNAL_CM_PATH = ".external_cm_path";
 	public static final String EXTERNAL_CQB_PATH = ".external_cqb_path";
 	public static final String MAX_QUERY_TUNER_WINDOW=".max_query_tuner_window";
-	public static final String TABLES_FETCH_SIZE = ".tables_fetch_size";
 	private static IPreferenceStore pref = null;
 
 	static {
@@ -78,7 +77,6 @@ public final class GeneralPreference {
 		pref.setDefault(USE_HOST_DASHBOARD, true);
 		pref.setDefault(USE_DATABASE_DASHBOARD, true);
 		pref.setDefault(SHOW_ALERT_RUN_MODIFIED_QUERIES_AUTOCOMMIT, true);
-		pref.setDefault(TABLES_FETCH_SIZE, "1000");
 	}
 
 	/**
@@ -445,22 +443,6 @@ public final class GeneralPreference {
 	public static void setExternalBrowserPath(String path) {
 		try {
 			pref.setValue(GeneralPreference.EXTERNAL_CQB_PATH, path);
-		} catch (Exception ignored) {
-			LOGGER.error(ignored.getMessage());
-		}
-	}
-	
-	public static String getTablesFetchSize() {
-		try {
-			return pref.getString(TABLES_FETCH_SIZE);
-		} catch (Exception ignored) {
-			return null;
-		}
-	}
-
-	public static void setTablesFetchSize(String tablesFetchSize) {
-		try {
-			pref.setValue(GeneralPreference.TABLES_FETCH_SIZE, tablesFetchSize);
 		} catch (Exception ignored) {
 			LOGGER.error(ignored.getMessage());
 		}

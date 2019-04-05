@@ -33,10 +33,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 
 import com.cubrid.common.core.util.ApplicationType;
 import com.cubrid.common.ui.common.Messages;
@@ -65,8 +63,6 @@ public class GeneralPreferenceComposite extends
 	/*
 	private Button confirmRunModQueryAutoCommitBtn = null;
 	*/
-	private Label tablesFetchSizeLbl = null;
-	private Combo tablesFetchSizeCmb = null;
 
 	/**
 	 * The constructor
@@ -171,19 +167,6 @@ public class GeneralPreferenceComposite extends
 			dashboardDatabaseBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 			dashboardDatabaseBtn.setText(Messages.btnUseDashboardDatabase);
 		}
-		
-		final Group navigatorGroup = new Group(this, SWT.NONE);
-		navigatorGroup.setText(Messages.grpNavigator);
-		navigatorGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		navigatorGroup.setLayout(new GridLayout(2, false));
-		
-		tablesFetchSizeLbl = new Label(navigatorGroup, SWT.NONE);
-		tablesFetchSizeLbl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		tablesFetchSizeLbl.setText(Messages.lblTablesFetchSize);
-
-		tablesFetchSizeCmb = new Combo(navigatorGroup, SWT.NONE | SWT.BORDER | SWT.READ_ONLY);
-		tablesFetchSizeCmb.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		tablesFetchSizeCmb.setItems(new String[] { "100", "200", "300", "500", "1000", "2000", "3000", "5000" });
 	}
 
 	/**
@@ -223,9 +206,6 @@ public class GeneralPreferenceComposite extends
 			boolean isUseDatabaseDashboard = GeneralPreference.isUseDatabaseDashboard();
 			dashboardDatabaseBtn.setSelection(isUseDatabaseDashboard);
 		}
-		
-		String tablesFetchSize = GeneralPreference.getTablesFetchSize();
-		tablesFetchSizeCmb.setText(tablesFetchSize);
 	}
 
 	/**
@@ -266,8 +246,5 @@ public class GeneralPreferenceComposite extends
 			boolean isUseDatabaseDashboard = dashboardDatabaseBtn.getSelection();
 			GeneralPreference.setUseDatabaseDashboard(isUseDatabaseDashboard);
 		}
-		
-		String tablesFetchSize = tablesFetchSizeCmb.getText();
-		GeneralPreference.setTablesFetchSize(tablesFetchSize);
 	}
 }
