@@ -198,6 +198,12 @@
 			<keywordReference id="Import.export"/>
 			<keywordReference id="Import.import"/>
        </page>
+       <page
+             category="com.cubrid.common.ui.preference.category"
+             class="com.cubrid.common.ui.common.preference.NavigatorPreferencePage"
+             id="com.cubrid.common.ui.preference.navigator"
+             name="%navigatorName">
+       </page>
     </extension>
 	<extension point="org.eclipse.ui.keywords">
 		<keyword label="commit" id="Query.commit"/>
