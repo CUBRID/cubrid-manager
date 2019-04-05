@@ -68,7 +68,9 @@ public class MoreTablesNode {
 	 */
 	public void expandMoreTables() {
 		makeChildren();
+		removeMoreNode();
 		addChildrenToTreeViewer();
+		updateTablesCount();
 		makeNewMoreNode();
 	}
 
@@ -91,7 +93,6 @@ public class MoreTablesNode {
 	 * Add child nodes to the 'Tables' node of 'TreeViewer'
 	 */
 	private void addChildrenToTreeViewer() {
-		removeMoreNode();
 		treeViewer.add(tablesNode, children);
 	}
 
@@ -100,19 +101,13 @@ public class MoreTablesNode {
 	 * among the expanded nodes in the TreeViewer
 	 */
 	private void removeMoreNode() {
-		Object[] elements = treeViewer.getExpandedElements();
-		for (Object o : elements) {
-			if (NodeType.MORE.equals(((ICubridNode) o).getType())) {
-				treeViewer.remove(o);
-			}
-		}
+		treeViewer.remove(moreNode);
 	}
 
 	/**
 	 * Create a new 'More Tables ...' node in the 'TreeViewer'
 	 */
 	private void makeNewMoreNode() {
-		updateTablesCount();
 		if (hasMoreNode) {
 			treeViewer.add(tablesNode,
 					CubridTablesFolderLoader
@@ -124,14 +119,8 @@ public class MoreTablesNode {
 	 * Updated the number of tables currently displayed in the 'Tables' node
 	 */
 	private void updateTablesCount() {
-		Object[] elements = treeViewer.getExpandedElements();
-		for (Object o : elements) {
-			if (NodeType.TABLE_FOLDER.equals(((ICubridNode) o).getType())) {
-				ICubridNode node = (ICubridNode) o;
-				String label = Messages.msgTablesFolderName;
-				node.setLabel(String.format("%s(%d)", label, nextIndex));
-				treeViewer.update(node, null);
-			}
-		}
+		String label = Messages.msgTablesFolderName;
+		tablesNode.setLabel(String.format("%s(%d)", label, nextIndex));
+		treeViewer.update(tablesNode, null);
 	}
 }
