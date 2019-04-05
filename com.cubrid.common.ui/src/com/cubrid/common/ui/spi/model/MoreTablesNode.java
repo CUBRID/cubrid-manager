@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 
-import com.cubrid.common.ui.common.preference.GeneralPreference;
+import com.cubrid.common.ui.common.preference.NavigatorPreference;
 import com.cubrid.common.ui.spi.Messages;
 import com.cubrid.common.ui.spi.model.loader.schema.CubridTablesFolderLoader;
 import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
@@ -42,7 +42,7 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
  *
  */
 public class MoreTablesNode {
-	private int MAX_TABLES_COUNT = Integer.valueOf(GeneralPreference.getTablesFetchSize());
+	private int MAX_TABLES_COUNT = Integer.valueOf(NavigatorPreference.getTablesFetchSize());
 	private final AbstractTreeViewer treeViewer;
 	private DefaultSchemaNode moreNode;
 	private ICubridNode tablesNode;

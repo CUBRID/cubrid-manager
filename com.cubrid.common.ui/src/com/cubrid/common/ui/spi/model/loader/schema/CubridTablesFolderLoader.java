@@ -37,7 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 
 import com.cubrid.common.core.task.ITask;
-import com.cubrid.common.ui.common.preference.GeneralPreference;
+import com.cubrid.common.ui.common.preference.NavigatorPreference;
 import com.cubrid.common.ui.cubrid.table.control.SchemaInfoEditorPart;
 import com.cubrid.common.ui.spi.CubridNodeManager;
 import com.cubrid.common.ui.spi.Messages;
@@ -166,7 +166,7 @@ public class CubridTablesFolderLoader extends
 			List<ClassInfo> allClassInfoList, int level,
 			IProgressMonitor monitor) {
 		List<String> tables = new ArrayList<String>();
-		final int tablesFetchSize = Integer.valueOf(GeneralPreference.getTablesFetchSize());
+		final int tablesFetchSize = Integer.valueOf(NavigatorPreference.getTablesFetchSize());
 		final int TABLE_COUNT = allClassInfoList.size() <= tablesFetchSize ? allClassInfoList.size() : tablesFetchSize;
 		for (int i = 0; i < TABLE_COUNT; i++) {
 			ClassInfo classInfo = allClassInfoList.get(i);
