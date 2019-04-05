@@ -38,7 +38,7 @@ import com.cubrid.common.ui.common.Messages;
 
 public class NavigatorPreferenceComposite extends Composite {
 
-	private static final String[]   TABLES_FETCH_SIZE_ITEMS   = new String[] { "100", "200", "300", "500", "1000", "2000", "3000", "5000", "ALL" };
+	private static final String[]   TABLES_FETCH_SIZE_ITEMS   = new String[] { "100", "200", "300", "500", "1000", "2000", "3000", "5000" };
 	
 	private Label                   tablesFetchSizeLbl        = null;
 	private Combo                   tablesFetchSizeCmb        = null;
