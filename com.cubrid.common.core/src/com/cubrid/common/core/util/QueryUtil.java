@@ -739,26 +739,24 @@ public final class QueryUtil {
 		return sql.toString();
 	}
 
-	private static String parseColumnDefinition(String createSql,
-			String columnName) {
+	private static String parseColumnDefinition(String createSql, String columnName) {
 		int index = 0;
 
-		Pattern pattern = Pattern.compile(
-				String.format("\\[%s\\].[\\w\\s\\d\\(\\,\\)\\.]*", columnName));
+		Pattern pattern = Pattern.compile(String.format("\\[%s\\].[\\w\\s\\d\\(\\,\\)\\.']*", columnName));
 		Matcher matcher = pattern.matcher(createSql);
 		matcher.find();
 		String data = matcher.group();
 
-		String[] sqlEndWord = {" COMMENT ", ") COLLATE ", ", "};
+		String[] sqlEndWord = { " COMMENT ", ") REUSE_OID", ") COLLATE ", ", " };
 		int tempIndex = 0;
 		index = data.length();
-
 		for (String s : sqlEndWord) {
 			if ((tempIndex = data.lastIndexOf(s)) > 0) {
 				index = tempIndex;
 				break;
 			}
 		}
+
 		return data.substring(0, index) + " COMMENT %s";
 	}
 
