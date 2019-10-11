@@ -61,6 +61,7 @@ public class ImportFromSQLRunnable extends
 		AbsImportRunnable {
 
 	private static final Logger LOGGER = LogUtil.getLogger(ImportFromSQLRunnable.class);
+	private static final String NULL_CHARACTER_ASCII_CODE = "\u0000";
 	private final String fileName;
 	private boolean end = false;
 	private int lineNumber = 1;
@@ -260,7 +261,7 @@ public class ImportFromSQLRunnable extends
 						String sql = o[0].toString();
 						if (sql.endsWith(";")) {
 							ImportRowData rowData = new ImportRowData(seprateSQLLineNumber);
-							rowData.setSql(sql);
+							rowData.setSql(sql.replaceAll(NULL_CHARACTER_ASCII_CODE, ""));
 							rowData.setWorkSize((sizeCount / qList.size()));
 							sqlList.add(rowData);
 							if (i == qList.size() - 1
