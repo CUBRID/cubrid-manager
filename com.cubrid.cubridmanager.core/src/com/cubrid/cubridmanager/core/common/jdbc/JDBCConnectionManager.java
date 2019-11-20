@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
+import com.cubrid.cubridmanager.core.CubridManagerCorePlugin;
 import com.cubrid.cubridmanager.core.common.loader.CubridClassLoaderPool;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
@@ -131,6 +132,15 @@ public final class JDBCConnectionManager {
 		if (charset != null && charset.length() > 0) {
 			props.put("charset", charset);
 			hasCharset = true;
+		}
+
+		// check SQL Code autocompletion mode
+		if (CubridManagerCorePlugin.getDefault().isSQLCodeAutocompletionMode()) {
+			url = new StringBuffer(url)
+					.append("?")
+					.append(CubridManagerCorePlugin.CM_SQL_CODE_AUTOCOMPLETION)
+					.append("=")
+					.append(String.valueOf(Boolean.TRUE)).toString();
 		}
 
 		// advanced jdbc settings

@@ -54,6 +54,7 @@ import com.cubrid.common.ui.query.control.jface.text.contentassist.IContentAssis
 import com.cubrid.common.ui.query.control.jface.text.contentassist.IContextInformation;
 import com.cubrid.common.ui.query.control.jface.text.contentassist.IContextInformationValidator;
 import com.cubrid.common.ui.spi.persist.RecentlyUsedSQLContentPersistUtils;
+import com.cubrid.cubridmanager.core.CubridManagerCorePlugin;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 
 /**
@@ -81,6 +82,7 @@ public class SQLContentAssistProcessor implements IContentAssistProcessor {
 
 	public void setRunning(boolean running) {
 		this.running = running;
+		CubridManagerCorePlugin.getDefault().setSQLCodeAutocompletionMode(running);
 	}
 
 	public boolean isTableLowercase() {

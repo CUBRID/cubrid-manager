@@ -41,8 +41,12 @@ public class CubridManagerCorePlugin extends
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.cubrid.cubridmanager.core";
 
+	public static final String CM_SQL_CODE_AUTOCOMPLETION = "cmSqlCodeAutocompletion";
+
 	// The shared instance
 	private static CubridManagerCorePlugin plugin;
+
+	private boolean isSQLCodeAutocompletionMode = false;
 
 	/**
 	 * @param context BundleContext
@@ -73,4 +77,19 @@ public class CubridManagerCorePlugin extends
 		return plugin;
 	}
 
+	/**
+	 * setSQLCodeAutocompletionMode
+	 * @param flag
+	 */
+	public void setSQLCodeAutocompletionMode(boolean flag) {
+		this.isSQLCodeAutocompletionMode = flag;
+	}
+	
+	/**
+	 * isSQLCodeAutocompletionMode
+	 * @return
+	 */
+	public boolean isSQLCodeAutocompletionMode() {
+		return isSQLCodeAutocompletionMode;
+	}
 }
