@@ -726,7 +726,9 @@ public class GeneralInfoPage extends
 		genericVolumePathText.addModifyListener(this);
 		logVolumePathText.addModifyListener(this);
 		
-		selectInitialDatabaseCollationAndCharset();
+		if (CompatibleUtil.isSupportCreateDBByCharset(server.getServerInfo())) {
+			selectInitialDatabaseCollationAndCharset();
+		}
 	}
 
 	/**
