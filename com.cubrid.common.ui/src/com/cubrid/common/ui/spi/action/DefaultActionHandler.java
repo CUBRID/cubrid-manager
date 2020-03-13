@@ -31,6 +31,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.util.Util;
 
 /**
  * 
@@ -48,6 +49,8 @@ import org.eclipse.jface.action.IAction;
 public class DefaultActionHandler extends
 		AbstractHandler {
 
+	private static final String QUERY_NEW_ACTION_ID = "com.cubrid.cubridmanager.ui.common.action.QueryNewAction";
+	
 	/**
 	 * Execute the handler action
 	 * 
@@ -57,13 +60,21 @@ public class DefaultActionHandler extends
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String actionId = event.getParameter("com.cubrid.navigator.action.id");
+		
 		if (actionId == null || actionId.trim().length() == 0) {
 			return null;
 		}
+
+		if (Util.isWindows()
+				&& QUERY_NEW_ACTION_ID.equals(actionId)) {
+			return null;
+		}
+		
 		IAction action = ActionManager.getInstance().getAction(actionId);
 		if (action != null && action.isEnabled()) {
 			action.run();
 		}
+		
 		return null;
 	}
 
