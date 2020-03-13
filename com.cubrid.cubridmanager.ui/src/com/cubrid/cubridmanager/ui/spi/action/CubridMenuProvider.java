@@ -32,6 +32,7 @@ package com.cubrid.cubridmanager.ui.spi.action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.util.Util;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.CompatibleUtil;
@@ -492,8 +493,10 @@ public class CubridMenuProvider extends MenuProvider {
 		addActionToManager(manager, getAction(EditDatabaseLoginAction.ID));
 		addActionToManager(manager, getAction(ConnectionUrlExportAction.ID));
 		manager.add(new Separator());
-		addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
-		manager.add(new Separator());
+		if (!Util.isWindows()) {
+			addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
+			manager.add(new Separator());
+		}
 		addActionToManager(manager, getAction(ShowDatabaseDashboardAction.ID));
 		manager.add(new Separator());
 		ActionManager.addActionToManager(manager, SchemaCompareWizardAction.ID);

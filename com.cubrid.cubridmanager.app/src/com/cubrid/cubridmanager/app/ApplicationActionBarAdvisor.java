@@ -195,13 +195,16 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		coolBarManager.add(new ToolBarContributionItem(toolbarManager, IActionConstants.TOOL_NEW1));
 
 
-		Bundle cqbBundle = Platform.getBundle(ApplicationUtil.CQB_PLUGIN_ID);
-		/* Active the CQB plugin */
-		if (cqbBundle != null) {
-			try {
-				cqbBundle.start();
-			} catch (Exception e) {
-				LOGGER.error(e.getMessage());
+		Bundle cqbBundle = null; 
+		if (!Util.isWindows()) {
+			cqbBundle = Platform.getBundle(ApplicationUtil.CQB_PLUGIN_ID);
+			/* Active the CQB plugin */
+			if (cqbBundle != null) {
+				try {
+					cqbBundle.start();
+				} catch (Exception e) {
+					LOGGER.error(e.getMessage());
+				}
 			}
 		}
 
@@ -224,8 +227,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 			viewAction.setDisabledImageDescriptor(CubridManagerAppPlugin.getImageDescriptor("icons/cubridmanager32.gif"));
 			MenuManager viewActionManager = viewAction.getMenuManager();
 			viewActionManager.add(manager.getAction(OpenCMPerspectiveAction.ID));
-			viewActionManager.add(manager.getAction(OpenCQBPerspectiveAction.ID));
-
+			
+			if (!Util.isWindows()) {
+				viewActionManager.add(manager.getAction(OpenCQBPerspectiveAction.ID));
+			}
+			
 			ActionContributionItem viewItems = new ActionContributionItem(viewAction);
 			viewItems.setMode(ActionContributionItem.MODE_FORCE_TEXT);
 			viewItems.setId(IPerspectiveConstance.PERSPECTIVE_ACTION_CONTRIBUTION_ID);

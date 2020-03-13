@@ -33,6 +33,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.util.Util;
 
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.ui.CommonUIPlugin;
@@ -156,13 +157,14 @@ public class MenuProvider implements
 				manager.add(new Separator());
 			}
 
-			IMenuManager perparedMenu = new MenuManager(Messages.preparedTableDataMenuName);
-			manager.add(perparedMenu);
-			addActionToManager(perparedMenu, getAction(PstmtOneDataAction.ID));
-			addActionToManager(perparedMenu, getAction(PstmtMultiDataAction.ID));
-//			addActionToManager(manager, getAction(RunSQLFileAction.ID));
-			manager.add(new Separator());
-
+			if (!Util.isWindows()) {
+				IMenuManager perparedMenu = new MenuManager(Messages.preparedTableDataMenuName);
+				manager.add(perparedMenu);
+				addActionToManager(perparedMenu, getAction(PstmtOneDataAction.ID));
+				addActionToManager(perparedMenu, getAction(PstmtMultiDataAction.ID));
+				// addActionToManager(manager, getAction(RunSQLFileAction.ID));
+				manager.add(new Separator());
+			}
 			// Export & Import Actions
 			addActionToManager(manager, getAction(ExportWizardAction.ID));
 			addActionToManager(manager, getAction(ImportWizardAction.ID));
@@ -178,8 +180,10 @@ public class MenuProvider implements
 		} else if (NodeType.VIEW_FOLDER.equals(type)) {
 			addActionToManager(manager, getAction(CreateViewAction.ID));
 		} else if (NodeType.TABLE_COLUMN.equals(type)) {
-			addActionToManager(manager, getAction(ColumnSelectSqlAction.ID));
-			addActionToManager(manager, getAction(ColumnSelectCountAction.ID));
+			if (!Util.isWindows()) {
+				addActionToManager(manager, getAction(ColumnSelectSqlAction.ID));
+				addActionToManager(manager, getAction(ColumnSelectCountAction.ID));
+			}
 		} else if (NodeType.GROUP.equals(type)) {
 			addActionToManager(manager, getAction(GroupPropertyAction.ID));
 			manager.add(new Separator());
@@ -208,11 +212,13 @@ public class MenuProvider implements
 	 * @param manager IMenuManager
 	 */
 	public void buildSystemViewMenu(IMenuManager manager) {
-		addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
-		manager.add(new Separator());
-		addActionToManager(manager, getAction(TableSelectAllAction.ID));
-		addActionToManager(manager, getAction(TableSelectCountAction.ID));
-		manager.add(new Separator());
+		if (!Util.isWindows()) {
+			addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
+			manager.add(new Separator());
+			addActionToManager(manager, getAction(TableSelectAllAction.ID));
+			addActionToManager(manager, getAction(TableSelectCountAction.ID));
+			manager.add(new Separator());
+		}
 //		addActionToManager(manager, getAction(ShowSchemaEditorAction.ID));
 		addActionToManager(manager, getAction(PropertyViewAction.ID));
 		manager.add(new Separator());
@@ -225,11 +231,13 @@ public class MenuProvider implements
 	 * @param manager IMenuManager
 	 */
 	public void buildSystemTableMenu(IMenuManager manager) {
-		addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
-		manager.add(new Separator());
-		addActionToManager(manager, getAction(TableSelectAllAction.ID));
-		addActionToManager(manager, getAction(TableSelectCountAction.ID));
-		manager.add(new Separator());
+		if (!Util.isWindows()) {
+			addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
+			manager.add(new Separator());
+			addActionToManager(manager, getAction(TableSelectAllAction.ID));
+			addActionToManager(manager, getAction(TableSelectCountAction.ID));
+			manager.add(new Separator());
+		}
 //		addActionToManager(manager, getAction(ShowSchemaEditorAction.ID));
 //		manager.add(new Separator());
 	}
@@ -240,12 +248,14 @@ public class MenuProvider implements
 	 * @param manager the parent IMenuManager
 	 */
 	public void buildUserViewMenu(IMenuManager manager) {
-		addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
-		manager.add(new Separator());
-		addActionToManager(manager, getAction(TableSelectAllAction.ID));
-		addActionToManager(manager, getAction(TableSelectCountAction.ID));
-		manager.add(new Separator());
-
+		if (!Util.isWindows()) {
+			addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
+			manager.add(new Separator());
+			addActionToManager(manager, getAction(TableSelectAllAction.ID));
+			addActionToManager(manager, getAction(TableSelectCountAction.ID));
+			manager.add(new Separator());
+		}
+		
 		IAction renameTableAction = getAction(RenameTableAction.ID);
 		renameTableAction.setText(com.cubrid.common.ui.spi.Messages.viewRenameActionName);
 		renameTableAction.setImageDescriptor(CommonUIPlugin.getImageDescriptor("icons/action/view_rename.png"));
@@ -269,27 +279,29 @@ public class MenuProvider implements
 	public void buildUserTableMenu(IMenuManager manager, ICubridNode node) {
 		DatabaseInfo dbInfo = ((ISchemaNode) node).getDatabase().getDatabaseInfo();
 
-		// SELECT GROUP
-		IMenuManager selectSqlMenu = new MenuManager(Messages.lblMakeSelectQueryGrp);
-		manager.add(selectSqlMenu);
-		// SELECT
-		addActionToManager(selectSqlMenu, getAction(MakeSelectQueryAction.ID));
-		// Parameterized SELECT
-		addActionToManager(selectSqlMenu, getAction(MakeSelectPstmtQueryAction.ID));
-		// Parameterized INSERT
-		addActionToManager(manager, getAction(MakeInsertQueryAction.ID));
-		// Parameterized UPDATE
-		addActionToManager(manager, getAction(MakeUpdateQueryAction.ID));
-		// Parameterized DELETE
-		addActionToManager(manager, getAction(MakeDeleteQueryAction.ID));
-		// CREATE GROUP
-		IMenuManager createSqlMenu = new MenuManager(Messages.lblMakeCreateQueryGrp);
-		manager.add(createSqlMenu);
-		addActionToManager(createSqlMenu, getAction(MakeCreateQueryAction.ID));
-		addActionToManager(createSqlMenu, getAction(MakeCloneQueryAction.ID));
+		if (!Util.isWindows()) {
+			// SELECT GROUP
+			IMenuManager selectSqlMenu = new MenuManager(Messages.lblMakeSelectQueryGrp);
+			manager.add(selectSqlMenu);
+			// SELECT
+			addActionToManager(selectSqlMenu, getAction(MakeSelectQueryAction.ID));
+			// Parameterized SELECT
+			addActionToManager(selectSqlMenu, getAction(MakeSelectPstmtQueryAction.ID));
+			// Parameterized INSERT
+			addActionToManager(manager, getAction(MakeInsertQueryAction.ID));
+			// Parameterized UPDATE
+			addActionToManager(manager, getAction(MakeUpdateQueryAction.ID));
+			// Parameterized DELETE
+			addActionToManager(manager, getAction(MakeDeleteQueryAction.ID));
+			// CREATE GROUP
+			IMenuManager createSqlMenu = new MenuManager(Messages.lblMakeCreateQueryGrp);
+			manager.add(createSqlMenu);
+			addActionToManager(createSqlMenu, getAction(MakeCreateQueryAction.ID));
+			addActionToManager(createSqlMenu, getAction(MakeCloneQueryAction.ID));
 
-		manager.add(new Separator());
-
+			manager.add(new Separator());
+		}
+		
 		// Schema to Code Actions
 		addActionToManager(manager, getAction(TableToJavaCodeAction.ID));
 		addActionToManager(manager, getAction(TableToPhpCodeAction.ID));
@@ -303,24 +315,26 @@ public class MenuProvider implements
 			manager.add(new Separator());
 		}
 
-		// View data
-		IMenuManager viewDataMenu = new MenuManager(Messages.viewDataMenuName);
-		manager.add(viewDataMenu);
-		addActionToManager(viewDataMenu, getAction(TableSelectAllAction.ID));
-		addActionToManager(viewDataMenu, getAction(SelectByOnePstmtDataAction.ID));
-		addActionToManager(viewDataMenu, getAction(SelectByMultiPstmtDataAction.ID));
-		viewDataMenu.add(new Separator());
-		addActionToManager(viewDataMenu, getAction(TableSelectCountAction.ID));
+		if (!Util.isWindows()) {
+			// View data
+			IMenuManager viewDataMenu = new MenuManager(Messages.viewDataMenuName);
+			manager.add(viewDataMenu);
+			addActionToManager(viewDataMenu, getAction(TableSelectAllAction.ID));
+			addActionToManager(viewDataMenu, getAction(SelectByOnePstmtDataAction.ID));
+			addActionToManager(viewDataMenu, getAction(SelectByMultiPstmtDataAction.ID));
+			viewDataMenu.add(new Separator());
+			addActionToManager(viewDataMenu, getAction(TableSelectCountAction.ID));
 
-		// Input data
-		IMenuManager inputDataMenu = new MenuManager(Messages.inputDataMenuName);
-		manager.add(inputDataMenu);
-		addActionToManager(inputDataMenu, getAction(InsertOneByPstmtAction.ID));
-		addActionToManager(inputDataMenu, getAction(ImportDataFromFileAction.ID));
+			// Input data
+			IMenuManager inputDataMenu = new MenuManager(Messages.inputDataMenuName);
+			manager.add(inputDataMenu);
+			addActionToManager(inputDataMenu, getAction(InsertOneByPstmtAction.ID));
+			addActionToManager(inputDataMenu, getAction(ImportDataFromFileAction.ID));
 
-//		addActionToManager(manager, getAction(RunSQLFileAction.ID));
-		manager.add(new Separator());
-
+			// addActionToManager(manager, getAction(RunSQLFileAction.ID));
+			manager.add(new Separator());
+		}
+		
 		// Export & Import Actions
 		addActionToManager(manager, getAction(ExportWizardAction.ID));
 		addActionToManager(manager, getAction(ImportWizardAction.ID));

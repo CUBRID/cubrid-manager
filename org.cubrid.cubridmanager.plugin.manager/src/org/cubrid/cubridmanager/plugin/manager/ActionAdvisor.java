@@ -256,10 +256,12 @@ public class ActionAdvisor extends AbsActionAdvisor {
 				createItem(StartRetargetAction.ID_BIG));
 		newToolbarManager.insertBefore(insertPoint, new Separator());
 
-		// Open queryEditor
-		newToolbarManager.insertBefore(insertPoint,
-				createItem(DatabaseQueryNewAction.ID_BIG));
-
+		if (!Util.isWindows()) {
+    		// Open queryEditor
+    		newToolbarManager.insertBefore(insertPoint,
+    				createItem(DatabaseQueryNewAction.ID_BIG));
+		}
+		
 		// Schema actions
 		newToolbarManager.insertBefore(insertPoint, new Separator());
 		DropDownAction schemaDropAction = new DropDownAction(
@@ -409,15 +411,17 @@ public class ActionAdvisor extends AbsActionAdvisor {
 		fileMenu.add(closeAction);
 		fileMenu.add(closeAllAction);
 		fileMenu.add(new Separator());
-		fileMenu.add(manager.getAction(OpenQueryAction.ID));
-		fileMenu.add(saveAction);
-		fileMenu.add(saveasAction);
-		fileMenu.add(saveAllAction);
-		fileMenu.add(new Separator());
-//		fileMenu.add(manager.getAction(OpenSchemaEditorAction.ID));
-//		fileMenu.add(new Separator());
-		fileMenu.add(manager.getAction(RestoreQueryEditorAction.ID));
-		fileMenu.add(new Separator());
+		if (!Util.isWindows()) {
+			fileMenu.add(manager.getAction(OpenQueryAction.ID));
+			fileMenu.add(saveAction);
+			fileMenu.add(saveasAction);
+			fileMenu.add(saveAllAction);
+			fileMenu.add(new Separator());
+			// fileMenu.add(manager.getAction(OpenSchemaEditorAction.ID));
+			// fileMenu.add(new Separator());
+			fileMenu.add(manager.getAction(RestoreQueryEditorAction.ID));
+			fileMenu.add(new Separator());
+		}
 		fileMenu.add(manager.getAction(ImportHostsAction.ID));
 		fileMenu.add(SelectWorkspaceDialog.getWorkspaceMenu(
 				ApplicationType.CUBRID_MANAGER.getShortName(),
@@ -447,9 +451,11 @@ public class ActionAdvisor extends AbsActionAdvisor {
 		editMenu.add(manager.getAction(GotoLineAction.ID));
 
 		// fill in the run menu
-		toolsMenu.add(manager.getAction(QueryNewAction.ID));
-		toolsMenu.add(manager.getAction(QueryNewCustomAction.ID));
-		toolsMenu.add(new Separator());
+		if (!Util.isWindows()) {
+			toolsMenu.add(manager.getAction(QueryNewAction.ID));
+			toolsMenu.add(manager.getAction(QueryNewCustomAction.ID));
+			toolsMenu.add(new Separator());
+		}
 		toolsMenu.add(manager.getAction(StartServiceAction.ID));
 		toolsMenu.add(manager.getAction(StopServiceAction.ID));
 		toolsMenu.add(new Separator());

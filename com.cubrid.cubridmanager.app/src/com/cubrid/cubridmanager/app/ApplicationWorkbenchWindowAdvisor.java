@@ -44,6 +44,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
@@ -381,27 +382,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 		removePlatformDependencyActions();
 //		showDashboard();
 
-		/* Open the perspective */
-		String perspective = PerspectiveManager.getInstance().getSelectedPerspective();
-		if (StringUtil.isEmpty(perspective)) {
-			String mode = null;
-			ChooseModeDialog dialog = new ChooseModeDialog(Display.getDefault().getActiveShell());
-			if (IDialogConstants.OK_ID == dialog.open()) {
-				mode = dialog.getSelectedMode();
-			} else {
-				mode = ApplicationType.CUBRID_MANAGER.getShortName();
-			}
-
-			if (ApplicationType.CUBRID_QUERY_BROWSER.getShortName().equals(mode)) {
-				PerspectiveManager.getInstance().openPerspective(
-						IPerspectiveConstance.CQB_PERSPECTIVE_ID);
-			} else {
-				PerspectiveManager.getInstance().openPerspective(
-						IPerspectiveConstance.CM_PERSPECTIVE_ID);
-			}
-		} else {
-			PerspectiveManager.getInstance().openPerspective(perspective);
-		}
+		openPerspective();
 
 		//		Display.getDefault().asyncExec(new Runnable() {
 		//			public void run() {
@@ -488,7 +469,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 						HeartBeatTaskManager.BEAT_TIME);
 
 				cleanComparedLogFiles();
-				UrlConnUtil.isExistNewCubridVersion(Version.buildVersionId, "CUBRID-MANAGER");
+//				UrlConnUtil.isExistNewCubridVersion(Version.buildVersionId, "CUBRID-MANAGER");
 			}
 		}).start();
 
@@ -499,8 +480,38 @@ public class ApplicationWorkbenchWindowAdvisor extends
 		/*Init CMDBNodePersistManager*/
 		CMDBNodePersistManager.getInstance();
 
-		P2Util.checkForUpdate(GeneralPreference.isAutoCheckUpdate());
+//		P2Util.checkForUpdate(GeneralPreference.isAutoCheckUpdate());
 	}
+
+	private void openPerspective() {
+		if (Util.isWindows()) {
+			PerspectiveManager.getInstance().openPerspective(
+					IPerspectiveConstance.CM_PERSPECTIVE_ID);
+			return;
+		}
+		
+	    /* Open the perspective */
+		String perspective = PerspectiveManager.getInstance().getSelectedPerspective();
+		if (StringUtil.isEmpty(perspective)) {
+			String mode = null;
+			ChooseModeDialog dialog = new ChooseModeDialog(Display.getDefault().getActiveShell());
+			if (IDialogConstants.OK_ID == dialog.open()) {
+				mode = dialog.getSelectedMode();
+			} else {
+				mode = ApplicationType.CUBRID_MANAGER.getShortName();
+			}
+
+			if (ApplicationType.CUBRID_QUERY_BROWSER.getShortName().equals(mode)) {
+				PerspectiveManager.getInstance().openPerspective(
+						IPerspectiveConstance.CQB_PERSPECTIVE_ID);
+			} else {
+				PerspectiveManager.getInstance().openPerspective(
+						IPerspectiveConstance.CM_PERSPECTIVE_ID);
+			}
+		} else {
+			PerspectiveManager.getInstance().openPerspective(perspective);
+		}
+    }
 
 	public String lastVersion() {
 		IXMLMemento memento = PersistUtils.getXMLMemento(this.getClass().getName(), "startup");
