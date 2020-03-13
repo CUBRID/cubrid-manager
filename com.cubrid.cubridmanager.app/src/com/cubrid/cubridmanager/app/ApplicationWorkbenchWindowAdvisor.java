@@ -469,7 +469,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 						HeartBeatTaskManager.BEAT_TIME);
 
 				cleanComparedLogFiles();
-//				UrlConnUtil.isExistNewCubridVersion(Version.buildVersionId, "CUBRID-MANAGER");
+				UrlConnUtil.isExistNewCubridVersion(Version.buildVersionId, "CUBRID-MANAGER");
 			}
 		}).start();
 
@@ -480,7 +480,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 		/*Init CMDBNodePersistManager*/
 		CMDBNodePersistManager.getInstance();
 
-//		P2Util.checkForUpdate(GeneralPreference.isAutoCheckUpdate());
+		P2Util.checkForUpdate(GeneralPreference.isAutoCheckUpdate());
 	}
 
 	private void openPerspective() {
