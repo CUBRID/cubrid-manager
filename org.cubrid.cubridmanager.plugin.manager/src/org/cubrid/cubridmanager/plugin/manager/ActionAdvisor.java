@@ -257,9 +257,9 @@ public class ActionAdvisor extends AbsActionAdvisor {
 		newToolbarManager.insertBefore(insertPoint, new Separator());
 
 		if (!Util.isWindows()) {
-    		// Open queryEditor
-    		newToolbarManager.insertBefore(insertPoint,
-    				createItem(DatabaseQueryNewAction.ID_BIG));
+			// Open queryEditor
+			newToolbarManager.insertBefore(insertPoint,
+					createItem(DatabaseQueryNewAction.ID_BIG));
 		}
 		
 		// Schema actions
