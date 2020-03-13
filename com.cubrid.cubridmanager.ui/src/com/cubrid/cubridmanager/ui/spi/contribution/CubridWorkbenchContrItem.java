@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -267,7 +268,9 @@ public final class CubridWorkbenchContrItem extends WorkbenchContrItem {
 					NodeType.SYSTEM_TABLE, NodeType.SYSTEM_VIEW,
 					NodeType.USER_PARTITIONED_TABLE_FOLDER }, false);
 			if (useSelectQuery) {
-				openSelectQuery(selection);
+				if (!Util.isWindows()) {
+					openSelectQuery(selection);
+				}
 			} else {
 				openEditorOrView(cubridNode);
 			}
