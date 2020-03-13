@@ -30,11 +30,19 @@
 package com.cubrid.common.ui.query.preference;
 
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.util.Util;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import com.cubrid.common.ui.perspective.PerspectiveManager;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.spi.model.CubridServer;
 
@@ -107,9 +115,56 @@ public class QueryOptionPreferencePage extends
 	 * @return the new control
 	 */
 	protected Control createContents(Composite parent) {
+		if (Util.isWindows()
+				&& PerspectiveManager.getInstance().isManagerMode()) {
+			return getBlankComposite(parent);
+		}
 		container = new QueryPropertyComposite(parent, server);
 		loadPreference();
 		return container;
 	}
 
+	/**
+	 * getBlankComposite
+	 * @param parent
+	 * @return
+	 */
+	private Composite getBlankComposite(Composite parent) {
+		parent.setLayout(new GridLayout());
+		parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		createInformationLabel(parent, getFontData());
+		return parent;
+	}
+
+	/**
+	 * createInformationLabel
+	 * @param parent
+	 * @param fontData
+	 */
+	private void createInformationLabel(Composite parent, FontData fontData) {
+		Label informationLabel = new Label(parent, SWT.None);
+		informationLabel.setText("Query Options are not supported on Admin mode (for Windows Platform)");
+		informationLabel.setLayoutData(new GridData(GridData.FILL_BOTH));
+		informationLabel.setFont(getFont(fontData));
+    }
+
+	/**
+	 * getFont
+	 * @param fontData
+	 * @return
+	 */
+	private Font getFont(FontData fontData) {
+	    return new Font(null, fontData);
+    }
+
+	/**
+	 * getFontData
+	 * @return
+	 */
+	private FontData getFontData() {
+	    FontData fontData = new FontData();
+		fontData.setStyle(SWT.BOLD);
+		fontData.setHeight(9);
+	    return fontData;
+    }
 }
