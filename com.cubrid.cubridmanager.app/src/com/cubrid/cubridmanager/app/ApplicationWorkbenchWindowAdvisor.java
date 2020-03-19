@@ -490,7 +490,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 			return;
 		}
 		
-	    /* Open the perspective */
+		/* Open the perspective */
 		String perspective = PerspectiveManager.getInstance().getSelectedPerspective();
 		if (StringUtil.isEmpty(perspective)) {
 			String mode = null;
@@ -511,7 +511,7 @@ public class ApplicationWorkbenchWindowAdvisor extends
 		} else {
 			PerspectiveManager.getInstance().openPerspective(perspective);
 		}
-    }
+	}
 
 	public String lastVersion() {
 		IXMLMemento memento = PersistUtils.getXMLMemento(this.getClass().getName(), "startup");
