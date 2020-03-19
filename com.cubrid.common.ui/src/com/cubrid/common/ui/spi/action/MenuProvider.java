@@ -162,7 +162,6 @@ public class MenuProvider implements
 				manager.add(perparedMenu);
 				addActionToManager(perparedMenu, getAction(PstmtOneDataAction.ID));
 				addActionToManager(perparedMenu, getAction(PstmtMultiDataAction.ID));
-				// addActionToManager(manager, getAction(RunSQLFileAction.ID));
 				manager.add(new Separator());
 			}
 			// Export & Import Actions

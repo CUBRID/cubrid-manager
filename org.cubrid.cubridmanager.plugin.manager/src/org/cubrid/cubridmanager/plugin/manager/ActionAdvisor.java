@@ -417,8 +417,6 @@ public class ActionAdvisor extends AbsActionAdvisor {
 			fileMenu.add(saveasAction);
 			fileMenu.add(saveAllAction);
 			fileMenu.add(new Separator());
-			// fileMenu.add(manager.getAction(OpenSchemaEditorAction.ID));
-			// fileMenu.add(new Separator());
 			fileMenu.add(manager.getAction(RestoreQueryEditorAction.ID));
 			fileMenu.add(new Separator());
 		}
