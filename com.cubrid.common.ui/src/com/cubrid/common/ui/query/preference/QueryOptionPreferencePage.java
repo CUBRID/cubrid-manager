@@ -146,7 +146,7 @@ public class QueryOptionPreferencePage extends
 		informationLabel.setText("Query Options are not supported on Admin mode (for Windows Platform)");
 		informationLabel.setLayoutData(new GridData(GridData.FILL_BOTH));
 		informationLabel.setFont(getFont(fontData));
-    }
+	}
 
 	/**
 	 * getFont
@@ -154,17 +154,17 @@ public class QueryOptionPreferencePage extends
 	 * @return
 	 */
 	private Font getFont(FontData fontData) {
-	    return new Font(null, fontData);
-    }
+		return new Font(null, fontData);
+	}
 
 	/**
 	 * getFontData
 	 * @return
 	 */
 	private FontData getFontData() {
-	    FontData fontData = new FontData();
+		FontData fontData = new FontData();
 		fontData.setStyle(SWT.BOLD);
 		fontData.setHeight(9);
-	    return fontData;
-    }
+		return fontData;
+	}
 }
