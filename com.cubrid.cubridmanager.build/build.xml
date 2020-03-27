@@ -1,4 +1,4 @@
-<project default="dist" name="CUBRIDManager">
+<project default="dist" name="CUBRIDAdmin">
 	<property name="buildLabel" value="I.CUBRIDAdmin" />
 	<property name="archivePrefix" value="cubridadmin" />
 	<property name="buildId" value="CUBRIDAdmin" />
@@ -16,7 +16,7 @@
 	<property name="jdbc.file" value="./driver" />
 	<property name="debug" value="" />
 	<property file="${basedir}/../com.cubrid.cubridmanager.ui/version.properties" />
-	<property name="product.name" value="CUBRIDManager" />
+	<property name="product.name" value="CUBRIDAdmin" />
 	<property name="build.dir" value="${basedir}" />
 	<property name="deploy.home" value="${build.dir}/deploy" />
 	<property name="output.path" value="${build.dir}/out" />
