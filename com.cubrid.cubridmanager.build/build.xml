@@ -1,7 +1,7 @@
 <project default="dist" name="CUBRIDManager">
 	<property name="buildLabel" value="I.CUBRIDAdmin" />
 	<property name="archivePrefix" value="cubridadmin" />
-	<property name="buildId" value="CUBRIDManager" />
+	<property name="buildId" value="CUBRIDAdmin" />
 	<property name="launcher.name" value="cubridadmin" />
 	<property name="sign.alias" value="CUBRID" />
 	<property name="sign.keystore" value="${basedir}/keystore/cubridkeystore" />
