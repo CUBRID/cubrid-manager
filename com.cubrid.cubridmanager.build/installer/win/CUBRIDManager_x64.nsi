@@ -21,9 +21,9 @@
 ;!define INFILE_PATH 'cubridmanager'
 ;!define OUTFILE_PATH '.'
 
-!define PRODUCT_NAME 'CUBRID Manager'
+!define PRODUCT_NAME 'CUBRID Admin'
 !define PRODUCT_VERSION '10.2.0'
-!define PRODUCT_EXE_NAME 'cubridmanager'
+!define PRODUCT_EXE_NAME 'cubridadmin'
 !define INSTALLER_ARCH 'x64'
 
 !define SHORTCUT_NAME '${PRODUCT_NAME}'
