@@ -27,7 +27,7 @@
       startupProgressRect="5,380,557,15"
       startupMessageRect="230,280,557,15"
       startupForegroundColor="C0C0C0" />
-   <launcher name="cubridmanager">
+   <launcher name="cubridadmin">
       <linux icon="/com.cubrid.cubridmanager.app/icons/cubridmanager.xpm"/>
       <macosx icon="/com.cubrid.cubridmanager.app/icons/cubridmanager.icns"/>
       <solaris/>
@@ -37,10 +37,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>

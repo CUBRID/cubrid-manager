@@ -20,7 +20,7 @@
 
    <splash
       location="com.cubrid.cubridmanager.app" />
-   <launcher name="cubridmanager">
+   <launcher name="cubridadmin">
       <linux icon="/com.cubrid.cubridmanager.app/icons/cubridmanager.xpm"/>
       <macosx icon="/com.cubrid.cubridmanager.app/icons/cubridmanager.icns"/>
       <solaris/>
