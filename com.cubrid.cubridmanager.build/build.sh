@@ -1,8 +1,8 @@
 #!/bin/sh
 WORKSPACE=${HOME}/build/src
 JAVA_HOME=${HOME}/build/java
-PRODUCT_DIR=cubridmanager
-PRODUCT_NAME=CUBRIDManager
+PRODUCT_DIR=cubridadmin
+PRODUCT_NAME=CUBRIDAdmin
 ECLIPSE_HOME=${HOME}/build/eclipse_for_build/eclipse
 BUILD_HOME=${WORKSPACE}
 BUILD_DIR=${BUILD_HOME}/${PRODUCT_DIR}/com.cubrid.cubridmanager.build
