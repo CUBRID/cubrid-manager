@@ -346,7 +346,7 @@
 	-->
 	<target name="packagewin32" depends="postbuild">
 		<zip destfile="${output.path}/${product.name}-${product.version}-windows-i386${debug}.zip">
-			<zipfileset prefix="cubridmanager" dir="${product.win.32}" />
+			<zipfileset prefix="cubridadmin" dir="${product.win.32}" />
 		</zip>
 	</target>
 
@@ -355,7 +355,7 @@
 	-->
 	<target name="packagewin64" depends="postbuild">
 		<zip destfile="${output.path}/${product.name}-${product.version}-windows-x64${debug}.zip">
-			<zipfileset prefix="cubridmanager" dir="${product.win.64}" />
+			<zipfileset prefix="cubridadmin" dir="${product.win.64}" />
 		</zip>
 	</target>
 
@@ -364,12 +364,12 @@
 	-->
 	<target name="packagelinux32" depends="postbuild">
 		<tar destfile="${deploy.home}/${product.name}-${product.version}-linux-i386.tar">
-			<tarfileset dir="${product.linux.32}" prefix="cubridmanager" />
-			<tarfileset file="${product.linux.32}/${launcher.name}" filemode="755" prefix="cubridmanager" />
-			<tarfileset dir="${product.linux.32}/jre" prefix="cubridmanager/jre" >
+			<tarfileset dir="${product.linux.32}" prefix="cubridadmin" />
+			<tarfileset file="${product.linux.32}/${launcher.name}" filemode="755" prefix="cubridadmin" />
+			<tarfileset dir="${product.linux.32}/jre" prefix="cubridadmin/jre" >
 				<exclude name="**/bin/**" />
 			</tarfileset>
-			<tarfileset dir="${product.linux.32}/jre/bin" prefix="cubridmanager/jre/bin" filemode="755" />
+			<tarfileset dir="${product.linux.32}/jre/bin" prefix="cubridadmin/jre/bin" filemode="755" />
 		</tar>
 		<gzip src="${deploy.home}/${product.name}-${product.version}-linux-i386.tar" destfile="${output.path}/${product.name}-${product.version}-linux-i386${debug}.tar.gz" />
 	</target>
@@ -379,12 +379,12 @@
 	-->
 	<target name="packagelinux64" depends="postbuild">
 		<tar destfile="${deploy.home}/${product.name}-${product.version}-linux-x86_64.tar">
-			<tarfileset dir="${product.linux.64}" prefix="cubridmanager" />
-			<tarfileset file="${product.linux.64}/${launcher.name}" filemode="755" prefix="cubridmanager" />
-			<tarfileset dir="${product.linux.64}/jre" prefix="cubridmanager/jre" >
+			<tarfileset dir="${product.linux.64}" prefix="cubridadmin" />
+			<tarfileset file="${product.linux.64}/${launcher.name}" filemode="755" prefix="cubridadmin" />
+			<tarfileset dir="${product.linux.64}/jre" prefix="cubridadmin/jre" >
 				<exclude name="**/bin/**" />
 			</tarfileset>
-			<tarfileset dir="${product.linux.64}/jre/bin" prefix="cubridmanager/jre/bin" filemode="755" />
+			<tarfileset dir="${product.linux.64}/jre/bin" prefix="cubridadmin/jre/bin" filemode="755" />
 		</tar>
 		<gzip src="${deploy.home}/${product.name}-${product.version}-linux-x86_64.tar" destfile="${output.path}/${product.name}-${product.version}-linux-x86_64${debug}.tar.gz" />
 	</target>
@@ -454,7 +454,7 @@
 	-->
 	<target name="package_autoupdate" depends="postbuild">
 		<tar destfile="${deploy.home}/${product.name}-site-${product.version}${debug}.tar">
-			<tarfileset dir="${repositoryDirectory}" prefix="cubridmanager" />
+			<tarfileset dir="${repositoryDirectory}" prefix="cubridadmin" />
 		</tar>
 		<gzip src="${deploy.home}/${product.name}-site-${product.version}${debug}.tar" destfile="${output.path}/${product.name}-site-${product.version}${debug}.tar.gz" />
 	</target>
