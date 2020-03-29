@@ -47,7 +47,7 @@ Var uninstall_name
 ###################################################
 
 Name '${PRODUCT_NAME} ${PRODUCT_VERSION}'
-OutFile '${OUTFILE_PATH}\CUBRIDManager-${INTERNAL_VERSION}-windows-i386.exe'
+OutFile '${OUTFILE_PATH}\CUBRIDAdmin-${INTERNAL_VERSION}-windows-i386.exe'
 BrandingText 'http://www.cubrid.org'
 
 ;---------------------------------------------------
@@ -304,12 +304,12 @@ Function .onInit
 
     StrCmp $R1 '' 0 lable_cubrid_env_set_x86
       Strcpy $R2 $WINDIR 2
-      StrCpy $INSTDIR '$R2\CUBRID\cubridmanager'
+      StrCpy $INSTDIR '$R2\CUBRID\cubridadmin'
       Return
     lable_cubrid_env_set_x86:
       ${StrReplace} $R1 "//" "\"
   	  Strcpy $R3 $0
-      StrCpy $INSTDIR '$R3\cubridmanager'
+      StrCpy $INSTDIR '$R3\cubridadmin'
       Return
   isX64:
     StrCpy $shortcut_name '${SHORTCUT_NAME} x86.lnk'
@@ -317,12 +317,12 @@ Function .onInit
 
     StrCmp $R1 '' 0 lable_cubrid_env_set_x64
       Strcpy $R2 $WINDIR 2
-      StrCpy $INSTDIR '$R2\CUBRID\cubridmanager x86'
+      StrCpy $INSTDIR '$R2\CUBRID\cubridadmin x86'
       Return
     lable_cubrid_env_set_x64:
       ${StrReplace} $R1 "//" "\"
   	  Strcpy $R4 $0
-      StrCpy $INSTDIR '$R4\cubridmanager x86'
+      StrCpy $INSTDIR '$R4\cubridadmin x86'
       Return
 FunctionEnd
 

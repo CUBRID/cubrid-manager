@@ -41,7 +41,7 @@
 ###################################################
 
 Name '${PRODUCT_NAME} ${PRODUCT_VERSION}'
-OutFile '${OUTFILE_PATH}\CUBRIDManager-${INTERNAL_VERSION}-windows-x64.exe'
+OutFile '${OUTFILE_PATH}\CUBRIDAdmin-${INTERNAL_VERSION}-windows-x64.exe'
 BrandingText 'http://www.cubrid.org'
 
 ;---------------------------------------------------
@@ -290,12 +290,12 @@ Function .onInit
 
   StrCmp $R1 '' 0 lable_cubrid_env_set_x86
     Strcpy $R2 $WINDIR 2
-    StrCpy $INSTDIR '$R2\CUBRID\cubridmanager'
+    StrCpy $INSTDIR '$R2\CUBRID\cubridadmin'
     Return
   lable_cubrid_env_set_x86:
     ${StrReplace} $R1 "//" "\"
   	Strcpy $R3 $0
-    StrCpy $INSTDIR '$R3\cubridmanager'
+    StrCpy $INSTDIR '$R3\cubridadmin'
     Return
 FunctionEnd
 
