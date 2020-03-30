@@ -171,7 +171,7 @@ RequestExecutionLevel user
 # Install section
 ###################################################
 
-Section 'CUBRIDManager' SEC_CUBRIDManager
+Section 'CUBRIDAdmin' SEC_CUBRIDManager
   Call WindowsArchCheck
   Call CUBRIDManagerExist
   Call JAVAVersionCheck
