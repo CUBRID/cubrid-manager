@@ -43,6 +43,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -458,9 +459,11 @@ public abstract class CubridNavigatorView extends ViewPart {
 									NodeType.SYSTEM_TABLE.equals(node.getType()) ||
 									NodeType.USER_VIEW.equals(node.getType()) ||
 									NodeType.SYSTEM_VIEW.equals(node.getType())) {
-								DefaultSchemaNode table = (DefaultSchemaNode) obj;
-								OpenTargetAction action = new OpenTargetAction();
-								action.showObjectInfo(table);
+								if (!Util.isWindows()) {
+									DefaultSchemaNode table = (DefaultSchemaNode) obj;
+									OpenTargetAction action = new OpenTargetAction();
+									action.showObjectInfo(table);
+								}
 							}
 
 							else if (NodeType.TABLE_FOLDER.equals(node.getType())) {
