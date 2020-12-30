@@ -32,6 +32,8 @@
 	<property name="jre.linux.64" value="${eclipse.home}/jre/linux64.zip" />
 	<property name="jre.win.32" value="${eclipse.home}/jre/win32.zip" />
 	<property name="jre.win.64" value="${eclipse.home}/jre/win64.zip" />
+	<property name="launcher.win.32" value="${build.dir}/launcher/win32/cubridadmin.exe" />
+	<property name="launcher.win.64" value="${build.dir}/launcher/win64/cubridadmin.exe" />
 	<property name="installer.win" value="${build.dir}/installer/win" />
 	<!--
 	<property name="installer.linux" value="${build.dir}/installer/linux" />
@@ -135,6 +137,8 @@
 		  	<fileset dir="${product.win.32}/features" includes="com.cubrid.*.jar" />
 		  </path>
 		</signjar>
+		<touch file="${launcher.win.32}"/>
+		<copy file="${launcher.win.32}" todir="${product.win.32}" overwrite="true"/>
 
 		<!--
 		optimize win64
@@ -173,6 +177,8 @@
 		  	<fileset dir="${product.win.64}/features" includes="com.cubrid.*.jar" />
 		  </path>
 		</signjar>
+		<touch file="${launcher.win.64}"/>
+		<copy file="${launcher.win.64}" todir="${product.win.64}" overwrite="true"/>
 
 		<!--
 		optimize linux32
