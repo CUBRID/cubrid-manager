@@ -57,6 +57,7 @@ public final class CompatibleUtil {
 	private static final String VER_10_0_0 = "10.0.0";
 	private static final String VER_10_1_0 = "10.1.0";
 	private static final String VER_10_2_0 = "10.2.0";
+	private static final String VER_11_0_0 = "11.0.0";
 
 	private CompatibleUtil() {
 	}
@@ -413,6 +414,9 @@ public final class CompatibleUtil {
 			return true;
 		}
 		if (compareVersion(serverInfo.getServerVersionKey(), VER_10_2_0, 2) == 0) {
+			return true;
+		}
+		if (compareVersion(serverInfo.getServerVersionKey(), VER_11_0_0, 2) == 0) {
 			return true;
 		}
 
