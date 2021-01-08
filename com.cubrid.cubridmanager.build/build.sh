@@ -10,7 +10,7 @@ VERSION_DIR=${BUILD_HOME}/${PRODUCT_DIR}/com.cubrid.cubridmanager.ui
 VERSION_FILE_PATH=${VERSION_DIR}/version.properties
 VERSION=`grep buildVersionId ${VERSION_FILE_PATH} | awk 'BEGIN {FS="="} ; {print $2}'`
 CUR_VER_DIR=`date +%Y%m%d`
-CUR_VER_DIR=cubridmanager-deploy/${CUR_VER_DIR}_${VERSION}
+CUR_VER_DIR=cubridadmin-deploy/${CUR_VER_DIR}_${VERSION}
 OUTPUT_DIR=${BUILD_HOME}/${CUR_VER_DIR}
 MAKENSIS_EXEC_PATH=${HOME}/build/nsis/makensis.exe
 MAKENSIS_INPUT_PATH="c:/build/src/${PRODUCT_DIR}/com.cubrid.cubridmanager.build/deploy"
