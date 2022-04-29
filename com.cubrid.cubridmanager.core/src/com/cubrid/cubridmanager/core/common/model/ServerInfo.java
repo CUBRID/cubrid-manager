@@ -938,6 +938,37 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 		return false;
 	}
 
+	public String getLatestJdbcVersion() {
+	    String retVersion = null;
+		String[] tempString;
+		int[] tempInt = {0,0,0,0};
+		int[] latestVersion = {0,0,0,0};
+
+		if (isConnected) {
+			Map<String, ClassLoader> loaders = JdbcClassLoaderFactory.getClassLoaderMap();
+			Iterator<String> iterator = loaders.keySet().iterator();
+			while (iterator.hasNext()) {
+				String version2 = iterator.next();
+				tempString = version2.replaceAll("[^0-9.]","").split("\\.");
+
+				for (int i = 0; i < tempString.length; i++) {
+					tempInt[i] = Integer.valueOf(tempString[i]).intValue();
+		        }
+
+				for (int i = 0; i < tempInt.length; i++) {
+					if (latestVersion[i] < tempInt[i]) {
+						latestVersion = tempInt.clone();
+						retVersion = version2;
+						break;
+					} else if (latestVersion[i] > tempInt[i]) {
+						break;
+					}
+				}
+			}
+		}
+		return retVersion;
+	}
+
 	/**
 	 * Get server Version from "CUBRID 2008 R2.0(8.2.0.1150)" to "8.2.0"
 	 * 
