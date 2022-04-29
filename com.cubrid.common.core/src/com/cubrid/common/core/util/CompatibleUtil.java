@@ -385,41 +385,11 @@ public final class CompatibleUtil {
 			return true;
 		}
 		/*if client version smaller than server version
-		 but server version is 8.4.3/8.4.9/9.0.0 can support it too.*/
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_8_4_3) == 0) {
+		 but server version is greater then 8.4.3 can support it too.*/
+		if (compareVersion(serverInfo.getServerVersionKey(), VER_8_4_3) == 1) {
 			return true;
 		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_8_4_4) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_8_4_9) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_9_0_0) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_9_1_0, 2) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_9_2_0, 2) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_9_3_0, 2) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_10_0_0, 2) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_10_1_0, 2) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_10_2_0, 2) == 0) {
-			return true;
-		}
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_11_0_0, 2) == 0) {
-			return true;
-		}
-
+		
 		return false;
 	}
 

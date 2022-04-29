@@ -95,6 +95,8 @@ public class Messages extends
 	public static String errUserNotFound;
 	public static String errConnectAddress;
 	public static String btnConnectSave;
+	public static String warnNoSupportLatestDriver;
+	public static String warnRecommendDriver;
 	
 	//rename host name
 	public static String lblName;

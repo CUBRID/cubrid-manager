@@ -407,7 +407,7 @@ public class ConnectHostExecutor extends TaskExecutor {
 				serverInfo.setEnvInfo(envInfo);
 				String clientVersion = getClientVerion();
 				if (!isClientSupport(clientVersion)) {
-					openErrorBox(shell, Messages.bind(Messages.errNoSupportServerVersion, clientVersion), monitor);
+					openWarningBox(shell, Messages.bind(Messages.errNoSupportServerVersion, clientVersion), monitor);
 				}
 
 				//for multi host monitor statistic and monitor dashboard
@@ -419,12 +419,20 @@ public class ConnectHostExecutor extends TaskExecutor {
 						}
 					} else {
 						if (ServerJdbcVersionMapping.JDBC_SELF_ADAPTING_VERSION.equals(jdbcVersion)) {
-							openErrorBox(shell, Messages.errNoSupportDriver, monitor);
+							String latestVersion = serverInfo.getLatestJdbcVersion();
+							if (latestVersion == null) {
+								disConnect();
+								return false;
+							}
+							serverInfo.setJdbcDriverVersion(latestVersion);
+							openWarningBox(shell, Messages.warnNoSupportLatestDriver 
+									+ "\n( Server : " + serverInfo.getFullServerVersionKey()
+									+ ", JDBC Driver : " + latestVersion + " )" , monitor);
 						} else {
-							openErrorBox(shell, Messages.errSelectSupportDriver, monitor);
+							openWarningBox(shell, Messages.warnRecommendDriver 
+									+ "\n( Server : " + serverInfo.getFullServerVersionKey() 
+									+ ", JDBC Driver : " + jdbcVersion + " )", monitor);	
 						}
-						disConnect();
-						return false;
 					}
 				}
 			} else if (task instanceof GetDatabaseListTask) {
