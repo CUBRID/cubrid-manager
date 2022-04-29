@@ -386,7 +386,7 @@ public final class CompatibleUtil {
 		}
 		/*if client version smaller than server version
 		 but server version is greater then 8.4.3 can support it too.*/
-		if (compareVersion(serverInfo.getServerVersionKey(), VER_8_4_3) == 1) {
+		if (compareVersion(serverInfo.getServerVersionKey(), VER_8_4_3) >= 0) {
 			return true;
 		}
 		
