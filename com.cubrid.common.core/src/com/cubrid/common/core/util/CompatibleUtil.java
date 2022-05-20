@@ -58,6 +58,7 @@ public final class CompatibleUtil {
 	private static final String VER_10_1_0 = "10.1.0";
 	private static final String VER_10_2_0 = "10.2.0";
 	private static final String VER_11_0_0 = "11.0.0";
+	private static final String VER_11_2_0 = "11.2.0"; //From 11.2 version, the engine and jdbc versioning  are different.
 
 	private CompatibleUtil() {
 	}
@@ -363,6 +364,16 @@ public final class CompatibleUtil {
 	 */
 	public static boolean isAfter100(IDatabaseSpec database) {
 		return compareVersion(database.getVersion(), VER_10_0_0) >= 0;
+	}
+
+	/**
+	 * Is the version of database after the 11.2.0
+	 *
+	 * @param database IServerSpec
+	 * @return true:11.2.0 or higher
+	 */
+	public static boolean isAfter112(IServerSpec serverInfo) {
+		return compareVersion(serverInfo.getServerVersionKey(), VER_11_2_0) >= 0;
 	}
 
 	/**

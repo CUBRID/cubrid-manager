@@ -97,6 +97,7 @@ public class Messages extends
 	public static String btnConnectSave;
 	public static String warnNoSupportLatestDriver;
 	public static String warnRecommendDriver;
+	public static String warnNewRecommendDriver;
 	
 	//rename host name
 	public static String lblName;

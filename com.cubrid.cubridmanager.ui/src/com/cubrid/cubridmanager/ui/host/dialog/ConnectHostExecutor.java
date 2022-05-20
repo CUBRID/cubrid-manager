@@ -413,25 +413,46 @@ public class ConnectHostExecutor extends TaskExecutor {
 				//for multi host monitor statistic and monitor dashboard
 				if(isCheckJdbc){
 					String jdbcVersion = serverInfo.getJdbcDriverVersion();
-					if (serverInfo.validateJdbcVersion(jdbcVersion)) {
-						if (ServerJdbcVersionMapping.JDBC_SELF_ADAPTING_VERSION.equals(jdbcVersion)) {
-							serverInfo.setJdbcDriverVersion(ServerInfo.getAutoDetectJdbcVersion(serverInfo.getFullServerVersionKey()));
-						}
-					} else {
+					
+					if (isNewVersioningCheck()) {
 						if (ServerJdbcVersionMapping.JDBC_SELF_ADAPTING_VERSION.equals(jdbcVersion)) {
 							String latestVersion = serverInfo.getLatestJdbcVersion();
 							if (latestVersion == null) {
 								disConnect();
 								return false;
 							}
+							if (!isAfterJdbc111(latestVersion)) {
+								String msg1= Messages.bind(Messages.warnNewRecommendDriver, serverInfo.getFullServerVersionKey());
+								openWarningBox(shell, msg1, monitor);
+							}
 							serverInfo.setJdbcDriverVersion(latestVersion);
-							openWarningBox(shell, Messages.warnNoSupportLatestDriver 
-									+ "\n( Server : " + serverInfo.getFullServerVersionKey()
-									+ ", JDBC Driver : " + latestVersion + " )" , monitor);
 						} else {
-							openWarningBox(shell, Messages.warnRecommendDriver 
-									+ "\n( Server : " + serverInfo.getFullServerVersionKey() 
-									+ ", JDBC Driver : " + jdbcVersion + " )", monitor);	
+							if (!isAfterJdbc111(jdbcVersion)) {
+								String msg2 = Messages.bind(Messages.warnNewRecommendDriver, serverInfo.getFullServerVersionKey());
+								openWarningBox(shell, msg2, monitor);
+							}
+						}
+					} else {
+						if (serverInfo.validateJdbcVersion(jdbcVersion)) {
+							if (ServerJdbcVersionMapping.JDBC_SELF_ADAPTING_VERSION.equals(jdbcVersion)) {
+								serverInfo.setJdbcDriverVersion(ServerInfo.getAutoDetectJdbcVersion(serverInfo.getFullServerVersionKey()));
+							}
+						} else {
+							if (ServerJdbcVersionMapping.JDBC_SELF_ADAPTING_VERSION.equals(jdbcVersion)) {
+								String latestVersion = serverInfo.getLatestJdbcVersion();
+								if (latestVersion == null) {
+									disConnect();
+									return false;
+								}
+								serverInfo.setJdbcDriverVersion(latestVersion);
+								openWarningBox(shell, Messages.warnNoSupportLatestDriver
+										+ "\n( Server : " + serverInfo.getFullServerVersionKey()
+										+ ", JDBC Driver : " + latestVersion + " )" , monitor);
+							} else {
+								openWarningBox(shell, Messages.warnRecommendDriver
+										+ "\n( Server : " + serverInfo.getFullServerVersionKey()
+										+ ", JDBC Driver : " + jdbcVersion + " )", monitor);
+							}
 						}
 					}
 				}
@@ -588,6 +609,32 @@ public class ConnectHostExecutor extends TaskExecutor {
 	private boolean isClientSupport(String clientVersion) {
 		return CompatibleUtil.isSupportCMServer(serverInfo,
 				clientVersion);
+	}
+
+	/**
+	 * From 11.2 version, the engine and jdbc versioning  are different.
+	 *
+	 * @param void
+	 * @return true:new versionning(Server version 11.2 or higher)
+	 */
+	private boolean isNewVersioningCheck() {
+		return CompatibleUtil.isAfter112(serverInfo);
+	}
+
+	private boolean isAfterJdbc111(String jdbcVersion) {
+		String[] tempString;
+		int tempIntVersion = 0;
+
+		tempString = jdbcVersion.replaceAll("[^0-9.]","").split("\\.");
+
+		tempIntVersion += Integer.valueOf(tempString[0]).intValue() * 10;
+		tempIntVersion += Integer.valueOf(tempString[1]).intValue();
+
+		if (tempIntVersion >= 111) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public String getErrMsg() {
