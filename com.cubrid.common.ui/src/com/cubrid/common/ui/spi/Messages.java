@@ -245,6 +245,7 @@ public class Messages extends
 	public static String lblMakeCreateQuery;
 	public static String lblMakeCloneQuery;
 	
+	public static String tipRecommendDriver;
 	public static String tipNoSupportJdbcVersion;
 	public static String errCommonTip;
 	public static String errLockNoUseTemporary;

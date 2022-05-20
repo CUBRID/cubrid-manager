@@ -147,18 +147,35 @@ public class ConnectDatabaseExecutor extends
 				minorDbVersion = minorDbVersion.substring(0,
 						minorDbVersion.lastIndexOf("."));
 			}
-			if (CompatibleUtil.compareVersion(jdbcVersion, minorDbVersion) == 0) {
-				return true;
+
+			if (isNewVersioningCheck(minorDbVersion)) {
+				if (isAfterJdbc111(jdbcVersion)) {
+					return true;
+				} else {
+					final String finalDbVersion = dbVersion;
+					display.syncExec(new Runnable() {
+						public void run() {
+							isConnectSuccess = CommonUITool.openConfirmBox(Messages.bind(
+									Messages.tipRecommendDriver,
+									finalDbVersion));
+						}
+					});
+					return isConnectSuccess;
+				}
 			} else {
-				final String finalDbVersion = dbVersion;
-				display.syncExec(new Runnable() {
-					public void run() {
-						isConnectSuccess = CommonUITool.openConfirmBox(Messages.bind(
-								Messages.tipNoSupportJdbcVersion,
-								finalDbVersion));
-					}
-				});
-				return isConnectSuccess;
+				if (CompatibleUtil.compareVersion(jdbcVersion, minorDbVersion) == 0) {
+					return true;
+				} else {
+					final String finalDbVersion = dbVersion;
+					display.syncExec(new Runnable() {
+						public void run() {
+							isConnectSuccess = CommonUITool.openConfirmBox(Messages.bind(
+									Messages.tipNoSupportJdbcVersion,
+									finalDbVersion));
+						}
+					});
+					return isConnectSuccess;
+				}
 			}
 		} catch (final SQLException e) {
 			LOGGER.error(e.getMessage(), e);
@@ -186,5 +203,34 @@ public class ConnectDatabaseExecutor extends
 				}
 			}
 		}
+	}
+
+	/**
+	 * From 11.2 version, the engine and jdbc versioning  are different.
+	 *
+	 * @param void
+	 * @return true:new versionning(Server version 11.2 or higher)
+	 */
+	private boolean isNewVersioningCheck(String DbVersion) {
+		if (CompatibleUtil.compareVersion("11.2.0", DbVersion) <= 0) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isAfterJdbc111(String jdbcVersion) {
+		String[] tempString;
+		int tempIntVersion = 0;
+
+		tempString = jdbcVersion.replaceAll("[^0-9.]","").split("\\.");
+
+		tempIntVersion += Integer.valueOf(tempString[0]).intValue() * 10;
+		tempIntVersion += Integer.valueOf(tempString[1]).intValue();
+
+		if (tempIntVersion >= 111) {
+			return true;
+		}
+
+		return false;
 	}
 }
