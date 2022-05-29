@@ -310,7 +310,9 @@ public final class ConfConstants implements
 					PARAMETER_TYPE_BROKER_ADVANCE },
 			{ACCESS_MODE, "string(RW|RO|SO)", "RW",
 					PARAMETER_TYPE_BROKER_ADVANCE },
-			{PREFERRED_HOSTS, "string", "", PARAMETER_TYPE_BROKER_ADVANCE } };
+			{PREFERRED_HOSTS, "string", "", PARAMETER_TYPE_BROKER_ADVANCE },
+            {CCI_DEFAULT_AUTOCOMMIT, "string(ON|OFF)", "ON", PARAMETER_TYPE_BROKER_ADVANCE },
+            {ENABLE_OPENSSL, "string(ON|OFF)", "OFF", PARAMETER_TYPE_BROKER_ADVANCE }};
 
 	/**
 	 * Get the static field brokerParameters
@@ -323,6 +325,9 @@ public final class ConfConstants implements
 		boolean isSupportNewBrokerParamProperty = CompatibleUtil.isSupportNewBrokerParamPropery1(serverInfo);
 		boolean isSupportNewHAParam = CompatibleUtil.isSupportNewHABrokerParam(serverInfo);
 		boolean isSupportEnableAccessControl = CompatibleUtil.isSupportEnableAccessControl(serverInfo);
+		boolean isSupportEnableOpenSSL = CompatibleUtil.isSupportEnableOpenSSL(serverInfo);
+		boolean isSupportCCIDefaultAutocommit = CompatibleUtil.isSupportCCIDefaultAutocommit(serverInfo);
+
 		if (!isSupportNewBrokerParamProperty) {
 			length = length - 3;
 		}
@@ -332,6 +337,12 @@ public final class ConfConstants implements
 		if (!isSupportEnableAccessControl) {
 			length = length - 2;
 		}
+		if (!isSupportEnableOpenSSL) {
+            length = length - 1;
+        }
+		if (!isSupportCCIDefaultAutocommit) {
+            length = length - 1;
+        }
 		String copy[][] = new String[length][];
 		int j = 0;
 		for (int i = 0; i < brokerParameters.length; i++) {
@@ -348,6 +359,15 @@ public final class ConfConstants implements
 					&& (brokerParameters[i][0].equals(ENABLE_ACCESS_CONTROL) || brokerParameters[i][0].equals(ACCESS_CONTROL_FILE))) {
 				continue;
 			}
+			if (!isSupportEnableOpenSSL
+                    && (brokerParameters[i][0].equals(ConfConstants.ENABLE_OPENSSL))) {
+                continue;
+            }
+			if (!isSupportCCIDefaultAutocommit
+                    && (brokerParameters[i][0].equals(ConfConstants.CCI_DEFAULT_AUTOCOMMIT))) {
+                continue;
+            }
+
 			copy[j] = (String[]) brokerParameters[i].clone();
 			if (serverInfo != null
 					&& brokerParameters[i][0].equals(ACCESS_MODE)) {

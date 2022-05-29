@@ -64,7 +64,7 @@ public final class UrlConnUtil {
 	public static final String CHECK_NEW_VERSION_URL_KO = "http://www.cubrid.com/check_version.cub";
 	public static final String CHECK_NOTICE_INFO_URL_KO = "http://ftp.cubrid.org/sites/inf/cqb/notice_ko.txt";
 	public static final String CHECK_NOTICE_INFO_URL_EN = "http://ftp.cubrid.org/sites/inf/cqb/notice.txt";
-	public static final String REPORT_BUG_URL_KO = "http://www.cubrid.com/zbxe/bbs_developer_qa";
+	public static final String REPORT_BUG_URL_KO = "http://jira.cubrid.org";
 	public static final String REPORT_BUG_URL_EN = "http://jira.cubrid.org";
 
 	private UrlConnUtil() {

@@ -58,7 +58,7 @@ public class CubridProjectSiteAction extends Action {
 	}
 
 	public void run() {
-		String url = CommonUITool.urlEncodeForSpaces(Messages.msgCubridProjectSiteUrl);
+		String url = CommonUITool.urlEncodeForSpaces(Messages.msgCubridToolsSiteUrl);
 
 		try {
 			IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
