@@ -57,7 +57,9 @@ public final class CompatibleUtil {
 	private static final String VER_10_0_0 = "10.0.0";
 	private static final String VER_10_1_0 = "10.1.0";
 	private static final String VER_10_2_0 = "10.2.0";
+	private static final String VER_10_2_1 = "10.2.1";
 	private static final String VER_11_0_0 = "11.0.0";
+	private static final String VER_11_0_1 = "11.0.1";
 	private static final String VER_11_2_0 = "11.2.0"; //From 11.2 version, the engine and jdbc versioning  are different.
 
 	private CompatibleUtil() {
@@ -365,6 +367,26 @@ public final class CompatibleUtil {
 	public static boolean isAfter100(IDatabaseSpec database) {
 		return compareVersion(database.getVersion(), VER_10_0_0) >= 0;
 	}
+
+	/**
+     * Is the version of database after the 10.2.1
+     *
+     * @param database IServerSpec
+     * @return true:10.2.1 or higher
+     */
+    public static boolean isAfter1021(IServerSpec serverInfo) {
+        return compareVersion(serverInfo.getServerVersionKey(), VER_10_2_1) >= 0;
+    }
+
+    /**
+     * Is the version of database after the 11.0.1
+     *
+     * @param database IServerSpec
+     * @return true:11.0.1 or higher
+     */
+    public static boolean isAfter1101(IServerSpec serverInfo) {
+        return compareVersion(serverInfo.getServerVersionKey(), VER_11_0_1) >= 0;
+    }
 
 	/**
 	 * Is the version of database after the 11.2.0
@@ -969,8 +991,40 @@ public final class CompatibleUtil {
 			return false;
 		}
 
+		if (isAfter1101(serverInfo)) {
+		    return false;
+		}
+
 		return isAfter840(serverInfo);
 	}
+
+	/**
+     * Return whether to support cci_default_autocommit
+     *
+     * @param serverInfo IServerSpec
+     * @return boolean
+     */
+    public static boolean isSupportCCIDefaultAutocommit(IServerSpec serverInfo) {
+        if (serverInfo == null) {
+            return false;
+        }
+
+        return isAfter841(serverInfo);
+    }
+
+	/**
+     * Return whether to support enable_access_control and access_control_file
+     *
+     * @param serverInfo IServerSpec
+     * @return boolean
+     */
+    public static boolean isSupportEnableOpenSSL(IServerSpec serverInfo) {
+        if (serverInfo == null) {
+            return false;
+        }
+
+        return isAfter1021(serverInfo);
+    }
 
 	/**
 	 * Get supported page size

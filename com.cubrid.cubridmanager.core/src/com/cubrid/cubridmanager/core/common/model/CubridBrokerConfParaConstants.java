@@ -72,6 +72,7 @@ public interface CubridBrokerConfParaConstants { //NOPMD
 	public final static String LONG_QUERY_TIME = "LONG_QUERY_TIME";
 	public final static String LONG_TRANSACTION_TIME = "LONG_TRANSACTION_TIME";
 	public final static String CCI_DEFAULT_AUTOCOMMIT = "CCI_DEFAULT_AUTOCOMMIT";
+	public final static String ENABLE_OPENSSL = "SSL";
 
 	public final static String PARAMETER_TYPE_BROKER_GENERAL = "general";
 	public final static String PARAMETER_TYPE_BROKER_COMMON = "common";
@@ -182,8 +183,15 @@ public interface CubridBrokerConfParaConstants { //NOPMD
 					"" },
 
 			{PREFERRED_HOSTS, "string", "", PARAMETER_TYPE_BROKER_ADVANCE,
-					"version>=8.4.0&&os=linux", "false", "" }
+					"version>=8.4.0&&os=linux", "false", "" },
 
+            {CCI_DEFAULT_AUTOCOMMIT, "string(ON|OFF)", "ON",
+				    PARAMETER_TYPE_BROKER_ADVANCE, "version>=8.4.1", "false",
+                    "" },
+
+            {ENABLE_OPENSSL, "string(ON|OFF)", "OFF",
+                    PARAMETER_TYPE_BROKER_ADVANCE, "version>=10.2.1", "false",
+                    "" }
 	};
 
 }
