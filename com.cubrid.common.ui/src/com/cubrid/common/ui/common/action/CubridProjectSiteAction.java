@@ -27,9 +27,11 @@
  */
 package com.cubrid.common.ui.common.action;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -37,37 +39,33 @@ import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * Open external browser and show CUBRID project site forum
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-06-15 created by pangqiren
  * @version 1.1 - 2012-09-05 updated by Isaiah Choe
  */
 public class CubridProjectSiteAction extends Action {
-	public static final String ID = CubridProjectSiteAction.class.getName();
-	private static final Logger LOGGER = LogUtil.getLogger(CubridProjectSiteAction.class);
+    public static final String ID = CubridProjectSiteAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(CubridProjectSiteAction.class);
 
-	public CubridProjectSiteAction(String text) {
-		super(text);
-		this.setId(ID);
-	}
+    public CubridProjectSiteAction(String text) {
+        super(text);
+        this.setId(ID);
+    }
 
-	public void run() {
-		String url = CommonUITool.urlEncodeForSpaces(Messages.msgCubridToolsSiteUrl);
+    public void run() {
+        String url = CommonUITool.urlEncodeForSpaces(Messages.msgCubridToolsSiteUrl);
 
-		try {
-			IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
-			IWebBrowser browser = support.getExternalBrowser();
-			browser.openURL(new URL(url));
-		} catch (PartInitException e) {
-			LOGGER.error("Can not initialize web browser on the application.", e);
-		} catch (MalformedURLException e) {
-			LOGGER.error("The url {} is invalid.", url, e);
-		}
-	}
+        try {
+            IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
+            IWebBrowser browser = support.getExternalBrowser();
+            browser.openURL(new URL(url));
+        } catch (PartInitException e) {
+            LOGGER.error("Can not initialize web browser on the application.", e);
+        } catch (MalformedURLException e) {
+            LOGGER.error("The url {} is invalid.", url, e);
+        }
+    }
 }
