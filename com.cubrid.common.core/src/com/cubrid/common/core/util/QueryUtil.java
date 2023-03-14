@@ -755,8 +755,9 @@ public final class QueryUtil {
 
 	private static String parseColumnDefinition(String createSql, String columnName) {
 		int index = 0;
+		String lowerColumnName = columnName.toLowerCase();
 
-		Pattern pattern = Pattern.compile(String.format("\\[%s\\].[\\w\\s\\d\\(\\,\\)\\.']*", columnName));
+		Pattern pattern = Pattern.compile(String.format("\\[%s\\].[\\w\\s\\d\\(\\,\\)\\.']*", lowerColumnName));
 		Matcher matcher = pattern.matcher(createSql);
 		matcher.find();
 		String data = matcher.group();
