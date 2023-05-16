@@ -116,6 +116,8 @@ public class RenameTableDialog extends
 				return;
 			}
 			newName = newTableText.getText().trim();
+			//[TOOLS-4464] Table Name are always stored on the server in lower case.
+			newName = newName.toLowerCase();
 		}
 		super.buttonPressed(buttonId);
 	}
