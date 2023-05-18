@@ -181,4 +181,12 @@ public class Messages extends
 	public static String edittabNameUpdateSQL;
 	public static String edittabNameAlterSQL;
 	public static String msgNoComments;
+	
+	//MSG Box when dirty
+	public static String saveResource;
+	public static String saveConfirm;
+	public static String btnYes;
+	public static String btnNo;
+	public static String btnCancel;
+	
 }
