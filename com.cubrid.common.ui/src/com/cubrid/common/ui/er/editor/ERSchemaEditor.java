@@ -54,6 +54,7 @@ import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.GEFPlugin;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
