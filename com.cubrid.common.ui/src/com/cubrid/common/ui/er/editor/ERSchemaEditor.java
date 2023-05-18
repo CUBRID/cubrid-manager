@@ -54,7 +54,6 @@ import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.GEFPlugin;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
@@ -88,6 +87,7 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -101,6 +101,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.ISaveablePart;
+import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -198,7 +200,8 @@ public class ERSchemaEditor extends
 		GraphicalEditor implements
 		CommandStackListener,
 		ISelectionListener,
-		ICubridNodeChangedListener {
+		ICubridNodeChangedListener,
+		ISaveablePart2 {
 	public static final String ID = "com.cubrid.common.ui.er.editor.SchemaEditor";
 	private final Logger LOGGER = LogUtil.getLogger(getClass());
 	private CubridDatabase database;
@@ -1535,4 +1538,14 @@ public class ERSchemaEditor extends
 	public boolean isDirty() {
 		return isDirty;
 	}
+
+	@Override
+	public int promptToSaveOnClose() {
+		int confirm = CommonUITool.openMsgBox(this.getSite().getShell(),
+				MessageDialog.WARNING, Messages.saveResource,
+				Messages.bind(Messages.saveConfirm, this.getTitle()),
+				new String[]{ Messages.btnYes, Messages.btnNo, Messages.btnCancel });
+		return confirm;
+	}
+	
 }
