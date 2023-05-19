@@ -1,4 +1,3 @@
 *.class
 **/bin/*
 com.cubrid.cubridmanager.build/product_build
-*.jar
