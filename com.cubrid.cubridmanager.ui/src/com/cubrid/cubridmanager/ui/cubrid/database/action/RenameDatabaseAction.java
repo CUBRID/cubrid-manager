@@ -49,6 +49,7 @@ import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
 import com.cubrid.cubridmanager.ui.cubrid.database.dialog.RenameDatabaseDialog;
+import com.cubrid.cubridmanager.ui.spi.persist.CMDBNodePersistManager;
 
 /**
  * This action is responsible to rename database
@@ -97,7 +98,8 @@ public class RenameDatabaseAction extends SelectionAction {
 				getShell(), new ITaskExecutorInterceptor() {
 
 					public void completeAll() {
-						QueryOptions.removePref(database.getDatabaseInfo());
+						CMDBNodePersistManager.getInstance().deleteDbParameter(database);
+						QueryOptions.removePref(database, true);
 						CommonUITool.openInformationBox(Messages.titleSuccess,
 								Messages.bind(Messages.msgRenameDBComplete,
 										jobName));

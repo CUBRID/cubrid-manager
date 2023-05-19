@@ -135,7 +135,7 @@ public final class DatabaseUtils {
 		server.getServerInfo().getAllDatabaseList().remove(database.getName());
 		server.getServerInfo().getLoginedUserInfo().removeDatabaseInfo(
 				database.getDatabaseInfo());
-		QueryOptions.removePref(database.getDatabaseInfo());
+		QueryOptions.removePref(database, true);
 
 		database.setLogined(false);
 		database.removeAllChild();
