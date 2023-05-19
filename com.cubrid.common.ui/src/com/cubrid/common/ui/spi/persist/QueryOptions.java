@@ -183,6 +183,40 @@ public final class QueryOptions {
 
 	/**
 	 * 
+	 * Remove all preference value with editorConfig from this database
+	 * 
+	 * @param dbInfo
+	 *            the CubridDatabase obj
+	 * @param isCMMode
+	 *            in CMMode (QueryMode is false)
+	 */
+	public static void removePref(CubridDatabase dbInfo, boolean isCMMode) {
+		if (dbInfo == null || dbInfo.getDatabaseInfo() == null ) {
+			return;
+		}
+		String prefix = getPrefix(dbInfo.getDatabaseInfo());
+		if (prefix == null || prefix.trim().length() <= 0) {
+			return;
+		}
+		prefix += ".";
+		try {
+			String[] keys = pref.keys();
+			for (String key : keys) {
+				if (key != null && key.trim().startsWith(prefix)) {
+					pref.remove(key);
+				}
+			}
+			savePref();
+		} catch (BackingStoreException e) {
+			LOGGER.error("", e);
+		}
+		
+		String key = getDBMapKey(dbInfo, isCMMode);
+		editorConfigMap.remove(key);
+	}
+	
+	/**
+	 * 
 	 * Get all charset including system charset and added charset
 	 * 
 	 * @param addedCharset
