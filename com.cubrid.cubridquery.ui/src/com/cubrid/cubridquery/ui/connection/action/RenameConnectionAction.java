@@ -161,6 +161,7 @@ public class RenameConnectionAction extends
 			}
 
 			database.setLabel(dlg.getNewName());
+			database.setUniqueName(dlg.getNewName());
 			database.setLogined(false);
 
 			CubridNavigatorView navigatorView = CubridNavigatorView.getNavigatorView(CubridQueryNavigatorView.ID);

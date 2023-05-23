@@ -203,7 +203,7 @@ public class EditHostAction extends SelectionAction {
 					LOGGER.error("newServerInfo is null.");
 					continue;
 				}
-				
+
 				if (!newServerInfo.getServerName().equals(server.getLabel())) {
 					QueryOptions.removePref(server.getServerInfo());
 					brokerManager.removeAllBrokerIntervalSettingInServer(server.getLabel());
@@ -227,6 +227,7 @@ public class EditHostAction extends SelectionAction {
 
 				server.setId(newServerInfo.getServerName());
 				server.setLabel(newServerInfo.getServerName());
+				server.setUniqueName(newServerInfo.getServerName());
 				CMHostNodePersistManager.getInstance().addServer(
 						newServerInfo.getHostAddress(),
 						newServerInfo.getHostMonPort(),
@@ -302,8 +303,13 @@ public class EditHostAction extends SelectionAction {
 			HostUtils.processHostDisconnected(server);
 		}
 
+		if (!serverInfo.getHostAddress().equals(server.getServerInfo().getHostAddress())) {
+			CMHostNodePersistManager.getInstance().removeServer(server);
+		}
+
 		server.setId(serverInfo.getServerName());
 		server.setLabel(serverInfo.getServerName());
+		server.setUniqueName(serverInfo.getServerName());
 		server.setServerInfo(serverInfo);
 		server.setAutoSavePassword(dialog.isSavePassword());
 		CMHostNodePersistManager.getInstance().addServer(serverInfo.getHostAddress(),

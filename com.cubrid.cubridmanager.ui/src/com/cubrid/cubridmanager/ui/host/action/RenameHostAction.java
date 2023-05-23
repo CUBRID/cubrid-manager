@@ -112,6 +112,7 @@ public class RenameHostAction extends SelectionAction {
 		int ret = dlg.open();
 		if (ret == IDialogConstants.OK_ID) {
 			server.setLabel(dlg.getNewName());
+			server.setUniqueName(dlg.getNewName());
 			server.getServerInfo().setServerName(dlg.getNewName());
 			CubridNavigatorView navigatorView = CubridNavigatorView.getNavigatorView(CubridHostNavigatorView.ID);
 			TreeViewer treeViewer = navigatorView == null ? null : navigatorView.getViewer();
