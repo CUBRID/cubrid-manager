@@ -420,6 +420,7 @@ public class QueryConnDialog extends
 			} else {
 				database.setId(dbId);
 				database.setLabel(name);
+				database.setUniqueName(name);
 			}
 			database.setDatabaseInfo(dbInfo);
 			database.setServer(server);

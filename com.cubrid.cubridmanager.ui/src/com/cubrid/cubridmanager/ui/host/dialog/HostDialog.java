@@ -513,6 +513,7 @@ public class HostDialog extends
 			CommonUITool.openInformationBox(Messages.msgSaveAndClose);
 
 			server.setLabel(serverInfo.getServerName());
+			server.setUniqueName(serverInfo.getServerName());
 			/*Save operate at the action*/
 			QueryOptions.setAutoCommit(serverInfo,
 					btnAutoCommit.getSelection());
