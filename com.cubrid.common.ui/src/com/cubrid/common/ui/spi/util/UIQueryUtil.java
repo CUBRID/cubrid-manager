@@ -126,7 +126,12 @@ public class UIQueryUtil {
 		sqlBuf.append("FROM db_index_key k, db_index i \n");
 		sqlBuf.append("WHERE k.class_name = i.class_name \n");
 		sqlBuf.append("AND k.index_name = i.index_name\n");
-		sqlBuf.append("AND k.class_name = '").append(tableName).append("'\n");
+		if (databaseInfo.isSupportUserSchema()) {
+			sqlBuf.append("AND k.owner_name = i.owner_name\n");
+			sqlBuf.append("AND CONCAT(LOWER(k.owner_name), '.' ,k.class_name)='").append(tableName).append("'\n");
+		} else {
+			sqlBuf.append("AND k.class_name = '").append(tableName).append("'\n");
+		}
 		sqlBuf.append("AND i.is_primary_key = 'YES'");
 		String sql = sqlBuf.toString();
 
