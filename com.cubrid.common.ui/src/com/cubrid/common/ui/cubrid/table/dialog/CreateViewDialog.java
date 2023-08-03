@@ -777,7 +777,7 @@ public class CreateViewDialog extends
 					if (task instanceof GetAllClassListTask) {
 						((GetAllClassListTask) task).getClassInfoTaskExcute();
 					} else if (task instanceof GetViewAllColumnsTask) {
-						((GetViewAllColumnsTask) task).getAllVclassListTaskExcute();
+						((GetViewAllColumnsTask) task).getAllVclassListTaskExecute();
 					} else if (task instanceof GetAllAttrTask) {
 						((GetAllAttrTask) task).getAttrList();
 					} else {
