@@ -250,7 +250,7 @@ public class TableSchemaCompareComposite extends
 				GetViewAllColumnsTask getAllDBVclassTask = new GetViewAllColumnsTask(
 						db.getDatabaseInfo());
 				getAllDBVclassTask.setClassName(tableName);
-				getAllDBVclassTask.getAllVclassListTaskExcute();
+				getAllDBVclassTask.getAllVclassListTaskExecute();
 
 				/*Get query list*/
 				List<String> vclassList = getAllDBVclassTask.getAllVclassList();

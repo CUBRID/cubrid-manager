@@ -60,7 +60,7 @@ public class GetViewAllColumnsTask extends
 	 * 
 	 * Get all views class list and task execute
 	 */
-	public void getAllVclassListTaskExcute() {
+	public void getAllVclassListTaskExecute() {
 		allVclassList = new ArrayList<String>();
 		try {
 			if (errorMsg != null && errorMsg.trim().length() > 0) {

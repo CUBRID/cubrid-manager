@@ -42,12 +42,12 @@ public class GetViewAllColumnsTaskTest extends
 
 		GetViewAllColumnsTask task = new GetViewAllColumnsTask(databaseInfo);
 		task.setClassName("db_attribute");
-		task.getAllVclassListTaskExcute();
+		task.getAllVclassListTaskExecute();
 		List<String> allVclassList = task.getAllVclassList();
 		assert (allVclassList.contains("attr_name"));
 
-		task.getAllVclassListTaskExcute();
+		task.getAllVclassListTaskExecute();
 		task.setErrorMsg("error");
-		task.getAllVclassListTaskExcute();
+		task.getAllVclassListTaskExecute();
 	}
 }

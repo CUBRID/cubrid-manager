@@ -140,7 +140,7 @@ public class GetSchemaDDLTask extends
 					// Get view column
 					GetViewAllColumnsTask getAllDBVclassTask = new GetViewAllColumnsTask(databaseInfo, connection);
 					getAllDBVclassTask.setClassName(schemaName);
-					getAllDBVclassTask.getAllVclassListTaskExcute();
+					getAllDBVclassTask.getAllVclassListTaskExecute();
 					// If failed
 					if (getAllDBVclassTask.getErrorMsg() != null || getAllDBVclassTask.isCancel()) {
 						errorMsg = getAllDBVclassTask.getErrorMsg();

@@ -227,7 +227,7 @@ public class GetInfoDataTask extends JDBCTask {
 			GetViewAllColumnsTask getAllDBVclassTask = new GetViewAllColumnsTask(
 					schemaNode.getDatabase().getDatabaseInfo());
 			getAllDBVclassTask.setClassName(schemaNode.getName());
-			getAllDBVclassTask.getAllVclassListTaskExcute();
+			getAllDBVclassTask.getAllVclassListTaskExecute();
 
 			/*If failed*/
 			if (getAllDBVclassTask.getErrorMsg() != null || getAllDBVclassTask.isCancel()) {
