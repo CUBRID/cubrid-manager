@@ -64,6 +64,10 @@ public class Application implements IApplication {
 				return IApplication.EXIT_OK;
 			}
 
+			if (Version.buildVersionId.indexOf("NLS missing message") == 0) {
+				Version.buildVersionId = Version.releaseVersion;
+			}
+			
 			if (!SelectWorkspaceDialog.pickWorkspaceDir(shell, applicationType, Version.buildVersionId)) {
 				context.applicationRunning();
 				return IApplication.EXIT_OK;
