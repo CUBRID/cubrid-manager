@@ -80,7 +80,7 @@ public class ParamSetter implements
 		handlerMap.put(DataType.DATATYPE_SEQUENCE, new NumericParamSetter());
 		handlerMap.put(DataType.DATATYPE_MULTISET, defaultParamSetter);
 		handlerMap.put(DataType.DATATYPE_SET, defaultParamSetter);
-		handlerMap.put(DataType.DATATYPE_ENUM, defaultParamSetter);
+		handlerMap.put(DataType.DATATYPE_ENUM, new EnumParamSetter());
 
 		handlerMap.put(DataType.DATATYPE_CLOB, new ClobSetter());
 		handlerMap.put(DataType.DATATYPE_BLOB, new BlobParamSetter());

@@ -303,6 +303,11 @@ public final class FieldHandlerUtils {
 			result = DataType.BLOB_EXPORT_FORMAT;
 		} else if (DataType.DATATYPE_CLOB.equals(colType)) {
 			result = DataType.CLOB_EXPORT_FORMAT;
+		} else if (DataType.DATATYPE_ENUM.equals(colType)) {
+			result = rs.getString(colNumber);
+			if (result.equals("")) {
+				result = " ";
+			}
 		} else {
 			result = rs.getString(colNumber);
 		}
@@ -410,6 +415,10 @@ public final class FieldHandlerUtils {
 			}
 			value.append("}");
 			values.append(value);
+		} else if (DataType.DATATYPE_ENUM.equals(colType)) {
+			values.append("'");
+			values.append(data.toString());
+			values.append("'");
 		} else {
 			values.append(DataType.VALUE_NULL);
 		}
@@ -515,6 +524,10 @@ public final class FieldHandlerUtils {
 			}
 			value.append("}");
 			values.append(value);
+		} else if (DataType.DATATYPE_ENUM.equals(colType)) {
+			values.append(" '");
+			values.append(rs.getString(colNumber));
+			values.append("'");
 		} else {
 			values.append(" ").append(DataType.VALUE_NULL);
 		}
