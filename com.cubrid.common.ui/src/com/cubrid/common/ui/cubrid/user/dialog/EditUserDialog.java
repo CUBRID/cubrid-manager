@@ -555,7 +555,7 @@ public class EditUserDialog extends CMTrayDialog {
 				for (int id : idx) {
 					String tableName = authTable.getItem(id).getText(0);
 					for (ClassInfo bean : allClassInfoList) {
-						if (tableName.equals(bean.getUniqueName())) {
+						if (tableName.equals(bean.getFullName())) {
 							if (bean.isSystemClass()) {
 								CommonUITool.openErrorBox(parentComp.getShell(), Messages.errRemoveSysClass);
 								return;

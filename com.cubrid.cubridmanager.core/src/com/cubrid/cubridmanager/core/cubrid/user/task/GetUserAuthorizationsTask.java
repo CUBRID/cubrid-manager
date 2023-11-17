@@ -73,11 +73,22 @@ public class GetUserAuthorizationsTask extends JDBCTask {
 			return userAuthMap;
 		}
 
-		String sql = "SELECT a.class_name, a.auth_type, a.is_grantable"
-			+ " FROM db_auth a"
-			+ " WHERE a.grantee_name=UPPER('" + userName + "')"
-			+ " AND NOT EXISTS (SELECT 1 FROM db_partition p"
-			+ " WHERE a.class_name=LOWER(p.partition_class_name))";
+		String sql;
+		if (databaseInfo.isSupportUserSchema()) {
+			sql = "SELECT a.class_name, a.auth_type, a.is_grantable, a.owner_name"
+				+ " FROM db_auth a"
+				+ " WHERE a.grantee_name=UPPER('" + userName + "')"
+				+ " AND NOT EXISTS (SELECT 1 FROM db_partition p"
+				+ " WHERE a.class_name=LOWER(p.partition_class_name)"
+				+ " AND a.owner_name=p.owner_name)"
+				;
+		} else {
+			sql = "SELECT a.class_name, a.auth_type, a.is_grantable"
+					+ " FROM db_auth a"
+					+ " WHERE a.grantee_name=UPPER('" + userName + "')"
+					+ " AND NOT EXISTS (SELECT 1 FROM db_partition p"
+					+ " WHERE a.class_name=LOWER(p.partition_class_name))";
+		}
 
 		// [TOOLS-2425]Support shard broker
 		sql = databaseInfo.wrapShardQuery(sql);
@@ -92,12 +103,21 @@ public class GetUserAuthorizationsTask extends JDBCTask {
 				if (className == null || className.trim().length() == 0) {
 					continue;
 				}
-
+				String ownerName = "";
+				if (databaseInfo.isSupportUserSchema()) {
+					ownerName = rs.getString("owner_name");
+				}
+				
 				ClassAuthorizations auth = userAuthMap.get(className);
 				if (auth == null) {
 					auth = new ClassAuthorizations();
 					auth.setClassName(className);
-					userAuthMap.put(className, auth);
+					auth.setOwnerName(ownerName);
+					if (!ownerName.isEmpty()) {
+						userAuthMap.put(ownerName + "." + className, auth);
+					} else {
+						userAuthMap.put(className, auth);
+					}
 				}
 
 				makeAuthorizations(type, grantable, auth);
@@ -123,12 +143,21 @@ public class GetUserAuthorizationsTask extends JDBCTask {
 		}
 
 		Map<String, ClassAuthorizations> userAuthMap = new HashMap<String, ClassAuthorizations>();
-
-		String sql = "SELECT a.auth_type, a.grantee_name, a.class_name, a.is_grantable"
-			+ " FROM db_auth a, db_vclass v"
-			+ " WHERE a.class_name=v.vclass_name"
-			+ " AND a.grantee_name<>UPPER('" + userName+ "')"
-			+ " AND a.class_name='" + viewName + "'";
+		String sql;
+		if (databaseInfo.isSupportUserSchema()) {
+			sql = "SELECT a.auth_type, a.grantee_name, a.class_name, a.is_grantable, a.owner_name"
+				+ " FROM db_auth a, db_vclass v"
+				+ " WHERE a.class_name=v.vclass_name"
+				+ " AND a.owner_name=v.owner_name"
+				+ " AND a.grantee_name<>UPPER('" + userName+ "')"
+				+ " AND a.class_name='" + viewName + "'";
+		} else {
+			sql = "SELECT a.auth_type, a.grantee_name, a.class_name, a.is_grantable"
+					+ " FROM db_auth a, db_vclass v"
+					+ " WHERE a.class_name=v.vclass_name"
+					+ " AND a.grantee_name<>UPPER('" + userName+ "')"
+					+ " AND a.class_name='" + viewName + "'";
+		}
 
 		// [TOOLS-2425]Support shard broker
 		sql = databaseInfo.wrapShardQuery(sql);
@@ -146,10 +175,16 @@ public class GetUserAuthorizationsTask extends JDBCTask {
 					continue;
 				}
 
+				String ownerName = "";
+				if (databaseInfo.isSupportUserSchema()) {
+					ownerName = rs.getString("owner_name");
+				}
+				
 				ClassAuthorizations auth = userAuthMap.get(granteeName);
 				if (auth == null) {
 					auth = new ClassAuthorizations();
 					auth.setClassName(className);
+					auth.setOwnerName(ownerName);
 					userAuthMap.put(granteeName, auth);
 				}
 
