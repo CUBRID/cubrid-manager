@@ -38,6 +38,7 @@ import java.util.Map;
  * @version 1.0 - 2009-4-7 created by robin
  */
 public class ClassAuthorizations {
+	private String ownerName;
 	private String className;
 	private boolean selectPriv = false;
 	private boolean insertPriv = false;
@@ -114,11 +115,22 @@ public class ClassAuthorizations {
 	}
 
 	public String getClassName() {
+		if (ownerName != null && !ownerName.isEmpty()) {
+			return ownerName + "." + className;
+		}
 		return className;
 	}
 
 	public void setClassName(String className) {
 		this.className = className;
+	}
+	
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
 	}
 
 	public boolean isSelectPriv() {

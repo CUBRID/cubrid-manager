@@ -106,6 +106,14 @@ public class ClassInfo {
 		}
 	}
 
+	public String getFullName() {
+		if (isSupportUserSchema) {
+			return ownerName + "." + className;
+		} else {
+			return className;
+		}
+	}
+	
 	public ClassType getClassType() {
 		return classType;
 	}
