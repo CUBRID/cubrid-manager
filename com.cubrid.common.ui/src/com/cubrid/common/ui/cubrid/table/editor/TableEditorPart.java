@@ -742,21 +742,7 @@ public class TableEditorPart extends
 			}
 			classNameText.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent event) {
-					if (classNameText.getText().length() == 0) {
-						CommonUITool.hideErrorBaloon(errorBaloon);
-					} else if (verifyTableName()) {
-						String className = classNameText.getText();
-						newSchemaInfo.setClassname(className);
-						if (isSupportUserSchema()) {
-							if (ownerCombo != null && !ownerCombo.getText().isEmpty()) {
-								newSchemaInfo.setUniqueName(ownerCombo.getText() + "." + className);
-							} else {
-								newSchemaInfo.setUniqueName(className);
-							}
-						} else {
-							newSchemaInfo.setUniqueName(className);
-						}
-					}
+					modifySchemaInfo();
 				}
 			});
 			classNameText.addFocusListener(new FocusAdapter() {
@@ -774,6 +760,11 @@ public class TableEditorPart extends
 				ownerCombo.setLayoutData(gd);
 			}
 			ownerCombo.setVisibleItemCount(10);
+			ownerCombo.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent event) {
+					modifySchemaInfo();
+				}
+			});
 			fillOwnerCombo();
 			if (supportCharset) {
 				final Label collationLabel = new Label(tableNameComp, SWT.NONE);
@@ -1118,8 +1109,14 @@ public class TableEditorPart extends
 		} else {
 			TableItem[] tblItems = columnsTable.getSelection();
 			DBAttribute attr = (DBAttribute) tblItems[0].getData();
+			String uniqueName = "";
+			if (isSupportUserSchema()) {
+				uniqueName = ownerCombo.getText() + "." + classNameText.getText().trim();
+			} else {
+				uniqueName = classNameText.getText().trim();
+			}
 			boolean isInheritAttr = attr.getInherit() != null
-					&& !classNameText.getText().trim().equalsIgnoreCase(attr.getInherit().trim());
+					&& !uniqueName.equalsIgnoreCase(attr.getInherit().trim());
 			deleteColumnBtn.setEnabled(!isInheritAttr);
 
 			if (selectionCount > 1) {
@@ -1155,7 +1152,7 @@ public class TableEditorPart extends
 					for (DBAttribute dbAttr : attrList) {
 						boolean isInheritDbAttr = dbAttr.getInherit() != null
 								&& dbAttr.getInherit().trim().length() > 0
-								&& !classNameText.getText().trim().equalsIgnoreCase(
+								&& uniqueName.equalsIgnoreCase(
 										dbAttr.getInherit().trim());
 						if (isInheritDbAttr) {
 							inheritAttrCount++;
@@ -2857,7 +2854,11 @@ public class TableEditorPart extends
 			newSchemaInfo = new SchemaInfo();
 			newSchemaInfo.setOwner(database.getUserName());
 			newSchemaInfo.setClassname(""); //$NON-NLS-1$
-			newSchemaInfo.setUniqueName(""); //$NON-NLS-1$
+			if (isSupportUserSchema()) {
+				newSchemaInfo.setUniqueName(database.getUserName() + ".");
+			} else {
+				newSchemaInfo.setUniqueName(""); //$NON-NLS-1$
+			}
 			newSchemaInfo.setDbname(database.getName());
 			newSchemaInfo.setType(Messages.userSchema);
 			newSchemaInfo.setVirtual(Messages.schemaTypeClass);
@@ -3088,6 +3089,20 @@ public class TableEditorPart extends
 			return owner + "." + className;
 		} else {
 			return className;
+		}
+	}
+	
+	private void modifySchemaInfo() {
+		String className = classNameText.getText();
+		newSchemaInfo.setClassname(className);
+		if (isSupportUserSchema()) {
+			if (ownerCombo != null && !ownerCombo.getText().isEmpty()) {
+				newSchemaInfo.setUniqueName(ownerCombo.getText() + "." + className);
+			} else {
+				newSchemaInfo.setUniqueName(className);
+			}
+		} else {
+			newSchemaInfo.setUniqueName(className);
 		}
 	}
 }
