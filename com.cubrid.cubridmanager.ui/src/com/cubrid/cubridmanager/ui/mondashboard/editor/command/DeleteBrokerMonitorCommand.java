@@ -29,14 +29,13 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.command;
 
-import org.eclipse.gef.commands.Command;
-import org.eclipse.ui.PlatformUI;
-
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.ui.mondashboard.Messages;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.BrokerNode;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.Dashboard;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Command to delete broker monitor figure from dashboard.
@@ -44,59 +43,51 @@ import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
  * @author cyl
  * @version 1.0 - 2010-8-19 created by cyl
  */
-public class DeleteBrokerMonitorCommand extends
-		Command {
+public class DeleteBrokerMonitorCommand extends Command {
 
-	private BrokerNode nodeToDelete;
+    private BrokerNode nodeToDelete;
 
-	private Dashboard dashboard;
+    private Dashboard dashboard;
 
-	/**
-	 *
-	 */
-	public DeleteBrokerMonitorCommand() {
-		//default constructor
-	}
+    /** */
+    public DeleteBrokerMonitorCommand() {
+        // default constructor
+    }
 
-	/**
-	 * get the node to be deleted.
-	 *
-	 * @return the nodeToDelete
-	 */
-	public BrokerNode getNodeToDelete() {
-		return nodeToDelete;
-	}
+    /**
+     * get the node to be deleted.
+     *
+     * @return the nodeToDelete
+     */
+    public BrokerNode getNodeToDelete() {
+        return nodeToDelete;
+    }
 
-	/**
-	 * @param nodeToDelete the nodeToDelete to set
-	 */
-	public void setNodeToDelete(BrokerNode nodeToDelete) {
-		this.nodeToDelete = nodeToDelete;
-	}
+    /** @param nodeToDelete the nodeToDelete to set */
+    public void setNodeToDelete(BrokerNode nodeToDelete) {
+        this.nodeToDelete = nodeToDelete;
+    }
 
-	/**
-	 * remove current broker node from dashboard
-	 */
-	public void execute() {
-		if (null == nodeToDelete || null == nodeToDelete.getParent()) {
-			return;
-		}
-		boolean isDelete = CommonUITool.openConfirmBox(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-				Messages.bind(Messages.msgConfirmDeleteBroker,
-						nodeToDelete.getBrokerName()));
-		if (!isDelete) {
-			return;
-		}
-		HostNode parent = nodeToDelete.getParent();
-		parent.removeBrokerNode(nodeToDelete);
-		dashboard.refresh();
-	}
+    /** remove current broker node from dashboard */
+    public void execute() {
+        if (null == nodeToDelete || null == nodeToDelete.getParent()) {
+            return;
+        }
+        boolean isDelete =
+                CommonUITool.openConfirmBox(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        Messages.bind(
+                                Messages.msgConfirmDeleteBroker, nodeToDelete.getBrokerName()));
+        if (!isDelete) {
+            return;
+        }
+        HostNode parent = nodeToDelete.getParent();
+        parent.removeBrokerNode(nodeToDelete);
+        dashboard.refresh();
+    }
 
-	/**
-	 * @param dashboard the dashboard to set
-	 */
-	public void setDashboard(Dashboard dashboard) {
-		this.dashboard = dashboard;
-	}
+    /** @param dashboard the dashboard to set */
+    public void setDashboard(Dashboard dashboard) {
+        this.dashboard = dashboard;
+    }
 }

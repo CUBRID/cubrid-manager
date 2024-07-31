@@ -27,6 +27,4 @@
  */
 package com.navercorp.dbtools.sqlmap.parser;
 
-public interface MapperQuery {
-
-}
+public interface MapperQuery {}

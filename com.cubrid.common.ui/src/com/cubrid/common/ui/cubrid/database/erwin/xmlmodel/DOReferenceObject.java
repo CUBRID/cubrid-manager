@@ -7,15 +7,13 @@ import javax.xml.bind.annotation.XmlValue;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DOReferenceObject {
 
-	@XmlValue
-	protected String value;
+    @XmlValue protected String value;
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

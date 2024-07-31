@@ -31,51 +31,44 @@ package com.cubrid.cubridmanager.ui.broker.editor;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
+import com.cubrid.cubridmanager.core.broker.model.BrokerInfo;
 import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.cubrid.cubridmanager.core.broker.model.BrokerInfo;
-
 /**
- * A content provider which is responsible for the basic info table in the type
- * of BlocksStatusEditor
+ * A content provider which is responsible for the basic info table in the type of
+ * BlocksStatusEditor
  *
  * @author lizhiqiang
  * @version 1.0 - 2010-3-15 created by lizhiqiang
  */
-public class BrokerBasicInfoContentProvider implements
-		IStructuredContentProvider {
+public class BrokerBasicInfoContentProvider implements IStructuredContentProvider {
 
-	/**
-	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-	 *
-	 * @param inputElement the input element
-	 * @return the object array
-	 */
-	@SuppressWarnings("unchecked")
-	public Object[] getElements(Object inputElement) {
-		return ((List<BrokerInfo>) inputElement).toArray();
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+     * @param inputElement the input element
+     * @return the object array
+     */
+    @SuppressWarnings("unchecked")
+    public Object[] getElements(Object inputElement) {
+        return ((List<BrokerInfo>) inputElement).toArray();
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-	 */
-	public void dispose() {
-		noOp();
-	}
+    /** @see org.eclipse.jface.viewers.IContentProvider#dispose() */
+    public void dispose() {
+        noOp();
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-	 *      java.lang.Object, java.lang.Object)
-	 *
-	 * @param viewer the viewer
-	 * @param oldInput the old input object
-	 * @param newInput the new input object
-	 */
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		noOp();
-	}
-
+    /**
+     * @see
+     *     org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+     *     java.lang.Object, java.lang.Object)
+     * @param viewer the viewer
+     * @param oldInput the old input object
+     * @param newInput the new input object
+     */
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        noOp();
+    }
 }

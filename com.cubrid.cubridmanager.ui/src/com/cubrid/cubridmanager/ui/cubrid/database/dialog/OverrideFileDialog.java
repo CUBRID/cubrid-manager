@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,15 +23,18 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.cubrid.database.dialog;
 
+import com.cubrid.common.ui.spi.TableViewerSorter;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -43,130 +46,127 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
-import com.cubrid.common.ui.spi.TableViewerSorter;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
-
 /**
- * 
  * This dialog list all files that will be overrided
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-public class OverrideFileDialog extends
-		CMTitleAreaDialog {
+public class OverrideFileDialog extends CMTitleAreaDialog {
 
-	private String[] files = null;
+    private String[] files = null;
 
-	/**
-	 * The constructor
-	 * 
-	 * @param parentShell
-	 */
-	public OverrideFileDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     */
+    public OverrideFileDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	/**
-	 * Create dialog area content
-	 * 
-	 * @param parent the parent composite
-	 * @return the control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		composite.setLayoutData(gridData);
+    /**
+     * Create dialog area content
+     *
+     * @param parent the parent composite
+     * @return the control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        composite.setLayout(layout);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        composite.setLayoutData(gridData);
 
-		createFileTableComp(composite);
+        createFileTableComp(composite);
 
-		setTitle(Messages.titleOverideFileDialog);
-		setMessage(Messages.msgOverrideFileDialog);
-		return parentComp;
-	}
+        setTitle(Messages.titleOverideFileDialog);
+        setMessage(Messages.msgOverrideFileDialog);
+        return parentComp;
+    }
 
-	/**
-	 * 
-	 * Create directory table
-	 * 
-	 * @param parent the parent composite
-	 */
-	private void createFileTableComp(Composite parent) {
-		Composite comp = new Composite(parent, SWT.NONE);
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		comp.setLayoutData(gridData);
-		GridLayout layout = new GridLayout();
-		comp.setLayout(layout);
+    /**
+     * Create directory table
+     *
+     * @param parent the parent composite
+     */
+    private void createFileTableComp(Composite parent) {
+        Composite comp = new Composite(parent, SWT.NONE);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        comp.setLayoutData(gridData);
+        GridLayout layout = new GridLayout();
+        comp.setLayout(layout);
 
-		Label tipLabel = new Label(comp, SWT.NONE);
-		tipLabel.setText(Messages.msgOverrideFileList);
-		tipLabel.setLayoutData(CommonUITool.createGridData(
-				GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+        Label tipLabel = new Label(comp, SWT.NONE);
+        tipLabel.setText(Messages.msgOverrideFileList);
+        tipLabel.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
 
-		final String[] columnNameArr = new String[]{Messages.tblColumnFile };
-		TableViewer tableViewer = CommonUITool.createCommonTableViewer(comp,
-				new TableViewerSorter(), columnNameArr,
-				CommonUITool.createGridData(GridData.FILL_BOTH, 1, 4, -1, 200));
-		Table dirTable = tableViewer.getTable();
-		tableViewer.setInput(getTableModel());
-		for (int i = 0; i < dirTable.getColumnCount(); i++) {
-			dirTable.getColumn(i).pack();
-		}
-	}
+        final String[] columnNameArr = new String[] {Messages.tblColumnFile};
+        TableViewer tableViewer =
+                CommonUITool.createCommonTableViewer(
+                        comp,
+                        new TableViewerSorter(),
+                        columnNameArr,
+                        CommonUITool.createGridData(GridData.FILL_BOTH, 1, 4, -1, 200));
+        Table dirTable = tableViewer.getTable();
+        tableViewer.setInput(getTableModel());
+        for (int i = 0; i < dirTable.getColumnCount(); i++) {
+            dirTable.getColumn(i).pack();
+        }
+    }
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.titleOverideFileDialog);
-	}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.titleOverideFileDialog);
+    }
 
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID,
-				com.cubrid.cubridmanager.ui.common.Messages.btnOK, true);
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				com.cubrid.cubridmanager.ui.common.Messages.btnCancel, false);
-	}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(
+                parent,
+                IDialogConstants.OK_ID,
+                com.cubrid.cubridmanager.ui.common.Messages.btnOK,
+                true);
+        createButton(
+                parent,
+                IDialogConstants.CANCEL_ID,
+                com.cubrid.cubridmanager.ui.common.Messages.btnCancel,
+                false);
+    }
 
-	/**
-	 * 
-	 * Get file list tableviewer input model
-	 * 
-	 * @return the model list
-	 */
-	private List<Map<String, String>> getTableModel() {
-		List<Map<String, String>> dirList = new ArrayList<Map<String, String>>();
-		for (int i = 0; this.files != null && i < this.files.length; i++) {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("0", this.files[i]);
-			dirList.add(map);
-		}
-		return dirList;
-	}
+    /**
+     * Get file list tableviewer input model
+     *
+     * @return the model list
+     */
+    private List<Map<String, String>> getTableModel() {
+        List<Map<String, String>> dirList = new ArrayList<Map<String, String>>();
+        for (int i = 0; this.files != null && i < this.files.length; i++) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("0", this.files[i]);
+            dirList.add(map);
+        }
+        return dirList;
+    }
 
-	/**
-	 * 
-	 * Set needed overrided files
-	 * 
-	 * @param files the files array
-	 */
-	public void setFiles(String[] files) {
-		this.files = files == null ? null : (String[]) files.clone();
-	}
+    /**
+     * Set needed overrided files
+     *
+     * @param files the files array
+     */
+    public void setFiles(String[] files) {
+        this.files = files == null ? null : (String[]) files.clone();
+    }
 }

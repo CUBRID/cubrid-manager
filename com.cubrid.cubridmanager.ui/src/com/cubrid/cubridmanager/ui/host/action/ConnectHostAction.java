@@ -27,17 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.host.action;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
 import com.cubrid.common.ui.spi.CubridNodeManager;
@@ -53,6 +42,15 @@ import com.cubrid.cubridmanager.ui.common.navigator.CubridHostNavigatorView;
 import com.cubrid.cubridmanager.ui.host.dialog.FailedHostServerInfo;
 import com.cubrid.cubridmanager.ui.host.dialog.NewMultiHostConnectionDialog;
 import com.cubrid.cubridmanager.ui.spi.contribution.CubridWorkbenchContrItem;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
 
 /**
  * Connect host action
@@ -61,156 +59,167 @@ import com.cubrid.cubridmanager.ui.spi.contribution.CubridWorkbenchContrItem;
  * @version 1.0 - 2011-6-17 created by pangqiren
  */
 public class ConnectHostAction extends SelectionAction {
-	private static final Logger LOGGER = LogUtil.getLogger(ConnectHostAction.class);
-	public static final String ID = ConnectHostAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(ConnectHostAction.class);
+    public static final String ID = ConnectHostAction.class.getName();
 
-	public ConnectHostAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    public ConnectHostAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	public ConnectHostAction(Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    public ConnectHostAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * Return whether this action support to select multi object, if not support,this action will be disabled
-	 *
-	 * @return <code>true</code> if allow multi selection;<code>false</code> otherwise
-	 */
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    /**
+     * Return whether this action support to select multi object, if not support,this action will be
+     * disabled
+     *
+     * @return <code>true</code> if allow multi selection;<code>false</code> otherwise
+     */
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	/**
-	 * Return whether this action support this object,if not support,this action will be disabled
-	 *
-	 * @param obj the Object
-	 * @return <code>true</code> if support this obj;<code>false</code> otherwise
-	 */
-	public boolean isSupported(Object obj) {
-		return true;
-	}
+    /**
+     * Return whether this action support this object,if not support,this action will be disabled
+     *
+     * @param obj the Object
+     * @return <code>true</code> if support this obj;<code>false</code> otherwise
+     */
+    public boolean isSupported(Object obj) {
+        return true;
+    }
 
-	/**
-	 * Return whether this action support this object,if not support,this action will be disabled
-	 *
-	 * @param obj the Object
-	 * @return <code>true</code> if support this obj;<code>false</code> otherwise
-	 */
-	public static boolean isSupportedNode(Object obj) {
-		if (obj instanceof CubridServer) {
-			CubridServer server = (CubridServer)obj;
-			return !server.isConnected();
-		} else if (obj instanceof CubridGroupNode) {
-			return true;
-		}
-		if (obj instanceof Object[]) {
-			return true;
-		}
+    /**
+     * Return whether this action support this object,if not support,this action will be disabled
+     *
+     * @param obj the Object
+     * @return <code>true</code> if support this obj;<code>false</code> otherwise
+     */
+    public static boolean isSupportedNode(Object obj) {
+        if (obj instanceof CubridServer) {
+            CubridServer server = (CubridServer) obj;
+            return !server.isConnected();
+        } else if (obj instanceof CubridGroupNode) {
+            return true;
+        }
+        if (obj instanceof Object[]) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Open the host dialog and connect to host
-	 */
-	public void run() {
-		final Object[] obj = this.getSelectedObj();
-		if (obj == null || obj.length <= 0) {
-			setEnabled(false);
-			return;
-		}
+    /** Open the host dialog and connect to host */
+    public void run() {
+        final Object[] obj = this.getSelectedObj();
+        if (obj == null || obj.length <= 0) {
+            setEnabled(false);
+            return;
+        }
 
-		// For bug TOOLS-2644
-		CubridServer[] servers = handleSelectionObj(obj);
-		doRun(servers);
-	}
+        // For bug TOOLS-2644
+        CubridServer[] servers = handleSelectionObj(obj);
+        doRun(servers);
+    }
 
-	public void doRun(CubridServer[] servers) {
-		if (servers.length == 0) {
-			return;
-		}
+    public void doRun(CubridServer[] servers) {
+        if (servers.length == 0) {
+            return;
+        }
 
-		if (servers.length == 1) {
-			CubridServer server = servers[0];
-			if (server.isAutoSavePassword() && CubridWorkbenchContrItem.connectHost(server.getServerInfo(), true)) {
-				server.getLoader().setLoaded(false);
+        if (servers.length == 1) {
+            CubridServer server = servers[0];
+            if (server.isAutoSavePassword()
+                    && CubridWorkbenchContrItem.connectHost(server.getServerInfo(), true)) {
+                server.getLoader().setLoaded(false);
 
-				CubridNavigatorView view = CubridNavigatorView.getNavigatorView(CubridHostNavigatorView.ID);
-				if (view == null) {
-					LOGGER.error("view is null.");
-					return;
-				}
-				TreeViewer treeViewer = view.getViewer();
-				treeViewer.refresh(server, true);
-				treeViewer.expandToLevel(server, 1);
+                CubridNavigatorView view =
+                        CubridNavigatorView.getNavigatorView(CubridHostNavigatorView.ID);
+                if (view == null) {
+                    LOGGER.error("view is null.");
+                    return;
+                }
+                TreeViewer treeViewer = view.getViewer();
+                treeViewer.refresh(server, true);
+                treeViewer.expandToLevel(server, 1);
 
-				ActionManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
-				LayoutManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
-				CubridNodeChangedEvent event = new CubridNodeChangedEvent(
-						server, CubridNodeChangedEventType.SERVER_CONNECTED);
-				CubridNodeManager.getInstance().fireCubridNodeChanged(event);
-			} else {
-				EditHostAction editHostAction = (EditHostAction)ActionManager.getInstance().getAction(EditHostAction.ID);
-				if (editHostAction != null) {
-					editHostAction.doRun(servers, true);
-				}
-			}
-		} else {
-			List<FailedHostServerInfo> failedServerList = new ArrayList<FailedHostServerInfo>();
-			for (CubridServer object : servers) {
-				CubridServer server = (CubridServer)object;
-				String errMsg = null;
-				if (server.isAutoSavePassword()) {
-					errMsg = CubridWorkbenchContrItem.connectHostWithErrMsg(server.getServerInfo(), false);
-				} else {
-					errMsg = "Incorrect or missing password.";
-				}
+                ActionManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
+                LayoutManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
+                CubridNodeChangedEvent event =
+                        new CubridNodeChangedEvent(
+                                server, CubridNodeChangedEventType.SERVER_CONNECTED);
+                CubridNodeManager.getInstance().fireCubridNodeChanged(event);
+            } else {
+                EditHostAction editHostAction =
+                        (EditHostAction) ActionManager.getInstance().getAction(EditHostAction.ID);
+                if (editHostAction != null) {
+                    editHostAction.doRun(servers, true);
+                }
+            }
+        } else {
+            List<FailedHostServerInfo> failedServerList = new ArrayList<FailedHostServerInfo>();
+            for (CubridServer object : servers) {
+                CubridServer server = (CubridServer) object;
+                String errMsg = null;
+                if (server.isAutoSavePassword()) {
+                    errMsg =
+                            CubridWorkbenchContrItem.connectHostWithErrMsg(
+                                    server.getServerInfo(), false);
+                } else {
+                    errMsg = "Incorrect or missing password.";
+                }
 
-				if (errMsg == null) {
-					server.getLoader().setLoaded(false);
-					CubridNavigatorView view = CubridNavigatorView.getNavigatorView(CubridHostNavigatorView.ID);
-					TreeViewer treeViewer = view.getViewer();
-					treeViewer.refresh(server, true);
-					treeViewer.expandToLevel(server, 1);
+                if (errMsg == null) {
+                    server.getLoader().setLoaded(false);
+                    CubridNavigatorView view =
+                            CubridNavigatorView.getNavigatorView(CubridHostNavigatorView.ID);
+                    TreeViewer treeViewer = view.getViewer();
+                    treeViewer.refresh(server, true);
+                    treeViewer.expandToLevel(server, 1);
 
-					ActionManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
-					LayoutManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
-					CubridNodeManager.getInstance().fireCubridNodeChanged(
-					new CubridNodeChangedEvent(server, CubridNodeChangedEventType.SERVER_CONNECTED));
-				} else {
-					failedServerList.add(new FailedHostServerInfo(server,errMsg));
-				}
-			}
+                    ActionManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
+                    LayoutManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
+                    CubridNodeManager.getInstance()
+                            .fireCubridNodeChanged(
+                                    new CubridNodeChangedEvent(
+                                            server, CubridNodeChangedEventType.SERVER_CONNECTED));
+                } else {
+                    failedServerList.add(new FailedHostServerInfo(server, errMsg));
+                }
+            }
 
-			if (failedServerList.size() > 0) {
-				NewMultiHostConnectionDialog dialog = new NewMultiHostConnectionDialog(getShell(), failedServerList);
-				dialog.open();
-			}
-		}
-	}
+            if (failedServerList.size() > 0) {
+                NewMultiHostConnectionDialog dialog =
+                        new NewMultiHostConnectionDialog(getShell(), failedServerList);
+                dialog.open();
+            }
+        }
+    }
 
-	private CubridServer[] handleSelectionObj(Object[] objs) {
-		Set<CubridServer> list = new LinkedHashSet<CubridServer>();
-		for (Object obj : objs) {
-			if (obj instanceof CubridServer && !((CubridServer) obj).isConnected()) {
-				list.add((CubridServer) obj);
-			} else if (obj instanceof CubridGroupNode) {
-				CubridGroupNode node = (CubridGroupNode) obj;
-				for (ICubridNode childNode : node.getChildren()) {
-					if (childNode instanceof CubridServer && !((CubridServer) childNode).isConnected()) {
-						list.add((CubridServer) childNode);
-					}
-				}
-			}
-		}
+    private CubridServer[] handleSelectionObj(Object[] objs) {
+        Set<CubridServer> list = new LinkedHashSet<CubridServer>();
+        for (Object obj : objs) {
+            if (obj instanceof CubridServer && !((CubridServer) obj).isConnected()) {
+                list.add((CubridServer) obj);
+            } else if (obj instanceof CubridGroupNode) {
+                CubridGroupNode node = (CubridGroupNode) obj;
+                for (ICubridNode childNode : node.getChildren()) {
+                    if (childNode instanceof CubridServer
+                            && !((CubridServer) childNode).isConnected()) {
+                        list.add((CubridServer) childNode);
+                    }
+                }
+            }
+        }
 
-		return list.toArray(new CubridServer[0]);
-	}
+        return list.toArray(new CubridServer[0]);
+    }
 
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
-	}
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+    }
 }

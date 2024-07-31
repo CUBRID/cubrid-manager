@@ -27,42 +27,38 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.user.task;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.user.model.DbUserInfoList;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-25 created by fulei
  */
+public class GetUserListTaskTest extends SetupJDBCTestCase {
 
-public class GetUserListTaskTest extends SetupJDBCTestCase{
+    public void testGetUserListTask() throws Exception {
+        GetUserListTask task = new GetUserListTask(databaseInfo);
+        task.execute();
 
-	public void testGetUserListTask() throws Exception {
-		GetUserListTask task = new GetUserListTask(databaseInfo);
-		task.execute();
-		
-		DbUserInfoList dbUserInfoList = task.getResultModel();
-		assertNotNull(dbUserInfoList);
-		
-		Connection connection = null;
-		try{
-			connection = JDBCConnectionManager.getConnection(databaseInfo, true);
-			task = new GetUserListTask(databaseInfo, connection);
-			task.execute();
-			List<String> allUsersList = task.getAllDbUserList();
-			assertNotNull(allUsersList);	
-		}catch(SQLException ex) {
-			
-		}finally{
-			QueryUtil.freeQuery(connection);
-		}
+        DbUserInfoList dbUserInfoList = task.getResultModel();
+        assertNotNull(dbUserInfoList);
 
-	}
+        Connection connection = null;
+        try {
+            connection = JDBCConnectionManager.getConnection(databaseInfo, true);
+            task = new GetUserListTask(databaseInfo, connection);
+            task.execute();
+            List<String> allUsersList = task.getAllDbUserList();
+            assertNotNull(allUsersList);
+        } catch (SQLException ex) {
+
+        } finally {
+            QueryUtil.freeQuery(connection);
+        }
+    }
 }

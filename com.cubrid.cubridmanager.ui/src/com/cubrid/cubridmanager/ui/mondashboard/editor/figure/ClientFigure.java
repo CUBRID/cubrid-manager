@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,13 +23,13 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.figure;
 
+import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
@@ -40,140 +40,134 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
-import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
-
 /**
  * BrokerHostMonitorFigure Description
- * 
+ *
  * @author cyl
  * @version 1.0 - 2010-6-3 created by cyl
  */
-public class ClientFigure extends
-		AbstractMonitorFigure {
+public class ClientFigure extends AbstractMonitorFigure {
 
-	private static final Image PNG_ICON = CubridManagerUIPlugin.getImage("icons/navigator/user_group.png");
-	private static final Image PNG_CLIENT = CubridManagerUIPlugin.getImage("icons/navigator/user_item.png");
+    private static final Image PNG_ICON =
+            CubridManagerUIPlugin.getImage("icons/navigator/user_group.png");
+    private static final Image PNG_CLIENT =
+            CubridManagerUIPlugin.getImage("icons/navigator/user_item.png");
 
-	private static final int TOTAL_WIDTH = 157;
-	private static final int LABEL_HEIGHT = 16;
-	private static final int SPACING_1 = 4;
-	private static final int TITLE_HEIGHT = LABEL_HEIGHT + SPACING_1 * 2;
-	private static final int FIRST_CONTENT_Y = TITLE_HEIGHT + SPACING_1;
-	private static final int TOTAL_HEIGHT = FIRST_CONTENT_Y + LABEL_HEIGHT
-			+ SPACING_1;
+    private static final int TOTAL_WIDTH = 157;
+    private static final int LABEL_HEIGHT = 16;
+    private static final int SPACING_1 = 4;
+    private static final int TITLE_HEIGHT = LABEL_HEIGHT + SPACING_1 * 2;
+    private static final int FIRST_CONTENT_Y = TITLE_HEIGHT + SPACING_1;
+    private static final int TOTAL_HEIGHT = FIRST_CONTENT_Y + LABEL_HEIGHT + SPACING_1;
 
-	private final Point lastContentLocation = new Point(SPACING_1,
-			FIRST_CONTENT_Y);
-	private final Label nameLabel;
-	private final List<Label> clients = new ArrayList<Label>();
+    private final Point lastContentLocation = new Point(SPACING_1, FIRST_CONTENT_Y);
+    private final Label nameLabel;
+    private final List<Label> clients = new ArrayList<Label>();
 
-	/**
-	 * default constructor of BrokerHostMonitorFigure. Initialize figures.
-	 */
-	public ClientFigure() {
-		setSize(new Dimension(TOTAL_WIDTH, TOTAL_HEIGHT));
-		//db name & connection status
-		nameLabel = new Label();
-		nameLabel.setLabelAlignment(PositionConstants.LEFT);
-		nameLabel.setIcon(PNG_ICON);
-		nameLabel.setSize(TOTAL_WIDTH - SPACING_1, LABEL_HEIGHT);
-		nameLabel.setLocation(new Point(SPACING_1, SPACING_1));
-		nameLabel.setForegroundColor(ColorConstants.black);
-		add(nameLabel);
-	}
+    /** default constructor of BrokerHostMonitorFigure. Initialize figures. */
+    public ClientFigure() {
+        setSize(new Dimension(TOTAL_WIDTH, TOTAL_HEIGHT));
+        // db name & connection status
+        nameLabel = new Label();
+        nameLabel.setLabelAlignment(PositionConstants.LEFT);
+        nameLabel.setIcon(PNG_ICON);
+        nameLabel.setSize(TOTAL_WIDTH - SPACING_1, LABEL_HEIGHT);
+        nameLabel.setLocation(new Point(SPACING_1, SPACING_1));
+        nameLabel.setForegroundColor(ColorConstants.black);
+        add(nameLabel);
+    }
 
-	/**
-	 * set host name to figure
-	 * 
-	 * @param name String
-	 */
-	public void setName(String name) {
-		nameLabel.setText(name);
-		setHint(name);
-	}
+    /**
+     * set host name to figure
+     *
+     * @param name String
+     */
+    public void setName(String name) {
+        nameLabel.setText(name);
+        setHint(name);
+    }
 
-	/**
-	 * If the name in list is exists.
-	 * 
-	 * @param name String.
-	 * @return true or false
-	 */
-	private boolean nameExists(String name) {
-		for (Label label : this.clients) {
-			if (label.getText().equals(name)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * If the name in list is exists.
+     *
+     * @param name String.
+     * @return true or false
+     */
+    private boolean nameExists(String name) {
+        for (Label label : this.clients) {
+            if (label.getText().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Set the clients to display
-	 * 
-	 * @param list List<String>
-	 */
-	public void setClients(List<String> list) {
-		//in case of concurrent modfiy exception
-		List<Label> copyedDatabases = new ArrayList<Label>();
-		copyedDatabases.addAll(this.clients);
+    /**
+     * Set the clients to display
+     *
+     * @param list List<String>
+     */
+    public void setClients(List<String> list) {
+        // in case of concurrent modfiy exception
+        List<Label> copyedDatabases = new ArrayList<Label>();
+        copyedDatabases.addAll(this.clients);
 
-		for (Label label : copyedDatabases) {
-			if (!list.contains(label.getText())) {
-				remove(label);
-				clients.remove(label);
-			}
-		}
-		for (String name : list) {
-			if (nameExists(name)) {
-				continue;
-			}
-			Label label = new Label();
-			label.setLabelAlignment(PositionConstants.LEFT);
-			label.setText(name);
-			label.setToolTip(new Label());
-			setLabelHint(label, name);
-			label.setForegroundColor(ColorConstants.black);
-			label.setIcon(PNG_CLIENT);
-			label.setSize(getSize().width - SPACING_1, LABEL_HEIGHT);
-			add(label);
-			clients.add(label);
-		}
-		lastContentLocation.y = FIRST_CONTENT_Y;
-		for (Label lable : clients) {
-			lable.setLocation(new Point(
-					getLocation().x + lastContentLocation.x, getLocation().y
-							+ lastContentLocation.y));
-			lastContentLocation.y = lastContentLocation.y + SPACING_1
-					+ LABEL_HEIGHT;
-		}
-		//Auto change size with the client count.
-		if (lastContentLocation.y >= TOTAL_HEIGHT) {
-			setSize(TOTAL_WIDTH, lastContentLocation.y);
-		}
-	}
+        for (Label label : copyedDatabases) {
+            if (!list.contains(label.getText())) {
+                remove(label);
+                clients.remove(label);
+            }
+        }
+        for (String name : list) {
+            if (nameExists(name)) {
+                continue;
+            }
+            Label label = new Label();
+            label.setLabelAlignment(PositionConstants.LEFT);
+            label.setText(name);
+            label.setToolTip(new Label());
+            setLabelHint(label, name);
+            label.setForegroundColor(ColorConstants.black);
+            label.setIcon(PNG_CLIENT);
+            label.setSize(getSize().width - SPACING_1, LABEL_HEIGHT);
+            add(label);
+            clients.add(label);
+        }
+        lastContentLocation.y = FIRST_CONTENT_Y;
+        for (Label lable : clients) {
+            lable.setLocation(
+                    new Point(
+                            getLocation().x + lastContentLocation.x,
+                            getLocation().y + lastContentLocation.y));
+            lastContentLocation.y = lastContentLocation.y + SPACING_1 + LABEL_HEIGHT;
+        }
+        // Auto change size with the client count.
+        if (lastContentLocation.y >= TOTAL_HEIGHT) {
+            setSize(TOTAL_WIDTH, lastContentLocation.y);
+        }
+    }
 
-	/**
-	 * fill shapge
-	 * 
-	 * @param graphics Graphics
-	 */
-	protected void fillShape(Graphics graphics) {
-		super.fillShape(graphics);
-		Rectangle r = getBounds();
-		graphics.drawLine(r.x, r.y + TITLE_HEIGHT, r.x + r.width, r.y
-				+ TITLE_HEIGHT);
-	}
+    /**
+     * fill shapge
+     *
+     * @param graphics Graphics
+     */
+    protected void fillShape(Graphics graphics) {
+        super.fillShape(graphics);
+        Rectangle r = getBounds();
+        graphics.drawLine(r.x, r.y + TITLE_HEIGHT, r.x + r.width, r.y + TITLE_HEIGHT);
+    }
 
-	/**
-	 * Set host's connection status
-	 * 
-	 * @param connected boolean
-	 */
-	public void setHostConnected(boolean connected) {
-		Color color = DEFAULT_BORDER_COLOR;
-		if (!connected) {
-			color = DISABLED_COLOR;
-		}
-		setForegroundColor(color);
-	}
+    /**
+     * Set host's connection status
+     *
+     * @param connected boolean
+     */
+    public void setHostConnected(boolean connected) {
+        Color color = DEFAULT_BORDER_COLOR;
+        if (!connected) {
+            color = DISABLED_COLOR;
+        }
+        setForegroundColor(color);
+    }
 }

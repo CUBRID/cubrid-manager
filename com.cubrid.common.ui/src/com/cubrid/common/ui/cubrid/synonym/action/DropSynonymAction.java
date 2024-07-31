@@ -27,16 +27,6 @@
  */
 package com.cubrid.common.ui.cubrid.synonym.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.ui.cubrid.synonym.Messages;
@@ -51,98 +41,108 @@ import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.ActionSupportUtil;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.task.CommonSQLExcuterTask;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
 
 public class DropSynonymAction extends SelectionAction {
-	public static final String ID = DropSynonymAction.class.getName();
-	private static final Logger LOGGER = LogUtil.getLogger(DropSynonymAction.class);
+    public static final String ID = DropSynonymAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(DropSynonymAction.class);
 
-	public DropSynonymAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    public DropSynonymAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	public DropSynonymAction(Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-	}
+    public DropSynonymAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+    }
 
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	public boolean isSupported(Object obj) {
-		return ActionSupportUtil.isSupportMultiSelection(obj,
-				new String[]{NodeType.SYNONYM }, true);
-	}
+    public boolean isSupported(Object obj) {
+        return ActionSupportUtil.isSupportMultiSelection(
+                obj, new String[] {NodeType.SYNONYM}, true);
+    }
 
-	public void run() {
-		Object[] objArr = this.getSelectedObj();
-		if (objArr == null || !isSupported(objArr)) {
-			this.setEnabled(false);
-			return;
-		}
-		ISchemaNode nodeArray[] = new ISchemaNode[objArr.length];
-		for (int i = 0 ; i < objArr.length; i ++) {
-			nodeArray[i] = (ISchemaNode)objArr[i];
-		}
-		run(nodeArray);
-	}
+    public void run() {
+        Object[] objArr = this.getSelectedObj();
+        if (objArr == null || !isSupported(objArr)) {
+            this.setEnabled(false);
+            return;
+        }
+        ISchemaNode nodeArray[] = new ISchemaNode[objArr.length];
+        for (int i = 0; i < objArr.length; i++) {
+            nodeArray[i] = (ISchemaNode) objArr[i];
+        }
+        run(nodeArray);
+    }
 
-	public void run(ISchemaNode[] nodeArray) { // FIXME move this logic to core module
-		if (nodeArray == null) {
-			LOGGER.error("The nodeArray is a null.");
-			return;
-		}
+    public void run(ISchemaNode[] nodeArray) { // FIXME move this logic to core module
+        if (nodeArray == null) {
+            LOGGER.error("The nodeArray is a null.");
+            return;
+        }
 
-		List<String> synonymNameList = new ArrayList<String>();
-		StringBuffer bf = new StringBuffer();
-		for (int i = 0; nodeArray != null && i < nodeArray.length; i++) {
-			DefaultSchemaNode synonym = (DefaultSchemaNode) nodeArray[i];
-			synonymNameList.add(synonym.getName());
-			if (i == 0) {
-				bf.append(synonym.getName());
-			}
-		}
-		if (nodeArray.length > 1) {
-			bf.append(", ...");
-		}
+        List<String> synonymNameList = new ArrayList<String>();
+        StringBuffer bf = new StringBuffer();
+        for (int i = 0; nodeArray != null && i < nodeArray.length; i++) {
+            DefaultSchemaNode synonym = (DefaultSchemaNode) nodeArray[i];
+            synonymNameList.add(synonym.getName());
+            if (i == 0) {
+                bf.append(synonym.getName());
+            }
+        }
+        if (nodeArray.length > 1) {
+            bf.append(", ...");
+        }
 
-		String cfmMsg = Messages.bind(Messages.dropSynonymWarnMSG1, nodeArray.length, bf.toString());
-		boolean ret = CommonUITool.openConfirmBox(cfmMsg);
-		if (!ret) {
-			return;
-		}
+        String cfmMsg =
+                Messages.bind(Messages.dropSynonymWarnMSG1, nodeArray.length, bf.toString());
+        boolean ret = CommonUITool.openConfirmBox(cfmMsg);
+        if (!ret) {
+            return;
+        }
 
-		ISchemaNode synonymNode = (ISchemaNode) nodeArray[0];
-		CommonSQLExcuterTask task = new CommonSQLExcuterTask(
-				synonymNode.getDatabase().getDatabaseInfo());
-		for (String synonymName : synonymNameList) {
-			String sql = "DROP SYNONYM " + QuerySyntax.escapeKeyword(synonymName);
-			task.addSqls(sql);
-		}
+        ISchemaNode synonymNode = (ISchemaNode) nodeArray[0];
+        CommonSQLExcuterTask task =
+                new CommonSQLExcuterTask(synonymNode.getDatabase().getDatabaseInfo());
+        for (String synonymName : synonymNameList) {
+            String sql = "DROP SYNONYM " + QuerySyntax.escapeKeyword(synonymName);
+            task.addSqls(sql);
+        }
 
-		String taskName = Messages.bind(Messages.dropSynonymTaskName, bf.toString());
-		TaskExecutor taskExecutor = new CommonTaskExec(taskName);
-		taskExecutor.addTask(task);
+        String taskName = Messages.bind(Messages.dropSynonymTaskName, bf.toString());
+        TaskExecutor taskExecutor = new CommonTaskExec(taskName);
+        taskExecutor.addTask(task);
 
-		new ExecTaskWithProgress(taskExecutor).busyCursorWhile();
-		if (!taskExecutor.isSuccess()) {
-			return;
-		}
+        new ExecTaskWithProgress(taskExecutor).busyCursorWhile();
+        if (!taskExecutor.isSuccess()) {
+            return;
+        }
 
-		String title = com.cubrid.common.ui.common.Messages.titleSuccess;
-		String msg = Messages.dropSynonymSuccessMsg;
-		CommonUITool.openInformationBox(title, msg);
+        String title = com.cubrid.common.ui.common.Messages.titleSuccess;
+        String msg = Messages.dropSynonymSuccessMsg;
+        CommonUITool.openInformationBox(title, msg);
 
-		ISelectionProvider provider = this.getSelectionProvider();
-		ICubridNode parent = synonymNode.getParent();
-		if (provider instanceof TreeViewer) {
-			TreeViewer viewer = (TreeViewer) provider;
-			for (int i = 0; nodeArray != null && i < nodeArray.length; i++) {
-				parent.removeChild((ISchemaNode) nodeArray[i]);
-			}
-			viewer.remove(parent, nodeArray);
-			viewer.setSelection(new StructuredSelection(parent), true);
-			CommonUITool.updateFolderNodeLabelIncludingChildrenCount(viewer, parent);
-		}
-	}
+        ISelectionProvider provider = this.getSelectionProvider();
+        ICubridNode parent = synonymNode.getParent();
+        if (provider instanceof TreeViewer) {
+            TreeViewer viewer = (TreeViewer) provider;
+            for (int i = 0; nodeArray != null && i < nodeArray.length; i++) {
+                parent.removeChild((ISchemaNode) nodeArray[i]);
+            }
+            viewer.remove(parent, nodeArray);
+            viewer.setSelection(new StructuredSelection(parent), true);
+            CommonUITool.updateFolderNodeLabelIncludingChildrenCount(viewer, parent);
+        }
+    }
 }

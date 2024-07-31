@@ -28,125 +28,123 @@
 package com.cubrid.cubridmanager.ui.replication.editor.model;
 
 /**
- *
  * The distributor model object,it store distributor database information
  *
  * @author pangqiren
  * @version 1.0 - 2009-8-26 created by pangqiren
  */
-public class DistributorNode extends
-		LeafNode {
-	private String dbName;
-	private String dbPath;
-	private String dbaPassword;
-	private String replAgentPort;
-	private String copyLogPath;
-	private String trailLogPath;
-	private String errorLogPath;
-	private String delayTimeLogSize;
-	private boolean isRestartWhenError;
+public class DistributorNode extends LeafNode {
+    private String dbName;
+    private String dbPath;
+    private String dbaPassword;
+    private String replAgentPort;
+    private String copyLogPath;
+    private String trailLogPath;
+    private String errorLogPath;
+    private String delayTimeLogSize;
+    private boolean isRestartWhenError;
 
-	public String getDbName() {
-		return dbName;
-	}
+    public String getDbName() {
+        return dbName;
+    }
 
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-	}
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
 
-	public String getDbPath() {
-		return dbPath;
-	}
+    public String getDbPath() {
+        return dbPath;
+    }
 
-	public void setDbPath(String dbPath) {
-		this.dbPath = dbPath;
-	}
+    public void setDbPath(String dbPath) {
+        this.dbPath = dbPath;
+    }
 
-	public String getDbaPassword() {
-		return dbaPassword;
-	}
+    public String getDbaPassword() {
+        return dbaPassword;
+    }
 
-	public void setDbaPassword(String dbaPassword) {
-		this.dbaPassword = dbaPassword;
-	}
+    public void setDbaPassword(String dbaPassword) {
+        this.dbaPassword = dbaPassword;
+    }
 
-	public String getReplAgentPort() {
-		return replAgentPort;
-	}
+    public String getReplAgentPort() {
+        return replAgentPort;
+    }
 
-	public void setReplAgentPort(String replAgentPort) {
-		this.replAgentPort = replAgentPort;
-	}
+    public void setReplAgentPort(String replAgentPort) {
+        this.replAgentPort = replAgentPort;
+    }
 
-	public String getCopyLogPath() {
-		return copyLogPath;
-	}
+    public String getCopyLogPath() {
+        return copyLogPath;
+    }
 
-	public void setCopyLogPath(String copyLogPath) {
-		this.copyLogPath = copyLogPath;
-	}
+    public void setCopyLogPath(String copyLogPath) {
+        this.copyLogPath = copyLogPath;
+    }
 
-	public String getTrailLogPath() {
-		return trailLogPath;
-	}
+    public String getTrailLogPath() {
+        return trailLogPath;
+    }
 
-	public void setTrailLogPath(String trailLogPath) {
-		this.trailLogPath = trailLogPath;
-	}
+    public void setTrailLogPath(String trailLogPath) {
+        this.trailLogPath = trailLogPath;
+    }
 
-	public String getErrorLogPath() {
-		return errorLogPath;
-	}
+    public String getErrorLogPath() {
+        return errorLogPath;
+    }
 
-	public void setErrorLogPath(String errorLogPath) {
-		this.errorLogPath = errorLogPath;
-	}
+    public void setErrorLogPath(String errorLogPath) {
+        this.errorLogPath = errorLogPath;
+    }
 
-	public String getDelayTimeLogSize() {
-		return delayTimeLogSize;
-	}
+    public String getDelayTimeLogSize() {
+        return delayTimeLogSize;
+    }
 
-	public void setDelayTimeLogSize(String delayTimeLogSize) {
-		this.delayTimeLogSize = delayTimeLogSize;
-	}
+    public void setDelayTimeLogSize(String delayTimeLogSize) {
+        this.delayTimeLogSize = delayTimeLogSize;
+    }
 
-	public boolean isRestartWhenError() {
-		return isRestartWhenError;
-	}
+    public boolean isRestartWhenError() {
+        return isRestartWhenError;
+    }
 
-	public void setRestartWhenError(boolean isRestartWhenError) {
-		this.isRestartWhenError = isRestartWhenError;
-	}
+    public void setRestartWhenError(boolean isRestartWhenError) {
+        this.isRestartWhenError = isRestartWhenError;
+    }
 
-	/**
-	 * @see com.cubrid.cubridmanager.ui.replication.editor.model.Node#isValid()
-	 * @return boolean
-	 */
-	public boolean isValid() { // FIXME more simple
-		if (dbName == null || dbName.trim().length() == 0) {
-			return false;
-		}
-		if (dbPath == null || dbPath.trim().length() == 0) {
-			return false;
-		}
-		if (dbaPassword == null || dbaPassword.trim().length() == 0) {
-			return false;
-		}
-		if (replAgentPort == null || replAgentPort.trim().length() == 0) {
-			return false;
-		}
-		if (copyLogPath == null || copyLogPath.trim().length() == 0) {
-			return false;
-		}
-		if (trailLogPath == null || trailLogPath.trim().length() == 0) {
-			return false;
-		}
-		if (errorLogPath == null || errorLogPath.trim().length() == 0) {
-			return false;
-		}
-		if (delayTimeLogSize == null || delayTimeLogSize.trim().length() == 0) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * @see com.cubrid.cubridmanager.ui.replication.editor.model.Node#isValid()
+     * @return boolean
+     */
+    public boolean isValid() { // FIXME more simple
+        if (dbName == null || dbName.trim().length() == 0) {
+            return false;
+        }
+        if (dbPath == null || dbPath.trim().length() == 0) {
+            return false;
+        }
+        if (dbaPassword == null || dbaPassword.trim().length() == 0) {
+            return false;
+        }
+        if (replAgentPort == null || replAgentPort.trim().length() == 0) {
+            return false;
+        }
+        if (copyLogPath == null || copyLogPath.trim().length() == 0) {
+            return false;
+        }
+        if (trailLogPath == null || trailLogPath.trim().length() == 0) {
+            return false;
+        }
+        if (errorLogPath == null || errorLogPath.trim().length() == 0) {
+            return false;
+        }
+        if (delayTimeLogSize == null || delayTimeLogSize.trim().length() == 0) {
+            return false;
+        }
+        return true;
+    }
 }

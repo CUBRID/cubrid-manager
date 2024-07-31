@@ -30,49 +30,49 @@ package com.cubrid.common.ui.compare.data.model;
 import java.util.List;
 
 public class CompareViewData {
-	private boolean source;
-	private int index;
-	private List<String> data;
-	private CompareViewData referer;
-	private List<String> pkColumnValues;
+    private boolean source;
+    private int index;
+    private List<String> data;
+    private CompareViewData referer;
+    private List<String> pkColumnValues;
 
-	public List<String> getPkColumnValues() {
-		return pkColumnValues;
-	}
+    public List<String> getPkColumnValues() {
+        return pkColumnValues;
+    }
 
-	public void setPkColumnValues(List<String> pkColumnValues) {
-		this.pkColumnValues = pkColumnValues;
-	}
+    public void setPkColumnValues(List<String> pkColumnValues) {
+        this.pkColumnValues = pkColumnValues;
+    }
 
-	public CompareViewData getReferer() {
-		return referer;
-	}
+    public CompareViewData getReferer() {
+        return referer;
+    }
 
-	public void setReferer(CompareViewData referer) {
-		this.referer = referer;
-	}
+    public void setReferer(CompareViewData referer) {
+        this.referer = referer;
+    }
 
-	public int getIndex() {
-		return index;
-	}
+    public int getIndex() {
+        return index;
+    }
 
-	public void setIndex(int index) {
-		this.index = index;
-	}
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
-	public boolean isSource() {
-		return source;
-	}
+    public boolean isSource() {
+        return source;
+    }
 
-	public void setSource(boolean source) {
-		this.source = source;
-	}
+    public void setSource(boolean source) {
+        this.source = source;
+    }
 
-	public List<String> getData() {
-		return data;
-	}
+    public List<String> getData() {
+        return data;
+    }
 
-	public void setData(List<String> data) {
-		this.data = data;
-	}
+    public void setData(List<String> data) {
+        this.data = data;
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,12 +23,18 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.common.dialog;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.spi.ICubridGroupNodeManager;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.model.CubridGroupNode;
+import com.cubrid.common.ui.spi.model.ICubridNode;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.util.UUID;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -46,435 +52,417 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.spi.ICubridGroupNodeManager;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.model.CubridGroupNode;
-import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
- * 
  * Filter setting dialog
- * 
+ *
  * @author Kevin
  * @version 1.0 - 2011-03-24 created by Kevin
  */
-public class GroupEditDialog extends
-		CMTitleAreaDialog {
-	private static final Logger LOGGER = LogUtil.getLogger(GroupEditDialog.class);
+public class GroupEditDialog extends CMTitleAreaDialog {
+    private static final Logger LOGGER = LogUtil.getLogger(GroupEditDialog.class);
 
-	private List allItemList;
-	private List groupItemList;
-	private final java.util.List<CubridGroupNode> allGroup;
-	private final ICubridGroupNodeManager nodeManager;
+    private List allItemList;
+    private List groupItemList;
+    private final java.util.List<CubridGroupNode> allGroup;
+    private final ICubridGroupNodeManager nodeManager;
 
-	private CubridGroupNode group;
-	private Text txtGroupName;
-	private Button okButton;
-	private Button btnAdd;
-	private Button btnAddAll;
-	private Button btnRemove;
-	private Button btnRemoveAll;
+    private CubridGroupNode group;
+    private Text txtGroupName;
+    private Button okButton;
+    private Button btnAdd;
+    private Button btnAddAll;
+    private Button btnRemove;
+    private Button btnRemoveAll;
 
-	/**
-	 * The constructor
-	 * 
-	 * @param parentShell
-	 * @param tv
-	 */
-	public GroupEditDialog(Shell parentShell,
-			ICubridGroupNodeManager nodeManager,
-			java.util.List<CubridGroupNode> allGroup, CubridGroupNode group) {
-		super(parentShell);
-		this.nodeManager = nodeManager;
-		this.allGroup = allGroup;
-		if (group == null) {
-			this.group = null;
-		} else {
-			this.group = group;
-		}
-	}
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     * @param tv
+     */
+    public GroupEditDialog(
+            Shell parentShell,
+            ICubridGroupNodeManager nodeManager,
+            java.util.List<CubridGroupNode> allGroup,
+            CubridGroupNode group) {
+        super(parentShell);
+        this.nodeManager = nodeManager;
+        this.allGroup = allGroup;
+        if (group == null) {
+            this.group = null;
+        } else {
+            this.group = group;
+        }
+    }
 
-	/**
-	 * Create dialog area content
-	 * 
-	 * @param parent the parent composite
-	 * @return the control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		this.getShell().setMinimumSize(380, 420);
-		Composite parentComp = (Composite) super.createDialogArea(parent);
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
-		createGroupList(composite);
-		return parentComp;
-	}
+    /**
+     * Create dialog area content
+     *
+     * @param parent the parent composite
+     * @return the control
+     */
+    protected Control createDialogArea(Composite parent) {
+        this.getShell().setMinimumSize(380, 420);
+        Composite parentComp = (Composite) super.createDialogArea(parent);
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        composite.setLayout(layout);
+        createGroupList(composite);
+        return parentComp;
+    }
 
-	/**
-	 * Create manager buttons such as add,edit,remove.
-	 * 
-	 * @param parentComp parent composite.
-	 */
-	private void createManagerButtons(Composite parentComp) {
-		Composite group2 = new Composite(parentComp, SWT.NONE);
-		{
-			group2.setLayout(new GridLayout());
+    /**
+     * Create manager buttons such as add,edit,remove.
+     *
+     * @param parentComp parent composite.
+     */
+    private void createManagerButtons(Composite parentComp) {
+        Composite group2 = new Composite(parentComp, SWT.NONE);
+        {
+            group2.setLayout(new GridLayout());
 
-			btnAdd = new Button(group2, SWT.NONE);
-			btnAdd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			btnAdd.setText(">");
-			btnAdd.addSelectionListener(new SelectionAdapter() {
+            btnAdd = new Button(group2, SWT.NONE);
+            btnAdd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            btnAdd.setText(">");
+            btnAdd.addSelectionListener(
+                    new SelectionAdapter() {
 
-				public void widgetSelected(SelectionEvent event) {
-					for (String ss : allItemList.getSelection()) {
-						if (groupItemList.indexOf(ss) < 0) {
-							groupItemList.add(ss);
-						}
-					}
-					allItemList.remove(allItemList.getSelectionIndices());
-					setButtonStatus();
-				}
+                        public void widgetSelected(SelectionEvent event) {
+                            for (String ss : allItemList.getSelection()) {
+                                if (groupItemList.indexOf(ss) < 0) {
+                                    groupItemList.add(ss);
+                                }
+                            }
+                            allItemList.remove(allItemList.getSelectionIndices());
+                            setButtonStatus();
+                        }
+                    });
 
-			});
+            btnAddAll = new Button(group2, SWT.NONE);
+            btnAddAll.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            btnAddAll.setText(">>");
+            btnAddAll.addSelectionListener(
+                    new SelectionAdapter() {
 
-			btnAddAll = new Button(group2, SWT.NONE);
-			btnAddAll.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			btnAddAll.setText(">>");
-			btnAddAll.addSelectionListener(new SelectionAdapter() {
+                        public void widgetSelected(SelectionEvent event) {
+                            for (String ss : allItemList.getItems()) {
+                                if (groupItemList.indexOf(ss) < 0) {
+                                    groupItemList.add(ss);
+                                }
+                            }
+                            allItemList.removeAll();
+                            setButtonStatus();
+                        }
+                    });
 
-				public void widgetSelected(SelectionEvent event) {
-					for (String ss : allItemList.getItems()) {
-						if (groupItemList.indexOf(ss) < 0) {
-							groupItemList.add(ss);
-						}
-					}
-					allItemList.removeAll();
-					setButtonStatus();
-				}
+            btnRemove = new Button(group2, SWT.NONE);
+            btnRemove.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            btnRemove.setText("<");
+            btnRemove.addSelectionListener(
+                    new SelectionAdapter() {
 
-			});
+                        public void widgetSelected(SelectionEvent event) {
+                            for (String ss : groupItemList.getSelection()) {
+                                if (allItemList.indexOf(ss) < 0) {
+                                    allItemList.add(ss);
+                                }
+                            }
+                            groupItemList.remove(groupItemList.getSelectionIndices());
+                            setButtonStatus();
+                        }
+                    });
 
-			btnRemove = new Button(group2, SWT.NONE);
-			btnRemove.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			btnRemove.setText("<");
-			btnRemove.addSelectionListener(new SelectionAdapter() {
+            btnRemoveAll = new Button(group2, SWT.NONE);
+            btnRemoveAll.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            btnRemoveAll.setText("<<");
+            btnRemoveAll.addSelectionListener(
+                    new SelectionAdapter() {
 
-				public void widgetSelected(SelectionEvent event) {
-					for (String ss : groupItemList.getSelection()) {
-						if (allItemList.indexOf(ss) < 0) {
-							allItemList.add(ss);
-						}
-					}
-					groupItemList.remove(groupItemList.getSelectionIndices());
-					setButtonStatus();
-				}
+                        public void widgetSelected(SelectionEvent event) {
+                            for (String ss : groupItemList.getItems()) {
+                                if (allItemList.indexOf(ss) < 0) {
+                                    allItemList.add(ss);
+                                }
+                            }
+                            groupItemList.removeAll();
+                            setButtonStatus();
+                        }
+                    });
+        }
+    }
 
-			});
+    /**
+     * Override the create contents.
+     *
+     * @param parent Composite
+     * @return Control
+     */
+    protected Control createContents(Composite parent) {
+        Control createContents = super.createContents(parent);
+        // Fill group data to list.
+        fillData();
+        setButtonStatus();
+        return createContents;
+    }
 
-			btnRemoveAll = new Button(group2, SWT.NONE);
-			btnRemoveAll.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			btnRemoveAll.setText("<<");
-			btnRemoveAll.addSelectionListener(new SelectionAdapter() {
+    /**
+     * Create group list composite.
+     *
+     * @param parentComp parent composite.
+     */
+    private void createGroupList(Composite parentComp) {
+        Composite groupName = new Composite(parentComp, SWT.NONE);
+        {
+            groupName.setLayout(new GridLayout());
+            groupName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-				public void widgetSelected(SelectionEvent event) {
-					for (String ss : groupItemList.getItems()) {
-						if (allItemList.indexOf(ss) < 0) {
-							allItemList.add(ss);
-						}
-					}
-					groupItemList.removeAll();
-					setButtonStatus();
-				}
+            Label btnSort = new Label(groupName, SWT.LEFT);
+            btnSort.setText(Messages.labelGroupName);
 
-			});
-		}
-	}
+            txtGroupName = new Text(groupName, SWT.LEFT | SWT.BORDER);
+            txtGroupName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            txtGroupName.setText("");
+            txtGroupName.addModifyListener(
+                    new ModifyListener() {
 
-	/**
-	 * Override the create contents.
-	 * 
-	 * @param parent Composite
-	 * @return Control
-	 */
-	protected Control createContents(Composite parent) {
-		Control createContents = super.createContents(parent);
-		//Fill group data to list.
-		fillData();
-		setButtonStatus();
-		return createContents;
-	}
+                        public void modifyText(ModifyEvent event) {
+                            setButtonStatus();
+                        }
+                    });
+        }
 
-	/**
-	 * Create group list composite.
-	 * 
-	 * @param parentComp parent composite.
-	 */
-	private void createGroupList(Composite parentComp) {
-		Composite groupName = new Composite(parentComp, SWT.NONE);
-		{
-			groupName.setLayout(new GridLayout());
-			groupName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Composite group1 = new Composite(parentComp, SWT.NONE);
+        {
+            group1.setLayout(new GridLayout(3, false));
+            group1.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-			Label btnSort = new Label(groupName, SWT.LEFT);
-			btnSort.setText(Messages.labelGroupName);
+            allItemList = new List(group1, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+            {
+                allItemList.setLayoutData(new GridData(GridData.FILL_BOTH));
+                allItemList.addSelectionListener(
+                        new SelectionAdapter() {
+                            public void widgetSelected(SelectionEvent event) {
+                                setButtonStatus();
+                            }
+                        });
+            }
+            createManagerButtons(group1);
+            groupItemList = new List(group1, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+            {
+                groupItemList.setLayoutData(new GridData(GridData.FILL_BOTH));
+                groupItemList.addSelectionListener(
+                        new SelectionAdapter() {
+                            public void widgetSelected(SelectionEvent event) {
+                                setButtonStatus();
+                            }
+                        });
+            }
+        }
+    }
 
-			txtGroupName = new Text(groupName, SWT.LEFT | SWT.BORDER);
-			txtGroupName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			txtGroupName.setText("");
-			txtGroupName.addModifyListener(new ModifyListener() {
+    /**
+     * Get default group node
+     *
+     * @return CubridGroupNode
+     */
+    private CubridGroupNode getDefaultGroup() {
+        for (CubridGroupNode grp : allGroup) {
+            if (nodeManager.isDefaultGroup(grp)) {
+                return grp;
+            }
+        }
+        return null;
+    }
 
-				public void modifyText(ModifyEvent event) {
-					setButtonStatus();
-				}
-			});
-		}
+    /** Fill group information to dialog. */
+    private void fillData() {
+        if (this.group == null) {
+            txtGroupName.setText(Messages.defaultGroupNodeName);
+            txtGroupName.setFocus();
+            txtGroupName.selectAll();
+        } else {
+            txtGroupName.setText(group.getLabel());
+            java.util.List<ICubridNode> groups = this.group.getChildren();
+            if (groups == null) {
+                LOGGER.warn("groups = {}", groups);
+            } else {
+                for (ICubridNode node : groups) {
+                    groupItemList.add(node.getName());
+                }
+            }
+        }
 
-		Composite group1 = new Composite(parentComp, SWT.NONE);
-		{
-			group1.setLayout(new GridLayout(3, false));
-			group1.setLayoutData(new GridData(GridData.FILL_BOTH));
+        CubridGroupNode groupNode = getDefaultGroup();
+        if (groupNode == null || allItemList == null) {
+            LOGGER.warn("groupNode = {}, allItemList = {}", groupNode, allItemList);
+            return;
+        }
 
-			allItemList = new List(group1, SWT.BORDER | SWT.MULTI
-					| SWT.V_SCROLL);
-			{
-				allItemList.setLayoutData(new GridData(GridData.FILL_BOTH));
-				allItemList.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent event) {
-						setButtonStatus();
-					}
-				});
-			}
-			createManagerButtons(group1);
-			groupItemList = new List(group1, SWT.BORDER | SWT.MULTI
-					| SWT.V_SCROLL);
-			{
-				groupItemList.setLayoutData(new GridData(GridData.FILL_BOTH));
-				groupItemList.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent event) {
-						setButtonStatus();
-					}
-				});
-			}
+        java.util.List<ICubridNode> nodes = groupNode.getChildren();
+        if (nodes == null) {
+            LOGGER.warn("nodes = {}", nodes);
+        } else {
+            for (ICubridNode node : nodes) {
+                if (node == null) {
+                    LOGGER.warn("CubridNode is a null.");
+                } else {
+                    allItemList.add(node.getName());
+                }
+            }
+        }
+    }
 
-		}
+    /**
+     * Retrieves the group with input name.
+     *
+     * @param name of group which is being found.
+     * @return the group with input name.
+     */
+    private CubridGroupNode getGroupByName(String name) {
+        return nodeManager.getGroupByName(allGroup, name);
+    }
 
-	}
+    /**
+     * Validate the group name.
+     *
+     * @return valid is true;otherwise false;
+     */
+    private boolean validateName() {
+        String name = txtGroupName.getText().trim();
+        if (group == null) {
+            if (getGroupByName(name) != null) {
+                // name exists
+                this.setErrorMessage(Messages.groupNameExisted);
+                return false;
+            }
+        } else if (!group.getName().equals(name) && getGroupByName(name) != null) {
+            // name exists
+            this.setErrorMessage(Messages.groupNameExisted);
+            return false;
+        }
 
-	/**
-	 * 
-	 * Get default group node
-	 * 
-	 * @return CubridGroupNode
-	 */
-	private CubridGroupNode getDefaultGroup() {
-		for (CubridGroupNode grp : allGroup) {
-			if (nodeManager.isDefaultGroup(grp)) {
-				return grp;
-			}
-		}
-		return null;
-	}
+        boolean result = name.length() > 0 && name.length() <= 50;
+        if (result) {
+            this.setErrorMessage(null);
+        } else {
+            this.setErrorMessage(Messages.groupNameInvalid);
+        }
+        return result;
+    }
 
-	/**
-	 * Fill group information to dialog.
-	 */
-	private void fillData() {
-		if (this.group == null) {
-			txtGroupName.setText(Messages.defaultGroupNodeName);
-			txtGroupName.setFocus();
-			txtGroupName.selectAll();
-		} else {
-			txtGroupName.setText(group.getLabel());
-			java.util.List<ICubridNode> groups = this.group.getChildren();
-			if (groups == null) {
-				LOGGER.warn("groups = {}", groups);
-			} else {
-				for (ICubridNode node : groups) {
-					groupItemList.add(node.getName());
-				}
-			}
-		}
+    /** Set buttons status. */
+    private void setButtonStatus() {
+        okButton.setEnabled(validateName());
+        if (allItemList.getItemCount() == 0) {
+            btnAddAll.setEnabled(false);
+            btnAdd.setEnabled(false);
+        } else if (allItemList.getSelectionCount() == 0) {
+            btnAddAll.setEnabled(true);
+            btnAdd.setEnabled(false);
+        } else {
+            btnAddAll.setEnabled(true);
+            btnAdd.setEnabled(true);
+        }
+        if (groupItemList.getItemCount() == 0) {
+            btnRemoveAll.setEnabled(false);
+            btnRemove.setEnabled(false);
+        } else if (groupItemList.getSelectionCount() == 0) {
+            btnRemove.setEnabled(false);
+            btnRemoveAll.setEnabled(true);
+        } else {
+            btnRemove.setEnabled(true);
+            btnRemoveAll.setEnabled(true);
+        }
+    }
 
-		CubridGroupNode groupNode = getDefaultGroup();
-		if (groupNode == null || allItemList == null) {
-			LOGGER.warn("groupNode = {}, allItemList = {}", groupNode, allItemList);
-			return;
-		}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        CommonUITool.centerShell(getShell());
+        String titleMessage = "";
+        if (group == null) {
+            titleMessage = Messages.addNewGroup;
+        } else {
+            titleMessage = Messages.editGroup;
+        }
+        setTitle(titleMessage);
+        setMessage(titleMessage);
+        getShell().setText(Messages.titleGroupSettingDialog);
+    }
 
-		java.util.List<ICubridNode> nodes = groupNode.getChildren();
-		if (nodes == null) {
-			LOGGER.warn("nodes = {}", nodes);
-		} else {
-			for (ICubridNode node : nodes) {
-				if (node == null) {
-					LOGGER.warn("CubridNode is a null.");
-				} else {
-					allItemList.add(node.getName());
-				}
-			}
-		}
-	}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        okButton = createButton(parent, IDialogConstants.OK_ID, Messages.btnOK, true);
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.btnCancel, false);
+    }
 
-	/**
-	 * Retrieves the group with input name.
-	 * 
-	 * @param name of group which is being found.
-	 * @return the group with input name.
-	 */
-	private CubridGroupNode getGroupByName(String name) {
-		return nodeManager.getGroupByName(allGroup, name);
-	}
+    /**
+     * Generate a random unique group id for new group.
+     *
+     * @return new group id.
+     */
+    private String generateGroupId() {
+        return UUID.randomUUID().toString();
+    }
 
-	/**
-	 * Validate the group name.
-	 * 
-	 * @return valid is true;otherwise false;
-	 */
-	private boolean validateName() {
-		String name = txtGroupName.getText().trim();
-		if (group == null) {
-			if (getGroupByName(name) != null) {
-				//name exists
-				this.setErrorMessage(Messages.groupNameExisted);
-				return false;
-			}
-		} else if (!group.getName().equals(name)
-				&& getGroupByName(name) != null) {
-			//name exists
-			this.setErrorMessage(Messages.groupNameExisted);
-			return false;
-		}
+    /** Event when OK pressed. */
+    protected void okPressed() {
+        String groupName = txtGroupName.getText().trim();
+        if (group == null) {
+            // add group
+            group =
+                    new CubridGroupNode(
+                            generateGroupId(),
+                            groupName,
+                            ICubridGroupNodeManager.DEFAULT_GROUP_NODE.getIconPath());
+        } else {
+            CubridGroupNode gnode = nodeManager.getGroupByName(group.getName());
+            if (gnode != null) {
+                gnode.setLabel(groupName);
+            }
+        }
 
-		boolean result = name.length() > 0 && name.length() <= 50;
-		if (result) {
-			this.setErrorMessage(null);
-		} else {
-			this.setErrorMessage(Messages.groupNameInvalid);
-		}
-		return result;
-	}
+        group.setLabel(groupName);
+        // group children.
+        group.removeAllChild();
+        for (String name : groupItemList.getItems()) {
+            ICubridNode node = nodeManager.getGroupItemByItemName(name);
+            if (node == null) {
+                continue;
+            }
+            group.addChild(node);
+        }
 
-	/**
-	 * Set buttons status.
-	 * 
-	 */
-	private void setButtonStatus() {
-		okButton.setEnabled(validateName());
-		if (allItemList.getItemCount() == 0) {
-			btnAddAll.setEnabled(false);
-			btnAdd.setEnabled(false);
-		} else if (allItemList.getSelectionCount() == 0) {
-			btnAddAll.setEnabled(true);
-			btnAdd.setEnabled(false);
-		} else {
-			btnAddAll.setEnabled(true);
-			btnAdd.setEnabled(true);
-		}
-		if (groupItemList.getItemCount() == 0) {
-			btnRemoveAll.setEnabled(false);
-			btnRemove.setEnabled(false);
-		} else if (groupItemList.getSelectionCount() == 0) {
-			btnRemove.setEnabled(false);
-			btnRemoveAll.setEnabled(true);
-		} else {
-			btnRemove.setEnabled(true);
-			btnRemoveAll.setEnabled(true);
-		}
-	}
+        CubridGroupNode defaultGrp =
+                getGroupByName(ICubridGroupNodeManager.DEFAULT_GROUP_NODE.getName());
+        defaultGrp.removeAllChild();
+        for (String name : allItemList.getItems()) {
+            ICubridNode node = nodeManager.getGroupItemByItemName(name);
+            if (node == null) {
+                continue;
+            }
+            defaultGrp.addChild(node);
+        }
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		CommonUITool.centerShell(getShell());
-		String titleMessage = "";
-		if (group == null) {
-			titleMessage = Messages.addNewGroup;
-		} else {
-			titleMessage = Messages.editGroup;
-		}
-		setTitle(titleMessage);
-		setMessage(titleMessage);
-		getShell().setText(Messages.titleGroupSettingDialog);
-	}
+        super.okPressed();
+    }
 
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		okButton = createButton(parent, IDialogConstants.OK_ID, Messages.btnOK,
-				true);
-		createButton(parent, IDialogConstants.CANCEL_ID, Messages.btnCancel,
-				false);
-	}
-
-	/**
-	 * Generate a random unique group id for new group.
-	 * 
-	 * @return new group id.
-	 */
-	private String generateGroupId() {
-		return UUID.randomUUID().toString();
-	}
-
-	/**
-	 * Event when OK pressed.
-	 */
-	protected void okPressed() {
-		String groupName = txtGroupName.getText().trim();
-		if (group == null) {
-			//add group
-			group = new CubridGroupNode(generateGroupId(), groupName,
-					ICubridGroupNodeManager.DEFAULT_GROUP_NODE.getIconPath());
-		} else {
-			CubridGroupNode gnode = nodeManager.getGroupByName(group.getName());
-			if (gnode != null) {
-				gnode.setLabel(groupName);
-			}
-		}
-
-		group.setLabel(groupName);
-		//group children.
-		group.removeAllChild();
-		for (String name : groupItemList.getItems()) {
-			ICubridNode node = nodeManager.getGroupItemByItemName(name);
-			if (node == null) {
-				continue;
-			}
-			group.addChild(node);
-		}
-
-		CubridGroupNode defaultGrp = getGroupByName(ICubridGroupNodeManager.DEFAULT_GROUP_NODE.getName());
-		defaultGrp.removeAllChild();
-		for (String name : allItemList.getItems()) {
-			ICubridNode node = nodeManager.getGroupItemByItemName(name);
-			if (node == null) {
-				continue;
-			}
-			defaultGrp.addChild(node);
-		}
-
-		super.okPressed();
-	}
-
-	/**
-	 * Retrieves the edited group
-	 * 
-	 * @return the edited group.
-	 */
-	public CubridGroupNode getGroup() {
-		return group;
-	}
-
+    /**
+     * Retrieves the edited group
+     *
+     * @return the edited group.
+     */
+    public CubridGroupNode getGroup() {
+        return group;
+    }
 }

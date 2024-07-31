@@ -27,83 +27,76 @@
  */
 package com.cubrid.cubridmanager.core.common.task;
 
+import com.cubrid.common.core.util.CompatibleUtil;
+import com.cubrid.cubridmanager.core.common.model.ConfComments;
+import com.cubrid.cubridmanager.core.common.model.ServerInfo;
+import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.cubrid.common.core.util.CompatibleUtil;
-import com.cubrid.cubridmanager.core.common.model.ConfComments;
-import com.cubrid.cubridmanager.core.common.model.ServerInfo;
-import com.cubrid.cubridmanager.core.common.socket.SocketTask;
-
 /**
- *
  * This task is responsible to set cm.conf parameter
  *
  * @author pangqiren
  * @version 1.0 - 2009-6-2 created by pangqiren
  */
-public class SetCMConfParameterTask extends
-		SocketTask {
-	private static final String[] SENDED_MSG_ITEMS = new String[]{"task",
-			"token", "confname", "confdata" };
+public class SetCMConfParameterTask extends SocketTask {
+    private static final String[] SENDED_MSG_ITEMS =
+            new String[] {"task", "token", "confname", "confdata"};
 
-	/**
-	 * The constructor
-	 *
-	 * @param taskName
-	 * @param serverInfo
-	 */
-	public SetCMConfParameterTask(ServerInfo serverInfo) {
-		super("setsysparam", serverInfo, SENDED_MSG_ITEMS);
-		this.setMsgItem("confname", "cmconf");
-	}
+    /**
+     * The constructor
+     *
+     * @param taskName
+     * @param serverInfo
+     */
+    public SetCMConfParameterTask(ServerInfo serverInfo) {
+        super("setsysparam", serverInfo, SENDED_MSG_ITEMS);
+        this.setMsgItem("confname", "cmconf");
+    }
 
-	/**
-	 *
-	 * Set cm.conf parameters
-	 *
-	 * @param confParameters Map<String, String> The given configure parameters
-	 */
-	public void setConfParameters(Map<String, String> confParameters) {
-		List<String> confDatas = new ArrayList<String>();
-		confDatas.add("");
-		confDatas.add("#");
-		ConfComments.addComments(confDatas,
-				ConfComments.cubridCopyrightComments);
-		confDatas.add("");
-		confDatas.add("#");
-		String separator = " ";
-		//serverInfo.compareVersionKey("8.3.0") >= 0
-		if (CompatibleUtil.isSupportNewFormatOfCMConf(serverInfo)) {
-			separator = "=";
-		}
-		if (confParameters != null) {
-			Iterator<Map.Entry<String, String>> it = confParameters.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry<String, String> entry = it.next();
-				String key = entry.getKey();
-				String value = entry.getValue();
-				if (key != null && value != null && key.length() > 0
-						&& value.length() > 0) {
-					confDatas.add(key + separator + value);
-				}
-			}
-		}
-		String[] confDataArr = new String[confDatas.size()];
-		confDatas.toArray(confDataArr);
-		this.setMsgItem("confdata", confDataArr);
-	}
+    /**
+     * Set cm.conf parameters
+     *
+     * @param confParameters Map<String, String> The given configure parameters
+     */
+    public void setConfParameters(Map<String, String> confParameters) {
+        List<String> confDatas = new ArrayList<String>();
+        confDatas.add("");
+        confDatas.add("#");
+        ConfComments.addComments(confDatas, ConfComments.cubridCopyrightComments);
+        confDatas.add("");
+        confDatas.add("#");
+        String separator = " ";
+        // serverInfo.compareVersionKey("8.3.0") >= 0
+        if (CompatibleUtil.isSupportNewFormatOfCMConf(serverInfo)) {
+            separator = "=";
+        }
+        if (confParameters != null) {
+            Iterator<Map.Entry<String, String>> it = confParameters.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, String> entry = it.next();
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (key != null && value != null && key.length() > 0 && value.length() > 0) {
+                    confDatas.add(key + separator + value);
+                }
+            }
+        }
+        String[] confDataArr = new String[confDatas.size()];
+        confDatas.toArray(confDataArr);
+        this.setMsgItem("confdata", confDataArr);
+    }
 
-	/**
-	 * set value in ConfParameters
-	 *
-	 * @param confParamList List<String>
-	 */
-	public void setConfContents(
-			List<String> confParamList) {
-		 String [] confDataArray = confParamList.toArray(new String[confParamList.size()]);
-		 this.setMsgItem("confdata", confDataArray);
-	}
+    /**
+     * set value in ConfParameters
+     *
+     * @param confParamList List<String>
+     */
+    public void setConfContents(List<String> confParamList) {
+        String[] confDataArray = confParamList.toArray(new String[confParamList.size()]);
+        this.setMsgItem("confdata", confDataArray);
+    }
 }

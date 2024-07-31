@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.monitoring.model;
 
@@ -31,70 +31,69 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * Stauts template information
- * 
+ *
  * @author pangqiren 2009-4-3
  */
 public class StatusTemplateInfo {
 
-	private String name = null;
-	private String desc = null;
-	private String db_name = null;
-	private String sampling_term = null;
-	private List<TargetConfigInfo> targetConfigInfoList = null;
+    private String name = null;
+    private String desc = null;
+    private String db_name = null;
+    private String sampling_term = null;
+    private List<TargetConfigInfo> targetConfigInfoList = null;
 
-	public StatusTemplateInfo() {
-		targetConfigInfoList = new ArrayList<TargetConfigInfo>();
-	}
+    public StatusTemplateInfo() {
+        targetConfigInfoList = new ArrayList<TargetConfigInfo>();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDesc() {
-		return desc;
-	}
+    public String getDesc() {
+        return desc;
+    }
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
-	public String getDb_name() {
-		return db_name;
-	}
+    public String getDb_name() {
+        return db_name;
+    }
 
-	public void setDb_name(String dbName) {
-		this.db_name = dbName;
-	}
+    public void setDb_name(String dbName) {
+        this.db_name = dbName;
+    }
 
-	public String getSampling_term() {
-		return sampling_term;
-	}
+    public String getSampling_term() {
+        return sampling_term;
+    }
 
-	public void setSampling_term(String samplingTerm) {
-		this.sampling_term = samplingTerm;
-	}
+    public void setSampling_term(String samplingTerm) {
+        this.sampling_term = samplingTerm;
+    }
 
-	public List<TargetConfigInfo> getTargetConfigInfoList() {
-		return targetConfigInfoList;
-	}
+    public List<TargetConfigInfo> getTargetConfigInfoList() {
+        return targetConfigInfoList;
+    }
 
-	/**
-	 * Add targetConfigInfo to targetConfigInfoList
-	 * 
-	 * @param targetConfigInfo TargetConfigInfo
-	 */
-	public void addTarget_config(TargetConfigInfo targetConfigInfo) {
-		if (this.targetConfigInfoList == null) {
-			this.targetConfigInfoList = new ArrayList<TargetConfigInfo>();
-		}
-		if (!this.targetConfigInfoList.contains(targetConfigInfo)) {
-			this.targetConfigInfoList.add(targetConfigInfo);
-		}
-	}
+    /**
+     * Add targetConfigInfo to targetConfigInfoList
+     *
+     * @param targetConfigInfo TargetConfigInfo
+     */
+    public void addTarget_config(TargetConfigInfo targetConfigInfo) {
+        if (this.targetConfigInfoList == null) {
+            this.targetConfigInfoList = new ArrayList<TargetConfigInfo>();
+        }
+        if (!this.targetConfigInfoList.contains(targetConfigInfo)) {
+            this.targetConfigInfoList.add(targetConfigInfo);
+        }
+    }
 }

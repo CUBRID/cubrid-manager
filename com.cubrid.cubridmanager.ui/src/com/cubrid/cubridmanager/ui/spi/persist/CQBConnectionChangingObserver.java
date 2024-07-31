@@ -29,8 +29,6 @@
  */
 package com.cubrid.cubridmanager.ui.spi.persist;
 
-import org.eclipse.jface.viewers.TreeViewer;
-
 import com.cubrid.common.configuration.jdbc.IJDBCConnecInfo;
 import com.cubrid.common.configuration.jdbc.IJDBCConnectionChangedObserver;
 import com.cubrid.common.configuration.jdbc.IJDBCInfoChangedSubject;
@@ -41,153 +39,159 @@ import com.cubrid.common.ui.spi.event.CubridNodeChangedEvent;
 import com.cubrid.common.ui.spi.event.CubridNodeChangedEventType;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.cubridmanager.ui.spi.util.CQBConnectionUtils;
+import org.eclipse.jface.viewers.TreeViewer;
 
 /**
- * CQBConnectionChangingObserver will respond the changing of other sytem's
- * connection changing event.
+ * CQBConnectionChangingObserver will respond the changing of other sytem's connection changing
+ * event.
  *
  * @author Kevin Cao
  * @version 1.0 - 2014-2-12 created by Kevin Cao
  */
-public class CQBConnectionChangingObserver implements
-		IJDBCConnectionChangedObserver {
-	//private static final Logger LOGGER = LogUtil.getLogger(CQBConnectionChangingObserver.class);
+public class CQBConnectionChangingObserver implements IJDBCConnectionChangedObserver {
+    // private static final Logger LOGGER = LogUtil.getLogger(CQBConnectionChangingObserver.class);
 
-	/**
-	 * When add a new connection
-	 *
-	 * @param initiator IJDBCInfoChangedSubject who triggered the event.
-	 * @param newCon IJDBCConnecInfo
-	 */
-	public void afterAdd(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo newCon) {
-		if (CQBDBNodePersistManager.getInstance().equals(initiator)) {
-			return;
-		}
-		//If not a CUBRID connection
-		if (newCon.getDbType() != 1) {
-			return;
-		}
+    /**
+     * When add a new connection
+     *
+     * @param initiator IJDBCInfoChangedSubject who triggered the event.
+     * @param newCon IJDBCConnecInfo
+     */
+    public void afterAdd(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo newCon) {
+        if (CQBDBNodePersistManager.getInstance().equals(initiator)) {
+            return;
+        }
+        // If not a CUBRID connection
+        if (newCon.getDbType() != 1) {
+            return;
+        }
 
-		CubridDatabase database = CQBDatabaseFactory.getDatabaseJDBCConnectInfo(newCon);
-		if (database != null) {
-			return;
-		}
-		
-		database = CQBDatabaseFactory.createDatabase(newCon);
-		CQBDBNodePersistManager.getInstance().addDatabase(database, true);
+        CubridDatabase database = CQBDatabaseFactory.getDatabaseJDBCConnectInfo(newCon);
+        if (database != null) {
+            return;
+        }
 
-		refreshNavigationTree(null);
-	}
+        database = CQBDatabaseFactory.createDatabase(newCon);
+        CQBDBNodePersistManager.getInstance().addDatabase(database, true);
 
-	/**
-	 * When modify an existed connection.
-	 *
-	 * @param initiator IJDBCInfoChangedSubject who triggered the event.
-	 * @param oldCon IJDBCConnecInfo
-	 * @param newCon IJDBCConnecInfo
-	 */
-	public void afterModify(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo oldCon, IJDBCConnecInfo newCon) {
-		if (CQBDBNodePersistManager.getInstance().equals(initiator)) {
-			return;
-		}
-		//If not a CUBRID connection
-		if (oldCon.getDbType() != 1 || newCon.getDbType() != 1) {
-			return;
-		}
+        refreshNavigationTree(null);
+    }
 
-		/*Must fire database changed event first*/
-		CubridDatabase database = CQBDatabaseFactory.getDatabaseJDBCConnectInfo(oldCon);
-		if (database != null) {
-			if (isNeedLogout(oldCon, newCon)) {
-				CQBConnectionUtils.processConnectionLogout(database);
-				CubridNodeManager.getInstance().fireCubridNodeChanged(
-						new CubridNodeChangedEvent(database, CubridNodeChangedEventType.DATABASE_LOGOUT));
-			} 
-			
-			CubridDatabase newDatabase = CQBDatabaseFactory.modifyDatabaseByJDBCConnectInfo(oldCon, newCon);
-			CQBDBNodePersistManager.getInstance().saveDatabases();
+    /**
+     * When modify an existed connection.
+     *
+     * @param initiator IJDBCInfoChangedSubject who triggered the event.
+     * @param oldCon IJDBCConnecInfo
+     * @param newCon IJDBCConnecInfo
+     */
+    public void afterModify(
+            IJDBCInfoChangedSubject initiator, IJDBCConnecInfo oldCon, IJDBCConnecInfo newCon) {
+        if (CQBDBNodePersistManager.getInstance().equals(initiator)) {
+            return;
+        }
+        // If not a CUBRID connection
+        if (oldCon.getDbType() != 1 || newCon.getDbType() != 1) {
+            return;
+        }
 
-			refreshNavigationTree(newDatabase);
-		} else {
-			database = CQBDatabaseFactory.createDatabase(newCon);
-			CQBDBNodePersistManager.getInstance().addDatabase(database, true);
-			
-			refreshNavigationTree(null);
-		}
+        /*Must fire database changed event first*/
+        CubridDatabase database = CQBDatabaseFactory.getDatabaseJDBCConnectInfo(oldCon);
+        if (database != null) {
+            if (isNeedLogout(oldCon, newCon)) {
+                CQBConnectionUtils.processConnectionLogout(database);
+                CubridNodeManager.getInstance()
+                        .fireCubridNodeChanged(
+                                new CubridNodeChangedEvent(
+                                        database, CubridNodeChangedEventType.DATABASE_LOGOUT));
+            }
 
-	}
+            CubridDatabase newDatabase =
+                    CQBDatabaseFactory.modifyDatabaseByJDBCConnectInfo(oldCon, newCon);
+            CQBDBNodePersistManager.getInstance().saveDatabases();
 
-	/**
-	 * Judge current event is need logout
-	 *
-	 * @param oldCon
-	 * @param newCon
-	 * @return
-	 */
-	private boolean isNeedLogout(IJDBCConnecInfo oldCon, IJDBCConnecInfo newCon) { // FIXME extract
-		if (oldCon == null || newCon == null) {
-			return false;
-		}
+            refreshNavigationTree(newDatabase);
+        } else {
+            database = CQBDatabaseFactory.createDatabase(newCon);
+            CQBDBNodePersistManager.getInstance().addDatabase(database, true);
 
-		if (StringUtil.isEqualNotIgnoreNull(oldCon.getConName(), newCon.getConName())
-				&& StringUtil.isEqualNotIgnoreNull(oldCon.getHost(), newCon.getHost())
-				&& StringUtil.isEqualNotIgnoreNull(String.valueOf(oldCon.getPort()), String.valueOf(newCon.getPort()))
-				&& StringUtil.isEqualNotIgnoreNull(oldCon.getDbName(), newCon.getDbName())
-				&& StringUtil.isEqualNotIgnoreNull(oldCon.getConUser(), newCon.getConUser())
-				&& StringUtil.isEqualNotIgnoreNull(oldCon.getConPassword(), newCon.getConPassword())
-				&& StringUtil.isEqualNotIgnoreNull(oldCon.getDriverFileName(), newCon.getDriverFileName())
-				&& StringUtil.isEqualNotIgnoreNull(oldCon.getCharset(), newCon.getCharset())) {
-			return false;
-		}
+            refreshNavigationTree(null);
+        }
+    }
 
-		return true;
-	}
+    /**
+     * Judge current event is need logout
+     *
+     * @param oldCon
+     * @param newCon
+     * @return
+     */
+    private boolean isNeedLogout(IJDBCConnecInfo oldCon, IJDBCConnecInfo newCon) { // FIXME extract
+        if (oldCon == null || newCon == null) {
+            return false;
+        }
 
-	/**
-	 * Refresh the navigation tree
-	 */
-	private void refreshNavigationTree(CubridDatabase database) {
-		CubridNavigatorView navigatorView = CubridNavigatorView.getNavigatorView(CubridNavigatorView.ID_CQB);
-		TreeViewer treeViewer = navigatorView == null ? null : navigatorView.getViewer();
-		if (treeViewer == null) {
-			return;
-		}
+        if (StringUtil.isEqualNotIgnoreNull(oldCon.getConName(), newCon.getConName())
+                && StringUtil.isEqualNotIgnoreNull(oldCon.getHost(), newCon.getHost())
+                && StringUtil.isEqualNotIgnoreNull(
+                        String.valueOf(oldCon.getPort()), String.valueOf(newCon.getPort()))
+                && StringUtil.isEqualNotIgnoreNull(oldCon.getDbName(), newCon.getDbName())
+                && StringUtil.isEqualNotIgnoreNull(oldCon.getConUser(), newCon.getConUser())
+                && StringUtil.isEqualNotIgnoreNull(oldCon.getConPassword(), newCon.getConPassword())
+                && StringUtil.isEqualNotIgnoreNull(
+                        oldCon.getDriverFileName(), newCon.getDriverFileName())
+                && StringUtil.isEqualNotIgnoreNull(oldCon.getCharset(), newCon.getCharset())) {
+            return false;
+        }
 
-		if (database != null) {
-			treeViewer.refresh(database, true);
-			treeViewer.expandToLevel(database, 1);
-		} else {
-			CQBDBNodePersistManager.getInstance().reloadDatabases();
-			CQBGroupNodePersistManager.getInstance().reloadGroups();
+        return true;
+    }
 
-			if (treeViewer != null) {
-				treeViewer.refresh(true);
-			}
-		}
-	}
+    /** Refresh the navigation tree */
+    private void refreshNavigationTree(CubridDatabase database) {
+        CubridNavigatorView navigatorView =
+                CubridNavigatorView.getNavigatorView(CubridNavigatorView.ID_CQB);
+        TreeViewer treeViewer = navigatorView == null ? null : navigatorView.getViewer();
+        if (treeViewer == null) {
+            return;
+        }
 
-	/**
-	 * Delete a connection.
-	 *
-	 * @param initiator IJDBCInfoChangedSubject who triggered the event.
-	 * @param delCon IJDBCConnecInfo
-	 */
-	public void afterDelete(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo delCon) {
-		if (CQBDBNodePersistManager.getInstance().equals(initiator)) {
-			return;
-		}
-		//If not a CUBRID connection
-		if (delCon.getDbType() != 1) {
-			return;
-		}
+        if (database != null) {
+            treeViewer.refresh(database, true);
+            treeViewer.expandToLevel(database, 1);
+        } else {
+            CQBDBNodePersistManager.getInstance().reloadDatabases();
+            CQBGroupNodePersistManager.getInstance().reloadGroups();
 
-		CubridDatabase database = CQBDatabaseFactory.getDatabaseJDBCConnectInfo(delCon);
-		if (database != null) {
-			/*Remove in CQB*/
-			CQBConnectionUtils.processConnectionDeleted(database);
-			CubridNodeManager.getInstance().fireCubridNodeChanged(
-					new CubridNodeChangedEvent(database, CubridNodeChangedEventType.DATABASE_LOGOUT));
-			refreshNavigationTree(null);
-		}
-	}
+            if (treeViewer != null) {
+                treeViewer.refresh(true);
+            }
+        }
+    }
+
+    /**
+     * Delete a connection.
+     *
+     * @param initiator IJDBCInfoChangedSubject who triggered the event.
+     * @param delCon IJDBCConnecInfo
+     */
+    public void afterDelete(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo delCon) {
+        if (CQBDBNodePersistManager.getInstance().equals(initiator)) {
+            return;
+        }
+        // If not a CUBRID connection
+        if (delCon.getDbType() != 1) {
+            return;
+        }
+
+        CubridDatabase database = CQBDatabaseFactory.getDatabaseJDBCConnectInfo(delCon);
+        if (database != null) {
+            /*Remove in CQB*/
+            CQBConnectionUtils.processConnectionDeleted(database);
+            CubridNodeManager.getInstance()
+                    .fireCubridNodeChanged(
+                            new CubridNodeChangedEvent(
+                                    database, CubridNodeChangedEventType.DATABASE_LOGOUT));
+            refreshNavigationTree(null);
+        }
+    }
 }

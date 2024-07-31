@@ -36,51 +36,47 @@ import org.osgi.framework.BundleContext;
  * @author Kevin Cao
  * @version 1.0 - 2011-1-24 created by Kevin Cao
  */
-public class CUBRIDTextEditorPlugin extends
-		AbstractUIPlugin {
+public class CUBRIDTextEditorPlugin extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "com.cubrid.tool.editor";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "com.cubrid.tool.editor";
 
-	// The shared instance
-	private static CUBRIDTextEditorPlugin plugin;
+    // The shared instance
+    private static CUBRIDTextEditorPlugin plugin;
 
-	/**
-	 * The constructor
-	 */
-	public CUBRIDTextEditorPlugin() {
-		//do nothing.
-	}
+    /** The constructor */
+    public CUBRIDTextEditorPlugin() {
+        // do nothing.
+    }
 
-	/**
-	 * When plugin start.
-	 *
-	 * @param context BundleContext
-	 * @throws Exception when errors.
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
+    /**
+     * When plugin start.
+     *
+     * @param context BundleContext
+     * @throws Exception when errors.
+     */
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        plugin = this;
+    }
 
-	/**
-	 * When plug-in stop.
-	 *
-	 * @param context BundleContext
-	 * @throws Exception when errors.
-	 */
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+    /**
+     * When plug-in stop.
+     *
+     * @param context BundleContext
+     * @throws Exception when errors.
+     */
+    public void stop(BundleContext context) throws Exception {
+        plugin = null;
+        super.stop(context);
+    }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static CUBRIDTextEditorPlugin getDefault() {
-		return plugin;
-	}
-
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static CUBRIDTextEditorPlugin getDefault() {
+        return plugin;
+    }
 }

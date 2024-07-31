@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * The RowData Description
  *
  * @author Kevin.Wang
@@ -41,84 +40,81 @@ import java.util.List;
  */
 public class ImportRowData {
 
-	private int status;
-	private int rowIndex = 0;
-	private String sql;
-	private int workSize = 0; //sql file need
+    private int status;
+    private int rowIndex = 0;
+    private String sql;
+    private int workSize = 0; // sql file need
 
-	public ImportRowData(int rowIndex) {
-		this.rowIndex = rowIndex;
-	}
+    public ImportRowData(int rowIndex) {
+        this.rowIndex = rowIndex;
+    }
 
-	private List<ImportColumnData> columnList = new ArrayList<ImportColumnData>();
+    private List<ImportColumnData> columnList = new ArrayList<ImportColumnData>();
 
-	public List<ImportColumnData> getColumnList() {
-		return columnList;
-	}
+    public List<ImportColumnData> getColumnList() {
+        return columnList;
+    }
 
-	public void setColumnList(List<ImportColumnData> columnList) {
-		this.columnList = columnList;
-	}
+    public void setColumnList(List<ImportColumnData> columnList) {
+        this.columnList = columnList;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public String getSql() {
-		return sql;
-	}
+    public String getSql() {
+        return sql;
+    }
 
-	public void setSql(String sql) {
-		this.sql = sql;
-	}
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
 
-	public int getWorkSize() {
-		return workSize;
-	}
+    public int getWorkSize() {
+        return workSize;
+    }
 
-	public void setWorkSize(int workSize) {
-		this.workSize = workSize;
-	}
+    public void setWorkSize(int workSize) {
+        this.workSize = workSize;
+    }
 
+    public int getRowIndex() {
+        return rowIndex;
+    }
 
-	public int getRowIndex() {
-		return rowIndex;
-	}
+    public void setRowIndex(int rowIndex) {
+        this.rowIndex = rowIndex;
+    }
 
-	public void setRowIndex(int rowIndex) {
-		this.rowIndex = rowIndex;
-	}
+    public String toString() { // FIXME using ToStringBuilder
+        StringBuilder sb = new StringBuilder();
 
-	public String toString() { // FIXME using ToStringBuilder
-		StringBuilder sb = new StringBuilder();
+        sb.append("RowNum:" + rowIndex);
+        if (columnList.size() > 0) {
+            sb.append("[");
+            for (int i = 0; i < columnList.size(); i++) {
+                sb.append(columnList.get(i).toString());
+                if (i + 1 < columnList.size()) {
+                    sb.append(", ");
+                }
+            }
+            sb.append("]");
+        }
+        for (int i = 0; i < columnList.size(); i++) {
+            sb.append(columnList.get(i).toString());
+            if (i + 1 < columnList.size()) {
+                sb.append(", ");
+            }
+        }
 
-		sb.append("RowNum:" + rowIndex);
-		if(columnList.size() > 0){
-			sb.append("[");
-			for(int i = 0 ; i < columnList.size(); i++) {
-				sb.append(columnList.get(i).toString());
-				if(i + 1 < columnList.size()) {
-					sb.append(", ");
-				}
-			}
-			sb.append("]");
-		}
-		for(int i = 0 ; i < columnList.size(); i++) {
-			sb.append(columnList.get(i).toString());
-			if(i + 1 < columnList.size()) {
-				sb.append(", ");
-			}
-		}
-
-		if(sql != null) {
-			sb.append("[").append(sql).append("]");
-		}
-		return sb.toString();
-	}
-
-
+        if (sql != null) {
+            sb.append("[").append(sql).append("]");
+        }
+        return sb.toString();
+    }
 }

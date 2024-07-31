@@ -27,13 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.spi.model.loader.monitor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.ui.spi.CubridNodeManager;
@@ -61,233 +54,242 @@ import com.cubrid.cubridmanager.ui.monitoring.editor.internal.StatusMonInstanceD
 import com.cubrid.cubridmanager.ui.spi.Messages;
 import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
 import com.cubrid.cubridmanager.ui.spi.persist.MonitorStatisticPersistManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- *
  * This class is responsible for loading all children of server monitor folder
  *
  * @author lizhiqiang
  * @version 1.0 - 2010-6-10 created by pangqiren
  */
-public class CubridMonitorFolderLoader extends
-		CubridNodeLoader {
+public class CubridMonitorFolderLoader extends CubridNodeLoader {
 
-	private static final String DB_STATUS_ID = "dbStatus";
-	private static final String BROKER_STATUS_ID = "brokerStatus";
-	private static final String DB_SYSTEM_ID = "dbSystem";
-	private static final String HOST_SYSTEM_ID = "hostSystem";
+    private static final String DB_STATUS_ID = "dbStatus";
+    private static final String BROKER_STATUS_ID = "brokerStatus";
+    private static final String DB_SYSTEM_ID = "dbSystem";
+    private static final String HOST_SYSTEM_ID = "hostSystem";
 
-	/**
-	 *
-	 * Load children object for parent
-	 *
-	 * @param parent the parent node
-	 * @param monitor the IProgressMonitor object
-	 */
-	public void load(ICubridNode parent, final IProgressMonitor monitor) {
-		synchronized (this) {
-			if (isLoaded()) {
-				return;
-			}
-			ServerInfo serverInfo = parent.getServer().getServerInfo();
-			ServerUserInfo userInfo = serverInfo.getLoginedUserInfo();
-			if (userInfo == null
-					|| StatusMonitorAuthType.AUTH_NONE == userInfo.getStatusMonitorAuth()) {
-				parent.removeAllChild();
-				CubridNodeManager.getInstance().fireCubridNodeChanged(
-						new CubridNodeChangedEvent(
-								(ICubridNode) parent,
-								CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
-				return;
-			}
+    /**
+     * Load children object for parent
+     *
+     * @param parent the parent node
+     * @param monitor the IProgressMonitor object
+     */
+    public void load(ICubridNode parent, final IProgressMonitor monitor) {
+        synchronized (this) {
+            if (isLoaded()) {
+                return;
+            }
+            ServerInfo serverInfo = parent.getServer().getServerInfo();
+            ServerUserInfo userInfo = serverInfo.getLoginedUserInfo();
+            if (userInfo == null
+                    || StatusMonitorAuthType.AUTH_NONE == userInfo.getStatusMonitorAuth()) {
+                parent.removeAllChild();
+                CubridNodeManager.getInstance()
+                        .fireCubridNodeChanged(
+                                new CubridNodeChangedEvent(
+                                        (ICubridNode) parent,
+                                        CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
+                return;
+            }
 
-			//add status node
-			if (CompatibleUtil.isSupportBrokerOrDBStatusMonitor(serverInfo)) {
-				String brokerStatusId = parent.getId() + NODE_SEPARATOR
-						+ BROKER_STATUS_ID;
-				ICubridNode brokerStatusNode = new DefaultCubridNode(
-						brokerStatusId, Messages.msgBrokerStatusMonitorName,
-						"icons/navigator/status_item.png");
-				brokerStatusNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
-				brokerStatusNode.setViewId(BrokerStatusMonitorViewPart.ID);
-				brokerStatusNode.setContainer(false);
-				parent.addChild(brokerStatusNode);
+            // add status node
+            if (CompatibleUtil.isSupportBrokerOrDBStatusMonitor(serverInfo)) {
+                String brokerStatusId = parent.getId() + NODE_SEPARATOR + BROKER_STATUS_ID;
+                ICubridNode brokerStatusNode =
+                        new DefaultCubridNode(
+                                brokerStatusId,
+                                Messages.msgBrokerStatusMonitorName,
+                                "icons/navigator/status_item.png");
+                brokerStatusNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
+                brokerStatusNode.setViewId(BrokerStatusMonitorViewPart.ID);
+                brokerStatusNode.setContainer(false);
+                parent.addChild(brokerStatusNode);
 
-				String dbStatusId = parent.getId() + NODE_SEPARATOR
-						+ DB_STATUS_ID;
-				ICubridNode dbStautsNode = new DefaultCubridNode(dbStatusId,
-						Messages.msgDbStatusMonitorName,
-						"icons/navigator/status_item.png");
-				dbStautsNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
-				dbStautsNode.setViewId(DbStatusDumpMonitorViewPart.ID);
-				dbStautsNode.setContainer(false);
-				parent.addChild(dbStautsNode);
+                String dbStatusId = parent.getId() + NODE_SEPARATOR + DB_STATUS_ID;
+                ICubridNode dbStautsNode =
+                        new DefaultCubridNode(
+                                dbStatusId,
+                                Messages.msgDbStatusMonitorName,
+                                "icons/navigator/status_item.png");
+                dbStautsNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
+                dbStautsNode.setViewId(DbStatusDumpMonitorViewPart.ID);
+                dbStautsNode.setContainer(false);
+                parent.addChild(dbStautsNode);
 
-				createTempStatusNode(parent);
-			} else {
-				if (!loadStatusTempInfoTask(parent, monitor, serverInfo)) {
-					return;
-				}
-			}
+                createTempStatusNode(parent);
+            } else {
+                if (!loadStatusTempInfoTask(parent, monitor, serverInfo)) {
+                    return;
+                }
+            }
 
-			//add system node
-			if (CompatibleUtil.isSupportSystemMonitor(serverInfo)) {
-				String hostSystemId = parent.getId() + NODE_SEPARATOR
-						+ HOST_SYSTEM_ID;
-				ICubridNode hostSystemNode = new DefaultCubridNode(
-						hostSystemId, Messages.msgHostSystemMonitorName,
-						"icons/navigator/status_item.png");
-				hostSystemNode.setType(CubridNodeType.SYSTEM_MONITOR_TEMPLATE);
-				hostSystemNode.setViewId(HostSystemMonitorViewPart.ID);
-				hostSystemNode.setContainer(false);
-				parent.addChild(hostSystemNode);
+            // add system node
+            if (CompatibleUtil.isSupportSystemMonitor(serverInfo)) {
+                String hostSystemId = parent.getId() + NODE_SEPARATOR + HOST_SYSTEM_ID;
+                ICubridNode hostSystemNode =
+                        new DefaultCubridNode(
+                                hostSystemId,
+                                Messages.msgHostSystemMonitorName,
+                                "icons/navigator/status_item.png");
+                hostSystemNode.setType(CubridNodeType.SYSTEM_MONITOR_TEMPLATE);
+                hostSystemNode.setViewId(HostSystemMonitorViewPart.ID);
+                hostSystemNode.setContainer(false);
+                parent.addChild(hostSystemNode);
 
-				if (CompatibleUtil.isSupportDBSystemMonitor(serverInfo)) {
-					String dbSystemId = parent.getId() + NODE_SEPARATOR
-							+ DB_SYSTEM_ID;
-					ICubridNode dbSystemNode = new DefaultCubridNode(
-							dbSystemId, Messages.msgDbSystemMonitorName,
-							"icons/navigator/status_item.png");
-					dbSystemNode.setType(CubridNodeType.SYSTEM_MONITOR_TEMPLATE);
-					dbSystemNode.setViewId(DbSystemMonitorViewPart.ID);
-					dbSystemNode.setContainer(false);
-					parent.addChild(dbSystemNode);
-				}
-			}
+                if (CompatibleUtil.isSupportDBSystemMonitor(serverInfo)) {
+                    String dbSystemId = parent.getId() + NODE_SEPARATOR + DB_SYSTEM_ID;
+                    ICubridNode dbSystemNode =
+                            new DefaultCubridNode(
+                                    dbSystemId,
+                                    Messages.msgDbSystemMonitorName,
+                                    "icons/navigator/status_item.png");
+                    dbSystemNode.setType(CubridNodeType.SYSTEM_MONITOR_TEMPLATE);
+                    dbSystemNode.setViewId(DbSystemMonitorViewPart.ID);
+                    dbSystemNode.setContainer(false);
+                    parent.addChild(dbSystemNode);
+                }
+            }
 
-			//add monitor statistic node
-			if (CompatibleUtil.isSupportMonitorStatistic(serverInfo)) {
-				List<MonitorStatistic> childList = MonitorStatisticPersistManager.getInstance().getMonitorStatisticListByHostId(
-						serverInfo.getServerName());
-				for (MonitorStatistic node : childList) {
-					if (node == null) {
-						continue;
-					}
-					parent.addChild(node);
-				}
-			}
+            // add monitor statistic node
+            if (CompatibleUtil.isSupportMonitorStatistic(serverInfo)) {
+                List<MonitorStatistic> childList =
+                        MonitorStatisticPersistManager.getInstance()
+                                .getMonitorStatisticListByHostId(serverInfo.getServerName());
+                for (MonitorStatistic node : childList) {
+                    if (node == null) {
+                        continue;
+                    }
+                    parent.addChild(node);
+                }
+            }
 
-			Collections.sort(parent.getChildren());
-			setLoaded(true);
-			CubridNodeManager.getInstance().fireCubridNodeChanged(
-					new CubridNodeChangedEvent((ICubridNode) parent,
-							CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
-		}
-	}
+            Collections.sort(parent.getChildren());
+            setLoaded(true);
+            CubridNodeManager.getInstance()
+                    .fireCubridNodeChanged(
+                            new CubridNodeChangedEvent(
+                                    (ICubridNode) parent,
+                                    CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
+        }
+    }
 
-	/**
-	 * load sub node by the task of getStatusTemplateInfos
-	 *
-	 * @param parent the parent node
-	 * @param monitor the instance of IProgressMonitor
-	 * @param serverInfo the instance of serverInfo
-	 * @return boolean false if error occur, true if succeed
-	 */
-	private boolean loadStatusTempInfoTask(ICubridNode parent,
-			final IProgressMonitor monitor, ServerInfo serverInfo) {
-		StatusTemplateInfos statusTemplateInfos = new StatusTemplateInfos();
-		final CommonQueryTask<StatusTemplateInfos> task = new CommonQueryTask<StatusTemplateInfos>(
-				serverInfo, CommonSendMsg.getCommonSimpleSendMsg(),
-				statusTemplateInfos);
-		monitorCancel(monitor, new ITask[]{task });
-		task.execute();
-		final String errorMsg = task.getErrorMsg();
-		if (!monitor.isCanceled() && errorMsg != null
-				&& errorMsg.trim().length() > 0) {
-			//parent.removeAllChild();
-			removeAllStatusTemp(parent);
-			openErrorBox(errorMsg);
-			setLoaded(true);
-			return false;
-		}
-		if (monitor.isCanceled()) {
-			setLoaded(true);
-			return false;
-		}
-		//parent.removeAllChild();
-		removeAllStatusTemp(parent);
-		statusTemplateInfos = task.getResultModel();
-		if (statusTemplateInfos != null) {
-			List<StatusTemplateInfo> list = statusTemplateInfos.getStatusTemplateInfoList().getStatusTemplateInfoList();
-			if (list != null) {
-				for (StatusTemplateInfo statusTemplateInfo : list) {
-					String id = parent.getId() + NODE_SEPARATOR
-							+ statusTemplateInfo.getName();
-					ICubridNode logInfoNode = new DefaultCubridNode(id,
-							statusTemplateInfo.getName(),
-							"icons/navigator/status_item.png");
-					logInfoNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
-					logInfoNode.setModelObj(statusTemplateInfo);
-					logInfoNode.setViewId(StatusMonitorViewPart.ID);
-					logInfoNode.setContainer(false);
-					parent.addChild(logInfoNode);
-				}
-			}
-		}
-		return true;
-	}
+    /**
+     * load sub node by the task of getStatusTemplateInfos
+     *
+     * @param parent the parent node
+     * @param monitor the instance of IProgressMonitor
+     * @param serverInfo the instance of serverInfo
+     * @return boolean false if error occur, true if succeed
+     */
+    private boolean loadStatusTempInfoTask(
+            ICubridNode parent, final IProgressMonitor monitor, ServerInfo serverInfo) {
+        StatusTemplateInfos statusTemplateInfos = new StatusTemplateInfos();
+        final CommonQueryTask<StatusTemplateInfos> task =
+                new CommonQueryTask<StatusTemplateInfos>(
+                        serverInfo, CommonSendMsg.getCommonSimpleSendMsg(), statusTemplateInfos);
+        monitorCancel(monitor, new ITask[] {task});
+        task.execute();
+        final String errorMsg = task.getErrorMsg();
+        if (!monitor.isCanceled() && errorMsg != null && errorMsg.trim().length() > 0) {
+            // parent.removeAllChild();
+            removeAllStatusTemp(parent);
+            openErrorBox(errorMsg);
+            setLoaded(true);
+            return false;
+        }
+        if (monitor.isCanceled()) {
+            setLoaded(true);
+            return false;
+        }
+        // parent.removeAllChild();
+        removeAllStatusTemp(parent);
+        statusTemplateInfos = task.getResultModel();
+        if (statusTemplateInfos != null) {
+            List<StatusTemplateInfo> list =
+                    statusTemplateInfos.getStatusTemplateInfoList().getStatusTemplateInfoList();
+            if (list != null) {
+                for (StatusTemplateInfo statusTemplateInfo : list) {
+                    String id = parent.getId() + NODE_SEPARATOR + statusTemplateInfo.getName();
+                    ICubridNode logInfoNode =
+                            new DefaultCubridNode(
+                                    id,
+                                    statusTemplateInfo.getName(),
+                                    "icons/navigator/status_item.png");
+                    logInfoNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
+                    logInfoNode.setModelObj(statusTemplateInfo);
+                    logInfoNode.setViewId(StatusMonitorViewPart.ID);
+                    logInfoNode.setContainer(false);
+                    parent.addChild(logInfoNode);
+                }
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Create temp status node
-	 *
-	 * @param parent the parent node
-	 */
-	private void createTempStatusNode(ICubridNode parent) {
-		CubridStatusMonitorInstance instance = CubridStatusMonitorInstance.getInstance();
-		ServerInfo serverInfo = parent.getServer().getServerInfo();
-		String[] keys = QueryOptions.getAllStatusMonitorKey(serverInfo);
-		for (String key : keys) {
-			StatusMonInstanceData data = instance.loadSetting(key);
-			instance.addData(key, data);
-		}
-		Map<String, StatusMonInstanceData> map = instance.getDataMap();
-		for (Map.Entry<String, StatusMonInstanceData> entry : map.entrySet()) {
-			String key = entry.getKey();
-			String prefix = QueryOptions.getPrefix(serverInfo);
-			if (!key.startsWith(prefix)) {
-				continue;
-			}
-			String label = key.substring(key.lastIndexOf(".") + 1);
-			StatusMonInstanceData monInstaceData = entry.getValue();
-			String statusId = parent.getId() + NODE_SEPARATOR + label;
-			ICubridNode stautsNode = new DefaultCubridNode(statusId, label,
-					"icons/navigator/status_item.png");
-			stautsNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
-			stautsNode.setModelObj(monInstaceData);
-			String viewId = "";
-			switch (monInstaceData.getMonitorType()) {
-			case BROKER:
-				viewId = BrokerStatusMonitorViewPart.ID;
-				break;
-			case DATABASE:
-				viewId = DbStatusDumpMonitorViewPart.ID;
-				break;
-			default:
+    /**
+     * Create temp status node
+     *
+     * @param parent the parent node
+     */
+    private void createTempStatusNode(ICubridNode parent) {
+        CubridStatusMonitorInstance instance = CubridStatusMonitorInstance.getInstance();
+        ServerInfo serverInfo = parent.getServer().getServerInfo();
+        String[] keys = QueryOptions.getAllStatusMonitorKey(serverInfo);
+        for (String key : keys) {
+            StatusMonInstanceData data = instance.loadSetting(key);
+            instance.addData(key, data);
+        }
+        Map<String, StatusMonInstanceData> map = instance.getDataMap();
+        for (Map.Entry<String, StatusMonInstanceData> entry : map.entrySet()) {
+            String key = entry.getKey();
+            String prefix = QueryOptions.getPrefix(serverInfo);
+            if (!key.startsWith(prefix)) {
+                continue;
+            }
+            String label = key.substring(key.lastIndexOf(".") + 1);
+            StatusMonInstanceData monInstaceData = entry.getValue();
+            String statusId = parent.getId() + NODE_SEPARATOR + label;
+            ICubridNode stautsNode =
+                    new DefaultCubridNode(statusId, label, "icons/navigator/status_item.png");
+            stautsNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
+            stautsNode.setModelObj(monInstaceData);
+            String viewId = "";
+            switch (monInstaceData.getMonitorType()) {
+                case BROKER:
+                    viewId = BrokerStatusMonitorViewPart.ID;
+                    break;
+                case DATABASE:
+                    viewId = DbStatusDumpMonitorViewPart.ID;
+                    break;
+                default:
+            }
+            if ("".equals(viewId)) {
+                return;
+            }
+            stautsNode.setViewId(viewId);
+            stautsNode.setContainer(false);
+            parent.addChild(stautsNode);
+        }
+    }
 
-			}
-			if ("".equals(viewId)) {
-				return;
-			}
-			stautsNode.setViewId(viewId);
-			stautsNode.setContainer(false);
-			parent.addChild(stautsNode);
-		}
-
-	}
-
-	private void removeAllStatusTemp(ICubridNode parent){
-		List<ICubridNode> childList = parent.getChildren();
-		if(childList == null){
-			return;
-		}
-		List<ICubridNode> removableChildList = new ArrayList<ICubridNode>();
-		for (ICubridNode child : childList) {
-			if (CubridNodeType.STATUS_MONITOR_TEMPLATE.equals(child.getType())) {
-				removableChildList.add(child);
-			}
-		}
-		for (ICubridNode child : removableChildList) {
-			parent.removeChild(child);
-		}
-	}
+    private void removeAllStatusTemp(ICubridNode parent) {
+        List<ICubridNode> childList = parent.getChildren();
+        if (childList == null) {
+            return;
+        }
+        List<ICubridNode> removableChildList = new ArrayList<ICubridNode>();
+        for (ICubridNode child : childList) {
+            if (CubridNodeType.STATUS_MONITOR_TEMPLATE.equals(child.getType())) {
+                removableChildList.add(child);
+            }
+        }
+        for (ICubridNode child : removableChildList) {
+            parent.removeChild(child);
+        }
+    }
 }

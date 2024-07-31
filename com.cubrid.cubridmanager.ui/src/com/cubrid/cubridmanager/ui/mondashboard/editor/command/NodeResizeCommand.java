@@ -27,10 +27,9 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.command;
 
+import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HANode;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
-
-import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HANode;
 
 /**
  * Node resize command.
@@ -38,58 +37,51 @@ import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HANode;
  * @author cyl
  * @version 1.0 - 2010-6-4 created by cyl
  */
-public class NodeResizeCommand extends
-		Command {
-	private HANode node;
+public class NodeResizeCommand extends Command {
+    private HANode node;
 
-	private final Rectangle oldRect = new Rectangle();
+    private final Rectangle oldRect = new Rectangle();
 
-	private final Rectangle newRect = new Rectangle();
+    private final Rectangle newRect = new Rectangle();
 
-	public void setNode(HANode node) {
-		this.node = node;
-	}
+    public void setNode(HANode node) {
+        this.node = node;
+    }
 
-	/**
-	 * set figure's new rect
-	 *
-	 * @param rect new rect
-	 */
-	public void setNewRect(Rectangle rect) {
-		newRect.setBounds(rect);
-	}
+    /**
+     * set figure's new rect
+     *
+     * @param rect new rect
+     */
+    public void setNewRect(Rectangle rect) {
+        newRect.setBounds(rect);
+    }
 
-	/**
-	 * command execute.set new location and new size.
-	 */
-	public void execute() {
-		oldRect.setLocation(this.node.getLocation());
-		oldRect.setSize(node.getSize());
-		node.setLocation(newRect.getLocation());
-	}
+    /** command execute.set new location and new size. */
+    public void execute() {
+        oldRect.setLocation(this.node.getLocation());
+        oldRect.setSize(node.getSize());
+        node.setLocation(newRect.getLocation());
+    }
 
-	/**
-	 * get command label
-	 *
-	 * @return command's label
-	 */
-	public String getLabel() {
-		return "Resize Node";
-	}
+    /**
+     * get command label
+     *
+     * @return command's label
+     */
+    public String getLabel() {
+        return "Resize Node";
+    }
 
-	/**
-	 * redo.
-	 */
-	public void redo() {
-		node.setLocation(newRect.getLocation());
-		node.setSize(newRect.getSize());
-	}
+    /** redo. */
+    public void redo() {
+        node.setLocation(newRect.getLocation());
+        node.setSize(newRect.getSize());
+    }
 
-	/**
-	 * undo.
-	 */
-	public void undo() {
-		node.setLocation(oldRect.getLocation());
-		node.setSize(oldRect.getSize());
-	}
+    /** undo. */
+    public void undo() {
+        node.setLocation(oldRect.getLocation());
+        node.setSize(oldRect.getSize());
+    }
 }

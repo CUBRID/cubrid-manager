@@ -27,40 +27,36 @@
  */
 package com.cubrid.cubridmanager.ui.host.action;
 
+import com.cubrid.common.ui.spi.action.SelectionAction;
+import com.cubrid.cubridmanager.ui.host.dialog.ImportExportConnectionDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.ui.spi.action.SelectionAction;
-import com.cubrid.cubridmanager.ui.host.dialog.ImportExportConnectionDialog;
+public class CubridServerExportAction extends SelectionAction {
 
-public class CubridServerExportAction extends
-		SelectionAction {
+    public static final String ID = CubridServerExportAction.class.getName();
 
-	public static final String ID = CubridServerExportAction.class.getName();
+    protected CubridServerExportAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+    }
 
-	protected CubridServerExportAction(Shell shell,
-			ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-	}
+    public CubridServerExportAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	public CubridServerExportAction(Shell shell, String text,
-			ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    public boolean isSupported(Object obj) {
+        return true;
+    }
 
-	public boolean isSupported(Object obj) {
-		return true;
-	}
-
-	public void run() {
-		ImportExportConnectionDialog dialog = new ImportExportConnectionDialog(getShell(), true);
-		dialog.open();
-	}
-
+    public void run() {
+        ImportExportConnectionDialog dialog = new ImportExportConnectionDialog(getShell(), true);
+        dialog.open();
+    }
 }

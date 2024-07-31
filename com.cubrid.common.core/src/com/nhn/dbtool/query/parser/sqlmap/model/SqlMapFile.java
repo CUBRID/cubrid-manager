@@ -30,7 +30,6 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -39,142 +38,142 @@ import org.apache.commons.lang.StringUtils;
  * @author Bumsik, Jang
  */
 public class SqlMapFile implements Serializable {
-	private static final long serialVersionUID = 6203438370527960105L;
+    private static final long serialVersionUID = 6203438370527960105L;
 
-	private String fileName;
-	private String fileContent;
-	private String fileEncoding;
-	private int revisionNo;
-	private String namespace;
-	private String errorMessage;
-	private String parsedXmlFileName;
+    private String fileName;
+    private String fileContent;
+    private String fileEncoding;
+    private int revisionNo;
+    private String namespace;
+    private String errorMessage;
+    private String parsedXmlFileName;
 
-	// Mapper가 iBatis인지 MyBatis인지 확인을 위해 사용
-	public static final int FILE_TYPE_IBATIS = 0;
-	public static final int FILE_TYPE_MYBATIS = 1;
-	private int fileType = FILE_TYPE_IBATIS;
+    // Mapper가 iBatis인지 MyBatis인지 확인을 위해 사용
+    public static final int FILE_TYPE_IBATIS = 0;
+    public static final int FILE_TYPE_MYBATIS = 1;
+    private int fileType = FILE_TYPE_IBATIS;
 
-	// 쿼리 목록
-	private List<SqlMapQuery> sqlMapQueryList = new ArrayList<SqlMapQuery>();
+    // 쿼리 목록
+    private List<SqlMapQuery> sqlMapQueryList = new ArrayList<SqlMapQuery>();
 
-	public boolean isSuccess() {
-		return !StringUtils.isNotEmpty(errorMessage);
-	}
+    public boolean isSuccess() {
+        return !StringUtils.isNotEmpty(errorMessage);
+    }
 
-	/**
-	 * 수행될 query를 리턴한다.
-	 *
-	 * @param queryId	   Query Id
-	 * @param parameterList 쿼리 수행시 전달될 파라미터 목록. ex) 'param:value'
-	 * @return 파라미터가 적용된 쿼리
-	 */
-	public String createQuery(String queryId, List<String> parameterList) {
-		SqlMapQuery query = getQuery(queryId);
-		if (query != null) {
-			return query.createQuery(parameterList);
-		}
+    /**
+     * 수행될 query를 리턴한다.
+     *
+     * @param queryId Query Id
+     * @param parameterList 쿼리 수행시 전달될 파라미터 목록. ex) 'param:value'
+     * @return 파라미터가 적용된 쿼리
+     */
+    public String createQuery(String queryId, List<String> parameterList) {
+        SqlMapQuery query = getQuery(queryId);
+        if (query != null) {
+            return query.createQuery(parameterList);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * 쿼리ID에 해당하는 include 만 처리된 쿼리를 반환한다.
-	 *
-	 * @param queryId 쿼리ID
-	 * @return include 만 처리된 쿼리
-	 */
-	public String createQuery(String queryId) {
-		SqlMapQuery query = getQuery(queryId);
-		if (query != null) {
-			return query.getIncludedQuery();
-		}
+    /**
+     * 쿼리ID에 해당하는 include 만 처리된 쿼리를 반환한다.
+     *
+     * @param queryId 쿼리ID
+     * @return include 만 처리된 쿼리
+     */
+    public String createQuery(String queryId) {
+        SqlMapQuery query = getQuery(queryId);
+        if (query != null) {
+            return query.getIncludedQuery();
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public SqlMapQuery getQuery(String queryId) {
-		for (SqlMapQuery query : sqlMapQueryList) {
-			if (queryId.equals(query.getId())) {
-				return query;
-			}
-		}
+    public SqlMapQuery getQuery(String queryId) {
+        for (SqlMapQuery query : sqlMapQueryList) {
+            if (queryId.equals(query.getId())) {
+                return query;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public String getFileName() {
-		return fileName;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	public String getFileContent() {
-		return fileContent;
-	}
+    public String getFileContent() {
+        return fileContent;
+    }
 
-	public void setFileContent(String fileContent) {
-		this.fileContent = fileContent;
-	}
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
+    }
 
-	public String getFileEncoding() {
-		if (StringUtils.isEmpty(fileEncoding)) {
-			return "UTF-8";
-		}
+    public String getFileEncoding() {
+        if (StringUtils.isEmpty(fileEncoding)) {
+            return "UTF-8";
+        }
 
-		return fileEncoding;
-	}
+        return fileEncoding;
+    }
 
-	public void setFileEncoding(String fileEncoding) {
-		this.fileEncoding = fileEncoding;
-	}
+    public void setFileEncoding(String fileEncoding) {
+        this.fileEncoding = fileEncoding;
+    }
 
-	public int getRevisionNo() {
-		return revisionNo;
-	}
+    public int getRevisionNo() {
+        return revisionNo;
+    }
 
-	public void setRevisionNo(int revisionNo) {
-		this.revisionNo = revisionNo;
-	}
+    public void setRevisionNo(int revisionNo) {
+        this.revisionNo = revisionNo;
+    }
 
-	public String getNamespace() {
-		return namespace;
-	}
+    public String getNamespace() {
+        return namespace;
+    }
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
-	public String getParsedXmlFileName() {
-		return parsedXmlFileName;
-	}
+    public String getParsedXmlFileName() {
+        return parsedXmlFileName;
+    }
 
-	public void setParsedXmlFileName(String parsedXmlFileName) {
-		this.parsedXmlFileName = parsedXmlFileName;
-	}
+    public void setParsedXmlFileName(String parsedXmlFileName) {
+        this.parsedXmlFileName = parsedXmlFileName;
+    }
 
-	public List<SqlMapQuery> getSqlMapQueryList() {
-		return sqlMapQueryList;
-	}
+    public List<SqlMapQuery> getSqlMapQueryList() {
+        return sqlMapQueryList;
+    }
 
-	public void setSqlMapQueryList(List<SqlMapQuery> sqlMapQueryList) {
-		this.sqlMapQueryList = sqlMapQueryList;
-	}
+    public void setSqlMapQueryList(List<SqlMapQuery> sqlMapQueryList) {
+        this.sqlMapQueryList = sqlMapQueryList;
+    }
 
-	public int getFileType() {
-		return fileType;
-	}
+    public int getFileType() {
+        return fileType;
+    }
 
-	public void setFileType(int fileType) {
-		this.fileType = fileType;
-	}
+    public void setFileType(int fileType) {
+        this.fileType = fileType;
+    }
 }

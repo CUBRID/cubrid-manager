@@ -27,8 +27,11 @@
  */
 package com.cubrid.common.ui.common.action;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.spi.action.SelectionAction;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.common.ui.spi.util.UrlConnUtil;
 import java.net.URL;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -36,87 +39,86 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.spi.action.SelectionAction;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.common.ui.spi.util.UrlConnUtil;
-
 /**
- *
  * Report bug action
  *
  * @author pangqiren
  * @version 1.0 - 2011-7-25 created by pangqiren
  */
-public class ReportBugAction extends
-		SelectionAction {
+public class ReportBugAction extends SelectionAction {
 
-	private final Logger LOGGER = LogUtil.getLogger(getClass());
-	public static final String ID = ReportBugAction.class.getName();
-	public static final String ID_BIG = ReportBugAction.class.getName() + "Big";
-	private String currentVersion = null;
+    private final Logger LOGGER = LogUtil.getLogger(getClass());
+    public static final String ID = ReportBugAction.class.getName();
+    public static final String ID_BIG = ReportBugAction.class.getName() + "Big";
+    private String currentVersion = null;
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	protected ReportBugAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon, boolean isBig) {
-		super(shell, provider, text, icon);
-		if (isBig) {
-			setId(ID_BIG);
-		} else {
-			setId(ID);
-		}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    protected ReportBugAction(
+            Shell shell,
+            ISelectionProvider provider,
+            String text,
+            ImageDescriptor icon,
+            boolean isBig) {
+        super(shell, provider, text, icon);
+        if (isBig) {
+            setId(ID_BIG);
+        } else {
+            setId(ID);
+        }
 
-		setToolTipText(text);
-		setEnabled(true);
-	}
+        setToolTipText(text);
+        setEnabled(true);
+    }
 
+    public ReportBugAction(Shell shell, String text, ImageDescriptor icon, boolean isBig) {
+        this(shell, null, text, icon, isBig);
+    }
 
-	public ReportBugAction(Shell shell, String text, ImageDescriptor icon, boolean isBig) {
-		this(shell, null, text, icon, isBig);
-	}
+    public void setCurrentVersion(String currentVersion) {
+        this.currentVersion = currentVersion;
+    }
 
-	public void setCurrentVersion(String currentVersion) {
-		this.currentVersion = currentVersion;
-	}
+    /** Open bug report page */
+    public void run() {
 
-	/**
-	 * Open bug report page
-	 */
-	public void run() {
+        String url =
+                Platform.getNL().equals("ko_KR")
+                        ? UrlConnUtil.REPORT_BUG_URL_KO
+                        : UrlConnUtil.REPORT_BUG_URL_EN;
+        url = CommonUITool.urlEncodeForSpaces(url);
+        try {
+            PlatformUI.getWorkbench()
+                    .getBrowserSupport()
+                    .getExternalBrowser()
+                    .openURL(new URL(url));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
 
-		String url = Platform.getNL().equals("ko_KR") ? UrlConnUtil.REPORT_BUG_URL_KO
-				: UrlConnUtil.REPORT_BUG_URL_EN;
-		url = CommonUITool.urlEncodeForSpaces(url);
-		try {
-			PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(url));
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
-	}
+    /**
+     * Return whether to allow multi selection
+     *
+     * @return boolean
+     */
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	/**
-	 * Return whether to allow multi selection
-	 *
-	 * @return boolean
-	 */
-	public boolean allowMultiSelections() {
-		return true;
-	}
-
-	/**
-	 * Return whether support this object
-	 *
-	 * @param obj Object
-	 * @return boolean
-	 */
-	public boolean isSupported(Object obj) {
-		return true;
-	}
+    /**
+     * Return whether support this object
+     *
+     * @param obj Object
+     * @return boolean
+     */
+    public boolean isSupported(Object obj) {
+        return true;
+    }
 }

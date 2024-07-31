@@ -27,52 +27,49 @@
  */
 package com.cubrid.common.ui.cubrid.user.editor;
 
+import com.cubrid.common.ui.spi.model.CubridDatabase;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-
 /**
- * 
  * Users Dashboard Input
- * 
+ *
  * @author Kevin.Wang
  * @version 1.0 - 2013-7-5 created by Kevin.Wang
  */
-public class UsersDashboardInput implements
-		IEditorInput {
-	private final CubridDatabase database;
+public class UsersDashboardInput implements IEditorInput {
+    private final CubridDatabase database;
 
-	public UsersDashboardInput(CubridDatabase database) {
-		this.database = database;
-	}
+    public UsersDashboardInput(CubridDatabase database) {
+        this.database = database;
+    }
 
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(CubridDatabase.class)) {
-			return database;
-		}
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(CubridDatabase.class)) {
+            return database;
+        }
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
-	public boolean exists() {
-		return false;
-	}
+    public boolean exists() {
+        return false;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	public String getName() {
-		return "";
-	}
+    public String getName() {
+        return "";
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public String getToolTipText() {
-		return this.getName();
-	}
+    public String getToolTipText() {
+        return this.getName();
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,135 +23,132 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.broker.model;
 
+import com.cubrid.cubridmanager.core.common.model.IModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cubrid.cubridmanager.core.common.model.IModel;
-
 /**
  * A task model for "getbrokerstatus"
- * 
+ *
  * @author lizhiqiang
  * @version 1.0 - 2009-5-19 created by lizhiqiang
  */
-public class BrokerStatusInfos implements
-		IModel {
+public class BrokerStatusInfos implements IModel {
 
-	private String bname = null;
-	private List<ApplyServerInfo> asinfoLst;
-	private List<JobInfo> jobinfoLst;
-	private final List<BrokerStatusInfos> subBrokerStatusInfos;
+    private String bname = null;
+    private List<ApplyServerInfo> asinfoLst;
+    private List<JobInfo> jobinfoLst;
+    private final List<BrokerStatusInfos> subBrokerStatusInfos;
 
-	public BrokerStatusInfos() {
-		subBrokerStatusInfos = new ArrayList<BrokerStatusInfos>();
-		asinfoLst = new ArrayList<ApplyServerInfo>();
-	}
+    public BrokerStatusInfos() {
+        subBrokerStatusInfos = new ArrayList<BrokerStatusInfos>();
+        asinfoLst = new ArrayList<ApplyServerInfo>();
+    }
 
-	public String getTaskName() {
-		return "getbrokerstatus";
-	}
+    public String getTaskName() {
+        return "getbrokerstatus";
+    }
 
-	public List<ApplyServerInfo> getAsinfo() {
-		return asinfoLst;
-	}
+    public List<ApplyServerInfo> getAsinfo() {
+        return asinfoLst;
+    }
 
-	/**
-	 * add asinfo
-	 * 
-	 * @param asinfo ApplyServerInfo
-	 */
-	public void addAsinfo(ApplyServerInfo asinfo) {
-		if (asinfoLst == null) {
-			asinfoLst = new ArrayList<ApplyServerInfo>();
-		}
-		if (!asinfoLst.contains(asinfo)) {
-			asinfoLst.add(asinfo);
-		}
-	}
+    /**
+     * add asinfo
+     *
+     * @param asinfo ApplyServerInfo
+     */
+    public void addAsinfo(ApplyServerInfo asinfo) {
+        if (asinfoLst == null) {
+            asinfoLst = new ArrayList<ApplyServerInfo>();
+        }
+        if (!asinfoLst.contains(asinfo)) {
+            asinfoLst.add(asinfo);
+        }
+    }
 
-	/**
-	 * Add the subBroker which is the instance of BrokerDiagData
-	 * 
-	 * @param brokerStatusInfos the instance of BrokerStatusInfos
-	 */
-	public void addBroker(BrokerStatusInfos brokerStatusInfos) {
-		subBrokerStatusInfos.add(brokerStatusInfos);
-	}
+    /**
+     * Add the subBroker which is the instance of BrokerDiagData
+     *
+     * @param brokerStatusInfos the instance of BrokerStatusInfos
+     */
+    public void addBroker(BrokerStatusInfos brokerStatusInfos) {
+        subBrokerStatusInfos.add(brokerStatusInfos);
+    }
 
-	/**
-	 * Get job info
-	 * 
-	 * @return List<JobInfo>
-	 */
-	public List<JobInfo> getJobinfo() {
-		return jobinfoLst;
-	}
+    /**
+     * Get job info
+     *
+     * @return List<JobInfo>
+     */
+    public List<JobInfo> getJobinfo() {
+        return jobinfoLst;
+    }
 
-	/**
-	 * add jobinfo
-	 * 
-	 * @param jobinfo JobInfo
-	 */
-	public void addJobinfo(JobInfo jobinfo) {
-		if (jobinfoLst == null) {
-			jobinfoLst = new ArrayList<JobInfo>();
-		}
-		if (!jobinfoLst.contains(jobinfo)) {
-			jobinfoLst.add(jobinfo);
-		}
-	}
+    /**
+     * add jobinfo
+     *
+     * @param jobinfo JobInfo
+     */
+    public void addJobinfo(JobInfo jobinfo) {
+        if (jobinfoLst == null) {
+            jobinfoLst = new ArrayList<JobInfo>();
+        }
+        if (!jobinfoLst.contains(jobinfo)) {
+            jobinfoLst.add(jobinfo);
+        }
+    }
 
-	/**
-	 * get the bname
-	 * 
-	 * @return String
-	 */
-	public String getBname() {
-		return bname;
-	}
+    /**
+     * get the bname
+     *
+     * @return String
+     */
+    public String getBname() {
+        return bname;
+    }
 
-	/**
-	 * Set the bname
-	 * 
-	 * @param bname the broker name
-	 */
-	public void setBname(String bname) {
-		this.bname = bname;
-	}
+    /**
+     * Set the bname
+     *
+     * @param bname the broker name
+     */
+    public void setBname(String bname) {
+        this.bname = bname;
+    }
 
-	/**
-	 * Get the list which include all the sub instance of BrokerDiagData
-	 * 
-	 * @return List<BrokerDiagData>
-	 */
-	public List<BrokerStatusInfos> getBrokerList() {
-		return subBrokerStatusInfos;
-	}
+    /**
+     * Get the list which include all the sub instance of BrokerDiagData
+     *
+     * @return List<BrokerDiagData>
+     */
+    public List<BrokerStatusInfos> getBrokerList() {
+        return subBrokerStatusInfos;
+    }
 
-	/**
-	 * Get the sub instance of BrokerDiagData by given broker name.
-	 * 
-	 * @param bname the broker name
-	 * @return the instance of BrokerDiagData
-	 */
-	public BrokerStatusInfos getSubBrokerByName(String bname) {
-		BrokerStatusInfos brokerStatusInfos = new BrokerStatusInfos();
-		if (bname == null) {
-			return brokerStatusInfos;
-		}
-		for (BrokerStatusInfos bdd : subBrokerStatusInfos) {
-			if (bname.equals(bdd.getBname())) {
-				return bdd;
-			}
-		}
-		if (bname.equals(this.bname)) {
-			return this;
-		}
-		return brokerStatusInfos;
-	}
-
+    /**
+     * Get the sub instance of BrokerDiagData by given broker name.
+     *
+     * @param bname the broker name
+     * @return the instance of BrokerDiagData
+     */
+    public BrokerStatusInfos getSubBrokerByName(String bname) {
+        BrokerStatusInfos brokerStatusInfos = new BrokerStatusInfos();
+        if (bname == null) {
+            return brokerStatusInfos;
+        }
+        for (BrokerStatusInfos bdd : subBrokerStatusInfos) {
+            if (bname.equals(bdd.getBname())) {
+                return bdd;
+            }
+        }
+        if (bname.equals(this.bname)) {
+            return this;
+        }
+        return brokerStatusInfos;
+    }
 }

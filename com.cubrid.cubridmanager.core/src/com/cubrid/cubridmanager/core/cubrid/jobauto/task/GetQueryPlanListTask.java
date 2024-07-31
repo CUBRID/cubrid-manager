@@ -27,66 +27,61 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.jobauto.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.QueryPlanInfo;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
  * This task is resposible to get all query plan list
  *
  * @author pangqiren 2009-4-1
  */
-public class GetQueryPlanListTask extends
-		SocketTask {
-	private static final String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dbname" };
+public class GetQueryPlanListTask extends SocketTask {
+    private static final String[] SEND_MSG_ITEMS = new String[] {"task", "token", "dbname"};
 
-	/**
-	 * @param taskName
-	 * @param serverInfo
-	 */
-	public GetQueryPlanListTask(ServerInfo serverInfo) {
-		super("getautoexecquery", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * @param taskName
+     * @param serverInfo
+     */
+    public GetQueryPlanListTask(ServerInfo serverInfo) {
+        super("getautoexecquery", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * Set the database name
-	 *
-	 * @param dbName String The given database name
-	 */
-	public void setDbName(String dbName) {
-		this.setMsgItem("dbname", dbName);
-	}
+    /**
+     * Set the database name
+     *
+     * @param dbName String The given database name
+     */
+    public void setDbName(String dbName) {
+        this.setMsgItem("dbname", dbName);
+    }
 
-	/**
-	 * Get a list that includes the instances of QueryPlanInfo
-	 *
-	 * @return List<QueryPlanInfo> a list that includes the instances of
-	 *         QueryPlanInfo
-	 */
-	public List<QueryPlanInfo> getQueryPlanInfoList() {
-		List<QueryPlanInfo> queryPlanInfoList = new ArrayList<QueryPlanInfo>();
-		if (null != getErrorMsg()) {
-			return null;
-		}
-		TreeNode result = getResponse();
-		String dbname = result.getValue("dbname");
-		if (result.childrenSize() > 0) {
-			TreeNode planListNode = result.getChildren().get(0);
-			int size = planListNode.childrenSize();
-			for (int i = 0; i < size; i++) {
-				TreeNode node = planListNode.getChildren().get(i);
-				QueryPlanInfo planInfo = new QueryPlanInfo();
-				SocketTask.setFieldValue(node, planInfo);
-				planInfo.setDbname(dbname);
-				queryPlanInfoList.add(planInfo);
-			}
-		}
-		return queryPlanInfoList;
-	}
+    /**
+     * Get a list that includes the instances of QueryPlanInfo
+     *
+     * @return List<QueryPlanInfo> a list that includes the instances of QueryPlanInfo
+     */
+    public List<QueryPlanInfo> getQueryPlanInfoList() {
+        List<QueryPlanInfo> queryPlanInfoList = new ArrayList<QueryPlanInfo>();
+        if (null != getErrorMsg()) {
+            return null;
+        }
+        TreeNode result = getResponse();
+        String dbname = result.getValue("dbname");
+        if (result.childrenSize() > 0) {
+            TreeNode planListNode = result.getChildren().get(0);
+            int size = planListNode.childrenSize();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = planListNode.getChildren().get(i);
+                QueryPlanInfo planInfo = new QueryPlanInfo();
+                SocketTask.setFieldValue(node, planInfo);
+                planInfo.setDbname(dbname);
+                queryPlanInfoList.add(planInfo);
+            }
+        }
+        return queryPlanInfoList;
+    }
 }

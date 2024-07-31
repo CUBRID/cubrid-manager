@@ -29,6 +29,14 @@
  */
 package com.cubrid.common.ui.query.tuner.action;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.Messages;
+import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.tuner.dialog.QueryTunerDialog;
+import com.cubrid.common.ui.spi.action.SelectionAction;
+import com.cubrid.common.ui.spi.model.ISchemaNode;
+import com.cubrid.common.ui.spi.util.ActionSupportUtil;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -38,99 +46,95 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
-import com.cubrid.common.ui.query.tuner.dialog.QueryTunerDialog;
-import com.cubrid.common.ui.spi.action.SelectionAction;
-import com.cubrid.common.ui.spi.model.ISchemaNode;
-import com.cubrid.common.ui.spi.util.ActionSupportUtil;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * QueryTunerAction Description
  *
  * @author Kevin.Wang
  * @version 1.0 - 2013-4-9 created by Kevin.Wang
  */
-public class QueryTunerAction extends SelectionAction{
-	public static final String ID = QueryTunerAction.class.getName();
+public class QueryTunerAction extends SelectionAction {
+    public static final String ID = QueryTunerAction.class.getName();
 
-	/**
-	 * The constructor
-	 * @param shell
-	 * @param text
-	 * @param enabledIcon
-	 * @param disabledIcon
-	 */
-	public QueryTunerAction(Shell shell, String text,
-			ImageDescriptor enabledIcon, ImageDescriptor disabledIcon) {
-		this(shell, null, text, enabledIcon, disabledIcon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param enabledIcon
+     * @param disabledIcon
+     */
+    public QueryTunerAction(
+            Shell shell, String text, ImageDescriptor enabledIcon, ImageDescriptor disabledIcon) {
+        this(shell, null, text, enabledIcon, disabledIcon);
+    }
 
-	/**
-	 * The constructor
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param enabledIcon
-	 * @param disabledIcon
-	 */
-	public QueryTunerAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor enabledIcon,
-			ImageDescriptor disabledIcon) {
-		super(shell, provider, text, enabledIcon);
-		this.setId(ID);
-		this.setToolTipText(text);
-		this.setDisabledImageDescriptor(disabledIcon);
-	}
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param enabledIcon
+     * @param disabledIcon
+     */
+    public QueryTunerAction(
+            Shell shell,
+            ISelectionProvider provider,
+            String text,
+            ImageDescriptor enabledIcon,
+            ImageDescriptor disabledIcon) {
+        super(shell, provider, text, enabledIcon);
+        this.setId(ID);
+        this.setToolTipText(text);
+        this.setDisabledImageDescriptor(disabledIcon);
+    }
 
-	public boolean isSupported(Object obj) {
-		return ActionSupportUtil.isSupportSingleSelection(obj, new String[]{});
-	}
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		if (!isSupported(obj)) {
-			setEnabled(false);
-			return;
-		}
-		ISelectionProvider provider = getSelectionProvider();
-		if (!(provider instanceof TreeViewer)) {
-			return;
-		}
-		ISchemaNode node = (ISchemaNode) obj[0];
+    public boolean isSupported(Object obj) {
+        return ActionSupportUtil.isSupportSingleSelection(obj, new String[] {});
+    }
 
-		String query = getQuery();
-		if (StringUtil.isNotEmpty(query)) {
-			new QueryTunerDialog(getShell(), node.getDatabase(), query).open();
-		} else {
-			CommonUITool.openInformationBox(Messages.errSelectQueryForTuning);
-			new QueryTunerDialog(getShell(), node.getDatabase()).open();
-		}
-	}
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        if (!isSupported(obj)) {
+            setEnabled(false);
+            return;
+        }
+        ISelectionProvider provider = getSelectionProvider();
+        if (!(provider instanceof TreeViewer)) {
+            return;
+        }
+        ISchemaNode node = (ISchemaNode) obj[0];
 
-	public String getQuery() { // FIXME extract to utility
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (null == window) {
-			return null;
-		}
+        String query = getQuery();
+        if (StringUtil.isNotEmpty(query)) {
+            new QueryTunerDialog(getShell(), node.getDatabase(), query).open();
+        } else {
+            CommonUITool.openInformationBox(Messages.errSelectQueryForTuning);
+            new QueryTunerDialog(getShell(), node.getDatabase()).open();
+        }
+    }
 
-		IEditorPart editor = window.getActivePage().getActiveEditor();
-		if (editor == null) {
-			return null;
-		}
+    public String getQuery() { // FIXME extract to utility
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (null == window) {
+            return null;
+        }
 
-		if (!(editor instanceof QueryEditorPart)) {
-			return null;
-		}
+        IEditorPart editor = window.getActivePage().getActiveEditor();
+        if (editor == null) {
+            return null;
+        }
 
-		QueryEditorPart queryEditorPart = (QueryEditorPart) editor;
-		StyledText stext = queryEditorPart.getSqlEditorWidget();
-		return stext.getSelectionText();
-	}
+        if (!(editor instanceof QueryEditorPart)) {
+            return null;
+        }
 
+        QueryEditorPart queryEditorPart = (QueryEditorPart) editor;
+        StyledText stext = queryEditorPart.getSqlEditorWidget();
+        return stext.getSelectionText();
+    }
 }

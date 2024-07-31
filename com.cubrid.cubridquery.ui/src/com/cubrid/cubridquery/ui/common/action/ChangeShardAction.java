@@ -27,12 +27,6 @@
  */
 package com.cubrid.cubridquery.ui.common.action;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.common.dialog.ShardIdSelectionDialog;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.ICubridNode;
@@ -40,129 +34,129 @@ import com.cubrid.common.ui.spi.model.ISchemaNode;
 import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Shell;
 
 public class ChangeShardAction extends SelectionAction {
-	public static final String ID = ChangeShardAction.class.getName();
+    public static final String ID = ChangeShardAction.class.getName();
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public ChangeShardAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public ChangeShardAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public ChangeShardAction(Shell shell, ISelectionProvider provider, String text,
-			ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public ChangeShardAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * Return whether this action support to select multi object,if not
-	 * support,this action will be disabled
-	 * 
-	 * @return <code>true</code> if allow multi selection;<code>false</code>
-	 *         otherwise
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * Return whether this action support to select multi object,if not support,this action will be
+     * disabled
+     *
+     * @return <code>true</code> if allow multi selection;<code>false</code> otherwise
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 * Return whether this action support this object,if not support,this action
-	 * will be disabled
-	 * 
-	 * @param obj the Object
-	 * @return <code>true</code> if support this obj;<code>false</code>
-	 *         otherwise
-	 */
-	public boolean isSupported(Object obj) {
-		if (obj == null) {
-			return false;
-		}
+    /**
+     * Return whether this action support this object,if not support,this action will be disabled
+     *
+     * @param obj the Object
+     * @return <code>true</code> if support this obj;<code>false</code> otherwise
+     */
+    public boolean isSupported(Object obj) {
+        if (obj == null) {
+            return false;
+        }
 
-		if (!(obj instanceof ICubridNode)) {
-			return false;
-		}
-		
-		ICubridNode cubridNode = (ICubridNode) obj;
-		String nodeType = cubridNode.getType();
-		if (!NodeType.DATABASE.equals(nodeType)) {
-			return false;
-		}
-		
-		ISchemaNode schemaNode = (ISchemaNode) cubridNode;
-		DatabaseInfo dbInfo = schemaNode.getDatabase().getDatabaseInfo();
-		if (!schemaNode.getDatabase().isLogined()) {
-			return false;
-		}
+        if (!(obj instanceof ICubridNode)) {
+            return false;
+        }
 
-		if (!dbInfo.isShard()) {
-			return false;
-		}
+        ICubridNode cubridNode = (ICubridNode) obj;
+        String nodeType = cubridNode.getType();
+        if (!NodeType.DATABASE.equals(nodeType)) {
+            return false;
+        }
 
-		return true;
-	}
+        ISchemaNode schemaNode = (ISchemaNode) cubridNode;
+        DatabaseInfo dbInfo = schemaNode.getDatabase().getDatabaseInfo();
+        if (!schemaNode.getDatabase().isLogined()) {
+            return false;
+        }
 
-	/**
-	 * Reload the selected CUBRID node
-	 */
-	public void run() {
-		final Object[] obj = this.getSelectedObj();
-		if (obj == null || obj.length == 0 || !isSupported(obj[0])) {
-			return;
-		}
+        if (!dbInfo.isShard()) {
+            return false;
+        }
 
-		ICubridNode cubridNode = (ICubridNode) obj[0];
-		if (cubridNode == null) {
-			return;
-		}
+        return true;
+    }
 
-		String nodeType = cubridNode.getType();
-		if (!NodeType.DATABASE.equals(nodeType)) {
-			return;
-		}
+    /** Reload the selected CUBRID node */
+    public void run() {
+        final Object[] obj = this.getSelectedObj();
+        if (obj == null || obj.length == 0 || !isSupported(obj[0])) {
+            return;
+        }
 
-		ISchemaNode schemaNode = (ISchemaNode) cubridNode;
-		DatabaseInfo dbInfo = schemaNode.getDatabase().getDatabaseInfo();
-		if (!dbInfo.isShard()) {
-			return;
-		}
+        ICubridNode cubridNode = (ICubridNode) obj[0];
+        if (cubridNode == null) {
+            return;
+        }
 
-		ShardIdSelectionDialog dialog = new ShardIdSelectionDialog(getShell());
-		dialog.setDatabaseInfo(dbInfo);
-		dialog.setShardId(dbInfo.getCurrentShardId());
-		dialog.setShardVal(dbInfo.getCurrentShardVal());
-		dialog.setShardQueryType(dbInfo.getShardQueryType());
-		if (dialog.open() != IDialogConstants.OK_ID) {
-			return;
-		}
+        String nodeType = cubridNode.getType();
+        if (!NodeType.DATABASE.equals(nodeType)) {
+            return;
+        }
 
-		int shardId = dialog.getShardId();
-		int shardVal = dialog.getShardVal();
-		int shardQueryType = dialog.getShardQueryType();
+        ISchemaNode schemaNode = (ISchemaNode) cubridNode;
+        DatabaseInfo dbInfo = schemaNode.getDatabase().getDatabaseInfo();
+        if (!dbInfo.isShard()) {
+            return;
+        }
 
-		dbInfo.setCurrentShardId(shardId);
-		dbInfo.setCurrentShardVal(shardVal);
-		dbInfo.setShardQueryType(shardQueryType);
+        ShardIdSelectionDialog dialog = new ShardIdSelectionDialog(getShell());
+        dialog.setDatabaseInfo(dbInfo);
+        dialog.setShardId(dbInfo.getCurrentShardId());
+        dialog.setShardVal(dbInfo.getCurrentShardVal());
+        dialog.setShardQueryType(dbInfo.getShardQueryType());
+        if (dialog.open() != IDialogConstants.OK_ID) {
+            return;
+        }
 
-		ISelectionProvider provider = this.getSelectionProvider();
-		if ((provider instanceof TreeViewer) && cubridNode != null && cubridNode.isContainer()) {
-			TreeViewer viewer = (TreeViewer) provider;
-			CommonUITool.refreshNavigatorTree(viewer, cubridNode);
-		}
-	}
+        int shardId = dialog.getShardId();
+        int shardVal = dialog.getShardVal();
+        int shardQueryType = dialog.getShardQueryType();
+
+        dbInfo.setCurrentShardId(shardId);
+        dbInfo.setCurrentShardVal(shardVal);
+        dbInfo.setShardQueryType(shardQueryType);
+
+        ISelectionProvider provider = this.getSelectionProvider();
+        if ((provider instanceof TreeViewer) && cubridNode != null && cubridNode.isContainer()) {
+            TreeViewer viewer = (TreeViewer) provider;
+            CommonUITool.refreshNavigatorTree(viewer, cubridNode);
+        }
+    }
 }

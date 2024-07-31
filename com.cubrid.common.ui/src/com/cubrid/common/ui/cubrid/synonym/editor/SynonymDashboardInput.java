@@ -27,70 +27,68 @@
  */
 package com.cubrid.common.ui.cubrid.synonym.editor;
 
+import com.cubrid.common.core.common.model.Synonym;
+import com.cubrid.common.ui.cubrid.synonym.Messages;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
 import java.util.List;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.cubrid.common.core.common.model.Synonym;
-import com.cubrid.common.ui.cubrid.synonym.Messages;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-
 public class SynonymDashboardInput implements IEditorInput {
-	private final CubridDatabase database;
-	private final List<Synonym> synonymList; 
-	
-	public SynonymDashboardInput(CubridDatabase database, List<Synonym> synonymList) {
-		this.database = database;
-		this.synonymList = synonymList;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(CubridDatabase.class)) {
-			return database;
-		} else if(adapter.equals(List.class)) {
-			return synonymList;
-		}
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    private final CubridDatabase database;
+    private final List<Synonym> synonymList;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#exists()
-	 */
-	public boolean exists() {
-		return false;
-	}
+    public SynonymDashboardInput(CubridDatabase database, List<Synonym> synonymList) {
+        this.database = database;
+        this.synonymList = synonymList;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-	 */
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+     */
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(CubridDatabase.class)) {
+            return database;
+        } else if (adapter.equals(List.class)) {
+            return synonymList;
+        }
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getName()
-	 */
-	public String getName() {
-		return Messages.synonymsDetailInfoPartTitle;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#exists()
+     */
+    public boolean exists() {
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getPersistable()
-	 */
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
+     */
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
-	 */
-	public String getToolTipText() {
-		return this.getName();
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getName()
+     */
+    public String getName() {
+        return Messages.synonymsDetailInfoPartTitle;
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getPersistable()
+     */
+    public IPersistableElement getPersistable() {
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getToolTipText()
+     */
+    public String getToolTipText() {
+        return this.getName();
+    }
 }

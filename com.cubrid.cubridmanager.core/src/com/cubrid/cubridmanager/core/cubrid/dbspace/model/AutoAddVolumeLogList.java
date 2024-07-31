@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,59 +24,49 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.cubrid.dbspace.model;
 
+import com.cubrid.cubridmanager.core.common.model.IModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cubrid.cubridmanager.core.common.model.IModel;
-
 /**
  * A model class which includes one or more AutoAddVolumeLogInfo
- * 
+ *
  * @author lizhiqiang 2009-5-21
- * 
  */
-public class AutoAddVolumeLogList implements
-		IModel {
-	private List<AutoAddVolumeLogInfo> autoAddVolumeLogList;
-	/* (non-Javadoc)
-	 * @see com.cubrid.cubridmanager.core.common.model.IModel#getTaskName()
-	 */
-	public String getTaskName() {
-		return "getautoaddvollog";
-	}
-	/**
-	 * 
-	 * @return the autoAddVolumeLogList
-	 */
-	public List<AutoAddVolumeLogInfo> getAutoAddVolumeLogList() {
-		return autoAddVolumeLogList;
-	}
-	/**
-	 * @param autoAddVolumeLogList the autoAddVolumeLogList to set
-	 */
-	public void setAutoAddVolumeLogList(
-			List<AutoAddVolumeLogInfo> autoAddVolumeLogList) {
-		this.autoAddVolumeLogList = autoAddVolumeLogList;
-	}
+public class AutoAddVolumeLogList implements IModel {
+    private List<AutoAddVolumeLogInfo> autoAddVolumeLogList;
+    /* (non-Javadoc)
+     * @see com.cubrid.cubridmanager.core.common.model.IModel#getTaskName()
+     */
+    public String getTaskName() {
+        return "getautoaddvollog";
+    }
+    /** @return the autoAddVolumeLogList */
+    public List<AutoAddVolumeLogInfo> getAutoAddVolumeLogList() {
+        return autoAddVolumeLogList;
+    }
+    /** @param autoAddVolumeLogList the autoAddVolumeLogList to set */
+    public void setAutoAddVolumeLogList(List<AutoAddVolumeLogInfo> autoAddVolumeLogList) {
+        this.autoAddVolumeLogList = autoAddVolumeLogList;
+    }
 
-	/**
-	 * Add AutoAddVolumeLogInfo to list
-	 * 
-	 * @param autoAddVolumeLogInfo
-	 */
-	public void addLog(
-			AutoAddVolumeLogInfo autoAddVolumeLogInfo) {
-		synchronized (this) {
-			if (autoAddVolumeLogList == null) {
-				autoAddVolumeLogList = new ArrayList<AutoAddVolumeLogInfo>();
-			}
-			if (!autoAddVolumeLogList.contains(autoAddVolumeLogInfo)) {
-				autoAddVolumeLogList.add(autoAddVolumeLogInfo);
-			}
-		}
-	}
+    /**
+     * Add AutoAddVolumeLogInfo to list
+     *
+     * @param autoAddVolumeLogInfo
+     */
+    public void addLog(AutoAddVolumeLogInfo autoAddVolumeLogInfo) {
+        synchronized (this) {
+            if (autoAddVolumeLogList == null) {
+                autoAddVolumeLogList = new ArrayList<AutoAddVolumeLogInfo>();
+            }
+            if (!autoAddVolumeLogList.contains(autoAddVolumeLogInfo)) {
+                autoAddVolumeLogList.add(autoAddVolumeLogInfo);
+            }
+        }
+    }
 }

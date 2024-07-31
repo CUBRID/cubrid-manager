@@ -38,7 +38,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 
@@ -49,123 +48,122 @@ import org.slf4j.Logger;
  * @version 1.0 - 2011-5-23 created by pangqiren
  */
 public class FtpUtil {
-	private static final Logger LOGGER = LogUtil.getLogger(FtpUtil.class);
-	private final static String SERVER = "ftp.cubrid.org";
-	private final static String USER_NAME = "anonymous";
-	private final static String USER_PASSWORD = "anonymous";
-	private final static String DRIVER_PATH = "CUBRID_Drivers/JDBC_Driver/";
-	private FTPClient ftpClient;
+    private static final Logger LOGGER = LogUtil.getLogger(FtpUtil.class);
+    private static final String SERVER = "ftp.cubrid.org";
+    private static final String USER_NAME = "anonymous";
+    private static final String USER_PASSWORD = "anonymous";
+    private static final String DRIVER_PATH = "CUBRID_Drivers/JDBC_Driver/";
+    private FTPClient ftpClient;
 
-	/**
-	 * Connect the default server
-	 *
-	 * @throws IOException The exception
-	 */
-	public void connectServer() throws IOException {
-		connectServer(SERVER, USER_NAME, USER_PASSWORD, DRIVER_PATH);
-	}
+    /**
+     * Connect the default server
+     *
+     * @throws IOException The exception
+     */
+    public void connectServer() throws IOException {
+        connectServer(SERVER, USER_NAME, USER_PASSWORD, DRIVER_PATH);
+    }
 
-	/**
-	 * Connect the server
-	 *
-	 * @param server String
-	 * @param userName String
-	 * @param userPassword String
-	 * @param driverPath String
-	 * @throws IOException The exception
-	 */
-	public void connectServer(String server, String userName, String userPassword, String driverPath)
-			throws IOException {
-		ftpClient = new FTPClient();
-		ftpClient.connect(server);
-		ftpClient.login(userName, userPassword);
-		ftpClient.changeWorkingDirectory(driverPath);
-		ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-		ftpClient.enterLocalPassiveMode();
-	}
+    /**
+     * Connect the server
+     *
+     * @param server String
+     * @param userName String
+     * @param userPassword String
+     * @param driverPath String
+     * @throws IOException The exception
+     */
+    public void connectServer(
+            String server, String userName, String userPassword, String driverPath)
+            throws IOException {
+        ftpClient = new FTPClient();
+        ftpClient.connect(server);
+        ftpClient.login(userName, userPassword);
+        ftpClient.changeWorkingDirectory(driverPath);
+        ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+        ftpClient.enterLocalPassiveMode();
+    }
 
-	/**
-	 * Download the file
-	 *
-	 * @param fileName String
-	 * @param newFileName String
-	 * @throws IOException The exception
-	 */
-	public void download(String fileName, String newFileName) throws IOException {
-		InputStream is = null;
-		FileOutputStream os = null;
-		try {
-			is = ftpClient.retrieveFileStream(fileName);
-			os = new FileOutputStream(new File(newFileName));
-			byte[] bytes = new byte[1024];
-			int c;
-			while ((c = is.read(bytes)) != -1) {
-				os.write(bytes, 0, c);
-			}
-		} finally {
-			FileUtil.close(is);
-			FileUtil.close(os);
-		}
-	}
+    /**
+     * Download the file
+     *
+     * @param fileName String
+     * @param newFileName String
+     * @throws IOException The exception
+     */
+    public void download(String fileName, String newFileName) throws IOException {
+        InputStream is = null;
+        FileOutputStream os = null;
+        try {
+            is = ftpClient.retrieveFileStream(fileName);
+            os = new FileOutputStream(new File(newFileName));
+            byte[] bytes = new byte[1024];
+            int c;
+            while ((c = is.read(bytes)) != -1) {
+                os.write(bytes, 0, c);
+            }
+        } finally {
+            FileUtil.close(is);
+            FileUtil.close(os);
+        }
+    }
 
-	/**
-	 * Upload the file
-	 *
-	 * @param fileName String
-	 * @param newName String
-	 * @throws IOException The exception
-	 */
-	public void upload(String fileName, String newName) throws IOException {
-		OutputStream os = null;
-		FileInputStream is = null;
-		try {
-			os = ftpClient.storeFileStream(newName);
-			is = new FileInputStream(new File(fileName));
-			byte[] bytes = new byte[1024];
-			int c;
-			while ((c = is.read(bytes)) != -1) {
-				os.write(bytes, 0, c);
-			}
-		} finally {
-			FileUtil.close(is);
-			FileUtil.close(os);
-		}
-	}
+    /**
+     * Upload the file
+     *
+     * @param fileName String
+     * @param newName String
+     * @throws IOException The exception
+     */
+    public void upload(String fileName, String newName) throws IOException {
+        OutputStream os = null;
+        FileInputStream is = null;
+        try {
+            os = ftpClient.storeFileStream(newName);
+            is = new FileInputStream(new File(fileName));
+            byte[] bytes = new byte[1024];
+            int c;
+            while ((c = is.read(bytes)) != -1) {
+                os.write(bytes, 0, c);
+            }
+        } finally {
+            FileUtil.close(is);
+            FileUtil.close(os);
+        }
+    }
 
-	/**
-	 * Get file list
-	 *
-	 * @param path String
-	 * @return List<String>
-	 * @throws IOException The exception
-	 */
-	public List<String> getFileList(String path) throws IOException {
-		List<String> list = new ArrayList<String>();
-		String[] fileNames = ftpClient.listNames(path);
-		if (fileNames != null) {
-			list = Arrays.asList(fileNames);
-		}
+    /**
+     * Get file list
+     *
+     * @param path String
+     * @return List<String>
+     * @throws IOException The exception
+     */
+    public List<String> getFileList(String path) throws IOException {
+        List<String> list = new ArrayList<String>();
+        String[] fileNames = ftpClient.listNames(path);
+        if (fileNames != null) {
+            list = Arrays.asList(fileNames);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	/**
-	 * Close the ftp server
-	 */
-	public void closeServer() {
-		try {
-			if (ftpClient != null && ftpClient.isConnected()) {
-				ftpClient.logout();
-			}
-		} catch (IOException e) {
-			LOGGER.error("", e);
-		}
-		try {
-			if (ftpClient != null && ftpClient.isConnected()) {
-				ftpClient.disconnect();
-			}
-		} catch (IOException e) {
-			LOGGER.error("", e);
-		}
-	}
+    /** Close the ftp server */
+    public void closeServer() {
+        try {
+            if (ftpClient != null && ftpClient.isConnected()) {
+                ftpClient.logout();
+            }
+        } catch (IOException e) {
+            LOGGER.error("", e);
+        }
+        try {
+            if (ftpClient != null && ftpClient.isConnected()) {
+                ftpClient.disconnect();
+            }
+        } catch (IOException e) {
+            LOGGER.error("", e);
+        }
+    }
 }

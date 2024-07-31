@@ -29,8 +29,13 @@ package com.cubrid.common.ui.common.control;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.spi.persist.PersistUtils;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.net.URL;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -51,132 +56,131 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.part.EditorPart;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.spi.persist.PersistUtils;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * CUBRID notice information editor part
  *
  * @author fulei
  * @version 1.0 - 2012-12-04 created by fulei
  */
-public class CubridNoticeInfoEditorPart extends
-		EditorPart {
-	private static final Logger LOGGER = LogUtil.getLogger(CubridNoticeInfoEditorPart.class);
-	public static final String ID = CubridNoticeInfoEditorPart.class.getName();
-	private String index = "";
-	private String noticeURL = "";
-	private CubridNoticeInfoEditorPart editor = this;
+public class CubridNoticeInfoEditorPart extends EditorPart {
+    private static final Logger LOGGER = LogUtil.getLogger(CubridNoticeInfoEditorPart.class);
+    public static final String ID = CubridNoticeInfoEditorPart.class.getName();
+    private String index = "";
+    private String noticeURL = "";
+    private CubridNoticeInfoEditorPart editor = this;
 
-	/**
-	 * Saves the contents of this editor.
-	 *
-	 * @param monitor the progress monitor
-	 */
-	public void doSave(IProgressMonitor monitor) {
-		noOp();
-	}
+    /**
+     * Saves the contents of this editor.
+     *
+     * @param monitor the progress monitor
+     */
+    public void doSave(IProgressMonitor monitor) {
+        noOp();
+    }
 
-	/**
-	 * Saves the contents of this editor to another object.
-	 *
-	 * @see IEditorPart
-	 */
-	public void doSaveAs() {
-		noOp();
-	}
+    /**
+     * Saves the contents of this editor to another object.
+     *
+     * @see IEditorPart
+     */
+    public void doSaveAs() {
+        noOp();
+    }
 
-	/**
-	 * Initializes this editor with the given editor site and input.
-	 *
-	 * @param site the editor site
-	 * @param input the editor input
-	 * @exception PartInitException if this editor was not initialized
-	 *            successfully
-	 */
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		setSite(site);
-		setInput(input);
-		setTitleToolTip(input.getToolTipText());
+    /**
+     * Initializes this editor with the given editor site and input.
+     *
+     * @param site the editor site
+     * @param input the editor input
+     * @exception PartInitException if this editor was not initialized successfully
+     */
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        setSite(site);
+        setInput(input);
+        setTitleToolTip(input.getToolTipText());
 
-		String noticeContents = (String) input.getAdapter(String.class);
-		String[] content = noticeContents.split("\\|");
-		index = content[0];
-		noticeURL = content[3];
-	}
+        String noticeContents = (String) input.getAdapter(String.class);
+        String[] content = noticeContents.split("\\|");
+        index = content[0];
+        noticeURL = content[3];
+    }
 
-	public void dispose() {
-		noOp();
-	}
+    public void dispose() {
+        noOp();
+    }
 
-	/**
-	 * Return whether the editor is dirty
-	 *
-	 * @return <code>true</code> if it is dirty;<code>false</code> otherwise
-	 */
-	public boolean isDirty() {
-		return false;
-	}
+    /**
+     * Return whether the editor is dirty
+     *
+     * @return <code>true</code> if it is dirty;<code>false</code> otherwise
+     */
+    public boolean isDirty() {
+        return false;
+    }
 
-	/**
-	 * Return whether the save as operation is allowed
-	 *
-	 * @return <code>true</code> if it is allowed;<code>false</code> otherwise
-	 */
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
+    /**
+     * Return whether the save as operation is allowed
+     *
+     * @return <code>true</code> if it is allowed;<code>false</code> otherwise
+     */
+    public boolean isSaveAsAllowed() {
+        return false;
+    }
 
-	/**
-	 * Create the editor content
-	 *
-	 * @param parent the parent composite
-	 */
-	public void createPartControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.None);
-		GridLayout layout = new GridLayout();
-		composite.setLayout(layout);
-		try {
-			Button ignoreButton = new Button(composite, SWT.CHECK);
-			ignoreButton.setText(Messages.cubridNoticeIgnoreButtonLbl);
-			ignoreButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent event) {
-					String ignore = PersistUtils.getPreferenceValue(CommonUIPlugin.PLUGIN_ID,
-							CubridNoticeUtil.IGNORE_NOTICE);
-					if (StringUtil.isEmpty(ignore)) {
-						ignore = index;
-					} else {
-						ignore = ignore + "," + index;
-					}
-					PersistUtils.setPreferenceValue(CommonUIPlugin.PLUGIN_ID,
-							CubridNoticeUtil.IGNORE_NOTICE, ignore);
-					getSite().getWorkbenchWindow().getActivePage().closeEditor(editor, false);
-				}
-			});
+    /**
+     * Create the editor content
+     *
+     * @param parent the parent composite
+     */
+    public void createPartControl(Composite parent) {
+        Composite composite = new Composite(parent, SWT.None);
+        GridLayout layout = new GridLayout();
+        composite.setLayout(layout);
+        try {
+            Button ignoreButton = new Button(composite, SWT.CHECK);
+            ignoreButton.setText(Messages.cubridNoticeIgnoreButtonLbl);
+            ignoreButton.addSelectionListener(
+                    new SelectionAdapter() {
+                        public void widgetSelected(SelectionEvent event) {
+                            String ignore =
+                                    PersistUtils.getPreferenceValue(
+                                            CommonUIPlugin.PLUGIN_ID,
+                                            CubridNoticeUtil.IGNORE_NOTICE);
+                            if (StringUtil.isEmpty(ignore)) {
+                                ignore = index;
+                            } else {
+                                ignore = ignore + "," + index;
+                            }
+                            PersistUtils.setPreferenceValue(
+                                    CommonUIPlugin.PLUGIN_ID,
+                                    CubridNoticeUtil.IGNORE_NOTICE,
+                                    ignore);
+                            getSite()
+                                    .getWorkbenchWindow()
+                                    .getActivePage()
+                                    .closeEditor(editor, false);
+                        }
+                    });
 
-			Browser browser = new Browser(composite, SWT.NONE);
-			browser.setUrl(noticeURL);
-			browser.setLayoutData(new GridData(GridData.FILL_BOTH));
-		} catch (Exception e) {
-			Label label = new Label(parent, SWT.NONE);
-			IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
-			try {
-				IWebBrowser browser = support.getExternalBrowser();
-				browser.openURL(new URL(CommonUITool.urlEncodeForSpaces(noticeURL.toCharArray())));
-			} catch (Exception browserEx) {
-				LOGGER.error(browserEx.getMessage(), browserEx);
-				label.setText(Messages.errCannotOpenExternalBrowser);
-				return;
-			}
-			label.setText(Messages.errCannotOpenInternalBrowser);
-		}
-	}
+            Browser browser = new Browser(composite, SWT.NONE);
+            browser.setUrl(noticeURL);
+            browser.setLayoutData(new GridData(GridData.FILL_BOTH));
+        } catch (Exception e) {
+            Label label = new Label(parent, SWT.NONE);
+            IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
+            try {
+                IWebBrowser browser = support.getExternalBrowser();
+                browser.openURL(new URL(CommonUITool.urlEncodeForSpaces(noticeURL.toCharArray())));
+            } catch (Exception browserEx) {
+                LOGGER.error(browserEx.getMessage(), browserEx);
+                label.setText(Messages.errCannotOpenExternalBrowser);
+                return;
+            }
+            label.setText(Messages.errCannotOpenInternalBrowser);
+        }
+    }
 
-	public void setFocus() {
-		noOp();
-	}
+    public void setFocus() {
+        noOp();
+    }
 }

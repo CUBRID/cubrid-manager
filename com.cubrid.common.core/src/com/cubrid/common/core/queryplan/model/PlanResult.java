@@ -33,89 +33,88 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Plan Root model class
  *
- * PlanRoot Description
+ * <p>PlanRoot Description
  *
  * @author pcraft
  * @version 1.0 - 2009. 06. 06 created by pcraft
  */
 public class PlanResult {
-	private String sql = null;
-	private String raw = null;
-	private String parsedRaw = null;
-	private PlanNode planNode = null;
+    private String sql = null;
+    private String raw = null;
+    private String parsedRaw = null;
+    private PlanNode planNode = null;
 
-	/**
-	 * Get plain sql
-	 *
-	 * @return the string
-	 */
-	public String getPlainSql() {
-		if (sql == null) {
-			return "";
-		}
-		return sql.replaceAll("[\\\r\\\n\\\t]", " ").trim();
-	}
+    /**
+     * Get plain sql
+     *
+     * @return the string
+     */
+    public String getPlainSql() {
+        if (sql == null) {
+            return "";
+        }
+        return sql.replaceAll("[\\\r\\\n\\\t]", " ").trim();
+    }
 
-	public String getSql() {
-		return sql;
-	}
+    public String getSql() {
+        return sql;
+    }
 
-	public void setSql(String sql) {
-		this.sql = sql;
-	}
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
 
-	public String getRaw() {
-		return raw;
-	}
+    public String getRaw() {
+        return raw;
+    }
 
-	public void setRaw(String raw) {
-		this.raw = raw;
-	}
+    public void setRaw(String raw) {
+        this.raw = raw;
+    }
 
-	public PlanNode getPlanNode() {
-		return planNode;
-	}
+    public PlanNode getPlanNode() {
+        return planNode;
+    }
 
-	public void setPlanNode(PlanNode planNode) {
-		this.planNode = planNode;
-	}
+    public void setPlanNode(PlanNode planNode) {
+        this.planNode = planNode;
+    }
 
-	public String getParsedRaw() {
-		return parsedRaw;
-	}
+    public String getParsedRaw() {
+        return parsedRaw;
+    }
 
-	public void setParsedRaw(String parsedRaw) {
-		this.parsedRaw = parsedRaw;
-	}
+    public void setParsedRaw(String parsedRaw) {
+        this.parsedRaw = parsedRaw;
+    }
 
-	public String toString() { // FIXME use ToStringBuilder
-		if (planNode == null) {
-			return null;
-		}
+    public String toString() { // FIXME use ToStringBuilder
+        if (planNode == null) {
+            return null;
+        }
 
-		return planNode.toString();
-	}
+        return planNode.toString();
+    }
 
-	public List<PlanNode> getOrderedPlanNodes() {
-		List<PlanNode> queue = new ArrayList<PlanNode>();
-		fetch(queue, getPlanNode());
-		return queue;
-	}
+    public List<PlanNode> getOrderedPlanNodes() {
+        List<PlanNode> queue = new ArrayList<PlanNode>();
+        fetch(queue, getPlanNode());
+        return queue;
+    }
 
-	private void fetch(List<PlanNode> queue, PlanNode planNode) {
-		if (planNode == null) {
-			return;
-		}
+    private void fetch(List<PlanNode> queue, PlanNode planNode) {
+        if (planNode == null) {
+            return;
+        }
 
-		if (planNode.getChildren() != null) {
-			for (PlanNode child : planNode.getChildren()) {
-				fetch(queue, child);
-			}
-		}
+        if (planNode.getChildren() != null) {
+            for (PlanNode child : planNode.getChildren()) {
+                fetch(queue, child);
+            }
+        }
 
-		queue.add(planNode);
-	}
+        queue.add(planNode);
+    }
 }

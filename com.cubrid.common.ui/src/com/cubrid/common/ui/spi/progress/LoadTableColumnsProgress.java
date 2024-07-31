@@ -27,69 +27,70 @@
 
 package com.cubrid.common.ui.spi.progress;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
 import com.cubrid.common.core.common.model.TableDetailInfo;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.ui.query.control.QueryExecuter;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * The Progress class that gets the number of columns in the table.
  *
  * @author hun-a
- *
  */
 public class LoadTableColumnsProgress extends LoadTableProgress {
 
-	public LoadTableColumnsProgress(CubridDatabase database,
-			List<TableDetailInfo> tableList, String taskName, String subTaskName) {
-		super(database, tableList, taskName, subTaskName);
-	}
+    public LoadTableColumnsProgress(
+            CubridDatabase database,
+            List<TableDetailInfo> tableList,
+            String taskName,
+            String subTaskName) {
+        super(database, tableList, taskName, subTaskName);
+    }
 
-	@Override
-	protected Object count(Connection conn, String tableName) {
-		int columnsCount = 0;
-		try {
-			if (conn == null || conn.isClosed()) {
-				return columnsCount;
-			}
-		} catch (SQLException e) {
-			LOGGER.error("", e);
-		}
+    @Override
+    protected Object count(Connection conn, String tableName) {
+        int columnsCount = 0;
+        try {
+            if (conn == null || conn.isClosed()) {
+                return columnsCount;
+            }
+        } catch (SQLException e) {
+            LOGGER.error("", e);
+        }
 
-		String sql = "SELECT COUNT(*) FROM db_attribute WHERE class_name =?";
+        String sql = "SELECT COUNT(*) FROM db_attribute WHERE class_name =?";
 
-		// [TOOLS-2425]Support shard broker
-		if (CubridDatabase.hasValidDatabaseInfo(database)) {
-			sql = database.getDatabaseInfo().wrapShardQuery(sql);
-		}
+        // [TOOLS-2425]Support shard broker
+        if (CubridDatabase.hasValidDatabaseInfo(database)) {
+            sql = database.getDatabaseInfo().wrapShardQuery(sql);
+        }
 
-		CUBRIDPreparedStatementProxy stmt = null;
-		ResultSet rs = null;
-		try {
-			stmt = QueryExecuter.getStatement(conn, sql, false, false);
-			stmt.setString(1, tableName);
-			rs = stmt.executeQuery();
-			if (rs.next()) {
-				columnsCount = rs.getInt(1);
-			}
-		} catch (SQLException e) {
-			LOGGER.error("", e);
-			e.printStackTrace();
-		} finally {
-			QueryUtil.freeQuery(stmt, rs);
-		}
+        CUBRIDPreparedStatementProxy stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = QueryExecuter.getStatement(conn, sql, false, false);
+            stmt.setString(1, tableName);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                columnsCount = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("", e);
+            e.printStackTrace();
+        } finally {
+            QueryUtil.freeQuery(stmt, rs);
+        }
 
-		return columnsCount;
-	}
+        return columnsCount;
+    }
 
-	@Override
-	protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
-		tablesDetailInfo.setColumnsCount(Integer.parseInt(count.toString()));
-	}
+    @Override
+    protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
+        tablesDetailInfo.setColumnsCount(Integer.parseInt(count.toString()));
+    }
 }

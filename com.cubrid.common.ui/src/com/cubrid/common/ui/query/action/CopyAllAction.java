@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2012 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,10 +23,14 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.query.action;
 
+import com.cubrid.common.ui.query.editor.ICopiableFromTable;
+import com.cubrid.common.ui.spi.action.ActionManager;
+import com.cubrid.common.ui.spi.action.FocusAction;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.custom.StyledText;
@@ -41,89 +45,76 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import com.cubrid.common.ui.query.editor.ICopiableFromTable;
-import com.cubrid.common.ui.spi.action.ActionManager;
-import com.cubrid.common.ui.spi.action.FocusAction;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
- * 
- * This action is responsible to copy all of query editor content to the
- * clipboard
- * 
+ * This action is responsible to copy all of query editor content to the clipboard
+ *
  * @author Isaiah Choe 2009-3-2
  */
-public class CopyAllAction extends
-		FocusAction {
+public class CopyAllAction extends FocusAction {
 
-	public static final String ID = CopyAllAction.class.getName();
+    public static final String ID = CopyAllAction.class.getName();
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param focusProvider
-	 * @param text
-	 * @param icon
-	 */
-	public CopyAllAction(Shell shell, Control focusProvider, String text,
-			ImageDescriptor icon) {
-		super(shell, focusProvider, text, icon);
-		this.setId(ID);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param focusProvider
+     * @param text
+     * @param icon
+     */
+    public CopyAllAction(Shell shell, Control focusProvider, String text, ImageDescriptor icon) {
+        super(shell, focusProvider, text, icon);
+        this.setId(ID);
+    }
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public CopyAllAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public CopyAllAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * Notifies that the focus gained event
-	 * 
-	 * @param event an event containing information about the focus change
-	 */
-	public void focusGained(FocusEvent event) {
-		setEnabled(false);
-		if (event.getSource() instanceof StyledText) {
-			setEnabled(true);
-		} else if (event.getSource() instanceof Table) {
-			setEnabled(true);
-		}
-	}
+    /**
+     * Notifies that the focus gained event
+     *
+     * @param event an event containing information about the focus change
+     */
+    public void focusGained(FocusEvent event) {
+        setEnabled(false);
+        if (event.getSource() instanceof StyledText) {
+            setEnabled(true);
+        } else if (event.getSource() instanceof Table) {
+            setEnabled(true);
+        }
+    }
 
-	/**
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	public void run() {
-		TextTransfer textTransfer = TextTransfer.getInstance();
-		Clipboard clipboard = CommonUITool.getClipboard();
-		Control control = getFocusProvider();
-		if (control instanceof StyledText) {
-			StyledText stext = (StyledText) control;
-			String data = stext.getText();
-			if (data != null && !data.equals("")) {
-				clipboard.setContents(new Object[]{data },
-						new Transfer[]{textTransfer });
-				IAction pasteAction = ActionManager.getInstance().getAction(
-						PasteAction.ID);
-				FocusAction.changeActionStatus(pasteAction, stext);
-			}
-		} else {
-			/*Copy from the active editor*/
-			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			if (window != null) {
-				IEditorPart editor = window.getActivePage().getActiveEditor();
-				if (editor != null && editor instanceof ICopiableFromTable) {
-					ICopiableFromTable copyAbleEditor = (ICopiableFromTable) editor;
-					copyAbleEditor.copyAllItems();
-				}
-			}
-		}
-	}
+    /** @see org.eclipse.jface.action.Action#run() */
+    public void run() {
+        TextTransfer textTransfer = TextTransfer.getInstance();
+        Clipboard clipboard = CommonUITool.getClipboard();
+        Control control = getFocusProvider();
+        if (control instanceof StyledText) {
+            StyledText stext = (StyledText) control;
+            String data = stext.getText();
+            if (data != null && !data.equals("")) {
+                clipboard.setContents(new Object[] {data}, new Transfer[] {textTransfer});
+                IAction pasteAction = ActionManager.getInstance().getAction(PasteAction.ID);
+                FocusAction.changeActionStatus(pasteAction, stext);
+            }
+        } else {
+            /*Copy from the active editor*/
+            IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            if (window != null) {
+                IEditorPart editor = window.getActivePage().getActiveEditor();
+                if (editor != null && editor instanceof ICopiableFromTable) {
+                    ICopiableFromTable copyAbleEditor = (ICopiableFromTable) editor;
+                    copyAbleEditor.copyAllItems();
+                }
+            }
+        }
+    }
 }

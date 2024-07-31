@@ -7,136 +7,122 @@ import com.cubrid.cubridmanager.core.Tool;
 import com.cubrid.cubridmanager.core.common.socket.MessageUtil;
 import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 
-public class RestoreDbTaskTest extends
-		SetupEnvTestCase {
+public class RestoreDbTaskTest extends SetupEnvTestCase {
 
-	public void testSend() throws Exception {
+    public void testSend() throws Exception {
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "y"))
-			return;
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "y")) return;
 
-		String filepath = this.getFilePathInPlugin("/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/restoredb_send");
-		String msg = Tool.getFileContent(filepath);
+        String filepath =
+                this.getFilePathInPlugin(
+                        "/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/restoredb_send");
+        String msg = Tool.getFileContent(filepath);
 
-		//replace "token" field with the latest value
-		msg = msg.replaceFirst("token:.*\n", "token:" + token + "\n");
-		//case 1
-		RestoreDbTask task = new RestoreDbTask(serverInfo);
-		task.setDbName("testdb2");
-		task.setDate("backuptime");
-		task.setLevel("0");
-		task.setPartial(false);
-		task.setPathName("C:\\CUBRID\\databases\\testdb\\backup\\testdb2_backup_lv0");
-		task.setRecoveryPath("none");
-		assertEquals(msg, task.getRequest());
-		//case 2
-		task.setPartial(true);
-		msg = msg.replaceFirst("partial:n", "partial:y");
-		assertEquals(msg, task.getRequest());
-	}
+        // replace "token" field with the latest value
+        msg = msg.replaceFirst("token:.*\n", "token:" + token + "\n");
+        // case 1
+        RestoreDbTask task = new RestoreDbTask(serverInfo);
+        task.setDbName("testdb2");
+        task.setDate("backuptime");
+        task.setLevel("0");
+        task.setPartial(false);
+        task.setPathName("C:\\CUBRID\\databases\\testdb\\backup\\testdb2_backup_lv0");
+        task.setRecoveryPath("none");
+        assertEquals(msg, task.getRequest());
+        // case 2
+        task.setPartial(true);
+        msg = msg.replaceFirst("partial:n", "partial:y");
+        assertEquals(msg, task.getRequest());
+    }
 
-	public void testReceive() throws Exception {
+    public void testReceive() throws Exception {
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "y"))
-			return;
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "y")) return;
 
-		String filepath = this.getFilePathInPlugin("/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/restoredb_receive");
-		String msg = Tool.getFileContent(filepath);
-		TreeNode node = MessageUtil.parseResponse(msg);
-		RestoreDbTask task = new RestoreDbTask(serverInfo);
-		task.setResponse(node);
-		assertTrue(task.isSuccess());
+        String filepath =
+                this.getFilePathInPlugin(
+                        "/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/restoredb_receive");
+        String msg = Tool.getFileContent(filepath);
+        TreeNode node = MessageUtil.parseResponse(msg);
+        RestoreDbTask task = new RestoreDbTask(serverInfo);
+        task.setResponse(node);
+        assertTrue(task.isSuccess());
+    }
 
-	}
+    public void testRestoreLevel0() {
 
-	public void testRestoreLevel0() {
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        System.out.println("<database.restoredb.001.req.txt>");
 
-		System.out.println("<database.restoredb.001.req.txt>");
+        RestoreDbTask task = new RestoreDbTask(serverInfo);
+        task.setDbName("demodb");
+        task.setDate("backuptime");
+        task.setLevel("0");
+        task.setPartial(false);
+        task.setPathName("/opt/frameworks/cubrid/databases/demodb/backup/demodb_backup_lv0");
+        task.setRecoveryPath("none");
 
-		RestoreDbTask task = new RestoreDbTask(serverInfo);
-		task.setDbName("demodb");
-		task.setDate("backuptime");
-		task.setLevel("0");
-		task.setPartial(false);
-		task.setPathName("/opt/frameworks/cubrid/databases/demodb/backup/demodb_backup_lv0");
-		task.setRecoveryPath("none");
+        task.execute();
 
-		task.execute();
+        assertNull(task.getErrorMsg());
+    }
 
-		assertNull(task.getErrorMsg());
+    public void testRestoreActiveDB() {
 
-	}
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-	public void testRestoreActiveDB() {
+        System.out.println("<database.restoredb.002.req.txt>");
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        RestoreDbTask task = new RestoreDbTask(serverInfo);
+        task.setDbName("activedb");
+        task.setDate("backuptime");
+        task.setLevel("0");
+        task.setPartial(false);
+        task.setPathName("/opt/frameworks/cubrid/databases/activedb/backup/activedb_backup_lv0");
+        task.setRecoveryPath("none");
 
-		System.out.println("<database.restoredb.002.req.txt>");
+        task.execute();
 
-		RestoreDbTask task = new RestoreDbTask(serverInfo);
-		task.setDbName("activedb");
-		task.setDate("backuptime");
-		task.setLevel("0");
-		task.setPartial(false);
-		task.setPathName("/opt/frameworks/cubrid/databases/activedb/backup/activedb_backup_lv0");
-		task.setRecoveryPath("none");
+        assertNotNull(task.getErrorMsg());
+    }
 
-		task.execute();
+    public void testRestoreNotExistDB() {
 
-		assertNotNull(task.getErrorMsg());
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-	}
+        System.out.println("<database.restoredb.003.req.txt>");
 
-	public void testRestoreNotExistDB() {
+        RestoreDbTask task = new RestoreDbTask(serverInfo);
+        task.setDbName("notexistdb");
+        task.setDate("backuptime");
+        task.setLevel("0");
+        task.setPartial(false);
+        task.setPathName(
+                "/opt/frameworks/cubrid/databases/notexistdb/backup/notexistdb_backup_lv0");
+        task.setRecoveryPath("none");
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        task.execute();
 
-		System.out.println("<database.restoredb.003.req.txt>");
+        assertNotNull(task.getErrorMsg());
+    }
 
-		RestoreDbTask task = new RestoreDbTask(serverInfo);
-		task.setDbName("notexistdb");
-		task.setDate("backuptime");
-		task.setLevel("0");
-		task.setPartial(false);
-		task.setPathName("/opt/frameworks/cubrid/databases/notexistdb/backup/notexistdb_backup_lv0");
-		task.setRecoveryPath("none");
+    public void testRestoreNotExistBackupFile() {
 
-		task.execute();
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		assertNotNull(task.getErrorMsg());
+        System.out.println("<database.restoredb.004.req.txt>");
 
-	}
+        RestoreDbTask task = new RestoreDbTask(serverInfo);
+        task.setDbName("demodb");
+        task.setDate("backuptime");
+        task.setLevel("0");
+        task.setPartial(false);
+        task.setPathName("/opt/frameworks/cubrid/databases/demodb/backup/backup_lv0_notexist");
+        task.setRecoveryPath("none");
 
-	public void testRestoreNotExistBackupFile() {
+        task.execute();
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
-
-		System.out.println("<database.restoredb.004.req.txt>");
-
-		RestoreDbTask task = new RestoreDbTask(serverInfo);
-		task.setDbName("demodb");
-		task.setDate("backuptime");
-		task.setLevel("0");
-		task.setPartial(false);
-		task.setPathName("/opt/frameworks/cubrid/databases/demodb/backup/backup_lv0_notexist");
-		task.setRecoveryPath("none");
-
-		task.execute();
-
-		assertNotNull(task.getErrorMsg());
-
-	}
-
+        assertNotNull(task.getErrorMsg());
+    }
 }

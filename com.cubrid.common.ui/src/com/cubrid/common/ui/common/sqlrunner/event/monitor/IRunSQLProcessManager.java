@@ -29,20 +29,21 @@ package com.cubrid.common.ui.common.sqlrunner.event.monitor;
 
 /**
  * SQL process manager interface
+ *
  * @author fulei
  */
 public interface IRunSQLProcessManager {
-	/**
-	 * start process
-	 * 
-	 * @param isBroken true if process is not finished correctly.
-	 */
-	public void startProcess();
+    /**
+     * start process
+     *
+     * @param isBroken true if process is not finished correctly.
+     */
+    public void startProcess();
 
-	/**
-	 * Stop process and release resources.
-	 * 
-	 * @param isBroken true if process is not finished correctly.
-	 */
-	public void stopProcess();
+    /**
+     * Stop process and release resources.
+     *
+     * @param isBroken true if process is not finished correctly.
+     */
+    public void stopProcess();
 }

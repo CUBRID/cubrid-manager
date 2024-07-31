@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,16 +23,9 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.cubrid.database.dialog;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Shell;
-import org.slf4j.Logger;
 
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.CompatibleUtil;
@@ -46,149 +39,157 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.task.LoginDatabaseTask;
 import com.cubrid.cubridmanager.core.cubrid.user.model.DbUserInfo;
 import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
 
 /**
- * 
  * Login database task executor
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2010-6-4 created by pangqiren
  */
-public class LoginDatabaseTaskExecutor extends
-		TaskExecutor {
-	
-	private static final Logger LOGGER = LogUtil.getLogger(LoginDatabaseTaskExecutor.class);
-	
-	private final Shell shell;
-	private final String dbPassword;
-	private final String dbName;
-	private final ServerInfo serverInfo;
-	private final boolean showErrMsg;
-	private String errMsg = null;
+public class LoginDatabaseTaskExecutor extends TaskExecutor {
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param serverInfo
-	 * @param dbName
-	 * @param dbUser
-	 * @param dbPassword
-	 */
-	public LoginDatabaseTaskExecutor(Shell shell, ServerInfo serverInfo,
-			String dbName, String dbUser, String dbPassword, boolean showErrMsg) {
-		this.shell = shell;
-		this.dbName = dbName;
-		this.serverInfo = serverInfo;
-		this.dbPassword = dbPassword;
-		this.showErrMsg = showErrMsg;
-		LoginDatabaseTask loginDatabaseTask = new LoginDatabaseTask(serverInfo);
-		loginDatabaseTask.setCMUser(serverInfo.getUserName());
-		loginDatabaseTask.setDbName(dbName);
-		loginDatabaseTask.setDbUser(dbUser);
-		loginDatabaseTask.setDbPassword(dbPassword);
+    private static final Logger LOGGER = LogUtil.getLogger(LoginDatabaseTaskExecutor.class);
 
-		UpdateCMUserTask updateCMUserTask = new UpdateCMUserTask(serverInfo);
-		updateCMUserTask.setCmUserName(serverInfo.getUserName());
+    private final Shell shell;
+    private final String dbPassword;
+    private final String dbName;
+    private final ServerInfo serverInfo;
+    private final boolean showErrMsg;
+    private String errMsg = null;
 
-		addTask(loginDatabaseTask);
-		addTask(updateCMUserTask);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param serverInfo
+     * @param dbName
+     * @param dbUser
+     * @param dbPassword
+     */
+    public LoginDatabaseTaskExecutor(
+            Shell shell,
+            ServerInfo serverInfo,
+            String dbName,
+            String dbUser,
+            String dbPassword,
+            boolean showErrMsg) {
+        this.shell = shell;
+        this.dbName = dbName;
+        this.serverInfo = serverInfo;
+        this.dbPassword = dbPassword;
+        this.showErrMsg = showErrMsg;
+        LoginDatabaseTask loginDatabaseTask = new LoginDatabaseTask(serverInfo);
+        loginDatabaseTask.setCMUser(serverInfo.getUserName());
+        loginDatabaseTask.setDbName(dbName);
+        loginDatabaseTask.setDbUser(dbUser);
+        loginDatabaseTask.setDbPassword(dbPassword);
 
-	/**
-	 * Execute to login database
-	 * 
-	 * @param monitor the IProgressMonitor
-	 * @return <code>true</code> if successful;<code>false</code>otherwise;
-	 */
-	public boolean exec(final IProgressMonitor monitor) {
+        UpdateCMUserTask updateCMUserTask = new UpdateCMUserTask(serverInfo);
+        updateCMUserTask.setCmUserName(serverInfo.getUserName());
 
-		if (monitor.isCanceled()) {
-			return false;
-		}
-		String taskName = Messages.bind(Messages.loginDbTaskName, dbName);
-		monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
-		DbUserInfo dbUserInfo = null;
-		DatabaseInfo dbInfo = serverInfo.getLoginedUserInfo().getDatabaseInfo(
-				dbName);
-		DbUserInfo preDbUserInfo = dbInfo.getAuthLoginedDbUserInfo();
-		boolean isOldLogined = dbInfo.isLogined();
-		for (ITask task : taskList) {
-			if (task instanceof UpdateCMUserTask) {
-				UpdateCMUserTask updateCMUserTask = (UpdateCMUserTask) task;
-				ServerInfo serverInfo = dbInfo.getServerInfo();
-				if (serverInfo != null && serverInfo.isConnected()) {
-					ServerUserInfo userInfo = serverInfo.getLoginedUserInfo();
-					updateCMUserTask.setCasAuth(userInfo.getCasAuth().getText());
-					updateCMUserTask.setDbCreator(userInfo.getDbCreateAuthType().getText());
-					updateCMUserTask.setStatusMonitorAuth(userInfo.getStatusMonitorAuth().getText());
-					List<String> dbNameList = new ArrayList<String>();
-					List<String> dbUserList = new ArrayList<String>();
-					List<String> dbPasswordList = new ArrayList<String>();
-					List<String> dbBrokerPortList = new ArrayList<String>();
-					List<DatabaseInfo> authDatabaseList = userInfo.getDatabaseInfoList();
+        addTask(loginDatabaseTask);
+        addTask(updateCMUserTask);
+    }
 
-					for (int i = 0; authDatabaseList != null
-							&& i < authDatabaseList.size(); i++) {
-						DatabaseInfo databaseInfo = authDatabaseList.get(i);
-						dbNameList.add(databaseInfo.getDbName());
-						dbUserList.add(databaseInfo.getAuthLoginedDbUserInfo().getName());
-						dbBrokerPortList.add(QueryOptions.getBrokerIp(databaseInfo)
-								+ "," + databaseInfo.getBrokerPort());
-						String password = databaseInfo.getAuthLoginedDbUserInfo().getNoEncryptPassword();
-						dbPasswordList.add(password == null ? "" : password);
-					}
+    /**
+     * Execute to login database
+     *
+     * @param monitor the IProgressMonitor
+     * @return <code>true</code> if successful;<code>false</code>otherwise;
+     */
+    public boolean exec(final IProgressMonitor monitor) {
 
-					String[] dbNameArr = new String[dbNameList.size()];
-					String[] dbUserArr = new String[dbUserList.size()];
-					String[] dbPasswordArr = new String[dbPasswordList.size()];
-					String[] dbBrokerPortArr = new String[dbBrokerPortList.size()];
-					updateCMUserTask.setDbAuth(dbNameList.toArray(dbNameArr),
-							dbUserList.toArray(dbUserArr),
-							dbPasswordList.toArray(dbPasswordArr),
-							dbBrokerPortList.toArray(dbBrokerPortArr));
-				}
-			}
-			task.execute();
-			final String msg = task.getErrorMsg();
-			if (showErrMsg) {
-				if (openErrorBox(shell, msg, monitor)) {
-					dbInfo.setLogined(isOldLogined);
-					dbInfo.setAuthLoginedDbUserInfo(preDbUserInfo);
-					//TOOLS-2305 log when reproduce the bug
-//					String infoMessage = "user : " + preDbUserInfo.getName() + " passwaord :  " + dbPassword;
-//					LOGGER.error("loggin failed task : " + infoMessage);
-					return false;
-				} 
-			} else if (!monitor.isCanceled()) {
-				setErrMsg(msg);
-				dbInfo.setLogined(isOldLogined);
-				dbInfo.setAuthLoginedDbUserInfo(preDbUserInfo);
-				return false;
-			}
-			if (monitor.isCanceled()) {
-				return false;
-			}
-			if (task instanceof LoginDatabaseTask) {
-				dbUserInfo = ((LoginDatabaseTask) task).getLoginedDbUserInfo();
-				dbInfo.setLogined(true);
-				dbUserInfo.setNoEncryptPassword(dbPassword);
-				dbInfo.setAuthLoginedDbUserInfo(dbUserInfo);
-				dbInfo.setSupportUserSchema(CompatibleUtil.isAfter112(dbInfo));
-				
-			}
-			
-		}
-		return true;
-	}
-	
-	
-	public String getErrMsg() {
-		return errMsg;
-	}
+        if (monitor.isCanceled()) {
+            return false;
+        }
+        String taskName = Messages.bind(Messages.loginDbTaskName, dbName);
+        monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
+        DbUserInfo dbUserInfo = null;
+        DatabaseInfo dbInfo = serverInfo.getLoginedUserInfo().getDatabaseInfo(dbName);
+        DbUserInfo preDbUserInfo = dbInfo.getAuthLoginedDbUserInfo();
+        boolean isOldLogined = dbInfo.isLogined();
+        for (ITask task : taskList) {
+            if (task instanceof UpdateCMUserTask) {
+                UpdateCMUserTask updateCMUserTask = (UpdateCMUserTask) task;
+                ServerInfo serverInfo = dbInfo.getServerInfo();
+                if (serverInfo != null && serverInfo.isConnected()) {
+                    ServerUserInfo userInfo = serverInfo.getLoginedUserInfo();
+                    updateCMUserTask.setCasAuth(userInfo.getCasAuth().getText());
+                    updateCMUserTask.setDbCreator(userInfo.getDbCreateAuthType().getText());
+                    updateCMUserTask.setStatusMonitorAuth(
+                            userInfo.getStatusMonitorAuth().getText());
+                    List<String> dbNameList = new ArrayList<String>();
+                    List<String> dbUserList = new ArrayList<String>();
+                    List<String> dbPasswordList = new ArrayList<String>();
+                    List<String> dbBrokerPortList = new ArrayList<String>();
+                    List<DatabaseInfo> authDatabaseList = userInfo.getDatabaseInfoList();
 
-	public void setErrMsg(String errMsg) {
-		this.errMsg = errMsg;
-	}
+                    for (int i = 0; authDatabaseList != null && i < authDatabaseList.size(); i++) {
+                        DatabaseInfo databaseInfo = authDatabaseList.get(i);
+                        dbNameList.add(databaseInfo.getDbName());
+                        dbUserList.add(databaseInfo.getAuthLoginedDbUserInfo().getName());
+                        dbBrokerPortList.add(
+                                QueryOptions.getBrokerIp(databaseInfo)
+                                        + ","
+                                        + databaseInfo.getBrokerPort());
+                        String password =
+                                databaseInfo.getAuthLoginedDbUserInfo().getNoEncryptPassword();
+                        dbPasswordList.add(password == null ? "" : password);
+                    }
 
+                    String[] dbNameArr = new String[dbNameList.size()];
+                    String[] dbUserArr = new String[dbUserList.size()];
+                    String[] dbPasswordArr = new String[dbPasswordList.size()];
+                    String[] dbBrokerPortArr = new String[dbBrokerPortList.size()];
+                    updateCMUserTask.setDbAuth(
+                            dbNameList.toArray(dbNameArr),
+                            dbUserList.toArray(dbUserArr),
+                            dbPasswordList.toArray(dbPasswordArr),
+                            dbBrokerPortList.toArray(dbBrokerPortArr));
+                }
+            }
+            task.execute();
+            final String msg = task.getErrorMsg();
+            if (showErrMsg) {
+                if (openErrorBox(shell, msg, monitor)) {
+                    dbInfo.setLogined(isOldLogined);
+                    dbInfo.setAuthLoginedDbUserInfo(preDbUserInfo);
+                    // TOOLS-2305 log when reproduce the bug
+                    //					String infoMessage = "user : " + preDbUserInfo.getName() + " passwaord :
+                    // " + dbPassword;
+                    //					LOGGER.error("loggin failed task : " + infoMessage);
+                    return false;
+                }
+            } else if (!monitor.isCanceled()) {
+                setErrMsg(msg);
+                dbInfo.setLogined(isOldLogined);
+                dbInfo.setAuthLoginedDbUserInfo(preDbUserInfo);
+                return false;
+            }
+            if (monitor.isCanceled()) {
+                return false;
+            }
+            if (task instanceof LoginDatabaseTask) {
+                dbUserInfo = ((LoginDatabaseTask) task).getLoginedDbUserInfo();
+                dbInfo.setLogined(true);
+                dbUserInfo.setNoEncryptPassword(dbPassword);
+                dbInfo.setAuthLoginedDbUserInfo(dbUserInfo);
+                dbInfo.setSupportUserSchema(CompatibleUtil.isAfter112(dbInfo));
+            }
+        }
+        return true;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
+    }
 }

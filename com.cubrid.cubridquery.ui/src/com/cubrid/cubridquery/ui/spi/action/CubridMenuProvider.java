@@ -27,10 +27,6 @@
  */
 package com.cubrid.cubridquery.ui.spi.action;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.Separator;
-
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.ui.common.action.OIDNavigatorAction;
 import com.cubrid.common.ui.common.action.ShowHiddenElementsAction;
@@ -52,124 +48,119 @@ import com.cubrid.common.ui.spi.action.MenuProvider;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.NodeType;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridquery.ui.common.action.PropertyAction;
 import com.cubrid.cubridquery.ui.common.control.CQDatabaseNavigatorMenu;
 import com.cubrid.cubridquery.ui.connection.action.NewQueryConnAction;
 import com.cubrid.cubridquery.ui.connection.action.OpenQueryConnAction;
 import com.cubrid.cubridquery.ui.connection.action.ViewDatabaseVersionAction;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 
 /**
- *
  * CUBRID Query browser menu provider
  *
  * @author pangqiren
  * @version 1.0 - 2010-11-8 created by pangqiren
  */
-public class CubridMenuProvider extends
-		MenuProvider {
-	protected final DatabaseNavigatorMenu databaseNavigatorMenu = new CQDatabaseNavigatorMenu();
-	/**
-	 * Build the context menu and menubar menu according to the selected cubrid
-	 * node
-	 *
-	 * @param manager the parent menu manager
-	 * @param node the ICubridNode object
-	 */
-	public void buildMenu(IMenuManager manager, ICubridNode node) {
-		String type = node.getType();
-		if (NodeType.DATABASE.equals(type)) {
-			buildDatabaseMenu(manager, node);
-		} else if (NodeType.GROUP.equals(type)) {
-			addActionToManager(manager, getAction(NewQueryConnAction.ID));
-			addActionToManager(manager, getAction(OpenQueryConnAction.ID));
-			manager.add(new Separator());
-			super.buildMenu(manager, node);
-		} else if (NodeType.USER_FOLDER.equals(type)) {
-			addActionToManager(manager, getAction(AddUserAction.ID));
-		} else if (NodeType.USER.equals(type)) {
-			addActionToManager(manager, getAction(EditUserAction.ID));
-			addActionToManager(manager, getAction(DeleteUserAction.ID));
-		} else {
-//			addActionToManager(manager, getAction(OpenSchemaEditorAction.ID));
-//			manager.add(new Separator());
-			super.buildMenu(manager, node);
-		}
+public class CubridMenuProvider extends MenuProvider {
+    protected final DatabaseNavigatorMenu databaseNavigatorMenu = new CQDatabaseNavigatorMenu();
+    /**
+     * Build the context menu and menubar menu according to the selected cubrid node
+     *
+     * @param manager the parent menu manager
+     * @param node the ICubridNode object
+     */
+    public void buildMenu(IMenuManager manager, ICubridNode node) {
+        String type = node.getType();
+        if (NodeType.DATABASE.equals(type)) {
+            buildDatabaseMenu(manager, node);
+        } else if (NodeType.GROUP.equals(type)) {
+            addActionToManager(manager, getAction(NewQueryConnAction.ID));
+            addActionToManager(manager, getAction(OpenQueryConnAction.ID));
+            manager.add(new Separator());
+            super.buildMenu(manager, node);
+        } else if (NodeType.USER_FOLDER.equals(type)) {
+            addActionToManager(manager, getAction(AddUserAction.ID));
+        } else if (NodeType.USER.equals(type)) {
+            addActionToManager(manager, getAction(EditUserAction.ID));
+            addActionToManager(manager, getAction(DeleteUserAction.ID));
+        } else {
+            //			addActionToManager(manager, getAction(OpenSchemaEditorAction.ID));
+            //			manager.add(new Separator());
+            super.buildMenu(manager, node);
+        }
 
-//		ActionManager.addActionToManager(manager,
-//				ActionManager.getInstance().getAction(HiddenElementAction.ID));
-		if (node.isContainer() && ShowHiddenElementsAction.isSupportedNode(node)) {
-			manager.add(new Separator());
-			IAction action = getAction(ShowHiddenElementsAction.ID);
-			ActionManager.addActionToManager(manager, action);
-		}
-		manager.update(true);
-	}
+        //		ActionManager.addActionToManager(manager,
+        //				ActionManager.getInstance().getAction(HiddenElementAction.ID));
+        if (node.isContainer() && ShowHiddenElementsAction.isSupportedNode(node)) {
+            manager.add(new Separator());
+            IAction action = getAction(ShowHiddenElementsAction.ID);
+            ActionManager.addActionToManager(manager, action);
+        }
+        manager.update(true);
+    }
 
-	/**
-	 *
-	 * Build the database menu
-	 *
-	 * @param manager the parent menu manager
-	 */
-	private void buildDatabaseMenu(IMenuManager manager, ICubridNode node) {
-		// Query Editor & Comparing Schema
-		manager.add(new Separator());
-		addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
-		manager.add(new Separator());
-		ActionManager.addActionToManager(manager, SchemaCompareWizardAction.ID);
-		ActionManager.addActionToManager(manager, DataCompareWizardAction.ID);
-//		manager.add(new Separator());
-//		ActionManager.addActionToManager(manager, OpenSchemaEditorAction.ID);
-		manager.add(new Separator());
-		ActionManager.addActionToManager(manager, ExportERwinAction.ID);
-		ActionManager.addActionToManager(manager, ImportERwinAction.ID);
-		// Export & Import Actions
-		manager.add(new Separator());
-		addActionToManager(manager, getAction(ExportWizardAction.ID));
-		addActionToManager(manager, getAction(ImportWizardAction.ID));
-		manager.add(new Separator());
-		addActionToManager(manager, getAction(ExportTableDefinitionAction.ID));
-		manager.add(new Separator());
+    /**
+     * Build the database menu
+     *
+     * @param manager the parent menu manager
+     */
+    private void buildDatabaseMenu(IMenuManager manager, ICubridNode node) {
+        // Query Editor & Comparing Schema
+        manager.add(new Separator());
+        addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
+        manager.add(new Separator());
+        ActionManager.addActionToManager(manager, SchemaCompareWizardAction.ID);
+        ActionManager.addActionToManager(manager, DataCompareWizardAction.ID);
+        //		manager.add(new Separator());
+        //		ActionManager.addActionToManager(manager, OpenSchemaEditorAction.ID);
+        manager.add(new Separator());
+        ActionManager.addActionToManager(manager, ExportERwinAction.ID);
+        ActionManager.addActionToManager(manager, ImportERwinAction.ID);
+        // Export & Import Actions
+        manager.add(new Separator());
+        addActionToManager(manager, getAction(ExportWizardAction.ID));
+        addActionToManager(manager, getAction(ImportWizardAction.ID));
+        manager.add(new Separator());
+        addActionToManager(manager, getAction(ExportTableDefinitionAction.ID));
+        manager.add(new Separator());
 
-		addInstallSchemaCommentAction(manager, node);
+        addInstallSchemaCommentAction(manager, node);
 
-//		addActionToManager(manager, getAction(RunSQLFileAction.ID));
-//		manager.add(new Separator());
-		addActionToManager(manager, getAction(ViewDatabaseVersionAction.ID));
-		addActionToManager(manager, getAction(OIDNavigatorAction.ID));
-		addActionToManager(manager, getAction(PropertyAction.ID));
-	}
+        //		addActionToManager(manager, getAction(RunSQLFileAction.ID));
+        //		manager.add(new Separator());
+        addActionToManager(manager, getAction(ViewDatabaseVersionAction.ID));
+        addActionToManager(manager, getAction(OIDNavigatorAction.ID));
+        addActionToManager(manager, getAction(PropertyAction.ID));
+    }
 
-	/**
-	 * addInstallSchemaCommentAction
-	 * @param manager
-	 * @param node
-	 */
-	private void addInstallSchemaCommentAction(IMenuManager manager, ICubridNode node) {
+    /**
+     * addInstallSchemaCommentAction
+     *
+     * @param manager
+     * @param node
+     */
+    private void addInstallSchemaCommentAction(IMenuManager manager, ICubridNode node) {
 
-		// Install Schema Comment
-		if (node instanceof CubridDatabase) {
+        // Install Schema Comment
+        if (node instanceof CubridDatabase) {
 
-			CubridDatabase cubridDatabase = (CubridDatabase) node;
+            CubridDatabase cubridDatabase = (CubridDatabase) node;
 
-			if (!cubridDatabase.isLogined()) {
-				return;
-			}
+            if (!cubridDatabase.isLogined()) {
+                return;
+            }
 
-			if (!CompatibleUtil.isCommentSupports(cubridDatabase.getDatabaseInfo())) {
-				addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
-				manager.add(new Separator());
-			}
-		}
-	}
+            if (!CompatibleUtil.isCommentSupports(cubridDatabase.getDatabaseInfo())) {
+                addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
+                manager.add(new Separator());
+            }
+        }
+    }
 
-	/**
-	 * @return the databaseNavigatorMenu
-	 */
-	public DatabaseNavigatorMenu getDatabaseNavigatorMenu() {
-		return databaseNavigatorMenu;
-	}
-
-
+    /** @return the databaseNavigatorMenu */
+    public DatabaseNavigatorMenu getDatabaseNavigatorMenu() {
+        return databaseNavigatorMenu;
+    }
 }

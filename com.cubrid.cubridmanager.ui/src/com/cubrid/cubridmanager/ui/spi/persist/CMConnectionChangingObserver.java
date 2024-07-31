@@ -29,56 +29,49 @@
  */
 package com.cubrid.cubridmanager.ui.spi.persist;
 
-import org.slf4j.Logger;
-
 import com.cubrid.common.configuration.jdbc.IJDBCConnecInfo;
 import com.cubrid.common.configuration.jdbc.IJDBCConnectionChangedObserver;
 import com.cubrid.common.configuration.jdbc.IJDBCInfoChangedSubject;
 import com.cubrid.common.core.util.LogUtil;
+import org.slf4j.Logger;
 
 /**
- *
- *
- * The CMConnectionChangingObserver
- * Description :
- * CMConnectionChangingObserver
- * Author : Kevin.Wang
+ * The CMConnectionChangingObserver Description : CMConnectionChangingObserver Author : Kevin.Wang
  * Create date : 2014-2-28
- *
  */
-public class CMConnectionChangingObserver implements
-		IJDBCConnectionChangedObserver {
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LogUtil.getLogger(CMConnectionChangingObserver.class);
+public class CMConnectionChangingObserver implements IJDBCConnectionChangedObserver {
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LogUtil.getLogger(CMConnectionChangingObserver.class);
 
-	/**
-	 * When add a new connection
-	 *
-	 * @param initiator IJDBCInfoChangedSubject who triggered the event.
-	 * @param newCon IJDBCConnecInfo
-	 */
-	public void afterAdd(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo newCon) {
-		//empty
-	}
+    /**
+     * When add a new connection
+     *
+     * @param initiator IJDBCInfoChangedSubject who triggered the event.
+     * @param newCon IJDBCConnecInfo
+     */
+    public void afterAdd(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo newCon) {
+        // empty
+    }
 
-	/**
-	 * When modify an existed connection.
-	 *
-	 * @param initiator IJDBCInfoChangedSubject who triggered the event.
-	 * @param oldCon IJDBCConnecInfo
-	 * @param newCon IJDBCConnecInfo
-	 */
-	public void afterModify(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo oldCon, IJDBCConnecInfo newCon) {
-		//empty
-	}
+    /**
+     * When modify an existed connection.
+     *
+     * @param initiator IJDBCInfoChangedSubject who triggered the event.
+     * @param oldCon IJDBCConnecInfo
+     * @param newCon IJDBCConnecInfo
+     */
+    public void afterModify(
+            IJDBCInfoChangedSubject initiator, IJDBCConnecInfo oldCon, IJDBCConnecInfo newCon) {
+        // empty
+    }
 
-	/**
-	 * Delete a connection.
-	 *
-	 * @param initiator IJDBCInfoChangedSubject who triggered the event.
-	 * @param delCon IJDBCConnecInfo
-	 */
-	public void afterDelete(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo delCon) {
-		//empty
-	}
+    /**
+     * Delete a connection.
+     *
+     * @param initiator IJDBCInfoChangedSubject who triggered the event.
+     * @param delCon IJDBCConnecInfo
+     */
+    public void afterDelete(IJDBCInfoChangedSubject initiator, IJDBCConnecInfo delCon) {
+        // empty
+    }
 }

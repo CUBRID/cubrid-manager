@@ -29,10 +29,6 @@
  */
 package com.cubrid.cubridquery.ui.common.navigator.dnd;
 
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
 import com.cubrid.common.ui.common.navigator.dnd.CubridItemDnDNodeHandler;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
@@ -41,53 +37,56 @@ import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.CQBGroupNodePersistManager;
 import com.cubrid.cubridquery.ui.connection.dialog.QueryConnDialog;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**
- *
  * Node drag and drop handler
  *
  * @author pangqiren
  * @version 1.0 - 2011-9-22 created by pangqiren
  */
-public class ItemNodeDnDHandler extends
-		CubridItemDnDNodeHandler {
-	/**
-	 * CubridItemDnDNodeHandler constructor
-	 *
-	 * @param nv CubridNavigatorView
-	 */
-	public ItemNodeDnDHandler(CubridNavigatorView nv) {
-		super(nv);
-	}
+public class ItemNodeDnDHandler extends CubridItemDnDNodeHandler {
+    /**
+     * CubridItemDnDNodeHandler constructor
+     *
+     * @param nv CubridNavigatorView
+     */
+    public ItemNodeDnDHandler(CubridNavigatorView nv) {
+        super(nv);
+    }
 
-	/**
-	 * Handle the node to be DND.
-	 *
-	 * @param dragNode the drag node
-	 * @param dropNode the drop node
-	 * @param insertBefore insert into the drop node before or after
-	 * @param dropOperation the drop operation type <code>DND.DROP_COPY</code>
-	 *        <code>DND.DROP_MOVE</code>
-	 * @return boolean whether to handle with the drop
-	 */
-	public boolean handle(ICubridNode dragNode, ICubridNode dropNode,
-			boolean insertBefore, int dropOperation) {
-		ICubridNode newDragNode = dragNode;
-		if (DND.DROP_COPY == dropOperation && dragNode instanceof CubridDatabase) {
-			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-			QueryConnDialog dialog = new QueryConnDialog(shell, (CubridDatabase) dragNode, true);
-			int returnCode = dialog.open();
-			if (returnCode == QueryConnDialog.CONNECT_ID || returnCode == QueryConnDialog.SAVE_ID) {
-				newDragNode = dialog.getDatabase();
+    /**
+     * Handle the node to be DND.
+     *
+     * @param dragNode the drag node
+     * @param dropNode the drop node
+     * @param insertBefore insert into the drop node before or after
+     * @param dropOperation the drop operation type <code>DND.DROP_COPY</code> <code>DND.DROP_MOVE
+     *     </code>
+     * @return boolean whether to handle with the drop
+     */
+    public boolean handle(
+            ICubridNode dragNode, ICubridNode dropNode, boolean insertBefore, int dropOperation) {
+        ICubridNode newDragNode = dragNode;
+        if (DND.DROP_COPY == dropOperation && dragNode instanceof CubridDatabase) {
+            Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+            QueryConnDialog dialog = new QueryConnDialog(shell, (CubridDatabase) dragNode, true);
+            int returnCode = dialog.open();
+            if (returnCode == QueryConnDialog.CONNECT_ID || returnCode == QueryConnDialog.SAVE_ID) {
+                newDragNode = dialog.getDatabase();
 
-				CQBDBNodePersistManager.getInstance().addDatabase((CubridDatabase) newDragNode, false);
-				CubridGroupNode groupNode = CQBGroupNodePersistManager.getInstance().getDefaultGroup();
-				groupNode.addChild(newDragNode);
-			} else {
-				return false;
-			}
-		}
+                CQBDBNodePersistManager.getInstance()
+                        .addDatabase((CubridDatabase) newDragNode, false);
+                CubridGroupNode groupNode =
+                        CQBGroupNodePersistManager.getInstance().getDefaultGroup();
+                groupNode.addChild(newDragNode);
+            } else {
+                return false;
+            }
+        }
 
-		return super.handle(newDragNode, dropNode, insertBefore, dropOperation);
-	}
+        return super.handle(newDragNode, dropNode, insertBefore, dropOperation);
+    }
 }

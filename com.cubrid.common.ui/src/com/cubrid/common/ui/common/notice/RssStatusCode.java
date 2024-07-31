@@ -31,13 +31,12 @@ package com.cubrid.common.ui.common.notice;
  * Status of get RSS data.
  *
  * @author Tobi
- *
  * @version 1.0
  * @date 2013-3-7
  */
 public final class RssStatusCode {
-	public static final int SUCCESS = 200;
-	public static final int SUCCESS_GET_FROM_CACHE = 201;
-	public static final int FAILED_NETWORK = 500;
-	public static final int FAILED_ERROR_FORMAT = 501;
+    public static final int SUCCESS = 200;
+    public static final int SUCCESS_GET_FROM_CACHE = 201;
+    public static final int FAILED_NETWORK = 500;
+    public static final int FAILED_ERROR_FORMAT = 501;
 }

@@ -29,18 +29,6 @@
  */
 package com.cubrid.common.ui.cubrid.database.erwin.action;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.JAXBException;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.ui.common.Messages;
@@ -51,163 +39,168 @@ import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
 import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetAllSchemaTask;
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.bind.JAXBException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- *
  * ExportToERXmlAction Description
- *
  *
  * @author Jason You
  * @version 1.0 - 2012-12-5 created by Jason You
  */
-public class ExportERwinAction extends
-		SelectionAction {
+public class ExportERwinAction extends SelectionAction {
 
-	public static final String ID = ExportERwinAction.class.getName();
+    public static final String ID = ExportERwinAction.class.getName();
 
-	/**
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public ExportERwinAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon, ImageDescriptor disabledIcon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-		this.setDisabledImageDescriptor(disabledIcon);
-	}
+    /**
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public ExportERwinAction(
+            Shell shell,
+            ISelectionProvider provider,
+            String text,
+            ImageDescriptor icon,
+            ImageDescriptor disabledIcon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+        this.setDisabledImageDescriptor(disabledIcon);
+    }
 
-	/**
-	 * @param shell
-	 * @param compareSchemaERXml
-	 * @param imageDescriptor
-	 */
-	public ExportERwinAction(Shell shell, String text, ImageDescriptor icon,
-			ImageDescriptor disabledIcon) {
-		this(shell, null, text, icon, disabledIcon);
-	}
+    /**
+     * @param shell
+     * @param compareSchemaERXml
+     * @param imageDescriptor
+     */
+    public ExportERwinAction(
+            Shell shell, String text, ImageDescriptor icon, ImageDescriptor disabledIcon) {
+        this(shell, null, text, icon, disabledIcon);
+    }
 
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    public boolean isSupported(Object obj) {
+        return true;
+    }
 
+    public void run() { // FIXME logic code move to core module
+        int selected = 0;
+        int logined = 0;
+        Object[] objects = getSelectedObj();
+        if (objects instanceof Object[]) {
+            for (Object object : objects) {
+                if (object instanceof CubridDatabase) {
+                    selected++;
+                    CubridDatabase database = (CubridDatabase) object;
+                    if (database.isLogined()) {
+                        logined++;
+                    }
+                }
+            }
+        }
 
-	public boolean isSupported(Object obj) {
-		return true;
-	}
+        if (selected > 1) {
+            CommonUITool.openWarningBox(
+                    com.cubrid.common.ui.cubrid.database.erwin.Messages.errERwinSelectLeastOneDb);
+            return;
+        }
 
+        if (selected <= 0) {
+            CommonUITool.openWarningBox(
+                    com.cubrid.common.ui.cubrid.database.erwin.Messages.errERwinSelectExportDb);
+            return;
+        }
 
-	public void run() { // FIXME logic code move to core module
-		int selected = 0;
-		int logined = 0;
-		Object[] objects = getSelectedObj();
-		if (objects instanceof Object[]) {
-			for (Object object : objects) {
-				if (object instanceof CubridDatabase) {
-					selected++;
-					CubridDatabase database = (CubridDatabase) object;
-					if (database.isLogined()) {
-						logined++;
-					}
-				}
-			}
-		}
+        if (logined <= 0) {
+            CommonUITool.openWarningBox(
+                    com.cubrid.common.ui.cubrid.database.erwin.Messages.errERwinSelectLoginedDb);
+            return;
+        }
 
-		if (selected > 1) {
-			CommonUITool.openWarningBox(com.cubrid.common.ui.cubrid.database.erwin.Messages.errERwinSelectLeastOneDb);
-			return;
-		}
+        FileDialog dialog = new FileDialog(getShell(), SWT.SAVE | SWT.APPLICATION_MODAL);
 
-		if (selected <= 0) {
-			CommonUITool.openWarningBox(com.cubrid.common.ui.cubrid.database.erwin.Messages.errERwinSelectExportDb);
-			return;
-		}
+        dialog.setFilterExtensions(new String[] {"*.xml"});
 
-		if (logined <= 0) {
-			CommonUITool.openWarningBox(com.cubrid.common.ui.cubrid.database.erwin.Messages.errERwinSelectLoginedDb);
-			return;
-		}
+        String filename = dialog.open();
 
-		FileDialog dialog = new FileDialog(getShell(), SWT.SAVE
-				| SWT.APPLICATION_MODAL);
+        if (filename == null) {
+            return;
+        }
 
-		dialog.setFilterExtensions(new String[] { "*.xml" });
+        if (filename.trim().equals("")) {
+            CommonUITool.openErrorBox(Messages.errFileNameIsEmpty);
+            return;
+        }
 
-		String filename = dialog.open();
+        for (Object obj : objects) {
+            if (!(obj instanceof CubridDatabase)) {
+                continue;
+            }
 
-		if (filename == null) {
-			return;
-		}
+            CubridDatabase database = (CubridDatabase) obj;
 
-		if (filename.trim().equals("")) {
-			CommonUITool.openErrorBox(Messages.errFileNameIsEmpty);
-			return;
-		}
+            final Map<String, SchemaInfo> allSchemaInfos = new HashMap<String, SchemaInfo>();
 
-		for (Object obj : objects) {
-			if (!(obj instanceof CubridDatabase)) {
-				continue;
-			}
+            TaskExecutor executor =
+                    new TaskExecutor() {
 
-			CubridDatabase database = (CubridDatabase) obj;
+                        public boolean exec(IProgressMonitor monitor) {
+                            for (ITask task : taskList) {
+                                if (task instanceof ExportSchemaTask) {
+                                    ExportSchemaTask eTask = (ExportSchemaTask) task;
+                                    try {
+                                        eTask.initMarshaller();
+                                    } catch (JAXBException e) {
+                                        e.printStackTrace();
+                                        eTask.cancel();
+                                        return false;
+                                    }
 
-			final Map<String, SchemaInfo> allSchemaInfos = new HashMap<String, SchemaInfo>();
+                                    monitor.setTaskName(Messages.msgGenerateInfo);
+                                    monitor.worked(50);
+                                    eTask.execute();
+                                    monitor.setTaskName(Messages.msgFinished);
+                                    monitor.worked(100);
+                                    monitor.done();
+                                } else if (task instanceof GetAllSchemaTask) {
+                                    monitor.beginTask(Messages.msgGenerateInfo, 100);
+                                    GetAllSchemaTask gTask = (GetAllSchemaTask) task;
+                                    gTask.execute();
+                                    if (task.getErrorMsg() == null) {
+                                        allSchemaInfos.putAll(gTask.getSchemas());
+                                    }
 
-			TaskExecutor executor = new TaskExecutor() {
+                                    if (allSchemaInfos.size() == 0) {
+                                        continue;
+                                    }
+                                }
+                            }
+                            return true;
+                        }
+                    };
 
+            ExportSchemaTask task = new ExportSchemaTask(allSchemaInfos, filename);
+            GetAllSchemaTask schemaTask = new GetAllSchemaTask(database.getDatabaseInfo());
+            executor.addTask(schemaTask);
+            executor.addTask(task);
 
-				public boolean exec(IProgressMonitor monitor) {
-					for (ITask task : taskList) {
-						if (task instanceof ExportSchemaTask) {
-							ExportSchemaTask eTask = (ExportSchemaTask) task;
-							try {
-								eTask.initMarshaller();
-							} catch (JAXBException e) {
-								e.printStackTrace();
-								eTask.cancel();
-								return false;
-							}
-
-							monitor.setTaskName(Messages.msgGenerateInfo);
-							monitor.worked(50);
-							eTask.execute();
-							monitor.setTaskName(Messages.msgFinished);
-							monitor.worked(100);
-							monitor.done();
-						} else if (task instanceof GetAllSchemaTask) {
-							monitor.beginTask(Messages.msgGenerateInfo, 100);
-							GetAllSchemaTask gTask = (GetAllSchemaTask) task;
-							gTask.execute();
-							if (task.getErrorMsg() == null) {
-								allSchemaInfos.putAll(gTask.getSchemas());
-							}
-
-							if (allSchemaInfos.size() == 0) {
-								continue;
-							}
-						}
-					}
-					return true;
-				}
-
-			};
-
-			ExportSchemaTask task = new ExportSchemaTask(allSchemaInfos,
-					filename);
-			GetAllSchemaTask schemaTask = new GetAllSchemaTask(
-					database.getDatabaseInfo());
-			executor.addTask(schemaTask);
-			executor.addTask(task);
-
-			new ExecTaskWithProgress(executor).busyCursorWhile();
-			if (executor.isSuccess()) {
-				CommonUITool.openInformationBox(Messages.titleExportSchema,
-						Messages.msgExportSuccess);
-			}
-		}
-	}
-
+            new ExecTaskWithProgress(executor).busyCursorWhile();
+            if (executor.isSuccess()) {
+                CommonUITool.openInformationBox(
+                        Messages.titleExportSchema, Messages.msgExportSuccess);
+            }
+        }
+    }
 }

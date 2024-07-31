@@ -27,8 +27,10 @@
  */
 package com.cubrid.cubridmanager.ui.host.editor;
 
+import com.cubrid.common.ui.spi.ResourceManager;
+import com.cubrid.common.ui.spi.TableLabelProvider;
+import com.cubrid.common.ui.spi.persist.BrokerConfPersistUtil;
 import java.util.HashMap;
-
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.swt.SWT;
@@ -36,53 +38,49 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
-import com.cubrid.common.ui.spi.ResourceManager;
-import com.cubrid.common.ui.spi.TableLabelProvider;
-import com.cubrid.common.ui.spi.persist.BrokerConfPersistUtil;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-2-17 created by fulei
  */
 @SuppressWarnings("all")
-public class UnifyHostCubridBrokerTableLabelProvider extends TableLabelProvider 
-implements ITableColorProvider , ITableFontProvider{
-	private Color[] bg = new Color[]{new Color(null, 255,255,255), new Color(null, 247,247,240)};
-	private Color[] force = new Color[]{new Color(null, 0,0,0), new Color(null, 0,0,0)};
-	private Object current = null;
-	private int currentColor = 0;
-	private Font brokerNameRowFont = new Font(Display.getCurrent(), "SansSerif", 10, SWT.BOLD);
-	
-	
-	public Color getForeground(Object element, int columnIndex) {
-		if (element instanceof HashMap) {
-			HashMap<String, String> valueMap = (HashMap<String, String>)element;
-			if (valueMap.get("0").equals(UnifyHostConfigEditor.BROKERNAMECOLUMNTITLE)
-					|| valueMap.get("0").equals(UnifyHostConfigEditor.SERVERNAMECOLUMNTITLE)) {
-				return ResourceManager.getColor(SWT.COLOR_BLUE);
-			}
-		}
-		return force[currentColor];
-	}
+public class UnifyHostCubridBrokerTableLabelProvider extends TableLabelProvider
+        implements ITableColorProvider, ITableFontProvider {
+    private Color[] bg =
+            new Color[] {new Color(null, 255, 255, 255), new Color(null, 247, 247, 240)};
+    private Color[] force = new Color[] {new Color(null, 0, 0, 0), new Color(null, 0, 0, 0)};
+    private Object current = null;
+    private int currentColor = 0;
+    private Font brokerNameRowFont = new Font(Display.getCurrent(), "SansSerif", 10, SWT.BOLD);
 
-	public Color getBackground(Object element, int columnIndex) {
-		if (current != element) {
-			currentColor = 1 - currentColor;
-			current = element;
-		}
-		return bg[currentColor];
-	}
-	
-	public Font getFont(Object element, int columnIndex) {
-		if (element instanceof HashMap) {
-			HashMap<String, String> valueMap = (HashMap<String, String>)element;
-			if ((valueMap.get("0").equals(BrokerConfPersistUtil.BROKERNAMECOLUMNTITLE)
-					|| valueMap.get("0").equals(UnifyHostConfigEditor.SERVERNAMECOLUMNTITLE))
-					&& columnIndex == 0) {
-				return brokerNameRowFont;
-			}
-		}
-		return null;
-	}
+    public Color getForeground(Object element, int columnIndex) {
+        if (element instanceof HashMap) {
+            HashMap<String, String> valueMap = (HashMap<String, String>) element;
+            if (valueMap.get("0").equals(UnifyHostConfigEditor.BROKERNAMECOLUMNTITLE)
+                    || valueMap.get("0").equals(UnifyHostConfigEditor.SERVERNAMECOLUMNTITLE)) {
+                return ResourceManager.getColor(SWT.COLOR_BLUE);
+            }
+        }
+        return force[currentColor];
+    }
+
+    public Color getBackground(Object element, int columnIndex) {
+        if (current != element) {
+            currentColor = 1 - currentColor;
+            current = element;
+        }
+        return bg[currentColor];
+    }
+
+    public Font getFont(Object element, int columnIndex) {
+        if (element instanceof HashMap) {
+            HashMap<String, String> valueMap = (HashMap<String, String>) element;
+            if ((valueMap.get("0").equals(BrokerConfPersistUtil.BROKERNAMECOLUMNTITLE)
+                            || valueMap.get("0")
+                                    .equals(UnifyHostConfigEditor.SERVERNAMECOLUMNTITLE))
+                    && columnIndex == 0) {
+                return brokerNameRowFont;
+            }
+        }
+        return null;
+    }
 }

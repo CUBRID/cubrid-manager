@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,17 +23,14 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridquery.ui.spi.action;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.common.action.BrokerConfOpenFileAction;
 import com.cubrid.common.ui.common.action.BrokerLogParserAction;
 import com.cubrid.common.ui.common.action.BrokerLogTopMergeAction;
-import com.cubrid.common.ui.common.action.BrokerConfOpenFileAction;
 import com.cubrid.common.ui.common.action.GroupPropertyAction;
 import com.cubrid.common.ui.common.action.OpenTargetAction;
 import com.cubrid.common.ui.cubrid.user.action.AddUserAction;
@@ -65,180 +62,241 @@ import com.cubrid.cubridquery.ui.connection.action.PasteQueryConnAction;
 import com.cubrid.cubridquery.ui.connection.action.RenameConnectionAction;
 import com.cubrid.cubridquery.ui.connection.action.ViewDatabaseVersionAction;
 import com.cubrid.cubridquery.ui.spi.Messages;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- * 
  * This class is responsible to build CUBRID Query menu and toolbar action
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-public class CubridActionBuilder extends
-		ActionBuilder {
-	private static CubridActionBuilder instance;
+public class CubridActionBuilder extends ActionBuilder {
+    private static CubridActionBuilder instance;
 
-	/**
-	 * Get the ApplicationHeartBeat
-	 * 
-	 * @return
-	 */
-	public static void init() {
-		synchronized (CubridActionBuilder.class) {
-			if (instance == null) {
-				instance = new CubridActionBuilder();
-			}
-		}
-	}
-	
-	private CubridActionBuilder() {
-		makeActions(null);
-	}
+    /**
+     * Get the ApplicationHeartBeat
+     *
+     * @return
+     */
+    public static void init() {
+        synchronized (CubridActionBuilder.class) {
+            if (instance == null) {
+                instance = new CubridActionBuilder();
+            }
+        }
+    }
 
-	/**
-	 * 
-	 * Make all actions for CUBRID Manager menu and toolbar
-	 * 
-	 * @param window the workbench window
-	 */
-	protected void makeActions(Shell shell) {
-		super.makeActions(shell);
+    private CubridActionBuilder() {
+        makeActions(null);
+    }
 
-		// common action
-		IAction propertyAction = new PropertyAction(shell, Messages.propertyActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/property.png"));
-		ActionManager.getInstance().registerAction(propertyAction);
+    /**
+     * Make all actions for CUBRID Manager menu and toolbar
+     *
+     * @param window the workbench window
+     */
+    protected void makeActions(Shell shell) {
+        super.makeActions(shell);
 
-		IAction refreshAction = new RefreshAction(shell, Messages.refreshActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/refresh.png"));
-		ActionManager.getInstance().registerAction(refreshAction);
+        // common action
+        IAction propertyAction =
+                new PropertyAction(
+                        shell,
+                        Messages.propertyActionName,
+                        CubridQueryUIPlugin.getImageDescriptor("icons/action/property.png"));
+        ActionManager.getInstance().registerAction(propertyAction);
 
-		IAction queryNewAction = new QueryNewAction(shell,
-				com.cubrid.common.ui.spi.Messages.queryNewActionName,
-				CommonUIPlugin.getImageDescriptor("icons/action/new_query.png"),
-				CommonUIPlugin.getImageDescriptor("icons/action/new_query_disabled.png"));
-		ActionManager.getInstance().registerAction(queryNewAction);
+        IAction refreshAction =
+                new RefreshAction(
+                        shell,
+                        Messages.refreshActionName,
+                        CubridQueryUIPlugin.getImageDescriptor("icons/action/refresh.png"));
+        ActionManager.getInstance().registerAction(refreshAction);
 
-		IAction queryNewCustomAction = new QueryNewCustomAction(shell,
-				com.cubrid.common.ui.spi.Messages.queryNewCustomActionName,
-				CommonUIPlugin.getImageDescriptor("icons/action/new_query.png"),
-				CommonUIPlugin.getImageDescriptor("icons/action/new_query_disabled.png"));
-		ActionManager.getInstance().registerAction(queryNewCustomAction);
+        IAction queryNewAction =
+                new QueryNewAction(
+                        shell,
+                        com.cubrid.common.ui.spi.Messages.queryNewActionName,
+                        CommonUIPlugin.getImageDescriptor("icons/action/new_query.png"),
+                        CommonUIPlugin.getImageDescriptor("icons/action/new_query_disabled.png"));
+        ActionManager.getInstance().registerAction(queryNewAction);
 
-		//database query connection action
-		IAction addQueryConnAction = new NewQueryConnAction(shell, Messages.createConnActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/connection_create.png"));
-		ActionManager.getInstance().registerAction(addQueryConnAction);
+        IAction queryNewCustomAction =
+                new QueryNewCustomAction(
+                        shell,
+                        com.cubrid.common.ui.spi.Messages.queryNewCustomActionName,
+                        CommonUIPlugin.getImageDescriptor("icons/action/new_query.png"),
+                        CommonUIPlugin.getImageDescriptor("icons/action/new_query_disabled.png"));
+        ActionManager.getInstance().registerAction(queryNewCustomAction);
 
-		IAction dropQueryConnAction = new DeleteQueryConnAction(shell, Messages.dropConnActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/connection_delete.png"));
-		ActionManager.getInstance().registerAction(dropQueryConnAction);
+        // database query connection action
+        IAction addQueryConnAction =
+                new NewQueryConnAction(
+                        shell,
+                        Messages.createConnActionName,
+                        CubridQueryUIPlugin.getImageDescriptor(
+                                "icons/action/connection_create.png"));
+        ActionManager.getInstance().registerAction(addQueryConnAction);
 
-		IAction openQueryConnAction = new OpenQueryConnAction(shell, Messages.openConnActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/connection_open.png"));
-		ActionManager.getInstance().registerAction(openQueryConnAction);
+        IAction dropQueryConnAction =
+                new DeleteQueryConnAction(
+                        shell,
+                        Messages.dropConnActionName,
+                        CubridQueryUIPlugin.getImageDescriptor(
+                                "icons/action/connection_delete.png"));
+        ActionManager.getInstance().registerAction(dropQueryConnAction);
 
-		IAction editQueryConnAction = new EditQueryConnAction(shell, Messages.editConnActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/connection_edit.png"));
-		ActionManager.getInstance().registerAction(editQueryConnAction);
+        IAction openQueryConnAction =
+                new OpenQueryConnAction(
+                        shell,
+                        Messages.openConnActionName,
+                        CubridQueryUIPlugin.getImageDescriptor("icons/action/connection_open.png"));
+        ActionManager.getInstance().registerAction(openQueryConnAction);
 
-		IAction closeQueryConnAction = new CloseQueryConnAction(shell,
-				Messages.closeConnActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/connection_close.png"));
-		ActionManager.getInstance().registerAction(closeQueryConnAction);
+        IAction editQueryConnAction =
+                new EditQueryConnAction(
+                        shell,
+                        Messages.editConnActionName,
+                        CubridQueryUIPlugin.getImageDescriptor("icons/action/connection_edit.png"));
+        ActionManager.getInstance().registerAction(editQueryConnAction);
 
-		IAction copyQueryConnAction = new CopyQueryConnAction(shell, Messages.copyConnActionName,
-				null);
-		ActionManager.getInstance().registerAction(copyQueryConnAction);
+        IAction closeQueryConnAction =
+                new CloseQueryConnAction(
+                        shell,
+                        Messages.closeConnActionName,
+                        CubridQueryUIPlugin.getImageDescriptor(
+                                "icons/action/connection_close.png"));
+        ActionManager.getInstance().registerAction(closeQueryConnAction);
 
-		IAction pasteQueryConnAction = new PasteQueryConnAction(shell,
-				Messages.pasteConnActionName, null);
-		ActionManager.getInstance().registerAction(pasteQueryConnAction);
+        IAction copyQueryConnAction =
+                new CopyQueryConnAction(shell, Messages.copyConnActionName, null);
+        ActionManager.getInstance().registerAction(copyQueryConnAction);
 
-		IAction renameConnectionAction = new RenameConnectionAction(shell,
-				Messages.pasteConnActionName, null);
-		ActionManager.getInstance().registerAction(renameConnectionAction);
+        IAction pasteQueryConnAction =
+                new PasteQueryConnAction(shell, Messages.pasteConnActionName, null);
+        ActionManager.getInstance().registerAction(pasteQueryConnAction);
 
-		IAction viewServerVersionAction = new ViewDatabaseVersionAction(shell,
-				Messages.viewDatabaseVersionActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/menu_version.png"),
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/menu_version_disabled.png"));
-		ActionManager.getInstance().registerAction(viewServerVersionAction);
+        IAction renameConnectionAction =
+                new RenameConnectionAction(shell, Messages.pasteConnActionName, null);
+        ActionManager.getInstance().registerAction(renameConnectionAction);
 
-		IAction groupSettingAction = new CQBGroupSettingAction(shell,
-				com.cubrid.common.ui.spi.Messages.groupSettingAction,
-				CommonUIPlugin.getImageDescriptor("icons/navigator/group_edit.png"),
-				CommonUIPlugin.getImageDescriptor("icons/navigator/group_edit_disabled.png"), null);
-		ActionManager.getInstance().registerAction(groupSettingAction);
+        IAction viewServerVersionAction =
+                new ViewDatabaseVersionAction(
+                        shell,
+                        Messages.viewDatabaseVersionActionName,
+                        CubridQueryUIPlugin.getImageDescriptor("icons/action/menu_version.png"),
+                        CubridQueryUIPlugin.getImageDescriptor(
+                                "icons/action/menu_version_disabled.png"));
+        ActionManager.getInstance().registerAction(viewServerVersionAction);
 
-		GroupPropertyAction groupPropertyAction = new GroupPropertyAction(shell,
-				com.cubrid.common.ui.spi.Messages.groupNodeProperty, null, null);
-		groupPropertyAction.setNavigatorViewId(CubridQueryNavigatorView.ID);
-		ActionManager.getInstance().registerAction(groupPropertyAction);
+        IAction groupSettingAction =
+                new CQBGroupSettingAction(
+                        shell,
+                        com.cubrid.common.ui.spi.Messages.groupSettingAction,
+                        CommonUIPlugin.getImageDescriptor("icons/navigator/group_edit.png"),
+                        CommonUIPlugin.getImageDescriptor(
+                                "icons/navigator/group_edit_disabled.png"),
+                        null);
+        ActionManager.getInstance().registerAction(groupSettingAction);
 
-		ImportConnsAction importConnsAction = new ImportConnsAction(Messages.importConnsAction,
-				CommonUIPlugin.getImageDescriptor("icons/action/table_data_import.png"));
-		ActionManager.getInstance().registerAction(importConnsAction);
+        GroupPropertyAction groupPropertyAction =
+                new GroupPropertyAction(
+                        shell, com.cubrid.common.ui.spi.Messages.groupNodeProperty, null, null);
+        groupPropertyAction.setNavigatorViewId(CubridQueryNavigatorView.ID);
+        ActionManager.getInstance().registerAction(groupPropertyAction);
 
-		IAction connectionUrlImportAction = new ConnectionUrlImportAction(shell,
-				Messages.createConnByURLActionName,
-				CubridQueryUIPlugin.getImageDescriptor("icons/action/import_connection.png"));
-		ActionManager.getInstance().registerAction(connectionUrlImportAction);
+        ImportConnsAction importConnsAction =
+                new ImportConnsAction(
+                        Messages.importConnsAction,
+                        CommonUIPlugin.getImageDescriptor("icons/action/table_data_import.png"));
+        ActionManager.getInstance().registerAction(importConnsAction);
 
-		IAction connectionExportAction = new ConnectionExportAction(shell,
-				Messages.exportServerAction,
-				CommonUIPlugin.getImageDescriptor("icons/action/export_connection.png"));
-		ActionManager.getInstance().registerAction(connectionExportAction);
+        IAction connectionUrlImportAction =
+                new ConnectionUrlImportAction(
+                        shell,
+                        Messages.createConnByURLActionName,
+                        CubridQueryUIPlugin.getImageDescriptor(
+                                "icons/action/import_connection.png"));
+        ActionManager.getInstance().registerAction(connectionUrlImportAction);
 
-		IAction importServerAction = new ConnectionImportAction(shell, Messages.importServerAction,
-				CommonUIPlugin.getImageDescriptor("icons/action/import_connection.png"));
-		ActionManager.getInstance().registerAction(importServerAction);
+        IAction connectionExportAction =
+                new ConnectionExportAction(
+                        shell,
+                        Messages.exportServerAction,
+                        CommonUIPlugin.getImageDescriptor("icons/action/export_connection.png"));
+        ActionManager.getInstance().registerAction(connectionExportAction);
 
-		IAction brokerLogTopMergeAction = new BrokerLogTopMergeAction(
-				Messages.brokerLogTopMergeAction);
-		ActionManager.getInstance().registerAction(brokerLogTopMergeAction);
+        IAction importServerAction =
+                new ConnectionImportAction(
+                        shell,
+                        Messages.importServerAction,
+                        CommonUIPlugin.getImageDescriptor("icons/action/import_connection.png"));
+        ActionManager.getInstance().registerAction(importServerAction);
 
-		IAction brokerLogParseAction = new BrokerLogParserAction(Messages.brokerLogParseAction);
-		ActionManager.getInstance().registerAction(brokerLogParseAction);
+        IAction brokerLogTopMergeAction =
+                new BrokerLogTopMergeAction(Messages.brokerLogTopMergeAction);
+        ActionManager.getInstance().registerAction(brokerLogTopMergeAction);
 
-		//cubrid broker conf  edit utility
-		IAction cubridBrokerConfOpenFileAction = new BrokerConfOpenFileAction(
-				Messages.cubridBrokerConfOpenFileActionName);
-		ActionManager.getInstance().registerAction(cubridBrokerConfOpenFileAction);
+        IAction brokerLogParseAction = new BrokerLogParserAction(Messages.brokerLogParseAction);
+        ActionManager.getInstance().registerAction(brokerLogParseAction);
 
-		// Object Info tab on the query editor
-		OpenTargetAction openObjectTabAction = new OpenTargetAction(shell,
-				com.cubrid.common.ui.spi.Messages.msgQuickTabAction,
-				CommonUIPlugin.getImageDescriptor("icons/navigator/quick_tab.png"),
-				CommonUIPlugin.getImageDescriptor("icons/navigator/quick_tab_disabled.png"));
-		ActionManager.getInstance().registerAction(openObjectTabAction);
+        // cubrid broker conf  edit utility
+        IAction cubridBrokerConfOpenFileAction =
+                new BrokerConfOpenFileAction(Messages.cubridBrokerConfOpenFileActionName);
+        ActionManager.getInstance().registerAction(cubridBrokerConfOpenFileAction);
 
-		// database user related action
-		IAction editUserAction = new EditUserAction(shell, Messages.editUserActionName,
-				CommonUIPlugin.getImageDescriptor("icons/action/user_edit.png"),
-				new CQBPersisteManager());
-		ActionManager.getInstance().registerAction(editUserAction);
+        // Object Info tab on the query editor
+        OpenTargetAction openObjectTabAction =
+                new OpenTargetAction(
+                        shell,
+                        com.cubrid.common.ui.spi.Messages.msgQuickTabAction,
+                        CommonUIPlugin.getImageDescriptor("icons/navigator/quick_tab.png"),
+                        CommonUIPlugin.getImageDescriptor(
+                                "icons/navigator/quick_tab_disabled.png"));
+        ActionManager.getInstance().registerAction(openObjectTabAction);
 
-		IAction addUserAction = new AddUserAction(shell, Messages.addUserActionName,
-				CommonUIPlugin.getImageDescriptor("icons/action/user_add.png"),
-				CommonUIPlugin.getImageDescriptor("icons/action/user_add_disabled.png"));
-		ActionManager.getInstance().registerAction(addUserAction);
+        // database user related action
+        IAction editUserAction =
+                new EditUserAction(
+                        shell,
+                        Messages.editUserActionName,
+                        CommonUIPlugin.getImageDescriptor("icons/action/user_edit.png"),
+                        new CQBPersisteManager());
+        ActionManager.getInstance().registerAction(editUserAction);
 
-		IAction deleteUserAction = new DeleteUserAction(shell, Messages.deleteUserActionName,
-				CommonUIPlugin.getImageDescriptor("icons/action/user_delete.png"));
-		ActionManager.getInstance().registerAction(deleteUserAction);
+        IAction addUserAction =
+                new AddUserAction(
+                        shell,
+                        Messages.addUserActionName,
+                        CommonUIPlugin.getImageDescriptor("icons/action/user_add.png"),
+                        CommonUIPlugin.getImageDescriptor("icons/action/user_add_disabled.png"));
+        ActionManager.getInstance().registerAction(addUserAction);
 
-		IAction action = null;
+        IAction deleteUserAction =
+                new DeleteUserAction(
+                        shell,
+                        Messages.deleteUserActionName,
+                        CommonUIPlugin.getImageDescriptor("icons/action/user_delete.png"));
+        ActionManager.getInstance().registerAction(deleteUserAction);
 
-		action = new SchemaCommentInstallAction(shell,
-				com.cubrid.common.ui.spi.Messages.schemaCommentInstallActionName,
-				CommonUIPlugin.getImageDescriptor("icons/navigator/quick_tab.png"), null);
-		ActionManager.getInstance().registerAction(action);
+        IAction action = null;
 
-		action = new ChangeShardAction(shell,
-				com.cubrid.common.ui.spi.Messages.changeShardActionName,
-				CommonUIPlugin.getImageDescriptor("icons/queryeditor/change_shard_id.png"));
-		ActionManager.getInstance().registerAction(action);
+        action =
+                new SchemaCommentInstallAction(
+                        shell,
+                        com.cubrid.common.ui.spi.Messages.schemaCommentInstallActionName,
+                        CommonUIPlugin.getImageDescriptor("icons/navigator/quick_tab.png"),
+                        null);
+        ActionManager.getInstance().registerAction(action);
 
-		ActionManager.getInstance().setMenuProvider(new CubridMenuProvider());
-	}
+        action =
+                new ChangeShardAction(
+                        shell,
+                        com.cubrid.common.ui.spi.Messages.changeShardActionName,
+                        CommonUIPlugin.getImageDescriptor("icons/queryeditor/change_shard_id.png"));
+        ActionManager.getInstance().registerAction(action);
+
+        ActionManager.getInstance().setMenuProvider(new CubridMenuProvider());
+    }
 }

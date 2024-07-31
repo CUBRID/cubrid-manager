@@ -29,16 +29,6 @@
  */
 package com.cubrid.common.ui.common.query.autosave;
 
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.DateUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.StringUtil;
@@ -50,6 +40,14 @@ import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.common.ui.spi.model.RestorableQueryEditorInfo;
 import com.cubrid.common.ui.spi.persist.ApplicationPersistUtil;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
 
 /**
  * The Check Query Editor Task
@@ -57,106 +55,117 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
  * @author Kevin.Wang
  * @version 1.0 - Jun 5, 2012 created by Kevin.Wang
  */
-public class CheckQueryEditorTask implements IHeartBeatTask { // FIXME logic code move to core module
-	private static final Logger LOGGER = LogUtil.getLogger(CheckQueryEditorTask.class);
+public class CheckQueryEditorTask
+        implements IHeartBeatTask { // FIXME logic code move to core module
+    private static final Logger LOGGER = LogUtil.getLogger(CheckQueryEditorTask.class);
 
-	private int EXECUTE_TIME = 10;/*The unit is second*/
-	private int count = 0;
-	private static CheckQueryEditorTask instance;
+    private int EXECUTE_TIME = 10; /*The unit is second*/
+    private int count = 0;
+    private static CheckQueryEditorTask instance;
 
-	public static CheckQueryEditorTask getInstance() {
-		synchronized (HeartBeatTaskManager.class) {
-			if (instance == null) {
-				instance = new CheckQueryEditorTask();
-			}
-		}
-		return instance;
-	}
+    public static CheckQueryEditorTask getInstance() {
+        synchronized (HeartBeatTaskManager.class) {
+            if (instance == null) {
+                instance = new CheckQueryEditorTask();
+            }
+        }
+        return instance;
+    }
 
-	private CheckQueryEditorTask() {
-	}
+    private CheckQueryEditorTask() {}
 
-	public static String getQuery(RestorableQueryEditorInfo editorStatus) {
-		final DateFormat formater = DateUtil.getDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+    public static String getQuery(RestorableQueryEditorInfo editorStatus) {
+        final DateFormat formater = DateUtil.getDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
-		if (editorStatus.getQueryContents() == null) {
-			return "";
-		}
+        if (editorStatus.getQueryContents() == null) {
+            return "";
+        }
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("-- [Query Editor Autosave] Host: ").append(editorStatus.getServerName());
-		sb.append(", Database: ").append(editorStatus.getDatabaseName());
-		sb.append(", Date: ").append(formater.format(editorStatus.getCreatedTime()));
-		sb.append(" --").append(StringUtil.NEWLINE).append(StringUtil.NEWLINE);
+        StringBuilder sb = new StringBuilder();
+        sb.append("-- [Query Editor Autosave] Host: ").append(editorStatus.getServerName());
+        sb.append(", Database: ").append(editorStatus.getDatabaseName());
+        sb.append(", Date: ").append(formater.format(editorStatus.getCreatedTime()));
+        sb.append(" --").append(StringUtil.NEWLINE).append(StringUtil.NEWLINE);
 
-		String sql = editorStatus.getQueryContents().trim();
-		if (sql.startsWith("-- [Query Editor Autosave]")) {
-			int endPos = sql.indexOf("\n");
-			if (endPos != -1) {
-				sql = sql.substring(endPos + 1).trim();
-			}
-		}
-		sb.append(sql);
-		return sb.toString();
-	}
+        String sql = editorStatus.getQueryContents().trim();
+        if (sql.startsWith("-- [Query Editor Autosave]")) {
+            int endPos = sql.indexOf("\n");
+            if (endPos != -1) {
+                sql = sql.substring(endPos + 1).trim();
+            }
+        }
+        sb.append(sql);
+        return sb.toString();
+    }
 
-	public void beat() {
-		if (count < EXECUTE_TIME) {
-			count++;
-		} else {
-			doSave();
-			count = 0;
-		}
-	}
+    public void beat() {
+        if (count < EXECUTE_TIME) {
+            count++;
+        } else {
+            doSave();
+            count = 0;
+        }
+    }
 
-	public void stop() {
-		ApplicationPersistUtil.getInstance().clearAllEditorStatus();
-		ApplicationPersistUtil.getInstance().save();
-	}
+    public void stop() {
+        ApplicationPersistUtil.getInstance().clearAllEditorStatus();
+        ApplicationPersistUtil.getInstance().save();
+    }
 
-	public void doSave() {
-		ApplicationPersistUtil.getInstance().clearAllEditorStatus();
+    public void doSave() {
+        ApplicationPersistUtil.getInstance().clearAllEditorStatus();
 
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				Date createTime = new Date();
-				List<QueryEditorPart> editorPartList = QueryEditorUtil.getAllQueryEditorPart();
-				for (QueryEditorPart editor : editorPartList) {
-					ArrayList<RestorableQueryEditorInfo> sqlTabItemList = new ArrayList<RestorableQueryEditorInfo>();
-					for (CombinedQueryEditorComposite combinedQueryEditorComposite: editor.getAllCombinedQueryEditorComposite()) {
-						StyledText text = combinedQueryEditorComposite.getSqlEditorComp().getText();
-						if (text == null) {
-							LOGGER.warn("The editor.getSqlTextEditor() is a null.");
-							continue;
-						}
-						if (StringUtil.isEmpty(text.getText())) {
-							LOGGER.warn("The text.getText() is a null.");
-							continue;
-						}
+        Display.getDefault()
+                .syncExec(
+                        new Runnable() {
+                            public void run() {
+                                Date createTime = new Date();
+                                List<QueryEditorPart> editorPartList =
+                                        QueryEditorUtil.getAllQueryEditorPart();
+                                for (QueryEditorPart editor : editorPartList) {
+                                    ArrayList<RestorableQueryEditorInfo> sqlTabItemList =
+                                            new ArrayList<RestorableQueryEditorInfo>();
+                                    for (CombinedQueryEditorComposite combinedQueryEditorComposite :
+                                            editor.getAllCombinedQueryEditorComposite()) {
+                                        StyledText text =
+                                                combinedQueryEditorComposite
+                                                        .getSqlEditorComp()
+                                                        .getText();
+                                        if (text == null) {
+                                            LOGGER.warn("The editor.getSqlTextEditor() is a null.");
+                                            continue;
+                                        }
+                                        if (StringUtil.isEmpty(text.getText())) {
+                                            LOGGER.warn("The text.getText() is a null.");
+                                            continue;
+                                        }
 
-						CubridDatabase cubridDatabase = editor.getSelectedDatabase();
-						RestorableQueryEditorInfo editorStatus = new RestorableQueryEditorInfo();
-						if (cubridDatabase != null) {
-							DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
-							if (dbInfo != null) {
-								editorStatus.setDatabaseName(dbInfo.getDbName());
-							}
+                                        CubridDatabase cubridDatabase =
+                                                editor.getSelectedDatabase();
+                                        RestorableQueryEditorInfo editorStatus =
+                                                new RestorableQueryEditorInfo();
+                                        if (cubridDatabase != null) {
+                                            DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
+                                            if (dbInfo != null) {
+                                                editorStatus.setDatabaseName(dbInfo.getDbName());
+                                            }
 
-							CubridServer cubridServer = cubridDatabase.getServer();
-							if (cubridServer != null) {
-								editorStatus.setServerName(cubridServer.getId());
-							}
-						}
+                                            CubridServer cubridServer = cubridDatabase.getServer();
+                                            if (cubridServer != null) {
+                                                editorStatus.setServerName(cubridServer.getId());
+                                            }
+                                        }
 
-						editorStatus.setQueryContents(text.getText());
-						editorStatus.setCreatedTime(createTime);
-						sqlTabItemList.add(editorStatus);
-					}
-					ApplicationPersistUtil.getInstance().addEditorStatus(sqlTabItemList);
-				}
-			}
-		});
+                                        editorStatus.setQueryContents(text.getText());
+                                        editorStatus.setCreatedTime(createTime);
+                                        sqlTabItemList.add(editorStatus);
+                                    }
+                                    ApplicationPersistUtil.getInstance()
+                                            .addEditorStatus(sqlTabItemList);
+                                }
+                            }
+                        });
 
-		ApplicationPersistUtil.getInstance().save();
-	}
+        ApplicationPersistUtil.getInstance().save();
+    }
 }

@@ -29,9 +29,10 @@ package com.cubrid.common.ui.common.control;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
+import com.cubrid.common.ui.spi.model.BrokerConfig;
+import com.cubrid.common.ui.spi.persist.BrokerConfPersistUtil;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolItem;
@@ -41,104 +42,100 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-import com.cubrid.common.ui.spi.model.BrokerConfig;
-import com.cubrid.common.ui.spi.persist.BrokerConfPersistUtil;
-
 /**
  * Broker config base editor part
  *
  * @author fulei
  * @version 1.0 - 2012-11-8 created by fulei
  */
-public abstract class AbstractBrokerConfigEditorPart extends
-		EditorPart {
-	public final BrokerConfPersistUtil brokerConfPersistUtil = new BrokerConfPersistUtil();
-	public BrokerConfigEditComposite editorComp;
-	public ToolItem addPropItem;
-	public ToolItem deletePropItem;
-	public String defaultExportFilePath;
-	public String defaultExportFileName;
-	public String defaultExportFileExtName;
-	public String defaultExportFileCharset;
-	public boolean isDirty = false;
+public abstract class AbstractBrokerConfigEditorPart extends EditorPart {
+    public final BrokerConfPersistUtil brokerConfPersistUtil = new BrokerConfPersistUtil();
+    public BrokerConfigEditComposite editorComp;
+    public ToolItem addPropItem;
+    public ToolItem deletePropItem;
+    public String defaultExportFilePath;
+    public String defaultExportFileName;
+    public String defaultExportFileExtName;
+    public String defaultExportFileCharset;
+    public boolean isDirty = false;
 
-	/**
-	 * Create part controls
-	 *
-	 * @param parent of the controls
-	 */
-	public abstract void createPartControl(Composite parent);
+    /**
+     * Create part controls
+     *
+     * @param parent of the controls
+     */
+    public abstract void createPartControl(Composite parent);
 
-	public abstract void createToolBarComp(Composite parent);
+    public abstract void createToolBarComp(Composite parent);
 
-	public abstract BrokerConfig parseCommonTableValueToBrokerConfig(
-			List<Map<String, String>> dataList, int tableColumnCount);
+    public abstract BrokerConfig parseCommonTableValueToBrokerConfig(
+            List<Map<String, String>> dataList, int tableColumnCount);
 
-	public abstract BrokerConfig parseStringLineToBrokerConfig(String content);
+    public abstract BrokerConfig parseStringLineToBrokerConfig(String content);
 
-	/**
-	 * Parse a CubridBrokerConfig model to a document string
-	 *
-	 * @param config CubridBrokerConfig
-	 * @return String
-	 */
-	public abstract String parseBrokerConfigToDocumnetString(BrokerConfig config);
+    /**
+     * Parse a CubridBrokerConfig model to a document string
+     *
+     * @param config CubridBrokerConfig
+     * @return String
+     */
+    public abstract String parseBrokerConfigToDocumnetString(BrokerConfig config);
 
-	/**
-	 * Parse CubridBrokerConfig model to common table value
-	 *
-	 * @param config
-	 * @return
-	 */
-	public abstract List<Map<String, String>> parseBrokerConfigToCommonTableValue(
-			BrokerConfig config);
+    /**
+     * Parse CubridBrokerConfig model to common table value
+     *
+     * @param config
+     * @return
+     */
+    public abstract List<Map<String, String>> parseBrokerConfigToCommonTableValue(
+            BrokerConfig config);
 
-	public abstract void init(IEditorSite site, IEditorInput input) throws PartInitException;
+    public abstract void init(IEditorSite site, IEditorInput input) throws PartInitException;
 
-	public void doSaveAs() {
-		noOp();
-	}
+    public void doSaveAs() {
+        noOp();
+    }
 
-	public void setDirty(boolean isDirty) {
-		this.isDirty = isDirty;
-		firePropertyChange(IEditorPart.PROP_DIRTY);
-	}
+    public void setDirty(boolean isDirty) {
+        this.isDirty = isDirty;
+        firePropertyChange(IEditorPart.PROP_DIRTY);
+    }
 
-	/**
-	 * Set edit table item enable
-	 *
-	 * @param enabled
-	 */
-	public void setEditTableItemEnabled(boolean enabled) {
-		addPropItem.setEnabled(enabled);
-		deletePropItem.setEnabled(enabled);
-	}
+    /**
+     * Set edit table item enable
+     *
+     * @param enabled
+     */
+    public void setEditTableItemEnabled(boolean enabled) {
+        addPropItem.setEnabled(enabled);
+        deletePropItem.setEnabled(enabled);
+    }
 
-	public void saveBrokerConfAsFile() {
-		noOp();
-	}
+    public void saveBrokerConfAsFile() {
+        noOp();
+    }
 
-	public void doSave(IProgressMonitor monitor) {
-		firePropertyChange(PROP_DIRTY);
-	}
+    public void doSave(IProgressMonitor monitor) {
+        firePropertyChange(PROP_DIRTY);
+    }
 
-	public void fireChanged() {
-		firePropertyChange(PROP_DIRTY);
-	}
+    public void fireChanged() {
+        firePropertyChange(PROP_DIRTY);
+    }
 
-	public boolean isDirty() {
-		return isDirty;
-	}
+    public boolean isDirty() {
+        return isDirty;
+    }
 
-	public boolean isSaveAsAllowed() {
-		return true;
-	}
+    public boolean isSaveAsAllowed() {
+        return true;
+    }
 
-	public void setFocus() {
-		noOp();
-	}
+    public void setFocus() {
+        noOp();
+    }
 
-	public BrokerConfPersistUtil getBrokerConfPersistUtil() {
-		return brokerConfPersistUtil;
-	}
+    public BrokerConfPersistUtil getBrokerConfPersistUtil() {
+        return brokerConfPersistUtil;
+    }
 }

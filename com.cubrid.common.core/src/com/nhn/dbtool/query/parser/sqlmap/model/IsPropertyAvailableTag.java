@@ -27,17 +27,16 @@
  */
 package com.nhn.dbtool.query.parser.sqlmap.model;
 
-
 /**
- * A definition of isPropertyAvailable tag.
- * <isPropertyAvailable property="" prepend="" open="" close="" removeFirstPrepend="true"></isPropertyAvailable>
+ * A definition of isPropertyAvailable tag. <isPropertyAvailable property="" prepend="" open=""
+ * close="" removeFirstPrepend="true"></isPropertyAvailable>
  *
  * @author Bumsik, Jang
  */
 public class IsPropertyAvailableTag extends SqlMapCondition {
-	private static final long serialVersionUID = 4108873264127120513L;
+    private static final long serialVersionUID = 4108873264127120513L;
 
-	public IsPropertyAvailableTag() {
-		this.setType("isPropertyAvailable");
-	}
+    public IsPropertyAvailableTag() {
+        this.setType("isPropertyAvailable");
+    }
 }

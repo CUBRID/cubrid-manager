@@ -29,17 +29,6 @@
  */
 package com.cubrid.common.ui.cubrid.table.dialog.imp.progress;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.newreader.TxtReader;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.cubrid.table.dialog.imp.ImportConfig;
@@ -49,128 +38,148 @@ import com.cubrid.common.ui.cubrid.table.dialog.imp.handler.ImportDataEventHandl
 import com.cubrid.common.ui.cubrid.table.dialog.imp.model.ImportRowData;
 import com.cubrid.common.ui.cubrid.table.dialog.imp.model.ImportStatus;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
 
 /**
- *
  * The ImportFormTxtThread Description
  *
  * @author Kevin.Wang
  * @version 1.0 - 2012-8-9 created by Kevin.Wang
  */
-public class ImportFromTxtRunnable extends
-		AbsImportRunnable {
-	private static final Logger LOGGER = LogUtil.getLogger(ImportFromTxtRunnable.class);
+public class ImportFromTxtRunnable extends AbsImportRunnable {
+    private static final Logger LOGGER = LogUtil.getLogger(ImportFromTxtRunnable.class);
 
-	/**
-	 * The constructor
-	 *
-	 * @param database
-	 * @param parameterList
-	 * @param tableName
-	 * @param importConfig
-	 * @param importDataEventHandler
-	 */
-	public ImportFromTxtRunnable(CubridDatabase database, String tableName,
-			ImportConfig importConfig, ImportDataEventHandler importDataEventHandler,
-			ImportDataProgressManager progressManager) {
-		super(database, tableName, importConfig, progressManager, importDataEventHandler);
-	}
+    /**
+     * The constructor
+     *
+     * @param database
+     * @param parameterList
+     * @param tableName
+     * @param importConfig
+     * @param importDataEventHandler
+     */
+    public ImportFromTxtRunnable(
+            CubridDatabase database,
+            String tableName,
+            ImportConfig importConfig,
+            ImportDataEventHandler importDataEventHandler,
+            ImportDataProgressManager progressManager) {
+        super(database, tableName, importConfig, progressManager, importDataEventHandler);
+    }
 
-	/* (non-Javadoc)
-	 * @see com.cubrid.common.ui.cubrid.table.dialog.imp.progress.AbsImportDataThread#doRun()
-	 */
-	@Override
-	protected void doRun() throws Exception { // FIXME move this logic to core module
-		if (pStmt == null) {
-			handleEvent(new ImportDataFailedEvent(tableName, tableConfig.getLineCount(),
-					tableConfig.getInsertDML(), "Invalid parameters."));
-			return;
-		}
-		File file = new File(tableConfig.getFilePath());
-		boolean isFirstRowAsCoulmn = tableConfig.isFirstRowAsColumn();
-		File parentFile;
-		if (file.exists()) {
-			parentFile = file.getParentFile();
-		} else {
-			parentFile = null;
-		}
+    /* (non-Javadoc)
+     * @see com.cubrid.common.ui.cubrid.table.dialog.imp.progress.AbsImportDataThread#doRun()
+     */
+    @Override
+    protected void doRun() throws Exception { // FIXME move this logic to core module
+        if (pStmt == null) {
+            handleEvent(
+                    new ImportDataFailedEvent(
+                            tableName,
+                            tableConfig.getLineCount(),
+                            tableConfig.getInsertDML(),
+                            "Invalid parameters."));
+            return;
+        }
+        File file = new File(tableConfig.getFilePath());
+        boolean isFirstRowAsCoulmn = tableConfig.isFirstRowAsColumn();
+        File parentFile;
+        if (file.exists()) {
+            parentFile = file.getParentFile();
+        } else {
+            parentFile = null;
+        }
 
-		int currentRow = 0;
-		TxtReader txtReader = null;
-		List<ImportRowData> rowList = new ArrayList<ImportRowData>();
+        int currentRow = 0;
+        TxtReader txtReader = null;
+        List<ImportRowData> rowList = new ArrayList<ImportRowData>();
 
-		try {
-			if (importConfig.getFilesCharset() == null
-					|| importConfig.getFilesCharset().trim().length() == 0) {
-				txtReader = new TxtReader(new FileReader(file), importConfig.getColumnDelimiter(),
-						importConfig.getRowDelimiter());
-			} else {
-				txtReader = new TxtReader(new InputStreamReader(new FileInputStream(file),
-						importConfig.getFilesCharset()), importConfig.getColumnDelimiter(),
-						importConfig.getRowDelimiter());
-			}
+        try {
+            if (importConfig.getFilesCharset() == null
+                    || importConfig.getFilesCharset().trim().length() == 0) {
+                txtReader =
+                        new TxtReader(
+                                new FileReader(file),
+                                importConfig.getColumnDelimiter(),
+                                importConfig.getRowDelimiter());
+            } else {
+                txtReader =
+                        new TxtReader(
+                                new InputStreamReader(
+                                        new FileInputStream(file), importConfig.getFilesCharset()),
+                                importConfig.getColumnDelimiter(),
+                                importConfig.getRowDelimiter());
+            }
 
-			if (isFirstRowAsCoulmn) {
-				txtReader.readNextRow();
-				currentRow++;
-			}
+            if (isFirstRowAsCoulmn) {
+                txtReader.readNextRow();
+                currentRow++;
+            }
 
-			String[] txtRow;
-			ImportRowData rowData = null;
-			while ((txtRow = txtReader.readNextRow()) != null) {
-				boolean isSuccess = true;
-				try {
-					if (txtRow == null || txtRow.length == 0) {
-						continue;
-					}
-					/*Process the row data*/
-					rowData = processRowData(txtRow, null, currentRow, parentFile);
-					rowList.add(rowData);
-					pStmt.addBatch();
-					currentRow++;
+            String[] txtRow;
+            ImportRowData rowData = null;
+            while ((txtRow = txtReader.readNextRow()) != null) {
+                boolean isSuccess = true;
+                try {
+                    if (txtRow == null || txtRow.length == 0) {
+                        continue;
+                    }
+                    /*Process the row data*/
+                    rowData = processRowData(txtRow, null, currentRow, parentFile);
+                    rowList.add(rowData);
+                    pStmt.addBatch();
+                    currentRow++;
 
-					/*Process commit*/
-					if (rowList.size() >= importConfig.getCommitLine()) {
-						commit(rowList);
-					}
-					if (isCanceled) {
-						return;
-					}
+                    /*Process commit*/
+                    if (rowList.size() >= importConfig.getCommitLine()) {
+                        commit(rowList);
+                    }
+                    if (isCanceled) {
+                        return;
+                    }
 
-				} catch (SQLException ex) {
-					isSuccess = false;
-					LOGGER.debug(ex.getMessage());
-				} catch (StopPerformException ex) {
-					isSuccess = false;
-					handleEvent(new ImportDataTableFailedEvent(tableName));
-					LOGGER.debug("Stop import by user setting.");
-					break;
-				} catch (OutOfMemoryError error) {
-					throw new RuntimeException(error);
-				} finally {
-					if (!isSuccess) {
-						rowData.setStatus(ImportStatus.STATUS_COMMIT_FAILED);
-						writeErrorLog(rowData);
-					}
-				}
-			}
-			if (rowList.size() > 0) {
-				commit(rowList);
-				rowList = null;
-			}
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		} catch (OutOfMemoryError error) {
-			throw new RuntimeException(error);
-		} finally {
-			if (txtReader != null) {
-				try {
-					txtReader.close();
-					txtReader = null;
-				} catch (IOException e) {
-					LOGGER.error("", e);
-				}
-			}
-		}
-	}
+                } catch (SQLException ex) {
+                    isSuccess = false;
+                    LOGGER.debug(ex.getMessage());
+                } catch (StopPerformException ex) {
+                    isSuccess = false;
+                    handleEvent(new ImportDataTableFailedEvent(tableName));
+                    LOGGER.debug("Stop import by user setting.");
+                    break;
+                } catch (OutOfMemoryError error) {
+                    throw new RuntimeException(error);
+                } finally {
+                    if (!isSuccess) {
+                        rowData.setStatus(ImportStatus.STATUS_COMMIT_FAILED);
+                        writeErrorLog(rowData);
+                    }
+                }
+            }
+            if (rowList.size() > 0) {
+                commit(rowList);
+                rowList = null;
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        } catch (OutOfMemoryError error) {
+            throw new RuntimeException(error);
+        } finally {
+            if (txtReader != null) {
+                try {
+                    txtReader.close();
+                    txtReader = null;
+                } catch (IOException e) {
+                    LOGGER.error("", e);
+                }
+            }
+        }
+    }
 }

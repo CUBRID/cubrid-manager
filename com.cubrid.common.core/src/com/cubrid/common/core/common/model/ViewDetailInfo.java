@@ -31,52 +31,51 @@ import static com.cubrid.common.core.util.NoOp.noOp;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-1-6 created by fulei
  */
 public class ViewDetailInfo {
-	private String viewName;
-	private String viewDef;
-	private String viewOwnerName;
+    private String viewName;
+    private String viewDef;
+    private String viewOwnerName;
 
-	public ViewDetailInfo() {
-		noOp();
-	}
+    public ViewDetailInfo() {
+        noOp();
+    }
 
-	public ViewDetailInfo(String viewName) {
-		this.viewName = viewName;
-	}
+    public ViewDetailInfo(String viewName) {
+        this.viewName = viewName;
+    }
 
-	public String getViewName() {
-		return viewName;
-	}
+    public String getViewName() {
+        return viewName;
+    }
 
-	public void setViewName(String viewName) {
-		this.viewName = viewName;
-	}
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
+    }
 
-	public String getViewDef() {
-		return viewDef;
-	}
+    public String getViewDef() {
+        return viewDef;
+    }
 
-	public void setViewDef(String viewDef) {
-		this.viewDef = viewDef;
-	}
+    public void setViewDef(String viewDef) {
+        this.viewDef = viewDef;
+    }
 
-	public String getViewOwnerName() {
-		return viewOwnerName;
-	}
+    public String getViewOwnerName() {
+        return viewOwnerName;
+    }
 
-	public void setViewOwnerName(String viewOwnerName) {
-		this.viewOwnerName = viewOwnerName;
-	}
-	
-	public String getViewUniqueName(boolean isSupportUserSchema) {
-		if (isSupportUserSchema) {
-			if (viewOwnerName != null && !viewOwnerName.isEmpty()) {
-				return viewOwnerName + "." + viewName;
-			}
-		}
-		return viewName;
-	}
+    public void setViewOwnerName(String viewOwnerName) {
+        this.viewOwnerName = viewOwnerName;
+    }
+
+    public String getViewUniqueName(boolean isSupportUserSchema) {
+        if (isSupportUserSchema) {
+            if (viewOwnerName != null && !viewOwnerName.isEmpty()) {
+                return viewOwnerName + "." + viewName;
+            }
+        }
+        return viewName;
+    }
 }

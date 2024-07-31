@@ -27,6 +27,10 @@
  */
 package com.cubrid.cubridmanager.ui.monstatistic.action;
 
+import com.cubrid.common.ui.spi.action.SelectionAction;
+import com.cubrid.common.ui.spi.model.ICubridNode;
+import com.cubrid.cubridmanager.ui.monstatistic.editor.MonitorStatisticEditor;
+import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Shell;
@@ -34,96 +38,80 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import com.cubrid.common.ui.spi.action.SelectionAction;
-import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.cubridmanager.ui.monstatistic.editor.MonitorStatisticEditor;
-import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
-
 /**
  * Create a new monitor statistic page.
  *
  * @author Santiago Wang
  * @version 1.0 - 2013-6-25 created by Santiago Wang
  */
-public class OpenMonitorStatisticPageAction extends
-		SelectionAction {
-	public static final String ID = OpenMonitorStatisticPageAction.class.getName();
+public class OpenMonitorStatisticPageAction extends SelectionAction {
+    public static final String ID = OpenMonitorStatisticPageAction.class.getName();
 
-	/**
-	 * Constructor
-	 *
-	 * @param shell the current shell
-	 * @param text the used text
-	 * @param icon the used icon
-	 */
-	public OpenMonitorStatisticPageAction(Shell shell, String text,
-			ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * Constructor
+     *
+     * @param shell the current shell
+     * @param text the used text
+     * @param icon the used icon
+     */
+    public OpenMonitorStatisticPageAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @param shell the current shell
-	 * @param provider the selected provider
-	 * @param text the used text
-	 * @param icon the used icon
-	 */
-	protected OpenMonitorStatisticPageAction(Shell shell,
-			ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * Constructor
+     *
+     * @param shell the current shell
+     * @param provider the selected provider
+     * @param text the used text
+     * @param icon the used icon
+     */
+    protected OpenMonitorStatisticPageAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * Override the run method in order to open an instance of status monitor
-	 * dialog
-	 *
-	 */
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		ICubridNode node = (ICubridNode) obj[0];
+    /** Override the run method in order to open an instance of status monitor dialog */
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        ICubridNode node = (ICubridNode) obj[0];
 
-		try {
-			IWorkbench workbench = PlatformUI.getWorkbench();
-			IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-			workbenchWindow.getActivePage().openEditor(node,
-					MonitorStatisticEditor.ID);
-		} catch (Exception ignore) {
-		}
-	}
+        try {
+            IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+            workbenchWindow.getActivePage().openEditor(node, MonitorStatisticEditor.ID);
+        } catch (Exception ignore) {
+        }
+    }
 
-	/**
-	 * Makes this action not support for select multiple object
-	 *
-	 * @return boolean true if allowed ,false otherwise
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * Makes this action not support for select multiple object
+     *
+     * @return boolean true if allowed ,false otherwise
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 * Return whether this action support this object,if not support,this action
-	 * will be disabled
-	 *
-	 * @param obj Object the given object
-	 * @return boolean true if is supported , false otherwise
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 */
-	public boolean isSupported(Object obj) {
-		if (obj instanceof ICubridNode) {
-			ICubridNode node = (ICubridNode) obj;
-			if (CubridNodeType.MONITOR_STATISTIC_PAGE.equals(node.getType())) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
-
+    /**
+     * Return whether this action support this object,if not support,this action will be disabled
+     *
+     * @param obj Object the given object
+     * @return boolean true if is supported , false otherwise
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     */
+    public boolean isSupported(Object obj) {
+        if (obj instanceof ICubridNode) {
+            ICubridNode node = (ICubridNode) obj;
+            if (CubridNodeType.MONITOR_STATISTIC_PAGE.equals(node.getType())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
 }

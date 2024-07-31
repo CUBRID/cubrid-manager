@@ -9,35 +9,37 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "Drawing_Object_Relationship")
 public class DrawingObjectRelation {
-	@XmlAttribute(name = "id")
-	protected String id;
-	@XmlAttribute(name = "Name")
-	protected String name;
-	@XmlElement(name = "Drawing_Object_RelationshipProps")
-	protected DrawingObjectRelationshipProps drawingObjectRelationshipProps;
+    @XmlAttribute(name = "id")
+    protected String id;
 
-	public DrawingObjectRelationshipProps getDrawingObjectRelationshipProps() {
-		return drawingObjectRelationshipProps;
-	}
+    @XmlAttribute(name = "Name")
+    protected String name;
 
-	public void setDrawingObjectRelationshipProps(
-			DrawingObjectRelationshipProps drawingObjectRelationshipProps) {
-		this.drawingObjectRelationshipProps = drawingObjectRelationshipProps;
-	}
+    @XmlElement(name = "Drawing_Object_RelationshipProps")
+    protected DrawingObjectRelationshipProps drawingObjectRelationshipProps;
 
-	public String getId() {
-		return id;
-	}
+    public DrawingObjectRelationshipProps getDrawingObjectRelationshipProps() {
+        return drawingObjectRelationshipProps;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setDrawingObjectRelationshipProps(
+            DrawingObjectRelationshipProps drawingObjectRelationshipProps) {
+        this.drawingObjectRelationshipProps = drawingObjectRelationshipProps;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

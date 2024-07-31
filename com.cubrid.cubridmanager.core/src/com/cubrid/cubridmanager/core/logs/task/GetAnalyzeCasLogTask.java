@@ -34,90 +34,80 @@ import com.cubrid.cubridmanager.core.logs.model.AnalyzeCasLogResultInfo;
 import com.cubrid.cubridmanager.core.logs.model.AnalyzeCasLogResultList;
 
 /**
- * <p>
  * A task that defined the task of "analyzecaslog"
- * </p>
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2009-4-3 created by wuyingshi
  */
-public class GetAnalyzeCasLogTask extends
-		SocketTask {
-	private static final String[] SEND_MSG_ITEMS = new String[] { "task", "token", "open",
-			"logfile", "close", "option_t" };
+public class GetAnalyzeCasLogTask extends SocketTask {
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {"task", "token", "open", "logfile", "close", "option_t"};
 
-	/**
-	 * <p>
-	 * The constructor
-	 * </p>
-	 * 
-	 * @param serverInfo
-	 */
-	public GetAnalyzeCasLogTask(ServerInfo serverInfo) {
-		super("analyzecaslog", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public GetAnalyzeCasLogTask(ServerInfo serverInfo) {
+        super("analyzecaslog", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * <p>
-	 * Set the otion_t value.
-	 * </p>
-	 * 
-	 * @param param String
-	 */
-	public void setOptionT(String param) {
-		super.setMsgItem("option_t", param);
-	}
+    /**
+     * Set the otion_t value.
+     *
+     * @param param String
+     */
+    public void setOptionT(String param) {
+        super.setMsgItem("option_t", param);
+    }
 
-	/**
-	 * <p>
-	 * Set the logFiles values.
-	 * </p>
-	 * 
-	 * @param param String[]
-	 */
-	public void setLogFiles(String[] param) {
-		super.setMsgItem("open", "logfilelist");
-		super.setMsgItem("logfile", param);
-		super.setMsgItem("close", "logfilelist");
-	}
+    /**
+     * Set the logFiles values.
+     *
+     * @param param String[]
+     */
+    public void setLogFiles(String[] param) {
+        super.setMsgItem("open", "logfilelist");
+        super.setMsgItem("logfile", param);
+        super.setMsgItem("close", "logfilelist");
+    }
 
-	/**
-	 * <p>
-	 * Get result from the response.
-	 * </p>
-	 * 
-	 * @return {@link AnalyzeCasLogResultList}
-	 */
-	public AnalyzeCasLogResultList getAnalyzeCasLogResultList() {
-		TreeNode response = getResponse();
-		if (response == null || (this.getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
-			return null;
-		}
+    /**
+     * Get result from the response.
+     *
+     * @return {@link AnalyzeCasLogResultList}
+     */
+    public AnalyzeCasLogResultList getAnalyzeCasLogResultList() {
+        TreeNode response = getResponse();
+        if (response == null || (this.getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
+            return null;
+        }
 
-		AnalyzeCasLogResultList analyzeCasLogResultList = new AnalyzeCasLogResultList();
-		String resultfile = response.getValue("resultfile");
-		analyzeCasLogResultList.setResultfile(resultfile);
+        AnalyzeCasLogResultList analyzeCasLogResultList = new AnalyzeCasLogResultList();
+        String resultfile = response.getValue("resultfile");
+        analyzeCasLogResultList.setResultfile(resultfile);
 
-		// TOOLS-4132 CM can't make the broker_log_top result - fixed by cmserver https api bug
-		if (response != null && response.getValue("resultlist") != null
-				&& response.getValues("result") != null) {
-			String[] results = response.getValues("result");
-			for (int i = 0; i < results.length / 2; i++) {
-				AnalyzeCasLogResultInfo analyzeCasLogResultInfo = new AnalyzeCasLogResultInfo();
-				analyzeCasLogResultInfo.setQindex((response.getValues("qindex"))[i]);
-				if (response.getValue("max") == null) {
-					analyzeCasLogResultInfo.setExecTime((response.getValues("exec_time"))[i]);
-				} else {
-					analyzeCasLogResultInfo.setMax((response.getValues("max"))[i]);
-					analyzeCasLogResultInfo.setMin((response.getValues("min"))[i]);
-					analyzeCasLogResultInfo.setAvg((response.getValues("avg"))[i]);
-					analyzeCasLogResultInfo.setCnt((response.getValues("cnt"))[i]);
-					analyzeCasLogResultInfo.setErr((response.getValues("err"))[i]);
-				}
-				analyzeCasLogResultList.addResultFile(analyzeCasLogResultInfo);
-			}
-		}
+        // TOOLS-4132 CM can't make the broker_log_top result - fixed by cmserver https api bug
+        if (response != null
+                && response.getValue("resultlist") != null
+                && response.getValues("result") != null) {
+            String[] results = response.getValues("result");
+            for (int i = 0; i < results.length / 2; i++) {
+                AnalyzeCasLogResultInfo analyzeCasLogResultInfo = new AnalyzeCasLogResultInfo();
+                analyzeCasLogResultInfo.setQindex((response.getValues("qindex"))[i]);
+                if (response.getValue("max") == null) {
+                    analyzeCasLogResultInfo.setExecTime((response.getValues("exec_time"))[i]);
+                } else {
+                    analyzeCasLogResultInfo.setMax((response.getValues("max"))[i]);
+                    analyzeCasLogResultInfo.setMin((response.getValues("min"))[i]);
+                    analyzeCasLogResultInfo.setAvg((response.getValues("avg"))[i]);
+                    analyzeCasLogResultInfo.setCnt((response.getValues("cnt"))[i]);
+                    analyzeCasLogResultInfo.setErr((response.getValues("err"))[i]);
+                }
+                analyzeCasLogResultList.addResultFile(analyzeCasLogResultInfo);
+            }
+        }
 
-		return analyzeCasLogResultList;
-	}
+        return analyzeCasLogResultList;
+    }
 }

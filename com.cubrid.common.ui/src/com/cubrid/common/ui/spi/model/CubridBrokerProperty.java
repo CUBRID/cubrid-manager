@@ -31,60 +31,59 @@ import java.util.ArrayList;
 
 /**
  * cubrid broker config property model
+ *
  * @author fulei
  * @version 1.0 - 2012-10-29 created by fulei
- *
  */
 public class CubridBrokerProperty {
 
-	private String CubridBrokerPropKey;
-	private String CubridBrokerPropValue;
-	private String CubridBrokerPropAnnotation;
-	private boolean isCubridBroker = false;
-	private ArrayList<CubridBrokerProperty> propertyList = new ArrayList<CubridBrokerProperty>();
-	
-	public String getCubridBrokerPropKey() {
-		return CubridBrokerPropKey;
-	}
-	
-	public void setCubridBrokerPropKey(String cubridBrokerPropKey) {
-		CubridBrokerPropKey = cubridBrokerPropKey;
-	}
-	
-	public String getCubridBrokerPropValue() {
-		return CubridBrokerPropValue;
-	}
-	
-	public void setCubridBrokerPropValue(String cubridBrokerPropValue) {
-		CubridBrokerPropValue = cubridBrokerPropValue;
-	}
-	
-	public String getCubridBrokerPropAnnotation() {
-		return CubridBrokerPropAnnotation;
-	}
-	
-	public void setCubridBrokerPropAnnotation(String cubridBrokerPropAnnotation) {
-		CubridBrokerPropAnnotation = cubridBrokerPropAnnotation;
-	}
-	
-	public ArrayList<CubridBrokerProperty> getPropertyList() {
-		return propertyList;
-	}
-	
-	public void setPropertyList(ArrayList<CubridBrokerProperty> propertyList) {
-		this.propertyList = propertyList;
-	}
-	
-	public boolean isCubridBroker() {
-		return isCubridBroker;
-	}
-	
-	public void setCubridBroker(boolean isCubridBroker) {
-		this.isCubridBroker = isCubridBroker;
-	}
-	
-	public void addCubridBrokerProperty (CubridBrokerProperty property) {
-		getPropertyList().add(property);
-	}
-	
+    private String CubridBrokerPropKey;
+    private String CubridBrokerPropValue;
+    private String CubridBrokerPropAnnotation;
+    private boolean isCubridBroker = false;
+    private ArrayList<CubridBrokerProperty> propertyList = new ArrayList<CubridBrokerProperty>();
+
+    public String getCubridBrokerPropKey() {
+        return CubridBrokerPropKey;
+    }
+
+    public void setCubridBrokerPropKey(String cubridBrokerPropKey) {
+        CubridBrokerPropKey = cubridBrokerPropKey;
+    }
+
+    public String getCubridBrokerPropValue() {
+        return CubridBrokerPropValue;
+    }
+
+    public void setCubridBrokerPropValue(String cubridBrokerPropValue) {
+        CubridBrokerPropValue = cubridBrokerPropValue;
+    }
+
+    public String getCubridBrokerPropAnnotation() {
+        return CubridBrokerPropAnnotation;
+    }
+
+    public void setCubridBrokerPropAnnotation(String cubridBrokerPropAnnotation) {
+        CubridBrokerPropAnnotation = cubridBrokerPropAnnotation;
+    }
+
+    public ArrayList<CubridBrokerProperty> getPropertyList() {
+        return propertyList;
+    }
+
+    public void setPropertyList(ArrayList<CubridBrokerProperty> propertyList) {
+        this.propertyList = propertyList;
+    }
+
+    public boolean isCubridBroker() {
+        return isCubridBroker;
+    }
+
+    public void setCubridBroker(boolean isCubridBroker) {
+        this.isCubridBroker = isCubridBroker;
+    }
+
+    public void addCubridBrokerProperty(CubridBrokerProperty property) {
+        getPropertyList().add(property);
+    }
 }

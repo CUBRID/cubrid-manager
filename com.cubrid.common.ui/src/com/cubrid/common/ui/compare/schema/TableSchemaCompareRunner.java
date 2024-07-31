@@ -27,20 +27,6 @@
  */
 package com.cubrid.common.ui.compare.schema;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.TableDetailInfo;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
@@ -51,6 +37,18 @@ import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.progress.OpenTablesDetailInfoPartProgress;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
 
 /**
  * Table Schema Compare Runner (Thread)
@@ -58,155 +56,158 @@ import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
  * @author Ray Yin
  * @version 1.0 - 2012.10.20 created by Ray Yin
  */
-public class TableSchemaCompareRunner extends
-		Thread {
-	private static final Logger LOGGER = LogUtil.getLogger(TableSchemaCompareRunner.class);
+public class TableSchemaCompareRunner extends Thread {
+    private static final Logger LOGGER = LogUtil.getLogger(TableSchemaCompareRunner.class);
 
-	private SchemaCompareDialog dialog;
-	private CubridDatabase sourceDb;
-	private CubridDatabase targetDb;
-	private TableSchemaCompareEditorInput input;
-	private List<TableDetailInfo> sourceTableInfoList;
+    private SchemaCompareDialog dialog;
+    private CubridDatabase sourceDb;
+    private CubridDatabase targetDb;
+    private TableSchemaCompareEditorInput input;
+    private List<TableDetailInfo> sourceTableInfoList;
 
-	/**
-	 * The constructor
-	 *
-	 * @param sourceDb
-	 * @param targetDb
-	 * @param sourceTableInfoList
-	 */
-	public TableSchemaCompareRunner(SchemaCompareDialog dialog,
-			CubridDatabase sourceDb, CubridDatabase targetDb,
-			List<TableDetailInfo> sourceTableInfoList) {
-		this.dialog = dialog;
-		this.sourceDb = sourceDb;
-		this.targetDb = targetDb;
-		this.sourceTableInfoList = sourceTableInfoList;
-	}
+    /**
+     * The constructor
+     *
+     * @param sourceDb
+     * @param targetDb
+     * @param sourceTableInfoList
+     */
+    public TableSchemaCompareRunner(
+            SchemaCompareDialog dialog,
+            CubridDatabase sourceDb,
+            CubridDatabase targetDb,
+            List<TableDetailInfo> sourceTableInfoList) {
+        this.dialog = dialog;
+        this.sourceDb = sourceDb;
+        this.targetDb = targetDb;
+        this.sourceTableInfoList = sourceTableInfoList;
+    }
 
-	public void setInput(TableSchemaCompareEditorInput input) {
-		this.input = input;
-	}
+    public void setInput(TableSchemaCompareEditorInput input) {
+        this.input = input;
+    }
 
-	public TableSchemaCompareEditorInput getInput() {
-		return this.input;
-	}
+    public TableSchemaCompareEditorInput getInput() {
+        return this.input;
+    }
 
-	public void run() {
-		try {
-			TableSchemaCompareEditorInput editorInput = compareTableSchema(
-					sourceDb, targetDb);
-			setInput(editorInput);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-			CommonUITool.openErrorBox(Display.getDefault().getActiveShell(),
-					Messages.fetchSchemaErrorFromDB);
-		}
-	}
+    public void run() {
+        try {
+            TableSchemaCompareEditorInput editorInput = compareTableSchema(sourceDb, targetDb);
+            setInput(editorInput);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            CommonUITool.openErrorBox(
+                    Display.getDefault().getActiveShell(), Messages.fetchSchemaErrorFromDB);
+        }
+    }
 
-	/**
-	 * Create a schema compare editor input
-	 *
-	 * @param sourceDatabase
-	 * @param targetDatabase
-	 * @return
-	 */
-	private TableSchemaCompareEditorInput compareTableSchema(
-			CubridDatabase sourceDatabase, CubridDatabase targetDatabase) {
-		List<TableDetailInfo> lTableInfoList;
-		if (sourceTableInfoList != null) {
-			lTableInfoList = sourceTableInfoList;
-		} else {
-			lTableInfoList = TableSchemaCompareUtil.getTableInfoList(sourceDatabase);
-		}
-		if (dialog.isCanceled()) {
-			return null;
-		}
+    /**
+     * Create a schema compare editor input
+     *
+     * @param sourceDatabase
+     * @param targetDatabase
+     * @return
+     */
+    private TableSchemaCompareEditorInput compareTableSchema(
+            CubridDatabase sourceDatabase, CubridDatabase targetDatabase) {
+        List<TableDetailInfo> lTableInfoList;
+        if (sourceTableInfoList != null) {
+            lTableInfoList = sourceTableInfoList;
+        } else {
+            lTableInfoList = TableSchemaCompareUtil.getTableInfoList(sourceDatabase);
+        }
+        if (dialog.isCanceled()) {
+            return null;
+        }
 
-		List<TableDetailInfo> rTableInfoList = getTableInfoList(targetDatabase);
-		if (dialog.isCanceled()) {
-			return null;
-		}
+        List<TableDetailInfo> rTableInfoList = getTableInfoList(targetDatabase);
+        if (dialog.isCanceled()) {
+            return null;
+        }
 
-		TableSchemaCompareEditorInput CompareInput = new TableSchemaCompareEditorInput(
-				sourceDatabase, targetDatabase, lTableInfoList, rTableInfoList);
-		return CompareInput;
-	}
+        TableSchemaCompareEditorInput CompareInput =
+                new TableSchemaCompareEditorInput(
+                        sourceDatabase, targetDatabase, lTableInfoList, rTableInfoList);
+        return CompareInput;
+    }
 
-	/**
-	 * Returns all tables detail of a database
-	 *
-	 * @param db
-	 * @return
-	 */
-	private List<TableDetailInfo> getTableInfoList(CubridDatabase db) { // FIXME logic code move to core module
-		OpenTablesDetailInfoPartProgress progress = new OpenTablesDetailInfoPartProgress(db);
+    /**
+     * Returns all tables detail of a database
+     *
+     * @param db
+     * @return
+     */
+    private List<TableDetailInfo> getTableInfoList(
+            CubridDatabase db) { // FIXME logic code move to core module
+        OpenTablesDetailInfoPartProgress progress = new OpenTablesDetailInfoPartProgress(db);
 
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
-		try {
-			conn = JDBCConnectionManager.getConnection(db.getDatabaseInfo(), true);
-			Map<String, TableDetailInfo> map = new HashMap<String, TableDetailInfo>();
+        try {
+            conn = JDBCConnectionManager.getConnection(db.getDatabaseInfo(), true);
+            Map<String, TableDetailInfo> map = new HashMap<String, TableDetailInfo>();
 
-			if (!progress.loadUserSchemaList(conn, map)) {
-				return null;
-			}
+            if (!progress.loadUserSchemaList(conn, map)) {
+                return null;
+            }
 
-			Set<String> tableNameSet = map.keySet();
-			List<TableDetailInfo> tableList = new ArrayList<TableDetailInfo>();
+            Set<String> tableNameSet = map.keySet();
+            List<TableDetailInfo> tableList = new ArrayList<TableDetailInfo>();
 
-			if (tableNameSet != null) {
-				List<String> tableNames = new ArrayList<String>();
-				for (String tableName : tableNameSet) {
-					tableNames.add(tableName);
-				}
+            if (tableNameSet != null) {
+                List<String> tableNames = new ArrayList<String>();
+                for (String tableName : tableNameSet) {
+                    tableNames.add(tableName);
+                }
 
-				Collections.sort(tableNames);
-				List<String> partitionClasses = new ArrayList<String>();
+                Collections.sort(tableNames);
+                List<String> partitionClasses = new ArrayList<String>();
 
-				for (String tableName : tableNames) {
-					TableDetailInfo info = map.get(tableName);
+                for (String tableName : tableNames) {
+                    TableDetailInfo info = map.get(tableName);
 
-					if (dialog.isCanceled()) {
-						return null;
-					}
+                    if (dialog.isCanceled()) {
+                        return null;
+                    }
 
-					if ("YES".equals(info.getPartitioned())) {
-						String sql = "SELECT b.* FROM db_partition a, db_class b "
-								+ "WHERE a.class_name='"
-								+ tableName.toLowerCase(Locale.getDefault())
-								+ "' AND LOWER(b.class_name)=LOWER(a.partition_class_name)";
-						stmt = conn.createStatement();
-						rs = stmt.executeQuery(sql);
-						while (rs.next()) {
-							if (dialog.isCanceled()) {
-								return null;
-							}
+                    if ("YES".equals(info.getPartitioned())) {
+                        String sql =
+                                "SELECT b.* FROM db_partition a, db_class b "
+                                        + "WHERE a.class_name='"
+                                        + tableName.toLowerCase(Locale.getDefault())
+                                        + "' AND LOWER(b.class_name)=LOWER(a.partition_class_name)";
+                        stmt = conn.createStatement();
+                        rs = stmt.executeQuery(sql);
+                        while (rs.next()) {
+                            if (dialog.isCanceled()) {
+                                return null;
+                            }
 
-							String className = rs.getString("class_name");
-							partitionClasses.add(className);
-						}
+                            String className = rs.getString("class_name");
+                            partitionClasses.add(className);
+                        }
 
-						QueryUtil.freeQuery(stmt, rs);
-					}
+                        QueryUtil.freeQuery(stmt, rs);
+                    }
 
-					if ("CLASS".equals(info.getClassType())
-							&& !partitionClasses.contains(tableName)) {
-						info.setRecordsCount(-1);
-						tableList.add(info);
-					}
-				}
-			}
+                    if ("CLASS".equals(info.getClassType())
+                            && !partitionClasses.contains(tableName)) {
+                        info.setRecordsCount(-1);
+                        tableList.add(info);
+                    }
+                }
+            }
 
-			return tableList;
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-		} finally {
-			QueryUtil.freeQuery(conn, stmt, rs);
-		}
+            return tableList;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            QueryUtil.freeQuery(conn, stmt, rs);
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

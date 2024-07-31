@@ -28,50 +28,48 @@
 package com.nhn.dbtool.query.parser.sqlmap.model;
 
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
- * A definition of dynamic tag.
- * <dynamic prepend="" open="" close=""></dynamic>
+ * A definition of dynamic tag. <dynamic prepend="" open="" close=""></dynamic>
  *
  * @author Bumsik, Jang
  */
 public class DynamicTag extends SqlMapCondition {
-	private static final long serialVersionUID = 1026916609093724663L;
+    private static final long serialVersionUID = 1026916609093724663L;
 
-	public DynamicTag() {
-		this.setType("dynamic");
-	}
+    public DynamicTag() {
+        this.setType("dynamic");
+    }
 
-	@Override
-	public String createStatement(List<String> parameterList) {
+    @Override
+    public String createStatement(List<String> parameterList) {
 
-		boolean isChild = false;
+        boolean isChild = false;
 
-		// 하위의 condition이 존재하는 경우
-		if (childConditionList != null && childConditionList.size() > 0) {
-			for (SqlMapCondition childCondition : childConditionList) {
-				if (StringUtils.isNotEmpty(childCondition.createStatement(parameterList).trim())) {
-					// dynamic prepend가 존재하는 경우 첫번째 child의 prepend는 무시하는 iBatis 스펙 적용
-					if (StringUtils.isNotEmpty(this.getPrepend())) {
-						childCondition.setPrepend(null);
-					}
-					isChild = true;
-					break;
-				}
-			}
-		}
+        // 하위의 condition이 존재하는 경우
+        if (childConditionList != null && childConditionList.size() > 0) {
+            for (SqlMapCondition childCondition : childConditionList) {
+                if (StringUtils.isNotEmpty(childCondition.createStatement(parameterList).trim())) {
+                    // dynamic prepend가 존재하는 경우 첫번째 child의 prepend는 무시하는 iBatis 스펙 적용
+                    if (StringUtils.isNotEmpty(this.getPrepend())) {
+                        childCondition.setPrepend(null);
+                    }
+                    isChild = true;
+                    break;
+                }
+            }
+        }
 
-		if (isChild) {
-			return super.createStatement(parameterList);
-		}
+        if (isChild) {
+            return super.createStatement(parameterList);
+        }
 
-		return "";
-	}
+        return "";
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return true;
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return true;
+    }
 }

@@ -29,68 +29,65 @@ package com.cubrid.cubridmanager.ui.replication.editor.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.draw2d.geometry.Dimension;
 
 /**
- *
  * This is a container node model object with other leafnodes
  *
  * @author pangqiren
  * @version 1.0 - 2009-8-26 created by pangqiren
  */
-public class ContainerNode extends
-		Node {
+public class ContainerNode extends Node {
 
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 3257847675427893304L;
-	public final static String PROP_STRUCTURE = "PROP_STRUCTURE";
-	protected List<LeafNode> childNodeList = new ArrayList<LeafNode>();
+    @SuppressWarnings("unused")
+    private static final long serialVersionUID = 3257847675427893304L;
 
-	public ContainerNode() {
-		super();
-		setSize(new Dimension(200, 220));
-	}
+    public static final String PROP_STRUCTURE = "PROP_STRUCTURE";
+    protected List<LeafNode> childNodeList = new ArrayList<LeafNode>();
 
-	/**
-	 * add the childNode
-	 *
-	 * @param leafNode LeafNode
-	 */
-	public void addChildNode(LeafNode leafNode) {
-		leafNode.setParent(this);
-		this.childNodeList.add(leafNode);
-		fireStructureChange(PROP_STRUCTURE, leafNode);
-	}
+    public ContainerNode() {
+        super();
+        setSize(new Dimension(200, 220));
+    }
 
-	/**
-	 * add the childNode
-	 *
-	 * @param leafNode LeafNode
-	 * @param index int
-	 */
-	public void addChildNode(int index, LeafNode leafNode) {
-		leafNode.setParent(this);
-		this.childNodeList.add(index, leafNode);
-		fireStructureChange(PROP_STRUCTURE, leafNode);
-	}
+    /**
+     * add the childNode
+     *
+     * @param leafNode LeafNode
+     */
+    public void addChildNode(LeafNode leafNode) {
+        leafNode.setParent(this);
+        this.childNodeList.add(leafNode);
+        fireStructureChange(PROP_STRUCTURE, leafNode);
+    }
 
-	/**
-	 * remove the childNode
-	 *
-	 * @param leafNode LeafNode
-	 */
-	public void removeChildNode(LeafNode leafNode) {
-		this.childNodeList.remove(leafNode);
-		fireStructureChange(PROP_STRUCTURE, leafNode);
-	}
+    /**
+     * add the childNode
+     *
+     * @param leafNode LeafNode
+     * @param index int
+     */
+    public void addChildNode(int index, LeafNode leafNode) {
+        leafNode.setParent(this);
+        this.childNodeList.add(index, leafNode);
+        fireStructureChange(PROP_STRUCTURE, leafNode);
+    }
 
-	public List<LeafNode> getChildNodeList() {
-		return childNodeList;
-	}
+    /**
+     * remove the childNode
+     *
+     * @param leafNode LeafNode
+     */
+    public void removeChildNode(LeafNode leafNode) {
+        this.childNodeList.remove(leafNode);
+        fireStructureChange(PROP_STRUCTURE, leafNode);
+    }
 
-	public void setChildNodeList(List<LeafNode> childNodeList) {
-		this.childNodeList = childNodeList;
-	}
+    public List<LeafNode> getChildNodeList() {
+        return childNodeList;
+    }
 
+    public void setChildNodeList(List<LeafNode> childNodeList) {
+        this.childNodeList = childNodeList;
+    }
 }

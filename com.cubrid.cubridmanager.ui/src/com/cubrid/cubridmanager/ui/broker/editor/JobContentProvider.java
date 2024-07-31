@@ -31,51 +31,45 @@ package com.cubrid.cubridmanager.ui.broker.editor;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
+import com.cubrid.cubridmanager.core.broker.model.JobInfo;
 import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.cubrid.cubridmanager.core.broker.model.JobInfo;
-
 /**
- * A content provider which is responsible for the table in the type of
- * BlocksStatusEditor
+ * A content provider which is responsible for the table in the type of BlocksStatusEditor
  *
  * @author lizhiqiang
  * @version 1.0 - 2009-5-18 created by lizhiqiang
  */
-public class JobContentProvider implements
-		IStructuredContentProvider {
+public class JobContentProvider implements IStructuredContentProvider {
 
-	/**
-	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-	 * @param inputElement the input element
-	 * @return the array of elements to display in the viewer
-	 */
-	@SuppressWarnings("unchecked")
-	public Object[] getElements(Object inputElement) {
-		return ((List<JobInfo>) inputElement).toArray();
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+     * @param inputElement the input element
+     * @return the array of elements to display in the viewer
+     */
+    @SuppressWarnings("unchecked")
+    public Object[] getElements(Object inputElement) {
+        return ((List<JobInfo>) inputElement).toArray();
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-	 */
-	public void dispose() {
-		noOp();
-	}
+    /** @see org.eclipse.jface.viewers.IContentProvider#dispose() */
+    public void dispose() {
+        noOp();
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-	 *      java.lang.Object, java.lang.Object)
-	 * @param viewer the viewer
-	 * @param oldInput the old input element, or <code>null</code> if the viewer
-	 *        did not previously have an input
-	 * @param newInput the new input element, or <code>null</code> if the viewer
-	 *        does not have an input
-	 */
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		noOp();
-	}
-
+    /**
+     * @see
+     *     org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+     *     java.lang.Object, java.lang.Object)
+     * @param viewer the viewer
+     * @param oldInput the old input element, or <code>null</code> if the viewer did not previously
+     *     have an input
+     * @param newInput the new input element, or <code>null</code> if the viewer does not have an
+     *     input
+     */
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        noOp();
+    }
 }

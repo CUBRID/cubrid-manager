@@ -30,20 +30,20 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of isNotPropertyAvailable tag.
- * <isNotPropertyAvailable property="" prepend="" open="" close="" removeFirstPrepend="true"></isNotPropertyAvailable>
+ * A definition of isNotPropertyAvailable tag. <isNotPropertyAvailable property="" prepend=""
+ * open="" close="" removeFirstPrepend="true"></isNotPropertyAvailable>
  *
  * @author Bumsik, Jang
  */
 public class IsNotPropertyAvailableTag extends SqlMapCondition {
-	private static final long serialVersionUID = -2330324966829364807L;
+    private static final long serialVersionUID = -2330324966829364807L;
 
-	public IsNotPropertyAvailableTag() {
-		this.setType("isNotPropertyAvailable");
-	}
+    public IsNotPropertyAvailableTag() {
+        this.setType("isNotPropertyAvailable");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return !super.isMatchCondition(parameterList);
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return !super.isMatchCondition(parameterList);
+    }
 }

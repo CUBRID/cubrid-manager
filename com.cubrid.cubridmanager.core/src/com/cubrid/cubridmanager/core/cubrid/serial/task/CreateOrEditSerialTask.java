@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2013 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,13 +23,9 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.cubrid.serial.task;
-
-import java.sql.SQLException;
-
-import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
@@ -39,226 +35,249 @@ import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.Messages;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import java.sql.SQLException;
+import org.slf4j.Logger;
 
 /**
  * This task is responsible to create serial
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-5-11 created by pangqiren
  */
 public class CreateOrEditSerialTask extends JDBCTask {
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LogUtil.getLogger(CreateOrEditSerialTask.class);
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LogUtil.getLogger(CreateOrEditSerialTask.class);
 
-	/**
-	 * The constructor
-	 *
-	 * @param dbInfo
-	 */
-	public CreateOrEditSerialTask(DatabaseInfo dbInfo) {
-		super("CreateOrEditSerial", dbInfo);
-	}
+    /**
+     * The constructor
+     *
+     * @param dbInfo
+     */
+    public CreateOrEditSerialTask(DatabaseInfo dbInfo) {
+        super("CreateOrEditSerial", dbInfo);
+    }
 
-	/**
-	 * Create serial by JDBC
-	 * 
-	 * @param ownerName String The given owner name
-	 * @param serialName String The given serial name
-	 * @param startVal String The given start value
-	 * @param incrementVal String The given incremental vlaue
-	 * @param maxVal String The given maximal value
-	 * @param minVal String The given minimal value
-	 * @param isCycle boolean Whether is cycle
-	 * @param isNoMinVal boolean whether is NOMINVALUE
-	 * @param isNoMaxVal boolean whether is NOMAXVALUE
-	 * @param cacheCount string the cache count
-	 * @param isNoCache boolean whether is NOCACHE
-	 * @param description string the Serial's comment
-	 */
-	public void createSerial(String OwnerName, String serialName, String startVal,
-			String incrementVal, String maxVal, String minVal, boolean isCycle,
-			boolean isNoMinVal, boolean isNoMaxVal, String cacheCount,
-			boolean isNoCache, String description) {
-		if (StringUtil.isNotEmpty(errorMsg)) {
-			return;
-		}
-		
-		String uniqueName;
-		if (databaseInfo.isSupportUserSchema()) {
-			if (OwnerName != null && !OwnerName.isEmpty()) {
-				uniqueName = QuerySyntax.escapeKeyword(OwnerName) + "." + QuerySyntax.escapeKeyword(serialName);
-			} else {
-				uniqueName = QuerySyntax.escapeKeyword(serialName);
-			}
-		} else {
-			uniqueName = QuerySyntax.escapeKeyword(serialName);
-		}
+    /**
+     * Create serial by JDBC
+     *
+     * @param ownerName String The given owner name
+     * @param serialName String The given serial name
+     * @param startVal String The given start value
+     * @param incrementVal String The given incremental vlaue
+     * @param maxVal String The given maximal value
+     * @param minVal String The given minimal value
+     * @param isCycle boolean Whether is cycle
+     * @param isNoMinVal boolean whether is NOMINVALUE
+     * @param isNoMaxVal boolean whether is NOMAXVALUE
+     * @param cacheCount string the cache count
+     * @param isNoCache boolean whether is NOCACHE
+     * @param description string the Serial's comment
+     */
+    public void createSerial(
+            String OwnerName,
+            String serialName,
+            String startVal,
+            String incrementVal,
+            String maxVal,
+            String minVal,
+            boolean isCycle,
+            boolean isNoMinVal,
+            boolean isNoMaxVal,
+            String cacheCount,
+            boolean isNoCache,
+            String description) {
+        if (StringUtil.isNotEmpty(errorMsg)) {
+            return;
+        }
 
-		//databaseInfo.getServerInfo().compareVersionKey("8.2.2") >= 0;
-		boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
+        String uniqueName;
+        if (databaseInfo.isSupportUserSchema()) {
+            if (OwnerName != null && !OwnerName.isEmpty()) {
+                uniqueName =
+                        QuerySyntax.escapeKeyword(OwnerName)
+                                + "."
+                                + QuerySyntax.escapeKeyword(serialName);
+            } else {
+                uniqueName = QuerySyntax.escapeKeyword(serialName);
+            }
+        } else {
+            uniqueName = QuerySyntax.escapeKeyword(serialName);
+        }
 
-		String sql = "CREATE SERIAL " + uniqueName;
-		if (StringUtil.isNotEmpty(startVal)) {
-			sql += " START WITH " + startVal;
-		}
+        // databaseInfo.getServerInfo().compareVersionKey("8.2.2") >= 0;
+        boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
 
-		if (StringUtil.isNotEmpty(incrementVal)) {
-			sql += " INCREMENT BY " + incrementVal;
-		}
+        String sql = "CREATE SERIAL " + uniqueName;
+        if (StringUtil.isNotEmpty(startVal)) {
+            sql += " START WITH " + startVal;
+        }
 
-		if (isNoMinVal) {
-			sql += " NOMINVALUE ";
-		} else if (StringUtil.isNotEmpty(minVal)) {
-			sql += " MINVALUE " + minVal;
-		}
+        if (StringUtil.isNotEmpty(incrementVal)) {
+            sql += " INCREMENT BY " + incrementVal;
+        }
 
-		if (isNoMaxVal) {
-			sql += " NOMAXVALUE ";
-		} else if (StringUtil.isNotEmpty(maxVal)) {
-			sql += " MAXVALUE " + maxVal;
-		}
+        if (isNoMinVal) {
+            sql += " NOMINVALUE ";
+        } else if (StringUtil.isNotEmpty(minVal)) {
+            sql += " MINVALUE " + minVal;
+        }
 
-		if (isCycle) {
-			sql += " CYCLE";
-		} else {
-			sql += " NOCYCLE";
-		}
+        if (isNoMaxVal) {
+            sql += " NOMAXVALUE ";
+        } else if (StringUtil.isNotEmpty(maxVal)) {
+            sql += " MAXVALUE " + maxVal;
+        }
 
-		if (isSupportCache) {
-			if (isNoCache) {
-				sql += " NOCACHE";
-			} else if (StringUtil.isNotEmpty(cacheCount)) {
-				sql += " CACHE " + cacheCount;
-			}
-		}
+        if (isCycle) {
+            sql += " CYCLE";
+        } else {
+            sql += " NOCYCLE";
+        }
 
-		if (StringUtil.isNotEmpty(description)) {
-			description = String.format("'%s'", description);
-			sql += String.format(" COMMENT %s", StringUtil.escapeQuotes(description));
-		}
+        if (isSupportCache) {
+            if (isNoCache) {
+                sql += " NOCACHE";
+            } else if (StringUtil.isNotEmpty(cacheCount)) {
+                sql += " CACHE " + cacheCount;
+            }
+        }
 
-		try {
-			if (connection == null || connection.isClosed()) {
-				if (StringUtil.isEmpty(errorMsg)) {
-					errorMsg = Messages.error_getConnection;
-				}
-				return;
-			}
+        if (StringUtil.isNotEmpty(description)) {
+            description = String.format("'%s'", description);
+            sql += String.format(" COMMENT %s", StringUtil.escapeQuotes(description));
+        }
 
-			// [TOOLS-2425]Support shard broker
-			sql = DatabaseInfo.wrapShardQuery(databaseInfo, sql);
+        try {
+            if (connection == null || connection.isClosed()) {
+                if (StringUtil.isEmpty(errorMsg)) {
+                    errorMsg = Messages.error_getConnection;
+                }
+                return;
+            }
 
-			stmt = connection.createStatement();
-			stmt.execute(sql);
-		} catch (SQLException e) {
-			errorMsg = e.getMessage();
-		} finally {
-			finish();
-		}
-	}
+            // [TOOLS-2425]Support shard broker
+            sql = DatabaseInfo.wrapShardQuery(databaseInfo, sql);
 
-	/**
-	 * Edit serial by JDBC
-	 * 
-	 * @param OwnerName String The given owner name
-	 * @param serialName String The given serial name
-	 * @param startVal String The given start value
-	 * @param incrementVal String The given incremental value
-	 * @param maxVal String The given maximal value
-	 * @param minVal String The given minimal value
-	 * @param isCycle Whether is cycle
-	 * @param isNoMinVal boolean whether is NOMINVALUE
-	 * @param isNoMaxVal boolean whether is NOMAXVALUE
-	 * @param cacheCount string the cache count
-	 * @param isNoCache boolean whether is NOCACHE
-	 * @param description String Serial's comment
-	 */
-	public void editSerial(String OwnerName, String serialName, String startVal,
-			String incrementVal, String maxVal, String minVal, boolean isCycle,
-			boolean isNoMinVal, boolean isNoMaxVal, String cacheCount,
-			boolean isNoCache, String description) {
-		if (errorMsg != null && errorMsg.trim().length() > 0) {
-			return;
-		}
+            stmt = connection.createStatement();
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            errorMsg = e.getMessage();
+        } finally {
+            finish();
+        }
+    }
 
-		String uniqueName;
-		if (databaseInfo.isSupportUserSchema()) {
-			if (OwnerName != null && !OwnerName.isEmpty()) {
-				uniqueName = "[" + OwnerName + "]." + QuerySyntax.escapeKeyword(serialName);
-			} else {
-				uniqueName = QuerySyntax.escapeKeyword(serialName);
-			}
-		} else {
-			uniqueName = QuerySyntax.escapeKeyword(serialName);
-		}
+    /**
+     * Edit serial by JDBC
+     *
+     * @param OwnerName String The given owner name
+     * @param serialName String The given serial name
+     * @param startVal String The given start value
+     * @param incrementVal String The given incremental value
+     * @param maxVal String The given maximal value
+     * @param minVal String The given minimal value
+     * @param isCycle Whether is cycle
+     * @param isNoMinVal boolean whether is NOMINVALUE
+     * @param isNoMaxVal boolean whether is NOMAXVALUE
+     * @param cacheCount string the cache count
+     * @param isNoCache boolean whether is NOCACHE
+     * @param description String Serial's comment
+     */
+    public void editSerial(
+            String OwnerName,
+            String serialName,
+            String startVal,
+            String incrementVal,
+            String maxVal,
+            String minVal,
+            boolean isCycle,
+            boolean isNoMinVal,
+            boolean isNoMaxVal,
+            String cacheCount,
+            boolean isNoCache,
+            String description) {
+        if (errorMsg != null && errorMsg.trim().length() > 0) {
+            return;
+        }
 
-		//databaseInfo.getServerInfo().compareVersionKey("8.2.2") >= 0;
-		boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
+        String uniqueName;
+        if (databaseInfo.isSupportUserSchema()) {
+            if (OwnerName != null && !OwnerName.isEmpty()) {
+                uniqueName = "[" + OwnerName + "]." + QuerySyntax.escapeKeyword(serialName);
+            } else {
+                uniqueName = QuerySyntax.escapeKeyword(serialName);
+            }
+        } else {
+            uniqueName = QuerySyntax.escapeKeyword(serialName);
+        }
 
-		String dropSerialSql = "DROP SERIAL " + uniqueName;
+        // databaseInfo.getServerInfo().compareVersionKey("8.2.2") >= 0;
+        boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
 
-		String sql = "CREATE SERIAL " + uniqueName;
-		if (StringUtil.isNotEmpty(startVal)) {
-			sql += " START WITH " + startVal;
-		}
+        String dropSerialSql = "DROP SERIAL " + uniqueName;
 
-		if (StringUtil.isNotEmpty(incrementVal)) {
-			sql += " INCREMENT BY " + incrementVal;
-		}
+        String sql = "CREATE SERIAL " + uniqueName;
+        if (StringUtil.isNotEmpty(startVal)) {
+            sql += " START WITH " + startVal;
+        }
 
-		if (isNoMinVal) {
-			sql += " NOMINVALUE ";
-		} else if (StringUtil.isNotEmpty(minVal)) {
-			sql += " MINVALUE " + minVal;
-		}
+        if (StringUtil.isNotEmpty(incrementVal)) {
+            sql += " INCREMENT BY " + incrementVal;
+        }
 
-		if (isNoMaxVal) {
-			sql += " NOMAXVALUE ";
-		} else if (StringUtil.isNotEmpty(maxVal)) {
-			sql += " MAXVALUE " + maxVal;
-		}
+        if (isNoMinVal) {
+            sql += " NOMINVALUE ";
+        } else if (StringUtil.isNotEmpty(minVal)) {
+            sql += " MINVALUE " + minVal;
+        }
 
-		if (isCycle) {
-			sql += " CYCLE";
-		} else {
-			sql += " NOCYCLE";
-		}
+        if (isNoMaxVal) {
+            sql += " NOMAXVALUE ";
+        } else if (StringUtil.isNotEmpty(maxVal)) {
+            sql += " MAXVALUE " + maxVal;
+        }
 
-		if (isSupportCache) {
-			if (isNoCache) {
-				sql += " NOCACHE";
-			} else if (StringUtil.isNotEmpty(cacheCount)) {
-				sql += " CACHE " + cacheCount;
-			}
-		}
+        if (isCycle) {
+            sql += " CYCLE";
+        } else {
+            sql += " NOCYCLE";
+        }
 
-		if (StringUtil.isNotEmpty(description)) {
-			description = String.format("'%s'", description);
-			sql += String.format(" COMMENT %s", StringUtil.escapeQuotes(description));
-		}
+        if (isSupportCache) {
+            if (isNoCache) {
+                sql += " NOCACHE";
+            } else if (StringUtil.isNotEmpty(cacheCount)) {
+                sql += " CACHE " + cacheCount;
+            }
+        }
 
-		try {
-			if (connection == null || connection.isClosed()) {
-				if (StringUtil.isEmpty(errorMsg)) {
-					errorMsg = Messages.error_getConnection;
-				}
-				return;
-			}
+        if (StringUtil.isNotEmpty(description)) {
+            description = String.format("'%s'", description);
+            sql += String.format(" COMMENT %s", StringUtil.escapeQuotes(description));
+        }
 
-			// [TOOLS-2425]Support shard broker
-			dropSerialSql = DatabaseInfo.wrapShardQuery(databaseInfo, dropSerialSql);
-			sql = DatabaseInfo.wrapShardQuery(databaseInfo, sql);
+        try {
+            if (connection == null || connection.isClosed()) {
+                if (StringUtil.isEmpty(errorMsg)) {
+                    errorMsg = Messages.error_getConnection;
+                }
+                return;
+            }
 
-			connection.setAutoCommit(false);
-			stmt = connection.createStatement();
-			stmt.execute(dropSerialSql);
-			stmt.execute(sql);
-			connection.commit();
-		} catch (SQLException e) {
-			QueryUtil.rollback(connection);
-			errorMsg = e.getMessage();
-		} finally {
-			finish();
-		}
-	}
+            // [TOOLS-2425]Support shard broker
+            dropSerialSql = DatabaseInfo.wrapShardQuery(databaseInfo, dropSerialSql);
+            sql = DatabaseInfo.wrapShardQuery(databaseInfo, sql);
+
+            connection.setAutoCommit(false);
+            stmt = connection.createStatement();
+            stmt.execute(dropSerialSql);
+            stmt.execute(sql);
+            connection.commit();
+        } catch (SQLException e) {
+            QueryUtil.rollback(connection);
+            errorMsg = e.getMessage();
+        } finally {
+            finish();
+        }
+    }
 }

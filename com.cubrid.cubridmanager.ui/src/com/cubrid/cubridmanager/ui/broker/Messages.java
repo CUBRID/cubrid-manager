@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,165 +23,160 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.broker;
 
+import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import org.eclipse.osgi.util.NLS;
 
-import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
-
 /**
- * 
- * This is message bundle classes and provide convenient methods for
- * manipulating messages.
- * 
+ * This is message bundle classes and provide convenient methods for manipulating messages.
+ *
  * @author pangqiren
  * @version 1.0 - 2009-3-2 created by pangqiren
  */
-public class Messages extends
-		NLS {
+public class Messages extends NLS {
 
-	static {
-		NLS.initializeMessages(CubridManagerUIPlugin.PLUGIN_ID
-				+ ".broker.Messages", Messages.class);
-	}
-	//Common
-	public static String btnOK;
-	public static String btnCancel;
+    static {
+        NLS.initializeMessages(
+                CubridManagerUIPlugin.PLUGIN_ID + ".broker.Messages", Messages.class);
+    }
+    // Common
+    public static String btnOK;
+    public static String btnCancel;
 
-	public static String msgSelectBroker;
-	public static String errTitle;
-	//BrokerParameterDialog
-	public static String editTitle;
-	public static String addTitle;
-	public static String editMsg;
-	public static String addMsg;
+    public static String msgSelectBroker;
+    public static String errTitle;
+    // BrokerParameterDialog
+    public static String editTitle;
+    public static String addTitle;
+    public static String editMsg;
+    public static String addMsg;
 
-	//brokerEnvStatusView
-	public static String tblBrokerName;
-	public static String tblBrokerStatus;
-	public static String tblBrokerProcess;
-	public static String tblPort;
-	public static String tblServer;
-	public static String tblQueue;
-	public static String tblLongTran;
-	public static String tblLongQuery;
-	public static String tblErrQuery;
-	public static String tblRequest;
-	public static String tblAutoAdd;
-	public static String tblTps;
-	public static String tblQps;
-	public static String tblConn;
-	public static String tblSession;
-	public static String tblSqllog;
-	public static String tblLog;
-	public static String envHeadTitel;
-	public static String envColumnSettingTxt;
+    // brokerEnvStatusView
+    public static String tblBrokerName;
+    public static String tblBrokerStatus;
+    public static String tblBrokerProcess;
+    public static String tblPort;
+    public static String tblServer;
+    public static String tblQueue;
+    public static String tblLongTran;
+    public static String tblLongQuery;
+    public static String tblErrQuery;
+    public static String tblRequest;
+    public static String tblAutoAdd;
+    public static String tblTps;
+    public static String tblQps;
+    public static String tblConn;
+    public static String tblSession;
+    public static String tblSqllog;
+    public static String tblLog;
+    public static String envHeadTitel;
+    public static String envColumnSettingTxt;
 
-	//brokerStausView
-	public static String tblBscPid;
-	public static String tblBscPort;
-	public static String tblBscAccLog;
-	public static String tblBscErrLog;
-	public static String tblBscJobQueue;
-	public static String tblBscAutoAddAs;
-	public static String tblBscSqlLogMode;
-	public static String tblBscLongTranTime;
-	public static String tblBscLongQueryTime;
-	public static String tblBscSessionTimeout;
-	public static String tblBscKeepConn;
-	public static String tblBscAccessMode;
-	public static String tblAsId;
-	public static String tblAsProcess;
-	public static String tblAsRequest;
-	public static String tblAsSize;
-	public static String tblAsPort;
-	public static String tblAsStatus;
-	public static String tblAsLastAccess;
-	public static String tblAsCur;
-	public static String tblAsQps;
-	public static String tblAsLqs;
-	public static String tblAsDb;
-	public static String tblAsHost;
-	public static String tblAsLct;
-	public static String tblAsClientIp;
-	public static String jobTblTitle;
-	public static String tblJobId;
-	public static String tblJobPriority;
-	public static String tblJobAddress;
-	public static String tblJobTime;
-	public static String tblJobRequest;
-	public static String headTitel;
-	public static String restartBrokerServerTip;
-	public static String restartBrokerServerMsg;
-	public static String columnSettingTxt;
-	public static String showBrokerStatusTaskName;
-	public static String restartBrokerServerTaskName;
-	
-	public static String tblBscActiveSession; 
-	public static String tblBscSession;
-	public static String tblBscTps; 
-	//BrokerEditorProperty
-	public static String refreshNameOfTap;
-	public static String parameterNameOfTap;
-	public static String refreshTitle;
-	public static String tblParameter;
-	public static String tblValueType;
-	public static String tblParamValue;
-	public static String refreshOnLbl;
-	public static String refreshUnitLbl;
-	public static String restartBrokerMsg;
-	public static String setBrokerConfParameterTaskName;
+    // brokerStausView
+    public static String tblBscPid;
+    public static String tblBscPort;
+    public static String tblBscAccLog;
+    public static String tblBscErrLog;
+    public static String tblBscJobQueue;
+    public static String tblBscAutoAddAs;
+    public static String tblBscSqlLogMode;
+    public static String tblBscLongTranTime;
+    public static String tblBscLongQueryTime;
+    public static String tblBscSessionTimeout;
+    public static String tblBscKeepConn;
+    public static String tblBscAccessMode;
+    public static String tblAsId;
+    public static String tblAsProcess;
+    public static String tblAsRequest;
+    public static String tblAsSize;
+    public static String tblAsPort;
+    public static String tblAsStatus;
+    public static String tblAsLastAccess;
+    public static String tblAsCur;
+    public static String tblAsQps;
+    public static String tblAsLqs;
+    public static String tblAsDb;
+    public static String tblAsHost;
+    public static String tblAsLct;
+    public static String tblAsClientIp;
+    public static String jobTblTitle;
+    public static String tblJobId;
+    public static String tblJobPriority;
+    public static String tblJobAddress;
+    public static String tblJobTime;
+    public static String tblJobRequest;
+    public static String headTitel;
+    public static String restartBrokerServerTip;
+    public static String restartBrokerServerMsg;
+    public static String columnSettingTxt;
+    public static String showBrokerStatusTaskName;
+    public static String restartBrokerServerTaskName;
 
-	//BrokerParameterDialog
-	public static String paraTblParameter;
-	public static String paraTblValueType;
-	public static String paraTblParamValue;
-	public static String brokerNameLbl;
-	public static String paraRefreshNameOfTap;
-	public static String paraParameterNameOfTap;
-	public static String shellEditTitle;
-	public static String shellAddTitle;
-	public static String errReduplicatePort;
-	public static String errNoPort;
-	public static String errReduplicateName;
-	public static String errParameterValue;
-	public static String errBrokerName;
-	public static String errMaxStringLengthValue;
-	public static String errPositiveValue;
-	public static String errMinNumApplServerValue;
-	public static String errMaxNumApplServeValue;
-	public static String errUseMasterShmId;
-	public static String errReduplicateShmId;
-	public static String errBrokerPortAndShmId;
-	//StartBrokerAction
-	public static String startBrokerTaskName;
-	//StartBrokerEnvAction
-	public static String startBrokerEnvTaskName;
-	//StopBrokerAction
-	public static String stopBrokerTaskName;
-	public static String stopBrokerConfirmTitle;
-	public static String stopBrokerConfirmContent;
-	//StopBrokerEnvAction
-	public static String stopBrokerEnvTaskName;
-	public static String stopBrokerEnvConfirmTitle;
-	public static String stopBrokerEnvConfirmContent;
-	//BrokerEnvStatusSettingDlg
-	public static String btnSaveBrokerEnvColumnSetting;
-	public static String ttlBrokerEnvColumnSetting;
-	public static String msgBrokerEnvColumnSetting;
-	public static String shellBrokerEnvColumnSetting;
-	public static String txtGrpColumnSetting;
-	//RestartBrokerAction 
-	public static String restartBrokerTaskName;
-	//BrokerStatusSettingDlg
-	public static String btnSaveBrokerColumnSetting;
-	public static String ttlBrokerColumnSetting;
-	public static String msgBrokerColumnSetting;
-	public static String shellBrokerColumnSetting;
-	public static String txtBasicGrpColumnSetting;
-	public static String txtAsGrpColumnSetting;
-	public static String txtJqGrpColumnSetting;
+    public static String tblBscActiveSession;
+    public static String tblBscSession;
+    public static String tblBscTps;
+    // BrokerEditorProperty
+    public static String refreshNameOfTap;
+    public static String parameterNameOfTap;
+    public static String refreshTitle;
+    public static String tblParameter;
+    public static String tblValueType;
+    public static String tblParamValue;
+    public static String refreshOnLbl;
+    public static String refreshUnitLbl;
+    public static String restartBrokerMsg;
+    public static String setBrokerConfParameterTaskName;
 
+    // BrokerParameterDialog
+    public static String paraTblParameter;
+    public static String paraTblValueType;
+    public static String paraTblParamValue;
+    public static String brokerNameLbl;
+    public static String paraRefreshNameOfTap;
+    public static String paraParameterNameOfTap;
+    public static String shellEditTitle;
+    public static String shellAddTitle;
+    public static String errReduplicatePort;
+    public static String errNoPort;
+    public static String errReduplicateName;
+    public static String errParameterValue;
+    public static String errBrokerName;
+    public static String errMaxStringLengthValue;
+    public static String errPositiveValue;
+    public static String errMinNumApplServerValue;
+    public static String errMaxNumApplServeValue;
+    public static String errUseMasterShmId;
+    public static String errReduplicateShmId;
+    public static String errBrokerPortAndShmId;
+    // StartBrokerAction
+    public static String startBrokerTaskName;
+    // StartBrokerEnvAction
+    public static String startBrokerEnvTaskName;
+    // StopBrokerAction
+    public static String stopBrokerTaskName;
+    public static String stopBrokerConfirmTitle;
+    public static String stopBrokerConfirmContent;
+    // StopBrokerEnvAction
+    public static String stopBrokerEnvTaskName;
+    public static String stopBrokerEnvConfirmTitle;
+    public static String stopBrokerEnvConfirmContent;
+    // BrokerEnvStatusSettingDlg
+    public static String btnSaveBrokerEnvColumnSetting;
+    public static String ttlBrokerEnvColumnSetting;
+    public static String msgBrokerEnvColumnSetting;
+    public static String shellBrokerEnvColumnSetting;
+    public static String txtGrpColumnSetting;
+    // RestartBrokerAction
+    public static String restartBrokerTaskName;
+    // BrokerStatusSettingDlg
+    public static String btnSaveBrokerColumnSetting;
+    public static String ttlBrokerColumnSetting;
+    public static String msgBrokerColumnSetting;
+    public static String shellBrokerColumnSetting;
+    public static String txtBasicGrpColumnSetting;
+    public static String txtAsGrpColumnSetting;
+    public static String txtJqGrpColumnSetting;
 }

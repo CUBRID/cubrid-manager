@@ -45,48 +45,47 @@ import org.eclipse.swt.widgets.Widget;
  * @version 1.0 - 2012-05-05 created by Isaiah Choe
  */
 public class DropDownAction extends Action {
-	public static final String ID = DropDownAction.class.getName();
-	private MenuManager menuManager = new MenuManager();
+    public static final String ID = DropDownAction.class.getName();
+    private MenuManager menuManager = new MenuManager();
 
-	public MenuManager getMenuManager() {
-		return menuManager;
-	}
+    public MenuManager getMenuManager() {
+        return menuManager;
+    }
 
-	public void setMenuManager(MenuManager menuManager) {
-		this.menuManager = menuManager;
-	}
+    public void setMenuManager(MenuManager menuManager) {
+        this.menuManager = menuManager;
+    }
 
-	public DropDownAction(String text, int style,
-			ImageDescriptor newImage) {
-		super(text, style);
-		setId(ID);
-		setToolTipText(text);
-		setImageDescriptor(newImage);
-	}
+    public DropDownAction(String text, int style, ImageDescriptor newImage) {
+        super(text, style);
+        setId(ID);
+        setToolTipText(text);
+        setImageDescriptor(newImage);
+    }
 
-	public void runWithEvent(Event event) { // FIXME remove commented code if don't need it anymore.
-		//if (event.detail == SWT.ARROW) {
-			Widget widget = event.widget;
-			if (widget instanceof ToolItem) {
-				ToolItem toolItem = (ToolItem) widget;
-				Composite parent = toolItem.getParent();
-				Rectangle rect = toolItem.getBounds();
-				Point pt = new Point(rect.x, rect.y + rect.height);
-				pt = parent.toDisplay(pt);
-				Menu contextMenu = menuManager.createContextMenu(parent);
-				contextMenu.setLocation(pt.x, pt.y);
-				contextMenu.setVisible(true);
-			}
-//		} else {
-//			run();
-//		}
-	}
+    public void runWithEvent(Event event) { // FIXME remove commented code if don't need it anymore.
+        // if (event.detail == SWT.ARROW) {
+        Widget widget = event.widget;
+        if (widget instanceof ToolItem) {
+            ToolItem toolItem = (ToolItem) widget;
+            Composite parent = toolItem.getParent();
+            Rectangle rect = toolItem.getBounds();
+            Point pt = new Point(rect.x, rect.y + rect.height);
+            pt = parent.toDisplay(pt);
+            Menu contextMenu = menuManager.createContextMenu(parent);
+            contextMenu.setLocation(pt.x, pt.y);
+            contextMenu.setVisible(true);
+        }
+        //		} else {
+        //			run();
+        //		}
+    }
 
-	public void run() {
-//		if (editor == null || editor.getConfigurationInfo() == null) {
-//			CommonTool.openErrorBox(Messages.errInvalidNLuceneEnv);
-//		} else {
-//			UtilHelper.startAdminServer(editor);
-//		}
-	}
+    public void run() {
+        //		if (editor == null || editor.getConfigurationInfo() == null) {
+        //			CommonTool.openErrorBox(Messages.errInvalidNLuceneEnv);
+        //		} else {
+        //			UtilHelper.startAdminServer(editor);
+        //		}
+    }
 }

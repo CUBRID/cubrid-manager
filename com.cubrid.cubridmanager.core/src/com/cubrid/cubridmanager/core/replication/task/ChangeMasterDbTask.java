@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.replication.task;
@@ -32,89 +32,95 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 
 /**
- * 
  * A task that defined the task of "changeMasterdb"
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2009-8-25 created by wuyingshi
  */
-public class ChangeMasterDbTask extends
-		SocketTask {
+public class ChangeMasterDbTask extends SocketTask {
 
-	private static final String[] SEND_MSG_ITEMS = new String[] {"task",
-			"token", "old_master_name", "old_master_host", "new_master_name",
-			"new_master_host", "dist_name", "dist_host", "dist_password" };
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {
+                "task",
+                "token",
+                "old_master_name",
+                "old_master_host",
+                "new_master_name",
+                "new_master_host",
+                "dist_name",
+                "dist_host",
+                "dist_password"
+            };
 
-	/**
-	 * The Constructor
-	 * 
-	 * @param serverInfo
-	 */
-	public ChangeMasterDbTask(ServerInfo serverInfo) {
-		super("cmtask_change_master", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * The Constructor
+     *
+     * @param serverInfo
+     */
+    public ChangeMasterDbTask(ServerInfo serverInfo) {
+        super("cmtask_change_master", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * set old masterdb name
-	 * 
-	 * @param param the old masterdb name
-	 */
-	public void setOldMasterDbName(String param) {
-		super.setMsgItem("old_master_name", param);
-	}
+    /**
+     * set old masterdb name
+     *
+     * @param param the old masterdb name
+     */
+    public void setOldMasterDbName(String param) {
+        super.setMsgItem("old_master_name", param);
+    }
 
-	/**
-	 * set old master host ip
-	 * 
-	 * @param param the master host ip
-	 */
-	public void setOldMasterHostIp(String param) {
-		super.setMsgItem("old_master_host", param);
-	}
+    /**
+     * set old master host ip
+     *
+     * @param param the master host ip
+     */
+    public void setOldMasterHostIp(String param) {
+        super.setMsgItem("old_master_host", param);
+    }
 
-	/**
-	 * set new masterdb name
-	 * 
-	 * @param param the new masterdb name
-	 */
-	public void setNewMasterDbName(String param) {
-		super.setMsgItem("new_master_name", param);
-	}
+    /**
+     * set new masterdb name
+     *
+     * @param param the new masterdb name
+     */
+    public void setNewMasterDbName(String param) {
+        super.setMsgItem("new_master_name", param);
+    }
 
-	/**
-	 * set new master host ip
-	 * 
-	 * @param param the new master host ip
-	 */
-	public void setNewMasterHostIp(String param) {
-		super.setMsgItem("new_master_host", param);
-	}
+    /**
+     * set new master host ip
+     *
+     * @param param the new master host ip
+     */
+    public void setNewMasterHostIp(String param) {
+        super.setMsgItem("new_master_host", param);
+    }
 
-	/**
-	 * set dist host ip
-	 * 
-	 * @param param the dist host ip
-	 */
-	public void setDistHostIp(String param) {
-		super.setMsgItem("dist_host", param);
-	}
+    /**
+     * set dist host ip
+     *
+     * @param param the dist host ip
+     */
+    public void setDistHostIp(String param) {
+        super.setMsgItem("dist_host", param);
+    }
 
-	/**
-	 * set the distdb name
-	 * 
-	 * @param param the distdb name
-	 */
-	public void setDistDbName(String param) {
-		super.setMsgItem("dist_name", param);
-	}
+    /**
+     * set the distdb name
+     *
+     * @param param the distdb name
+     */
+    public void setDistDbName(String param) {
+        super.setMsgItem("dist_name", param);
+    }
 
-	/**
-	 * set distdb dba password
-	 * 
-	 * @param param the password
-	 */
-	public void setDistDbDbaPasswd(String param) {
-		super.setMsgItem("dist_password", param);
-	}
-
+    /**
+     * set distdb dba password
+     *
+     * @param param the password
+     */
+    public void setDistDbDbaPasswd(String param) {
+        super.setMsgItem("dist_password", param);
+    }
 }

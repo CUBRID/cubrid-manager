@@ -27,39 +27,35 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.service.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.cubrid.cubridmanager.core.shard.model.Shards;
 import com.cubrid.cubridmanager.core.shard.model.ShardsStatus;
-
+import java.util.HashMap;
+import java.util.Map;
 import junit.framework.TestCase;
 
-
 public class ShardNodeTest extends TestCase {
-	
-	public void testShardNode(){
-		ShardNode node = new ShardNode();
-		Shards shards = new Shards();
-		Map<String, String> dbStatusMap = new HashMap<String, String>();
-		String dbName = "demodb";
-		String dbStatus = "OFF";
-		String severStatus = "Shard #0";
-		ShardsStatus shardsStatus = new ShardsStatus();
-		
-		node.setShards(shards);
-		assertEquals(node.getShards(), shards);
-		node.setDbStatusMap(dbStatusMap);
-		assertEquals(node.getDbStatusMap(), dbStatusMap);
-		node.setDbStatus(dbName, dbStatus);
-		Map<String, String> dbStatusMap2 = node.getDbStatusMap();
-		assertEquals(dbStatusMap2.get(dbName), dbStatus);
-		node.setSeverStatus(severStatus);
-		assertEquals(node.getSeverStatus(), severStatus);
-		assertNotNull(node.getStatus());
-		node.setShardsStatus(shardsStatus);
-		assertEquals(node.getShardsStatus(), shardsStatus);
-		assertNotNull(node.getBrokerInfo());
-	}
-	
+
+    public void testShardNode() {
+        ShardNode node = new ShardNode();
+        Shards shards = new Shards();
+        Map<String, String> dbStatusMap = new HashMap<String, String>();
+        String dbName = "demodb";
+        String dbStatus = "OFF";
+        String severStatus = "Shard #0";
+        ShardsStatus shardsStatus = new ShardsStatus();
+
+        node.setShards(shards);
+        assertEquals(node.getShards(), shards);
+        node.setDbStatusMap(dbStatusMap);
+        assertEquals(node.getDbStatusMap(), dbStatusMap);
+        node.setDbStatus(dbName, dbStatus);
+        Map<String, String> dbStatusMap2 = node.getDbStatusMap();
+        assertEquals(dbStatusMap2.get(dbName), dbStatus);
+        node.setSeverStatus(severStatus);
+        assertEquals(node.getSeverStatus(), severStatus);
+        assertNotNull(node.getStatus());
+        node.setShardsStatus(shardsStatus);
+        assertEquals(node.getShardsStatus(), shardsStatus);
+        assertNotNull(node.getBrokerInfo());
+    }
 }

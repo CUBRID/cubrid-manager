@@ -27,13 +27,23 @@
  */
 package com.cubrid.common.ui.query.dialog;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.common.sqlrunner.part.RunSQLFileEditorInput;
+import com.cubrid.common.ui.common.sqlrunner.part.RunSQLFileViewPart;
+import com.cubrid.common.ui.query.Messages;
+import com.cubrid.common.ui.query.control.BatchRunComposite;
+import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.QueryUnit;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -50,190 +60,188 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.common.sqlrunner.part.RunSQLFileEditorInput;
-import com.cubrid.common.ui.common.sqlrunner.part.RunSQLFileViewPart;
-import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.query.control.BatchRunComposite;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
-import com.cubrid.common.ui.query.editor.QueryUnit;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * the run batch sql dialog
- * 
+ *
  * @author Isaiah Choe 2012-05-18
  */
-public class BatchRunDialog extends
-		CMTitleAreaDialog {
-	private static final Logger LOGGER = LogUtil.getLogger(BatchRunDialog.class);
-	
-	private BatchRunComposite container;
-	private Button btnRun;
-	private Button btnBatchPaste;
-	private CubridDatabase cubridDatabase;
-	public final static int RUN_ID = Integer.MAX_VALUE - 1;
-	public final static int PASTE_ID = Integer.MAX_VALUE - 2;
+public class BatchRunDialog extends CMTitleAreaDialog {
+    private static final Logger LOGGER = LogUtil.getLogger(BatchRunDialog.class);
 
-	/**
-	 * 
-	 * @param parentShell
-	 */
-	public BatchRunDialog(Shell parentShell, CubridDatabase cubridDatabase) {
-		super(parentShell);
-		this.cubridDatabase = cubridDatabase;
-	}
+    private BatchRunComposite container;
+    private Button btnRun;
+    private Button btnBatchPaste;
+    private CubridDatabase cubridDatabase;
+    public static final int RUN_ID = Integer.MAX_VALUE - 1;
+    public static final int PASTE_ID = Integer.MAX_VALUE - 2;
 
-	/**
-	 * Create dialog area content
-	 * 
-	 * @param parent the parent composite
-	 * @return the control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
+    /** @param parentShell */
+    public BatchRunDialog(Shell parentShell, CubridDatabase cubridDatabase) {
+        super(parentShell);
+        this.cubridDatabase = cubridDatabase;
+    }
 
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+    /**
+     * Create dialog area content
+     *
+     * @param parent the parent composite
+     * @return the control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
 
-		container = new BatchRunComposite(composite);
-		container.setCubridDatabase(cubridDatabase);
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		setTitle(Messages.titleBatchRunMessage);
-		setMessage(Messages.msgBatchRunMessage);
+        container = new BatchRunComposite(composite);
+        container.setCubridDatabase(cubridDatabase);
 
-		return parentComp;
-	}
+        setTitle(Messages.titleBatchRunMessage);
+        setMessage(Messages.msgBatchRunMessage);
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		getShell().setMinimumSize(700, 450);
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.titleBatchRunMessage);
-	}
+        return parentComp;
+    }
 
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		btnBatchPaste = createButton(parent, PASTE_ID, Messages.btnBatchPaste, false);
-		btnBatchPaste.setEnabled(false);
-		container.setPasteButton(btnBatchPaste);
-		
-		btnRun = createButton(parent, RUN_ID, Messages.btnBatchRun, false);
-		btnRun.setEnabled(false);
-		container.setRunButton(btnRun);
-		createButton(parent, IDialogConstants.OK_ID, Messages.btnBatchClose, false);
-	}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        getShell().setMinimumSize(700, 450);
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.titleBatchRunMessage);
+    }
 
-	/**
-	 * Call this method when the button in button bar is pressed
-	 * 
-	 * @param buttonId the button id
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == RUN_ID) {
-			if (!MessageDialog.openConfirm(
-					PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-					Messages.titleBatchRunConfirm, Messages.msgBatchRunConfirm)) {
-				return;
-			}
-			
-			List<String> fileList = container.getFileList();
-			RunSQLFileEditorInput input = new RunSQLFileEditorInput(cubridDatabase, fileList);
-			try{
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(input,
-					RunSQLFileViewPart.ID);
-			}catch (Exception e) {
-				LOGGER.error(e.getLocalizedMessage());
-			}
-			
-			super.buttonPressed(IDialogConstants.OK_ID);
-		} else if (buttonId == PASTE_ID) {
-//			if (!MessageDialog.openConfirm(
-//					PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-//					Messages.titleBatchRunConfirm, Messages.msgBatchRunPasteConfirm)) {
-//				return;
-//			}
-			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			if (window == null || window.getActivePage() == null) {
-				return;
-			}
-			IEditorPart editor = window.getActivePage().getActiveEditor();
-			try {
-				if (editor == null) {
-					IEditorInput input = new QueryUnit();
-					editor = window.getActivePage().openEditor(input,
-							QueryEditorPart.ID);
-				}
-			} catch (PartInitException e) {
-				CommonUITool.openErrorBox(e.getMessage());
-			}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        btnBatchPaste = createButton(parent, PASTE_ID, Messages.btnBatchPaste, false);
+        btnBatchPaste.setEnabled(false);
+        container.setPasteButton(btnBatchPaste);
 
-			if (editor == null) {
-				return;
-			}
+        btnRun = createButton(parent, RUN_ID, Messages.btnBatchRun, false);
+        btnRun.setEnabled(false);
+        container.setRunButton(btnRun);
+        createButton(parent, IDialogConstants.OK_ID, Messages.btnBatchClose, false);
+    }
 
-			QueryEditorPart oldEditor = (QueryEditorPart) editor;
+    /**
+     * Call this method when the button in button bar is pressed
+     *
+     * @param buttonId the button id
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == RUN_ID) {
+            if (!MessageDialog.openConfirm(
+                    PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                    Messages.titleBatchRunConfirm,
+                    Messages.msgBatchRunConfirm)) {
+                return;
+            }
 
-			try {
-				QueryEditorPart queryEditor = (QueryEditorPart) editor;
-				String encoding = queryEditor.getCombinedQueryComposite().getSqlEditorComp().getDocument().getEncoding();
-				StringBuilder sb = new StringBuilder();
-				List<String> fileList = container.getFileList();
-				for (int i = 0; i < fileList.size(); i++) {
-					sb.delete(0, sb.length());
-					sb.append("/* SQL Filename: ").append(fileList.get(i)).append(" */").append(StringUtil.NEWLINE);
-					
-					BufferedReader in = null;
-					try {
-						in = new BufferedReader(new InputStreamReader(
-								new FileInputStream(new File(fileList.get(i))), encoding));
-						String line = in.readLine();
-						while (line != null) {
-							sb.append(line + StringUtil.NEWLINE);
-							line = in.readLine();
-						}
-					} finally {
-						try {
-							if (in != null) {
-								in.close();
-							}
-						} catch (IOException e) {
-						}
-					}
+            List<String> fileList = container.getFileList();
+            RunSQLFileEditorInput input = new RunSQLFileEditorInput(cubridDatabase, fileList);
+            try {
+                PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow()
+                        .getActivePage()
+                        .openEditor(input, RunSQLFileViewPart.ID);
+            } catch (Exception e) {
+                LOGGER.error(e.getLocalizedMessage());
+            }
 
-					try {
-						QueryUnit input = new QueryUnit();
-						QueryEditorPart newEditor = (QueryEditorPart) window
-								.getActivePage().openEditor(input, QueryEditorPart.ID);
-						newEditor.setQuery(sb.toString(),false, false, false);
-						newEditor.connect(oldEditor.getSelectedDatabase());
-					} catch (Exception e) {
-						CommonUITool.openErrorBox(e.getMessage());
-					}
-				}
-			} catch (IOException e) {
-				CommonUITool.openErrorBox(e.getMessage());
-			}
+            super.buttonPressed(IDialogConstants.OK_ID);
+        } else if (buttonId == PASTE_ID) {
+            //			if (!MessageDialog.openConfirm(
+            //					PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+            //					Messages.titleBatchRunConfirm, Messages.msgBatchRunPasteConfirm)) {
+            //				return;
+            //			}
+            IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            if (window == null || window.getActivePage() == null) {
+                return;
+            }
+            IEditorPart editor = window.getActivePage().getActiveEditor();
+            try {
+                if (editor == null) {
+                    IEditorInput input = new QueryUnit();
+                    editor = window.getActivePage().openEditor(input, QueryEditorPart.ID);
+                }
+            } catch (PartInitException e) {
+                CommonUITool.openErrorBox(e.getMessage());
+            }
 
-			super.buttonPressed(IDialogConstants.OK_ID);
-		} else {
-			super.buttonPressed(buttonId);
-		}
-	}
+            if (editor == null) {
+                return;
+            }
+
+            QueryEditorPart oldEditor = (QueryEditorPart) editor;
+
+            try {
+                QueryEditorPart queryEditor = (QueryEditorPart) editor;
+                String encoding =
+                        queryEditor
+                                .getCombinedQueryComposite()
+                                .getSqlEditorComp()
+                                .getDocument()
+                                .getEncoding();
+                StringBuilder sb = new StringBuilder();
+                List<String> fileList = container.getFileList();
+                for (int i = 0; i < fileList.size(); i++) {
+                    sb.delete(0, sb.length());
+                    sb.append("/* SQL Filename: ")
+                            .append(fileList.get(i))
+                            .append(" */")
+                            .append(StringUtil.NEWLINE);
+
+                    BufferedReader in = null;
+                    try {
+                        in =
+                                new BufferedReader(
+                                        new InputStreamReader(
+                                                new FileInputStream(new File(fileList.get(i))),
+                                                encoding));
+                        String line = in.readLine();
+                        while (line != null) {
+                            sb.append(line + StringUtil.NEWLINE);
+                            line = in.readLine();
+                        }
+                    } finally {
+                        try {
+                            if (in != null) {
+                                in.close();
+                            }
+                        } catch (IOException e) {
+                        }
+                    }
+
+                    try {
+                        QueryUnit input = new QueryUnit();
+                        QueryEditorPart newEditor =
+                                (QueryEditorPart)
+                                        window.getActivePage()
+                                                .openEditor(input, QueryEditorPart.ID);
+                        newEditor.setQuery(sb.toString(), false, false, false);
+                        newEditor.connect(oldEditor.getSelectedDatabase());
+                    } catch (Exception e) {
+                        CommonUITool.openErrorBox(e.getMessage());
+                    }
+                }
+            } catch (IOException e) {
+                CommonUITool.openErrorBox(e.getMessage());
+            }
+
+            super.buttonPressed(IDialogConstants.OK_ID);
+        } else {
+            super.buttonPressed(buttonId);
+        }
+    }
 }

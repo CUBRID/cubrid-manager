@@ -32,82 +32,80 @@ import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-21 created by fulei
  */
+public class GetAllSchemaTaskTest extends SetupJDBCTestCase {
 
-public class GetAllSchemaTaskTest extends SetupJDBCTestCase{
+    protected void setUp() throws Exception {
+        super.setUp();
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE \"test1\"(");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("\"id\" integer AUTO_INCREMENT NOT NULL,");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("\"name\" character varying(10));");
+        executeDDL(sb.toString());
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		StringBuilder sb = new StringBuilder();
-		sb.append("CREATE TABLE \"test1\"(");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("\"id\" integer AUTO_INCREMENT NOT NULL,");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("\"name\" character varying(10));");
-		executeDDL(sb.toString());
-		
-		sb = new StringBuilder();
-		sb.append("ALTER TABLE \"test1\" PARTITION BY RANGE ([name]) (PARTITION p_name VALUES LESS THAN ('1'));");
-		executeDDL(sb.toString());
-		
-		sb = new StringBuilder();
-		sb.append("ALTER SERIAL \"test1_ai_id\"  START WITH 1;");
-		executeDDL(sb.toString());
-		
-		sb = new StringBuilder();
-		sb.append(StringUtil.NEWLINE);
-		sb.append("CREATE TABLE \"test2\"(");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("\"id\" integer AUTO_INCREMENT,");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("\"name\" character varying(10));");
-		executeDDL(sb.toString());
-		
-		sb = new StringBuilder();
-		sb.append("ALTER SERIAL \"test2_ai_id\"  START WITH 1;");
-		executeDDL(sb.toString());
-		
-		sb = new StringBuilder();
-		sb.append("ALTER TABLE \"test1\" ADD PRIMARY KEY(\"id\");");
-		executeDDL(sb.toString());
-		
-		sb = new StringBuilder();
-		sb.append("ALTER TABLE \"test2\" ADD FOREIGN KEY (\"id\") REFERENCES \"test1\"(\"id\") ON DELETE RESTRICT ON UPDATE RESTRICT;");
-		executeDDL(sb.toString());
-		
-		sb.append("");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("");
-		sb.append(StringUtil.NEWLINE);
-		
-		sb.append("");
-		sb.append(StringUtil.NEWLINE);sb.append("");
-		sb.append(StringUtil.NEWLINE);
-		
-	}
-	
-	public void testGetAllSchema () {
-		GetAllSchemaTask task = new GetAllSchemaTask(databaseInfo);
-		task.execute();
-		
-		assertNull(task.getErrorMsg());
-		
-	}
-	
-	protected void tearDown() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append("DROP TABLE \"test2\";");
-		executeDDL(sb.toString());
-		
-		sb = new StringBuilder();
-		sb.append("DROP TABLE \"test1\";");
-		executeDDL(sb.toString());
-	}
+        sb = new StringBuilder();
+        sb.append(
+                "ALTER TABLE \"test1\" PARTITION BY RANGE ([name]) (PARTITION p_name VALUES LESS THAN ('1'));");
+        executeDDL(sb.toString());
+
+        sb = new StringBuilder();
+        sb.append("ALTER SERIAL \"test1_ai_id\"  START WITH 1;");
+        executeDDL(sb.toString());
+
+        sb = new StringBuilder();
+        sb.append(StringUtil.NEWLINE);
+        sb.append("CREATE TABLE \"test2\"(");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("\"id\" integer AUTO_INCREMENT,");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("\"name\" character varying(10));");
+        executeDDL(sb.toString());
+
+        sb = new StringBuilder();
+        sb.append("ALTER SERIAL \"test2_ai_id\"  START WITH 1;");
+        executeDDL(sb.toString());
+
+        sb = new StringBuilder();
+        sb.append("ALTER TABLE \"test1\" ADD PRIMARY KEY(\"id\");");
+        executeDDL(sb.toString());
+
+        sb = new StringBuilder();
+        sb.append(
+                "ALTER TABLE \"test2\" ADD FOREIGN KEY (\"id\") REFERENCES \"test1\"(\"id\") ON DELETE RESTRICT ON UPDATE RESTRICT;");
+        executeDDL(sb.toString());
+
+        sb.append("");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("");
+        sb.append(StringUtil.NEWLINE);
+
+        sb.append("");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("");
+        sb.append(StringUtil.NEWLINE);
+    }
+
+    public void testGetAllSchema() {
+        GetAllSchemaTask task = new GetAllSchemaTask(databaseInfo);
+        task.execute();
+
+        assertNull(task.getErrorMsg());
+    }
+
+    protected void tearDown() throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DROP TABLE \"test2\";");
+        executeDDL(sb.toString());
+
+        sb = new StringBuilder();
+        sb.append("DROP TABLE \"test1\";");
+        executeDDL(sb.toString());
+    }
 }
-	

@@ -28,7 +28,6 @@
 package com.cubrid.cubridmanager.ui.replication.editor.model;
 
 /**
- *
  * This a connection model object with source and target
  *
  * @author pangqiren
@@ -36,44 +35,43 @@ package com.cubrid.cubridmanager.ui.replication.editor.model;
  */
 public class ArrowConnection {
 
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 3256726160682268473L;
+    @SuppressWarnings("unused")
+    private static final long serialVersionUID = 3256726160682268473L;
 
-	private Node source;
-	private Node target;
-	//whethe this connection was saved
-	private boolean isSaved = false;
+    private Node source;
+    private Node target;
+    // whethe this connection was saved
+    private boolean isSaved = false;
 
-	public ArrowConnection(Node source, Node target) {
-		super();
-		this.source = source;
-		this.target = target;
-		source.addOutput(this);
-		target.addInput(this);
-	}
+    public ArrowConnection(Node source, Node target) {
+        super();
+        this.source = source;
+        this.target = target;
+        source.addOutput(this);
+        target.addInput(this);
+    }
 
-	public void setSource(Node source) {
-		this.source = source;
-	}
+    public void setSource(Node source) {
+        this.source = source;
+    }
 
-	public void setTarget(Node target) {
-		this.target = target;
-	}
+    public void setTarget(Node target) {
+        this.target = target;
+    }
 
-	public Node getTarget() {
-		return this.target;
-	}
+    public Node getTarget() {
+        return this.target;
+    }
 
-	public Node getSource() {
-		return this.source;
-	}
+    public Node getSource() {
+        return this.source;
+    }
 
-	public boolean isSaved() {
-		return isSaved;
-	}
+    public boolean isSaved() {
+        return isSaved;
+    }
 
-	public void setSaved(boolean isSaved) {
-		this.isSaved = isSaved;
-	}
-
+    public void setSaved(boolean isSaved) {
+        this.isSaved = isSaved;
+    }
 }

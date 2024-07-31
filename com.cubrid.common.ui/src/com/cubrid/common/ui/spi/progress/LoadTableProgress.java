@@ -27,118 +27,116 @@
 
 package com.cubrid.common.ui.spi.progress;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.TableDetailInfo;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.ui.spi.Messages;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
 
 /**
- * An abstract class that must be inherited
- * to implement the Action to be used in the TableDashboard.
+ * An abstract class that must be inherited to implement the Action to be used in the
+ * TableDashboard.
  *
  * @author hun-a
- *
  */
 public abstract class LoadTableProgress implements IRunnableWithProgress {
-	protected final Logger LOGGER;
-	protected final CubridDatabase database;
-	protected final List<TableDetailInfo> tableList;
-	protected final String taskName;
-	protected final String subTaskName;
-	protected boolean success = false;
+    protected final Logger LOGGER;
+    protected final CubridDatabase database;
+    protected final List<TableDetailInfo> tableList;
+    protected final String taskName;
+    protected final String subTaskName;
+    protected boolean success = false;
 
-	public LoadTableProgress(CubridDatabase database,
-			List<TableDetailInfo> tableList,
-			String taskName, String subTaskName) {
-		this.LOGGER = LogUtil.getLogger(this.getClass());
-		this.database = database;
-		this.tableList = tableList;
-		this.taskName = taskName;
-		this.subTaskName = subTaskName;
-	}
+    public LoadTableProgress(
+            CubridDatabase database,
+            List<TableDetailInfo> tableList,
+            String taskName,
+            String subTaskName) {
+        this.LOGGER = LogUtil.getLogger(this.getClass());
+        this.database = database;
+        this.tableList = tableList;
+        this.taskName = taskName;
+        this.subTaskName = subTaskName;
+    }
 
-	@Override
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,
-			InterruptedException {
-		monitor.beginTask(taskName, tableList.size());
-		Connection conn = null;
-		try {
-			conn = JDBCConnectionManager.getConnection(
-					database.getDatabaseInfo(), true);
+    @Override
+    public void run(IProgressMonitor monitor)
+            throws InvocationTargetException, InterruptedException {
+        monitor.beginTask(taskName, tableList.size());
+        Connection conn = null;
+        try {
+            conn = JDBCConnectionManager.getConnection(database.getDatabaseInfo(), true);
 
-			for (TableDetailInfo tablesDetailInfo : tableList) {
-				monitor.subTask(Messages.bind(subTaskName, tablesDetailInfo.getTableName()));
+            for (TableDetailInfo tablesDetailInfo : tableList) {
+                monitor.subTask(Messages.bind(subTaskName, tablesDetailInfo.getTableName()));
 
-				Object count = count(conn,
-						tablesDetailInfo.getTableName());
-				setCount(tablesDetailInfo, count);
+                Object count = count(conn, tablesDetailInfo.getTableName());
+                setCount(tablesDetailInfo, count);
 
-				monitor.worked(1);
-				if (monitor.isCanceled()) {
-					break;
-				}
-			}
-			success = true;
-		} catch (Exception e) {
-			LOGGER.error("", e);
-		} finally {
-			QueryUtil.freeQuery(conn);
-			monitor.done();
-		}
-	}
+                monitor.worked(1);
+                if (monitor.isCanceled()) {
+                    break;
+                }
+            }
+            success = true;
+        } catch (Exception e) {
+            LOGGER.error("", e);
+        } finally {
+            QueryUtil.freeQuery(conn);
+            monitor.done();
+        }
+    }
 
-	/**
-	 * You must implement this method
-	 * to get the information you want from the table.
-	 *
-	 * @param conn
-	 * @param tableName
-	 * @return count
-	 */
-	protected abstract Object count(Connection conn, String tableName);
+    /**
+     * You must implement this method to get the information you want from the table.
+     *
+     * @param conn
+     * @param tableName
+     * @return count
+     */
+    protected abstract Object count(Connection conn, String tableName);
 
-	/**
-	 * You must implement this method to put the specific value
-	 * you want to set into <code>TableDetailInfo</code>. 
-	 * <p>
-	 * The specific values are like column count, records count, keys count and record size value.
-	 *
-	 * @param tablesDetailInfo
-	 * @param count
-	 */
-	protected abstract void setCount(TableDetailInfo tablesDetailInfo, Object count);
+    /**
+     * You must implement this method to put the specific value you want to set into <code>
+     * TableDetailInfo</code>.
+     *
+     * <p>The specific values are like column count, records count, keys count and record size
+     * value.
+     *
+     * @param tablesDetailInfo
+     * @param count
+     */
+    protected abstract void setCount(TableDetailInfo tablesDetailInfo, Object count);
 
-	/**
-	 * loadTablesInfo
-	 *
-	 * @return Catalog
-	 */
-	public void getCount() {
-		Display display = Display.getDefault();
-		display.syncExec(new Runnable() {
-			public void run() {
-				try {
-					new ProgressMonitorDialog(null).run(true, true, LoadTableProgress.this);
-				} catch (Exception e) {
-					LOGGER.error("", e);
-				}
-			}
-		});
-	}
+    /**
+     * loadTablesInfo
+     *
+     * @return Catalog
+     */
+    public void getCount() {
+        Display display = Display.getDefault();
+        display.syncExec(
+                new Runnable() {
+                    public void run() {
+                        try {
+                            new ProgressMonitorDialog(null).run(true, true, LoadTableProgress.this);
+                        } catch (Exception e) {
+                            LOGGER.error("", e);
+                        }
+                    }
+                });
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    public boolean isSuccess() {
+        return success;
+    }
 }

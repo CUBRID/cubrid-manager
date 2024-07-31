@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,15 +23,9 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.spi.model.loader.schema;
-
-import java.util.Collections;
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Display;
 
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.ui.cubrid.table.control.SchemaInfoEditorPart;
@@ -48,101 +42,109 @@ import com.cubrid.cubridmanager.core.common.model.DbRunningType;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetPartitionedClassListTask;
+import java.util.Collections;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.widgets.Display;
 
 /**
- * 
  * This class is responsible to load the children of partitioned class folder
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-5-8 created by pangqiren
  */
-public class CubridPartitionedTableLoader extends
-		CubridUserTableLoader {
+public class CubridPartitionedTableLoader extends CubridUserTableLoader {
 
-	/**
-	 * 
-	 * Load children object for parent
-	 * 
-	 * @param parent the parent node
-	 * @param monitor the IProgressMonitor object
-	 */
-	public void load(ICubridNode parent, final IProgressMonitor monitor) {
-		synchronized (this) {
-			if (isLoaded()) {
-				return;
-			}
+    /**
+     * Load children object for parent
+     *
+     * @param parent the parent node
+     * @param monitor the IProgressMonitor object
+     */
+    public void load(ICubridNode parent, final IProgressMonitor monitor) {
+        synchronized (this) {
+            if (isLoaded()) {
+                return;
+            }
 
-			CubridDatabase database = ((ISchemaNode) parent).getDatabase();
-			if (!database.isLogined()
-					|| database.getRunningType() == DbRunningType.STANDALONE) {
-				parent.removeAllChild();
-				CubridNodeManager.getInstance().fireCubridNodeChanged(
-						new CubridNodeChangedEvent(
-								(ICubridNode) parent,
-								CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
-				return;
-			}
-			DatabaseInfo databaseInfo = database.getDatabaseInfo();
-			final GetPartitionedClassListTask task = new GetPartitionedClassListTask(
-					databaseInfo);
+            CubridDatabase database = ((ISchemaNode) parent).getDatabase();
+            if (!database.isLogined() || database.getRunningType() == DbRunningType.STANDALONE) {
+                parent.removeAllChild();
+                CubridNodeManager.getInstance()
+                        .fireCubridNodeChanged(
+                                new CubridNodeChangedEvent(
+                                        (ICubridNode) parent,
+                                        CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
+                return;
+            }
+            DatabaseInfo databaseInfo = database.getDatabaseInfo();
+            final GetPartitionedClassListTask task = new GetPartitionedClassListTask(databaseInfo);
 
-			monitorCancel(monitor, new ITask[] {task});
+            monitorCancel(monitor, new ITask[] {task});
 
-			List<ClassInfo> classInfoList = task.getAllPartitionedClassInfoList(parent.getName());
-			final String errorMsg = task.getErrorMsg();
-			if (!monitor.isCanceled() && errorMsg != null
-					&& errorMsg.trim().length() > 0) {
-				parent.removeAllChild();
-				Display display = Display.getDefault();
-				display.syncExec(new Runnable() {
-					public void run() {
-						CommonUITool.openErrorBox(errorMsg);
-					}
-				});
-				setLoaded(true);
-				return;
-			}
-			if (monitor.isCanceled()) {
-				setLoaded(true);
-				return;
-			}
+            List<ClassInfo> classInfoList = task.getAllPartitionedClassInfoList(parent.getName());
+            final String errorMsg = task.getErrorMsg();
+            if (!monitor.isCanceled() && errorMsg != null && errorMsg.trim().length() > 0) {
+                parent.removeAllChild();
+                Display display = Display.getDefault();
+                display.syncExec(
+                        new Runnable() {
+                            public void run() {
+                                CommonUITool.openErrorBox(errorMsg);
+                            }
+                        });
+                setLoaded(true);
+                return;
+            }
+            if (monitor.isCanceled()) {
+                setLoaded(true);
+                return;
+            }
 
-			parent.removeAllChild();
+            parent.removeAllChild();
 
-			if (classInfoList != null && !classInfoList.isEmpty()) {
-				for (ClassInfo classInfo : classInfoList) {
-					String id = parent.getId() + NODE_SEPARATOR
-							+ classInfo.getUniqueName();
-					
-					ICubridNode partitionedClassNode;
-					if (databaseInfo.isSupportUserSchema()) {
-						partitionedClassNode = new DefaultSchemaNode(
-							id, classInfo.getClassName() + " (" + classInfo.getOwnerName() + ")", 
-							classInfo.getUniqueName(),
-							"icons/navigator/schema_table_item.png");
-					} else {
-						partitionedClassNode = new DefaultSchemaNode(
-							id, classInfo.getClassName(), classInfo.getClassName(),
-							"icons/navigator/schema_table_item.png");
-					}
-					partitionedClassNode.setType(NodeType.USER_PARTITIONED_TABLE);
-					partitionedClassNode.setModelObj(classInfo);
-					partitionedClassNode.setContainer(false);
-					partitionedClassNode.setEditorId(SchemaInfoEditorPart.ID);
-					parent.addChild(partitionedClassNode);
-				}
-			}
-			database.getDatabaseInfo().addPartitionedTableList(
-					parent.getLabel(), classInfoList);
-			Collections.sort(parent.getChildren());
+            if (classInfoList != null && !classInfoList.isEmpty()) {
+                for (ClassInfo classInfo : classInfoList) {
+                    String id = parent.getId() + NODE_SEPARATOR + classInfo.getUniqueName();
 
-			loadColumns(parent, getLevel(), monitor);
-			loadIndexes(parent, getLevel(), monitor);
+                    ICubridNode partitionedClassNode;
+                    if (databaseInfo.isSupportUserSchema()) {
+                        partitionedClassNode =
+                                new DefaultSchemaNode(
+                                        id,
+                                        classInfo.getClassName()
+                                                + " ("
+                                                + classInfo.getOwnerName()
+                                                + ")",
+                                        classInfo.getUniqueName(),
+                                        "icons/navigator/schema_table_item.png");
+                    } else {
+                        partitionedClassNode =
+                                new DefaultSchemaNode(
+                                        id,
+                                        classInfo.getClassName(),
+                                        classInfo.getClassName(),
+                                        "icons/navigator/schema_table_item.png");
+                    }
+                    partitionedClassNode.setType(NodeType.USER_PARTITIONED_TABLE);
+                    partitionedClassNode.setModelObj(classInfo);
+                    partitionedClassNode.setContainer(false);
+                    partitionedClassNode.setEditorId(SchemaInfoEditorPart.ID);
+                    parent.addChild(partitionedClassNode);
+                }
+            }
+            database.getDatabaseInfo().addPartitionedTableList(parent.getLabel(), classInfoList);
+            Collections.sort(parent.getChildren());
 
-			setLoaded(true);
-			CubridNodeManager.getInstance().fireCubridNodeChanged(
-					new CubridNodeChangedEvent((ICubridNode) parent,
-							CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
-		}
-	}
+            loadColumns(parent, getLevel(), monitor);
+            loadIndexes(parent, getLevel(), monitor);
+
+            setLoaded(true);
+            CubridNodeManager.getInstance()
+                    .fireCubridNodeChanged(
+                            new CubridNodeChangedEvent(
+                                    (ICubridNode) parent,
+                                    CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
+        }
+    }
 }

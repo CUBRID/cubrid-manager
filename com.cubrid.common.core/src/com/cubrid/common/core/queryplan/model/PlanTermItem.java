@@ -32,59 +32,59 @@ package com.cubrid.common.core.queryplan.model;
 /**
  * Plan Term sub item model class
  *
- * PlanTermItem Description
+ * <p>PlanTermItem Description
  *
  * @author pcraft
  * @version 1.0 - 2009. 06. 06 created by pcraft
  */
 public class PlanTermItem {
-	private String condition = null;
-	private String attribute = null;
+    private String condition = null;
+    private String attribute = null;
 
-	public String toString() { // FIXME use ToStringBuilder
-		StringBuilder out = new StringBuilder();
-		out.append("PlanTermItem[");
-		out.append("\ncondition=").append(condition);
-		out.append(", \nattribute=").append(attribute);
-		out.append("\n]");
-		return out.toString();
-	}
+    public String toString() { // FIXME use ToStringBuilder
+        StringBuilder out = new StringBuilder();
+        out.append("PlanTermItem[");
+        out.append("\ncondition=").append(condition);
+        out.append(", \nattribute=").append(attribute);
+        out.append("\n]");
+        return out.toString();
+    }
 
-	public static String toString(PlanTermItem[] items, int depth) {
-		if (items == null) {
-			return null;
-		}
-		StringBuilder tabs = new StringBuilder();
-		for (int i = 0; i < depth; i++) {
-			tabs.append("\t");
-		}
-		StringBuilder out = new StringBuilder();
-		for (int i = 0; i < items.length; i++) {
-			if (out.length() > 0) {
-				out.append(",\n").append(tabs);
-			}
-			out.append("PlanTermItem[\n");
-			out.append(tabs).append("\tcondition=").append(items[i].getCondition());
-			out.append(",\n").append(tabs).append("\tattribute=").append(items[i].getAttribute());
-			out.append("\n").append(tabs).append("]");
-		}
+    public static String toString(PlanTermItem[] items, int depth) {
+        if (items == null) {
+            return null;
+        }
+        StringBuilder tabs = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            tabs.append("\t");
+        }
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < items.length; i++) {
+            if (out.length() > 0) {
+                out.append(",\n").append(tabs);
+            }
+            out.append("PlanTermItem[\n");
+            out.append(tabs).append("\tcondition=").append(items[i].getCondition());
+            out.append(",\n").append(tabs).append("\tattribute=").append(items[i].getAttribute());
+            out.append("\n").append(tabs).append("]");
+        }
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 
-	public String getCondition() {
-		return condition;
-	}
+    public String getCondition() {
+        return condition;
+    }
 
-	public void setCondition(String condition) {
-		this.condition = condition;
-	}
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
 
-	public String getAttribute() {
-		return attribute;
-	}
+    public String getAttribute() {
+        return attribute;
+    }
 
-	public void setAttribute(String attribute) {
-		this.attribute = attribute;
-	}
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
+    }
 }

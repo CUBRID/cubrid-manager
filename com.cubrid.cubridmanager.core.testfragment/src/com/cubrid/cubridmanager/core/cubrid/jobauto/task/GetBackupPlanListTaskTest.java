@@ -33,45 +33,40 @@ import com.cubrid.cubridmanager.core.SystemParameter;
 import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 
 /**
- *
  * Test GetBackupPlanListTask class
  *
  * @author pangqiren
  * @version 1.0 - 2010-1-5 created by pangqiren
  */
-public class GetBackupPlanListTaskTest extends
-		SetupEnvTestCase {
+public class GetBackupPlanListTaskTest extends SetupEnvTestCase {
 
-	public void testRealEnv() {
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "y"))
-			return;
+    public void testRealEnv() {
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "y")) return;
 
-		boolean isSucce = this.addBackupPlan("eee");
-		isSucce = isSucce && this.addBackupPlan("fff");
-		if (isSucce) {
-			GetBackupPlanListTask task = new GetBackupPlanListTask(serverInfo);
-			task.setDbName(testDbName);
-			task.execute();
-			assertTrue(task.getBackupPlanInfoList().size() >= 2);
-			this.deleteBackupPlan("eee");
-			this.deleteBackupPlan("fff");
-			task.setResponse(new TreeNode());
-			task.getBackupPlanInfoList();
-			task.setErrorMsg("err");
-			task.getBackupPlanInfoList();
-		}
-	}
+        boolean isSucce = this.addBackupPlan("eee");
+        isSucce = isSucce && this.addBackupPlan("fff");
+        if (isSucce) {
+            GetBackupPlanListTask task = new GetBackupPlanListTask(serverInfo);
+            task.setDbName(testDbName);
+            task.execute();
+            assertTrue(task.getBackupPlanInfoList().size() >= 2);
+            this.deleteBackupPlan("eee");
+            this.deleteBackupPlan("fff");
+            task.setResponse(new TreeNode());
+            task.getBackupPlanInfoList();
+            task.setErrorMsg("err");
+            task.getBackupPlanInfoList();
+        }
+    }
 
-	public void testNullDbName() {
-		GetBackupPlanListTask task = new GetBackupPlanListTask(serverInfo);
-		task.setDbName(null);
-		task.execute();
+    public void testNullDbName() {
+        GetBackupPlanListTask task = new GetBackupPlanListTask(serverInfo);
+        task.setDbName(null);
+        task.execute();
 
-		assertFalse(task.isSuccess());
-		assertTrue(task.getErrorMsg() != null
-				&& task.getErrorMsg().trim().length() > 0);
+        assertFalse(task.isSuccess());
+        assertTrue(task.getErrorMsg() != null && task.getErrorMsg().trim().length() > 0);
 
-		assertNull(task.getBackupPlanInfoList());
-	}
+        assertNull(task.getBackupPlanInfoList());
+    }
 }

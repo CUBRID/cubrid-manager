@@ -29,11 +29,6 @@
  */
 package com.cubrid.cubridmanager.ui.host.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.jface.wizard.Wizard;
-
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.common.ui.spi.progress.CommonTaskExec;
@@ -43,6 +38,9 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.task.SetCubridConfParameterTask;
 import com.cubrid.cubridmanager.core.common.task.SetHAConfParameterTask;
 import com.cubrid.cubridmanager.ui.host.Messages;
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.jface.wizard.Wizard;
 
 /**
  * HA Wizard
@@ -51,140 +49,145 @@ import com.cubrid.cubridmanager.ui.host.Messages;
  * @version 1.0 - 2012-11-27 created by Kevin.Wang
  */
 public class ConfigHAWizard extends Wizard {
-	private HAModel haModel;
-	private SettingHostPage settingHostPage;
-	private SettingCubridConfPage settingCubridConfPage;
-	private SettingCubridHAConfPage settingCubridHAConfPage;
-	private SettingHAConfirmPage settingHAConfirmPage;
-	private SetCubridConfParameterTask setCubridConfParameterTaskMaster;
-	private SetCubridConfParameterTask setCubridConfParameterTaskSlave;
-	private SetHAConfParameterTask setHAConfParameterTaskMaster;
-	private SetHAConfParameterTask setHAConfParameterTaskSlave;
+    private HAModel haModel;
+    private SettingHostPage settingHostPage;
+    private SettingCubridConfPage settingCubridConfPage;
+    private SettingCubridHAConfPage settingCubridHAConfPage;
+    private SettingHAConfirmPage settingHAConfirmPage;
+    private SetCubridConfParameterTask setCubridConfParameterTaskMaster;
+    private SetCubridConfParameterTask setCubridConfParameterTaskSlave;
+    private SetHAConfParameterTask setHAConfParameterTaskMaster;
+    private SetHAConfParameterTask setHAConfParameterTaskSlave;
 
-	public ConfigHAWizard(CubridServer cubridServer) {
-		HAServer masterServer = new HAServer(cubridServer);
-		haModel = new HAModel();
-		haModel.setMasterServer(masterServer);
-		setWindowTitle(Messages.titleHAWizard);
-	}
+    public ConfigHAWizard(CubridServer cubridServer) {
+        HAServer masterServer = new HAServer(cubridServer);
+        haModel = new HAModel();
+        haModel.setMasterServer(masterServer);
+        setWindowTitle(Messages.titleHAWizard);
+    }
 
-	public void addPages() {
-		settingHostPage = new SettingHostPage();
-		addPage(settingHostPage);
+    public void addPages() {
+        settingHostPage = new SettingHostPage();
+        addPage(settingHostPage);
 
-		settingCubridConfPage = new SettingCubridConfPage();
-		addPage(settingCubridConfPage);
+        settingCubridConfPage = new SettingCubridConfPage();
+        addPage(settingCubridConfPage);
 
-		settingCubridHAConfPage = new SettingCubridHAConfPage();
-		addPage(settingCubridHAConfPage);
+        settingCubridHAConfPage = new SettingCubridHAConfPage();
+        addPage(settingCubridHAConfPage);
 
-		settingHAConfirmPage = new SettingHAConfirmPage();
-		addPage(settingHAConfirmPage);
-	}
+        settingHAConfirmPage = new SettingHAConfirmPage();
+        addPage(settingHAConfirmPage);
+    }
 
-	public boolean performCancel() {
-		return CommonUITool.openConfirmBox(Messages.msgConfirmExitHAWizard);
-	}
+    public boolean performCancel() {
+        return CommonUITool.openConfirmBox(Messages.msgConfirmExitHAWizard);
+    }
 
-	public boolean canFinish() {
-		return getContainer().getCurrentPage() instanceof SettingHAConfirmPage;
-	}
+    public boolean canFinish() {
+        return getContainer().getCurrentPage() instanceof SettingHAConfirmPage;
+    }
 
-	public boolean performFinish() {
-		ServerInfo masterServerInfo = haModel.getMasterServer().getServer().getServerInfo();
-		ServerInfo slaveServerInfo = haModel.getSlaveServer().getServer().getServerInfo();
-		Map<String, Map<String, String>> masterParams   = haModel.getMasterServer().getCubridParameters();
-		Map<String, Map<String, String>> slaveParams    = haModel.getSlaveServer().getCubridParameters();
-		Map<String, Map<String, String>> masterHaParams = haModel.getMasterServer().getCubridHAParameters();
-		Map<String, Map<String, String>> slaveHaParams  = haModel.getSlaveServer().getCubridHAParameters();
+    public boolean performFinish() {
+        ServerInfo masterServerInfo = haModel.getMasterServer().getServer().getServerInfo();
+        ServerInfo slaveServerInfo = haModel.getSlaveServer().getServer().getServerInfo();
+        Map<String, Map<String, String>> masterParams =
+                haModel.getMasterServer().getCubridParameters();
+        Map<String, Map<String, String>> slaveParams =
+                haModel.getSlaveServer().getCubridParameters();
+        Map<String, Map<String, String>> masterHaParams =
+                haModel.getMasterServer().getCubridHAParameters();
+        Map<String, Map<String, String>> slaveHaParams =
+                haModel.getSlaveServer().getCubridHAParameters();
 
-		setCubridConfParameterTaskMaster = new SetCubridConfParameterTask(masterServerInfo);
-		setCubridConfParameterTaskMaster.setConfParameters(masterParams);
-		setHAConfParameterTaskMaster = new SetHAConfParameterTask(masterServerInfo);
-		setHAConfParameterTaskMaster.setConfParameters(masterHaParams);
+        setCubridConfParameterTaskMaster = new SetCubridConfParameterTask(masterServerInfo);
+        setCubridConfParameterTaskMaster.setConfParameters(masterParams);
+        setHAConfParameterTaskMaster = new SetHAConfParameterTask(masterServerInfo);
+        setHAConfParameterTaskMaster.setConfParameters(masterHaParams);
 
-		setCubridConfParameterTaskSlave = new SetCubridConfParameterTask(slaveServerInfo);
-		setCubridConfParameterTaskSlave.setConfParameters(slaveParams);
-		setHAConfParameterTaskSlave = new SetHAConfParameterTask(slaveServerInfo);
-		setHAConfParameterTaskSlave.setConfParameters(slaveHaParams);
+        setCubridConfParameterTaskSlave = new SetCubridConfParameterTask(slaveServerInfo);
+        setCubridConfParameterTaskSlave.setConfParameters(slaveParams);
+        setHAConfParameterTaskSlave = new SetHAConfParameterTask(slaveServerInfo);
+        setHAConfParameterTaskSlave.setConfParameters(slaveHaParams);
 
-		CommonTaskExec taskExec = new CommonTaskExec(Messages.msgUploading);
-		taskExec.addTask(setCubridConfParameterTaskMaster);
-		taskExec.addTask(setCubridConfParameterTaskSlave);
-		taskExec.addTask(setHAConfParameterTaskMaster);
-		taskExec.addTask(setHAConfParameterTaskSlave);
+        CommonTaskExec taskExec = new CommonTaskExec(Messages.msgUploading);
+        taskExec.addTask(setCubridConfParameterTaskMaster);
+        taskExec.addTask(setCubridConfParameterTaskSlave);
+        taskExec.addTask(setHAConfParameterTaskMaster);
+        taskExec.addTask(setHAConfParameterTaskSlave);
 
-		new ExecTaskWithProgress(taskExec).exec();
-		if (taskExec.isSuccess()) {
-			StartHAServiceDialog dialog = new StartHAServiceDialog(getShell(), haModel);
-			dialog.open();
-			return true;
-		} else {
-			CommonUITool.openErrorBox(getErrMsg());
-			return false;
-		}
-	}
+        new ExecTaskWithProgress(taskExec).exec();
+        if (taskExec.isSuccess()) {
+            StartHAServiceDialog dialog = new StartHAServiceDialog(getShell(), haModel);
+            dialog.open();
+            return true;
+        } else {
+            CommonUITool.openErrorBox(getErrMsg());
+            return false;
+        }
+    }
 
-	private String getErrMsg() {
-		StringBuilder sb = new StringBuilder();
+    private String getErrMsg() {
+        StringBuilder sb = new StringBuilder();
 
-		if (!setCubridConfParameterTaskMaster.isSuccess()) {
-			String errorMsg = setCubridConfParameterTaskMaster.getErrorMsg();
-			String serverName = haModel.getMasterServer().getServer().getServerName();
-			sb.append(errorMsg).append("@").append(serverName).append(StringUtil.NEWLINE);
-		}
+        if (!setCubridConfParameterTaskMaster.isSuccess()) {
+            String errorMsg = setCubridConfParameterTaskMaster.getErrorMsg();
+            String serverName = haModel.getMasterServer().getServer().getServerName();
+            sb.append(errorMsg).append("@").append(serverName).append(StringUtil.NEWLINE);
+        }
 
-		if (!setCubridConfParameterTaskSlave.isSuccess()) {
-			String errorMsg = setCubridConfParameterTaskSlave.getErrorMsg();
-			String serverName = haModel.getSlaveServer().getServer().getServerName();
-			sb.append(errorMsg).append("@").append(serverName).append(StringUtil.NEWLINE);
-		}
+        if (!setCubridConfParameterTaskSlave.isSuccess()) {
+            String errorMsg = setCubridConfParameterTaskSlave.getErrorMsg();
+            String serverName = haModel.getSlaveServer().getServer().getServerName();
+            sb.append(errorMsg).append("@").append(serverName).append(StringUtil.NEWLINE);
+        }
 
-		if (!setHAConfParameterTaskMaster.isSuccess()) {
-			String errorMsg = setHAConfParameterTaskMaster.getErrorMsg();
-			String serverName = haModel.getMasterServer().getServer().getServerName();
-			sb.append(errorMsg).append("@").append(serverName).append(StringUtil.NEWLINE);
-		}
+        if (!setHAConfParameterTaskMaster.isSuccess()) {
+            String errorMsg = setHAConfParameterTaskMaster.getErrorMsg();
+            String serverName = haModel.getMasterServer().getServer().getServerName();
+            sb.append(errorMsg).append("@").append(serverName).append(StringUtil.NEWLINE);
+        }
 
-		if (!setHAConfParameterTaskSlave.isSuccess()) {
-			String errorMsg = setHAConfParameterTaskSlave.getErrorMsg();
-			String serverName = haModel.getSlaveServer().getServer().getServerName();
-			sb.append(errorMsg).append("@").append(serverName).append(StringUtil.NEWLINE);
-		}
+        if (!setHAConfParameterTaskSlave.isSuccess()) {
+            String errorMsg = setHAConfParameterTaskSlave.getErrorMsg();
+            String serverName = haModel.getSlaveServer().getServer().getServerName();
+            sb.append(errorMsg).append("@").append(serverName).append(StringUtil.NEWLINE);
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	/**
-	 * Clone a config parameters map
-	 *
-	 * @param parameters
-	 * @return Map<String,Map<String,String>>
-	 */
-	public Map<String, Map<String, String>> cloneParameters(Map<String, Map<String, String>> parameters) {
-		if (parameters == null) {
-			return null;
-		}
+    /**
+     * Clone a config parameters map
+     *
+     * @param parameters
+     * @return Map<String,Map<String,String>>
+     */
+    public Map<String, Map<String, String>> cloneParameters(
+            Map<String, Map<String, String>> parameters) {
+        if (parameters == null) {
+            return null;
+        }
 
-		Map<String, Map<String, String>> cloneObj = new HashMap<String, Map<String, String>>();
-		for (String key : parameters.keySet()) {
-			Map<String, String> data = parameters.get(key);
-			if (data == null) {
-				cloneObj.put(key, null);
-				continue;
-			}
+        Map<String, Map<String, String>> cloneObj = new HashMap<String, Map<String, String>>();
+        for (String key : parameters.keySet()) {
+            Map<String, String> data = parameters.get(key);
+            if (data == null) {
+                cloneObj.put(key, null);
+                continue;
+            }
 
-			Map<String, String> cloneData = new HashMap<String, String>();
-			for (String p : data.keySet()) {
-				cloneData.put(p, data.get(p));
-			}
-			cloneObj.put(key, cloneData);
-		}
+            Map<String, String> cloneData = new HashMap<String, String>();
+            for (String p : data.keySet()) {
+                cloneData.put(p, data.get(p));
+            }
+            cloneObj.put(key, cloneData);
+        }
 
-		return cloneObj;
-	}
+        return cloneObj;
+    }
 
-	public HAModel getHaModel() {
-		return haModel;
-	}
+    public HAModel getHaModel() {
+        return haModel;
+    }
 }

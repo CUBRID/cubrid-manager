@@ -30,20 +30,19 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of include tag.
- * <include refid=""></include>
+ * A definition of include tag. <include refid=""></include>
  *
  * @author Bumsik, Jang
  */
 public class IncludeTag extends SqlMapCondition {
-	private static final long serialVersionUID = -5717333807468688700L;
+    private static final long serialVersionUID = -5717333807468688700L;
 
-	public IncludeTag() {
-		this.setType("include");
-	}
+    public IncludeTag() {
+        this.setType("include");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return true;
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return true;
+    }
 }

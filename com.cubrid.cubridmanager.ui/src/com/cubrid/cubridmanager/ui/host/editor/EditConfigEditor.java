@@ -29,8 +29,20 @@ package com.cubrid.cubridmanager.ui.host.editor;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.spi.event.CubridNodeChangedEvent;
+import com.cubrid.common.ui.spi.part.CubridEditorPart;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
+import com.cubrid.cubridmanager.ui.host.Messages;
+import com.cubrid.cubridmanager.ui.host.action.ConfEditInput;
+import com.cubrid.cubridmanager.ui.host.dialog.ConfigType;
+import com.cubrid.cubridmanager.ui.host.dialog.ExportConfigDialog;
+import com.cubrid.cubridmanager.ui.host.dialog.ImportConfigDialog;
+import com.cubrid.cubridmanager.ui.spi.util.ConfigParaHelp;
+import com.cubrid.tool.editor.property.PropEditor;
 import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
@@ -49,335 +61,298 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.spi.event.CubridNodeChangedEvent;
-import com.cubrid.common.ui.spi.part.CubridEditorPart;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
-import com.cubrid.cubridmanager.ui.host.Messages;
-import com.cubrid.cubridmanager.ui.host.action.ConfEditInput;
-import com.cubrid.cubridmanager.ui.host.dialog.ConfigType;
-import com.cubrid.cubridmanager.ui.host.dialog.ExportConfigDialog;
-import com.cubrid.cubridmanager.ui.host.dialog.ImportConfigDialog;
-import com.cubrid.cubridmanager.ui.spi.util.ConfigParaHelp;
-import com.cubrid.tool.editor.property.PropEditor;
-
 /**
  * This editor is responsible for edit property
  *
  * @author lizhiqiang
  * @version 1.0 - 2011-3-25 created by lizhiqiang
  */
-public class EditConfigEditor extends
-		CubridEditorPart {
-	public static final Logger LOGGER = LogUtil.getLogger(EditConfigEditor.class);
-	boolean isDirty;
-	protected PropEditor propEditor;
-	private String defaultExportFilePath;
-	private String defaultExportFileName;
-	private String defaultExportFileExtName;
-	private String defaultExportFileCharset;
-	private String defaultImportFileName;
-	private String defaultImportFileCharset;
+public class EditConfigEditor extends CubridEditorPart {
+    public static final Logger LOGGER = LogUtil.getLogger(EditConfigEditor.class);
+    boolean isDirty;
+    protected PropEditor propEditor;
+    private String defaultExportFilePath;
+    private String defaultExportFileName;
+    private String defaultExportFileExtName;
+    private String defaultExportFileCharset;
+    private String defaultImportFileName;
+    private String defaultImportFileCharset;
 
-	protected List<String> contents;
+    protected List<String> contents;
 
-	/**
-	 * @see com.cubrid.common.ui.spi.part.CubridEditorPart#init(org.eclipse.ui.IEditorSite,
-	 *      org.eclipse.ui.IEditorInput)
-	 * @param site the editor site
-	 * @param input the editor input
-	 * @exception PartInitException if this editor was not initialized
-	 *            successfully
-	 */
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		if (input instanceof ConfEditInput) {
-			setSite(site);
-			setInput(input);
-			ConfEditInput editInput = (ConfEditInput) input;
-			String title = this.getPartName();
-			String partName = title + " - " + input.getName() + "@"
-					+ editInput.getServerName() + ":"
-					+ editInput.getServerPort();
-			this.setTitleToolTip(partName);
-			this.setPartName(partName);
-		}
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.part.CubridEditorPart#init(org.eclipse.ui.IEditorSite,
+     *     org.eclipse.ui.IEditorInput)
+     * @param site the editor site
+     * @param input the editor input
+     * @exception PartInitException if this editor was not initialized successfully
+     */
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        if (input instanceof ConfEditInput) {
+            setSite(site);
+            setInput(input);
+            ConfEditInput editInput = (ConfEditInput) input;
+            String title = this.getPartName();
+            String partName =
+                    title
+                            + " - "
+                            + input.getName()
+                            + "@"
+                            + editInput.getServerName()
+                            + ":"
+                            + editInput.getServerPort();
+            this.setTitleToolTip(partName);
+            this.setPartName(partName);
+        }
+    }
 
-	/**
-	 *
-	 * @param monitor the IProgressMonitor
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public void doSave(IProgressMonitor monitor) {
-		isDirty = false;
-		firePropertyChange(PROP_DIRTY);
-	}
+    /**
+     * @param monitor the IProgressMonitor
+     * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
+     */
+    public void doSave(IProgressMonitor monitor) {
+        isDirty = false;
+        firePropertyChange(PROP_DIRTY);
+    }
 
-	public boolean isSaveAllowed() {
-		return CommonUITool.openConfirmBox(Messages.msgConfirmImport);
-	}
+    public boolean isSaveAllowed() {
+        return CommonUITool.openConfirmBox(Messages.msgConfirmImport);
+    }
 
-	/**
-	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
-	 */
-	public void doSaveAs() {
-		// empty
-	}
+    /** @see org.eclipse.ui.part.EditorPart#doSaveAs() */
+    public void doSaveAs() {
+        // empty
+    }
 
-	/**
-	 * @see org.eclipse.ui.part.EditorPart#isDirty()
-	 * @return boolean
-	 */
-	public boolean isDirty() {
-		return isDirty;
-	}
+    /**
+     * @see org.eclipse.ui.part.EditorPart#isDirty()
+     * @return boolean
+     */
+    public boolean isDirty() {
+        return isDirty;
+    }
 
-	/**
-	 *
-	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
-	 * @return boolean
-	 */
+    /**
+     * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
+     * @return boolean
+     */
+    public boolean isSaveAsAllowed() {
+        return false;
+    }
 
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
+    /**
+     * Create the part Control
+     *
+     * @param parent the Composite
+     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     */
+    public void createPartControl(Composite parent) {
+        Composite topComp = new Composite(parent, SWT.NONE);
+        {
+            GridLayout gridLayout = new GridLayout();
+            gridLayout.verticalSpacing = 0;
+            gridLayout.marginWidth = 0;
+            gridLayout.marginHeight = 0;
+            gridLayout.horizontalSpacing = 0;
+            topComp.setLayout(gridLayout);
+            topComp.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+        }
+        createToolBar(topComp);
 
-	/**
-	 *Create the part Control
-	 *
-	 * @param parent the Composite
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-	 *
-	 */
+        createPropEditor(topComp);
+        createContent();
+        propEditor.getDocument().addDocumentListener(new DocumentAdpater());
+    }
 
-	public void createPartControl(Composite parent) {
-		Composite topComp = new Composite(parent, SWT.NONE);
-		{
-			GridLayout gridLayout = new GridLayout();
-			gridLayout.verticalSpacing = 0;
-			gridLayout.marginWidth = 0;
-			gridLayout.marginHeight = 0;
-			gridLayout.horizontalSpacing = 0;
-			topComp.setLayout(gridLayout);
-			topComp.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true,
-					true));
-		}
-		createToolBar(topComp);
+    /**
+     * Create the property editor
+     *
+     * @param parent the Composite
+     */
+    private void createPropEditor(Composite parent) {
+        final Composite editorComp = new Composite(parent, SWT.NONE);
+        {
+            editorComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+            GridLayout gridLayout = new GridLayout();
+            gridLayout.marginHeight = 0;
+            gridLayout.horizontalSpacing = 0;
+            gridLayout.marginWidth = 0;
+            editorComp.setLayout(gridLayout);
+        }
+        propEditor = new PropEditor();
+        try {
+            propEditor.init(this.getEditorSite(), this.getEditorInput());
+        } catch (PartInitException ex) {
+            LOGGER.error(ex.getMessage());
+        }
+        propEditor.createPartControl(editorComp);
+    }
 
-		createPropEditor(topComp);
-		createContent();
-		propEditor.getDocument().addDocumentListener(new DocumentAdpater());
-	}
+    /** Create the content */
+    protected void createContent() {
+        StringBuffer sb = new StringBuffer();
+        for (String line : contents) {
+            sb.append(line);
+            sb.append(StringUtil.NEWLINE);
+        }
+        propEditor.setDocumentString(sb.toString());
+    }
 
-	/**
-	 *
-	 * Create the property editor
-	 *
-	 * @param parent the Composite
-	 */
-	private void createPropEditor(Composite parent) {
-		final Composite editorComp = new Composite(parent, SWT.NONE);
-		{
-			editorComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-			GridLayout gridLayout = new GridLayout();
-			gridLayout.marginHeight = 0;
-			gridLayout.horizontalSpacing = 0;
-			gridLayout.marginWidth = 0;
-			editorComp.setLayout(gridLayout);
-		}
-		propEditor = new PropEditor();
-		try {
-			propEditor.init(this.getEditorSite(), this.getEditorInput());
-		} catch (PartInitException ex) {
-			LOGGER.error(ex.getMessage());
-		}
-		propEditor.createPartControl(editorComp);
+    /**
+     * Create the tool bar
+     *
+     * @param parent the Composite
+     */
+    private void createToolBar(Composite parent) {
+        final Composite toolBarComp = new Composite(parent, SWT.NONE);
+        {
+            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+            toolBarComp.setLayoutData(gd);
+            GridLayout gridLayout = new GridLayout();
+            gridLayout.marginHeight = 0;
+            gridLayout.horizontalSpacing = 0;
+            gridLayout.marginWidth = 0;
+            toolBarComp.setLayout(gridLayout);
+        }
+        ToolBar toolBar = new ToolBar(toolBarComp, SWT.FLAT);
+        ToolItem saveItem = new ToolItem(toolBar, SWT.PUSH);
+        saveItem.setImage(CubridManagerUIPlugin.getImage("icons/queryeditor/file_save.png"));
+        saveItem.setToolTipText(Messages.msgTipSaveAction);
+        saveItem.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        if (isDirty) {
+                            doSave(new NullProgressMonitor());
+                        }
+                    }
+                });
 
-	}
+        new ToolItem(toolBar, SWT.SEPARATOR);
 
-	/**
-	 * Create the content
-	 *
-	 */
-	protected void createContent() {
-		StringBuffer sb = new StringBuffer();
-		for (String line : contents) {
-			sb.append(line);
-			sb.append(StringUtil.NEWLINE);
-		}
-		propEditor.setDocumentString(sb.toString());
-	}
+        ToolItem importItem = new ToolItem(toolBar, SWT.PUSH);
+        importItem.setImage(CubridManagerUIPlugin.getImage("icons/queryeditor/file_open.png"));
+        importItem.setToolTipText(Messages.msgTipOpenAction);
+        importItem.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        doImport();
+                    }
+                });
+        ToolItem exportItem = new ToolItem(toolBar, SWT.PUSH);
+        exportItem.setImage(CubridManagerUIPlugin.getImage("icons/queryeditor/file_saveas.png"));
+        exportItem.setToolTipText(Messages.msgTipSaveasAction);
+        exportItem.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        doExport();
+                    }
+                });
+    }
 
-	/**
-	 *
-	 * Create the tool bar
-	 *
-	 * @param parent the Composite
-	 *
-	 */
-	private void createToolBar(Composite parent) {
-		final Composite toolBarComp = new Composite(parent, SWT.NONE);
-		{
-			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-			toolBarComp.setLayoutData(gd);
-			GridLayout gridLayout = new GridLayout();
-			gridLayout.marginHeight = 0;
-			gridLayout.horizontalSpacing = 0;
-			gridLayout.marginWidth = 0;
-			toolBarComp.setLayout(gridLayout);
-		}
-		ToolBar toolBar = new ToolBar(toolBarComp, SWT.FLAT);
-		ToolItem saveItem = new ToolItem(toolBar, SWT.PUSH);
-		saveItem.setImage(CubridManagerUIPlugin.getImage("icons/queryeditor/file_save.png"));
-		saveItem.setToolTipText(Messages.msgTipSaveAction);
-		saveItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				if (isDirty) {
-					doSave(new NullProgressMonitor());
-				}
-			}
-		});
+    /** Empty method.The subclass maybe extend this method. */
+    protected void doImport() {
+        // empty
+    }
 
-		new ToolItem(toolBar, SWT.SEPARATOR);
+    /**
+     * Perform the import based upon the given ConfigType.
+     *
+     * @param configType the ConfigType
+     */
+    protected void doImport(ConfigType configType) {
+        IEditorInput input = this.getEditorInput();
+        if (!(input instanceof ConfEditInput)) {
+            return;
+        }
+        ImportConfigDialog dialog =
+                new ImportConfigDialog(this.getSite().getShell(), configType, true);
+        if (defaultImportFileName != null && !"".equals(defaultImportFileName)) {
+            dialog.setDefaultFileName(defaultImportFileName);
+        }
+        if (defaultImportFileCharset != null && !"".equals(defaultImportFileCharset)) {
+            dialog.setDefaultCharset(defaultImportFileCharset);
+        }
 
-		ToolItem importItem = new ToolItem(toolBar, SWT.PUSH);
-		importItem.setImage(CubridManagerUIPlugin.getImage("icons/queryeditor/file_open.png"));
-		importItem.setToolTipText(Messages.msgTipOpenAction);
-		importItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				doImport();
+        if (dialog.open() == Dialog.OK) {
+            defaultImportFileName = dialog.getDefaultFileName();
+            defaultImportFileCharset = dialog.getDefaultCharset();
+            contents = dialog.getImportFileContent();
+            createContent();
+        }
+    }
 
-			}
-		});
-		ToolItem exportItem = new ToolItem(toolBar, SWT.PUSH);
-		exportItem.setImage(CubridManagerUIPlugin.getImage("icons/queryeditor/file_saveas.png"));
-		exportItem.setToolTipText(Messages.msgTipSaveasAction);
-		exportItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				doExport();
-			}
-		});
-	}
+    /** Empty method.The subclass maybe extend this method. */
+    protected void doExport() {
+        // empty
+    }
 
-	/**
-	 * Empty method.The subclass maybe extend this method.
-	 *
-	 */
-	protected void doImport() {
-		//empty
-	}
+    /**
+     * Perform the export based upon the given ConfigType.
+     *
+     * @param configType the ConfigType
+     */
+    protected void doExport(ConfigType configType) {
+        IEditorInput input = this.getEditorInput();
+        if (!(input instanceof ConfEditInput)) {
+            return;
+        }
+        ExportConfigDialog dialog =
+                new ExportConfigDialog(this.getSite().getShell(), configType, true);
+        if (defaultExportFilePath != null && !"".equals(defaultExportFilePath)) {
+            dialog.setDefaultFilePath(defaultExportFilePath);
+        }
+        if (defaultExportFileName != null && !"".equals(defaultExportFileName)) {
+            dialog.setDefaultFileName(defaultExportFileName);
+        }
+        if (defaultExportFileExtName != null && !"".equals(defaultExportFileExtName)) {
+            dialog.setDefaultFileExtName(defaultExportFileExtName);
+        }
+        if (defaultExportFileCharset != null && !"".equals(defaultExportFileCharset)) {
+            dialog.setOutputFileCharset(defaultExportFileCharset);
+        }
+        if (dialog.open() == Dialog.OK) {
+            defaultExportFilePath = dialog.getDefaultFilePath();
+            defaultExportFileName = dialog.getDefaultFileName();
+            defaultExportFileExtName = dialog.getDefaultFileExtName();
+            String fileFullName = dialog.getOutputFileFullName();
+            defaultExportFileCharset = dialog.getOutputFileCharset();
+            ConfigParaHelp.exportConf(contents, fileFullName, defaultExportFileCharset);
+        }
+    }
 
-	/**
-	 * Perform the import based upon the given ConfigType.
-	 *
-	 * @param configType the ConfigType
-	 */
-	protected void doImport(ConfigType configType) {
-		IEditorInput input = this.getEditorInput();
-		if (!(input instanceof ConfEditInput)) {
-			return;
-		}
-		ImportConfigDialog dialog = new ImportConfigDialog(
-				this.getSite().getShell(), configType, true);
-		if (defaultImportFileName != null && !"".equals(defaultImportFileName)) {
-			dialog.setDefaultFileName(defaultImportFileName);
-		}
-		if (defaultImportFileCharset != null
-				&& !"".equals(defaultImportFileCharset)) {
-			dialog.setDefaultCharset(defaultImportFileCharset);
-		}
+    /**
+     * @param event the CubridNodeChangedEvent
+     * @see
+     *     com.cubrid.common.ui.spi.event.ICubridNodeChangedListener#nodeChanged(com.cubrid.common.ui.spi.event.CubridNodeChangedEvent)
+     */
+    public void nodeChanged(CubridNodeChangedEvent event) {
+        noOp();
+    }
 
-		if (dialog.open() == Dialog.OK) {
-			defaultImportFileName = dialog.getDefaultFileName();
-			defaultImportFileCharset = dialog.getDefaultCharset();
-			contents = dialog.getImportFileContent();
-			createContent();
-		}
-	}
+    /**
+     * Document change listener
+     *
+     * @author pangqiren
+     * @version 1.0 - 2011-2-17 created by pangqiren
+     */
+    private class DocumentAdpater implements IDocumentListener {
+        /**
+         * Listen to document about to be changed event
+         *
+         * @param event DocumentEvent
+         */
+        public void documentAboutToBeChanged(DocumentEvent event) {
+            noOp();
+        }
 
-	/**
-	 * Empty method.The subclass maybe extend this method.
-	 *
-	 */
-	protected void doExport() {
-		//empty
-	}
-
-	/**
-	 * Perform the export based upon the given ConfigType.
-	 *
-	 * @param configType the ConfigType
-	 */
-	protected void doExport(ConfigType configType) {
-		IEditorInput input = this.getEditorInput();
-		if (!(input instanceof ConfEditInput)) {
-			return;
-		}
-		ExportConfigDialog dialog = new ExportConfigDialog(
-				this.getSite().getShell(), configType, true);
-		if (defaultExportFilePath != null && !"".equals(defaultExportFilePath)) {
-			dialog.setDefaultFilePath(defaultExportFilePath);
-		}
-		if (defaultExportFileName != null && !"".equals(defaultExportFileName)) {
-			dialog.setDefaultFileName(defaultExportFileName);
-		}
-		if (defaultExportFileExtName != null
-				&& !"".equals(defaultExportFileExtName)) {
-			dialog.setDefaultFileExtName(defaultExportFileExtName);
-		}
-		if (defaultExportFileCharset != null
-				&& !"".equals(defaultExportFileCharset)) {
-			dialog.setOutputFileCharset(defaultExportFileCharset);
-		}
-		if (dialog.open() == Dialog.OK) {
-			defaultExportFilePath = dialog.getDefaultFilePath();
-			defaultExportFileName = dialog.getDefaultFileName();
-			defaultExportFileExtName = dialog.getDefaultFileExtName();
-			String fileFullName = dialog.getOutputFileFullName();
-			defaultExportFileCharset = dialog.getOutputFileCharset();
-			ConfigParaHelp.exportConf(contents, fileFullName,
-					defaultExportFileCharset);
-		}
-	}
-
-	/**
-	 *
-	 * @param event the CubridNodeChangedEvent
-	 * @see com.cubrid.common.ui.spi.event.ICubridNodeChangedListener#nodeChanged(com.cubrid.common.ui.spi.event.CubridNodeChangedEvent)
-	 */
-	public void nodeChanged(CubridNodeChangedEvent event) {
-		noOp();
-	}
-
-	/**
-	 *
-	 * Document change listener
-	 *
-	 * @author pangqiren
-	 * @version 1.0 - 2011-2-17 created by pangqiren
-	 */
-	private class DocumentAdpater implements
-			IDocumentListener {
-		/**
-		 * Listen to document about to be changed event
-		 *
-		 * @param event DocumentEvent
-		 */
-		public void documentAboutToBeChanged(DocumentEvent event) {
-			noOp();
-		}
-
-		/**
-		 * Listen to document changed event
-		 *
-		 * @param event DocumentEvent
-		 */
-		public void documentChanged(DocumentEvent event) {
-			isDirty = true;
-			firePropertyChange(PROP_DIRTY);
-		}
-	}
-
+        /**
+         * Listen to document changed event
+         *
+         * @param event DocumentEvent
+         */
+        public void documentChanged(DocumentEvent event) {
+            isDirty = true;
+            firePropertyChange(PROP_DIRTY);
+        }
+    }
 }

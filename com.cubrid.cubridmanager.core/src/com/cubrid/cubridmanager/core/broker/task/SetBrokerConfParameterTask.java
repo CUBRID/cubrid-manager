@@ -27,14 +27,13 @@
  */
 package com.cubrid.cubridmanager.core.broker.task;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.cubrid.cubridmanager.core.common.model.ConfComments;
 import com.cubrid.cubridmanager.core.common.model.ConfConstants;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Set cubrid_broker.conf file content
@@ -44,77 +43,76 @@ import com.cubrid.cubridmanager.core.common.socket.SocketTask;
  */
 public class SetBrokerConfParameterTask extends SocketTask {
 
-	private static final String[] SEND_MSG_ITEMS = new String[] { "task", "token", "confdata" };
+    private static final String[] SEND_MSG_ITEMS = new String[] {"task", "token", "confdata"};
 
-	public SetBrokerConfParameterTask(ServerInfo serverInfo) {
-		super("broker_setparam", serverInfo, SEND_MSG_ITEMS);
-	}
+    public SetBrokerConfParameterTask(ServerInfo serverInfo) {
+        super("broker_setparam", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * set value in ConfParameters
-	 *
-	 * @param confParameters Map<String, Map<String, String>>
-	 */
-	public void setConfParameters(Map<String, Map<String, String>> confParameters) {
-		List<String> confDatas = new ArrayList<String>();
-		confDatas.add("");
-		confDatas.add("#");
-		ConfComments.addComments(confDatas, ConfComments.cubridCopyrightComments);
-		confDatas.add("");
-		confDatas.add("#");
-		String brokerParameters[][] = ConfConstants.getBrokerParameters(serverInfo);
+    /**
+     * set value in ConfParameters
+     *
+     * @param confParameters Map<String, Map<String, String>>
+     */
+    public void setConfParameters(Map<String, Map<String, String>> confParameters) {
+        List<String> confDatas = new ArrayList<String>();
+        confDatas.add("");
+        confDatas.add("#");
+        ConfComments.addComments(confDatas, ConfComments.cubridCopyrightComments);
+        confDatas.add("");
+        confDatas.add("#");
+        String brokerParameters[][] = ConfConstants.getBrokerParameters(serverInfo);
 
-		//add broker section
-		Map<String, String> map = confParameters.get(ConfConstants.BROKER_SECTION_NAME);
-		if (map != null) {
-			confDatas.add(ConfConstants.BROKER_SECTION);
-			for (Map.Entry<String, String> entry : map.entrySet()) {
-				String key = entry.getKey();
-				String value = map.get(key);
-				if (value != null && value.trim().length() > 0) {
-					confDatas.add(key + "=" + value);
-				}
-			}
+        // add broker section
+        Map<String, String> map = confParameters.get(ConfConstants.BROKER_SECTION_NAME);
+        if (map != null) {
+            confDatas.add(ConfConstants.BROKER_SECTION);
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                String key = entry.getKey();
+                String value = map.get(key);
+                if (value != null && value.trim().length() > 0) {
+                    confDatas.add(key + "=" + value);
+                }
+            }
+        }
+        confDatas.add("");
 
-		}
-		confDatas.add("");
+        // add some broker section
+        for (Map.Entry<String, Map<String, String>> entry : confParameters.entrySet()) {
+            String sectionName = entry.getKey();
+            if (sectionName.equals(ConfConstants.BROKER_SECTION_NAME)) {
+                continue;
+            }
 
-		//add some broker section
-		for (Map.Entry<String, Map<String, String>> entry : confParameters.entrySet()) {
-			String sectionName = entry.getKey();
-			if (sectionName.equals(ConfConstants.BROKER_SECTION_NAME)) {
-				continue;
-			}
+            Map<String, String> brokerParameterMap = entry.getValue();
+            if (brokerParameterMap == null || brokerParameterMap.isEmpty()) {
+                continue;
+            }
 
-			Map<String, String> brokerParameterMap = entry.getValue();
-			if (brokerParameterMap == null || brokerParameterMap.isEmpty()) {
-				continue;
-			}
+            confDatas.add("");
+            confDatas.add("[%" + sectionName + "]");
 
-			confDatas.add("");
-			confDatas.add("[%" + sectionName + "]");
+            for (int i = 2; i < brokerParameters.length; i++) {
+                String key = brokerParameters[i][0];
+                String value = brokerParameterMap.get(key);
+                if (value != null && value.trim().length() > 0) {
+                    confDatas.add(key + "=" + value);
+                }
+            }
+        }
 
-			for (int i = 2; i < brokerParameters.length; i++) {
-				String key = brokerParameters[i][0];
-				String value = brokerParameterMap.get(key);
-				if (value != null && value.trim().length() > 0) {
-					confDatas.add(key + "=" + value);
-				}
-			}
-		}
+        String[] confDataArr = new String[confDatas.size()];
+        confDatas.toArray(confDataArr);
+        this.setMsgItem("confdata", confDataArr);
+    }
 
-		String[] confDataArr = new String[confDatas.size()];
-		confDatas.toArray(confDataArr);
-		this.setMsgItem("confdata", confDataArr);
-	}
-
-	/**
-	 * set value in ConfParameters
-	 *
-	 * @param confParamList List<String>
-	 */
-	public void setConfContents(List<String> confParamList) {
-		String[] confDataArray = confParamList.toArray(new String[confParamList.size()]);
-		this.setMsgItem("confdata", confDataArray);
-	}
+    /**
+     * set value in ConfParameters
+     *
+     * @param confParamList List<String>
+     */
+    public void setConfContents(List<String> confParamList) {
+        String[] confDataArray = confParamList.toArray(new String[confParamList.size()]);
+        this.setMsgItem("confdata", confDataArray);
+    }
 }

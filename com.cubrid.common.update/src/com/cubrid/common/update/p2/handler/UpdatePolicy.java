@@ -36,38 +36,40 @@ import org.eclipse.equinox.p2.ui.Policy;
  *
  * @author pangqiren
  */
-public class UpdatePolicy extends
-		Policy {
-	private final static String[] FILTERED_FEATURE_IDS = {
-			"com.cubrid.cubridmanager.app.product.root.feature.feature.group",
-			"com.cubrid.cubridquery.app.product.root.feature.feature.group",
-			"com.cubrid.cubridmigration.app.cubrid_migration_product.root.feature.feature.group",
-			"org.eclipse.rcp.feature.group", "org.eclipse.help.feature.group",
-			"org.eclipse.equinox.executable.feature.group" };
+public class UpdatePolicy extends Policy {
+    private static final String[] FILTERED_FEATURE_IDS = {
+        "com.cubrid.cubridmanager.app.product.root.feature.feature.group",
+        "com.cubrid.cubridquery.app.product.root.feature.feature.group",
+        "com.cubrid.cubridmigration.app.cubrid_migration_product.root.feature.feature.group",
+        "org.eclipse.rcp.feature.group",
+        "org.eclipse.help.feature.group",
+        "org.eclipse.equinox.executable.feature.group"
+    };
 
-	@SuppressWarnings({"unchecked", "rawtypes" })
-	public UpdatePolicy() {
-		setRepositoriesVisible(false);
-		setGroupByCategory(true);
-		setShowDrilldownRequirements(false);
-		setShowLatestVersionsOnly(true);
-		setRestartPolicy(RESTART_POLICY_PROMPT);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public UpdatePolicy() {
+        setRepositoriesVisible(false);
+        setGroupByCategory(true);
+        setShowDrilldownRequirements(false);
+        setShowLatestVersionsOnly(true);
+        setRestartPolicy(RESTART_POLICY_PROMPT);
 
-		StringBuffer expressBuffer = new StringBuffer();
-		for (int i = 0; i < FILTERED_FEATURE_IDS.length; i++) {
-			expressBuffer.append("id != $" + i);
-			if (i != FILTERED_FEATURE_IDS.length - 1) {
-				expressBuffer.append(" && ");
-			}
-		}
+        StringBuffer expressBuffer = new StringBuffer();
+        for (int i = 0; i < FILTERED_FEATURE_IDS.length; i++) {
+            expressBuffer.append("id != $" + i);
+            if (i != FILTERED_FEATURE_IDS.length - 1) {
+                expressBuffer.append(" && ");
+            }
+        }
 
-		IQuery matchedQuery = QueryUtil.createMatchQuery(
-				expressBuffer.toString(), (Object[]) FILTERED_FEATURE_IDS);
-		IQuery availableIU = this.getVisibleAvailableIUQuery();
-		IQuery installedIU = this.getVisibleInstalledIUQuery();
-		this.setVisibleAvailableIUQuery(QueryUtil.createCompoundQuery(
-				matchedQuery, availableIU, true));
-		this.setVisibleInstalledIUQuery(QueryUtil.createCompoundQuery(
-				matchedQuery, installedIU, true));
-	}
+        IQuery matchedQuery =
+                QueryUtil.createMatchQuery(
+                        expressBuffer.toString(), (Object[]) FILTERED_FEATURE_IDS);
+        IQuery availableIU = this.getVisibleAvailableIUQuery();
+        IQuery installedIU = this.getVisibleInstalledIUQuery();
+        this.setVisibleAvailableIUQuery(
+                QueryUtil.createCompoundQuery(matchedQuery, availableIU, true));
+        this.setVisibleInstalledIUQuery(
+                QueryUtil.createCompoundQuery(matchedQuery, installedIU, true));
+    }
 }

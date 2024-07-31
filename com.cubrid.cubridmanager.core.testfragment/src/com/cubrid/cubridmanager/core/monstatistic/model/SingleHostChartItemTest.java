@@ -27,60 +27,57 @@
  */
 package com.cubrid.cubridmanager.core.monstatistic.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.MetricType;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.StatisticType;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.TimeType;
-
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.TestCase;
 
-public class SingleHostChartItemTest extends TestCase{
+public class SingleHostChartItemTest extends TestCase {
 
-	public void testSingleHostChartItem() {
-		String nodeId = "demo";
-		StatisticType type = StatisticType.OS;
-		SingleHostChartItem singleHostChartItem = new SingleHostChartItem(
-				nodeId, type);
+    public void testSingleHostChartItem() {
+        String nodeId = "demo";
+        StatisticType type = StatisticType.OS;
+        SingleHostChartItem singleHostChartItem = new SingleHostChartItem(nodeId, type);
 
-		String brokerName = "query_editor";
-		singleHostChartItem.setBrokerName(brokerName);
-		assertEquals(singleHostChartItem.getBrokerName(), brokerName);
+        String brokerName = "query_editor";
+        singleHostChartItem.setBrokerName(brokerName);
+        assertEquals(singleHostChartItem.getBrokerName(), brokerName);
 
-		String dtype = TimeType.DAILY.getType();
-		singleHostChartItem.setDType(dtype);
-		assertEquals(singleHostChartItem.getDType(), dtype);
+        String dtype = TimeType.DAILY.getType();
+        singleHostChartItem.setDType(dtype);
+        assertEquals(singleHostChartItem.getDType(), dtype);
 
-		String dbName = "demodb";
-		singleHostChartItem.setDbName(dbName);
-		assertEquals(singleHostChartItem.getDbName(), dbName);
+        String dbName = "demodb";
+        singleHostChartItem.setDbName(dbName);
+        assertEquals(singleHostChartItem.getDbName(), dbName);
 
-		List<String> metricList = new ArrayList<String>();
-		String metric = MetricType.OS_CPU_IDLE.getMetric();
-		String metric2 = MetricType.OS_CPU_USER.getMetric();
-		metricList.add(metric);
-		singleHostChartItem.setMetricList(metricList);
-		assertEquals(singleHostChartItem.getMetricList(), metricList);
-		assertTrue(singleHostChartItem.getMetricList().contains(metric));
-		singleHostChartItem.addMetric(metric2);
-		assertTrue(singleHostChartItem.getMetricList().contains(metric2));
+        List<String> metricList = new ArrayList<String>();
+        String metric = MetricType.OS_CPU_IDLE.getMetric();
+        String metric2 = MetricType.OS_CPU_USER.getMetric();
+        metricList.add(metric);
+        singleHostChartItem.setMetricList(metricList);
+        assertEquals(singleHostChartItem.getMetricList(), metricList);
+        assertTrue(singleHostChartItem.getMetricList().contains(metric));
+        singleHostChartItem.addMetric(metric2);
+        assertTrue(singleHostChartItem.getMetricList().contains(metric2));
 
-		assertFalse(singleHostChartItem.isMultiHost());
+        assertFalse(singleHostChartItem.isMultiHost());
 
-		assertNotNull(singleHostChartItem.getName());
-		
-		assertEquals(singleHostChartItem.getNodeId(), nodeId);
+        assertNotNull(singleHostChartItem.getName());
 
-		int series = 10;
-		singleHostChartItem.setSeries(series);
-		assertEquals(singleHostChartItem.getSeries(), series);
+        assertEquals(singleHostChartItem.getNodeId(), nodeId);
 
-		assertEquals(singleHostChartItem.getType(), type);
-		singleHostChartItem.setType(type);
+        int series = 10;
+        singleHostChartItem.setSeries(series);
+        assertEquals(singleHostChartItem.getSeries(), series);
 
-		String volName = "demodb_lgat";
-		singleHostChartItem.setVolName(volName);
-		assertEquals(singleHostChartItem.getVolName(), volName);
-	}
+        assertEquals(singleHostChartItem.getType(), type);
+        singleHostChartItem.setType(type);
+
+        String volName = "demodb_lgat";
+        singleHostChartItem.setVolName(volName);
+        assertEquals(singleHostChartItem.getVolName(), volName);
+    }
 }

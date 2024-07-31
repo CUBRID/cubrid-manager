@@ -29,12 +29,13 @@
  */
 package com.cubrid.tool.editor.action;
 
+import com.cubrid.tool.editor.Messages;
+import com.cubrid.tool.editor.xml.XMLEditor;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -45,81 +46,78 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.tool.editor.Messages;
-import com.cubrid.tool.editor.xml.XMLEditor;
-
 /**
  * Format XML Action.
  *
  * @author Kevin Cao
  * @version 1.0 - 2011-2-17 created by Kevin Cao
  */
-public class FormatXMLAction extends
-		Action {
+public class FormatXMLAction extends Action {
 
-	private final XMLEditor editor;
+    private final XMLEditor editor;
 
-	public FormatXMLAction(String title, XMLEditor editor) {
-		Assert.isNotNull(editor);
-		this.setText(title);
-		this.editor = editor;
-	}
+    public FormatXMLAction(String title, XMLEditor editor) {
+        Assert.isNotNull(editor);
+        this.setText(title);
+        this.editor = editor;
+    }
 
-	/**
-	 * Format XML strings.
-	 */
-	public void run() {
-		//format editor.
-		try {
-			ByteArrayOutputStream sw = new ByteArrayOutputStream();
-			writeTo(sw, editor.getDocument().get(), "utf-8");
-			String string = new String(sw.toByteArray(), "utf-8");
-			editor.getDocument().set(string);
-			sw.close();
-		} catch (UnsupportedEncodingException e) {
-			showErrorMessage();
-		} catch (IOException e) {
-			showErrorMessage();
-		} catch (DocumentException e) {
-			showErrorMessage();
-		}
-	}
+    /** Format XML strings. */
+    public void run() {
+        // format editor.
+        try {
+            ByteArrayOutputStream sw = new ByteArrayOutputStream();
+            writeTo(sw, editor.getDocument().get(), "utf-8");
+            String string = new String(sw.toByteArray(), "utf-8");
+            editor.getDocument().set(string);
+            sw.close();
+        } catch (UnsupportedEncodingException e) {
+            showErrorMessage();
+        } catch (IOException e) {
+            showErrorMessage();
+        } catch (DocumentException e) {
+            showErrorMessage();
+        }
+    }
 
-	/**
-	 * Show error message in a dialog.
-	 *
-	 */
-	private void showErrorMessage() {
-		Shell shell = editor.getSite().getShell();
-		MessageDialog dialog = new MessageDialog(shell, Messages.titleError,
-				null, Messages.invalidateXML, MessageDialog.WARNING,
-				new String[]{Messages.btnClose }, 0);
-		dialog.open();
-	}
+    /** Show error message in a dialog. */
+    private void showErrorMessage() {
+        Shell shell = editor.getSite().getShell();
+        MessageDialog dialog =
+                new MessageDialog(
+                        shell,
+                        Messages.titleError,
+                        null,
+                        Messages.invalidateXML,
+                        MessageDialog.WARNING,
+                        new String[] {Messages.btnClose},
+                        0);
+        dialog.open();
+    }
 
-	/**
-	 * Format XML strings to a output stream.
-	 *
-	 * @param out OutputStream
-	 * @param content the content to be formated.
-	 * @param encoding String
-	 * @throws DocumentException when document error raised.
-	 * @throws IOException when IO errors.
-	 */
-	public static void writeTo(OutputStream out, String content, String encoding) throws DocumentException,
-			IOException {
-		StringReader reader = new StringReader(content);
-		SAXReader xmlReader = new SAXReader();
-		Document doc = xmlReader.read(reader);
-		OutputFormat format = OutputFormat.createPrettyPrint();
-		format.setEncoding(encoding);
-		format.setIndent(true);
-		format.setIndent(" ");
-		format.setIndentSize(4);
-		XMLWriter writer = new XMLWriter(out, format);
-		writer.write(doc);
-		writer.flush();
-		writer.close();
-		reader.close();
-	}
+    /**
+     * Format XML strings to a output stream.
+     *
+     * @param out OutputStream
+     * @param content the content to be formated.
+     * @param encoding String
+     * @throws DocumentException when document error raised.
+     * @throws IOException when IO errors.
+     */
+    public static void writeTo(OutputStream out, String content, String encoding)
+            throws DocumentException, IOException {
+        StringReader reader = new StringReader(content);
+        SAXReader xmlReader = new SAXReader();
+        Document doc = xmlReader.read(reader);
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setEncoding(encoding);
+        format.setIndent(true);
+        format.setIndent(" ");
+        format.setIndentSize(4);
+        XMLWriter writer = new XMLWriter(out, format);
+        writer.write(doc);
+        writer.flush();
+        writer.close();
+        reader.close();
+    }
 }

@@ -32,72 +32,79 @@ package com.cubrid.cubridmanager.core.monitoring.model;
 import com.cubrid.cubridmanager.core.Messages;
 
 /**
- * This enumeration providers the names for broker diagnose name showing in the
- * CUBRID MANAGER Client
- * 
+ * This enumeration providers the names for broker diagnose name showing in the CUBRID MANAGER
+ * Client
+ *
  * @author lizhiqiang
  * @version 1.0 - 2010-3-30 created by lizhiqiang
  */
 public enum BrokerDiagEnum implements IDiagPara {
-	RPS, TPS, ACTIVE_SESSION, QPS, LONG_Q, LONG_T, ERR_Q, SESSION, ACTIVE;
+    RPS,
+    TPS,
+    ACTIVE_SESSION,
+    QPS,
+    LONG_Q,
+    LONG_T,
+    ERR_Q,
+    SESSION,
+    ACTIVE;
 
-	public String getName() {
-		return getNick();
-	}
+    public String getName() {
+        return getNick();
+    }
 
-	/**
-	 * 
-	 *Get the nick name of enum
-	 * 
-	 * @return String the nick name
-	 */
-	public String getNick() {
-		String nick = "";
-		switch (this) {
-		case RPS:
-			nick = Messages.rps;
-			break;
-		case TPS:
-			nick = Messages.tps;
-			break;
-		case ACTIVE_SESSION:
-			nick = Messages.active_session;
-			break;
-		case QPS:
-			nick = Messages.qps;
-			break;
-		case LONG_Q:
-			nick = Messages.long_q;
-			break;
-		case LONG_T:
-			nick = Messages.long_t;
-			break;
-		case ERR_Q:
-			nick = Messages.err_q;
-			break;
-		case SESSION:
-			nick = Messages.session;
-			break;
-		case ACTIVE:
-			nick = Messages.active;
-			break;
-		default:
-		}
-		return nick;
-	}
+    /**
+     * Get the nick name of enum
+     *
+     * @return String the nick name
+     */
+    public String getNick() {
+        String nick = "";
+        switch (this) {
+            case RPS:
+                nick = Messages.rps;
+                break;
+            case TPS:
+                nick = Messages.tps;
+                break;
+            case ACTIVE_SESSION:
+                nick = Messages.active_session;
+                break;
+            case QPS:
+                nick = Messages.qps;
+                break;
+            case LONG_Q:
+                nick = Messages.long_q;
+                break;
+            case LONG_T:
+                nick = Messages.long_t;
+                break;
+            case ERR_Q:
+                nick = Messages.err_q;
+                break;
+            case SESSION:
+                nick = Messages.session;
+                break;
+            case ACTIVE:
+                nick = Messages.active;
+                break;
+            default:
+        }
+        return nick;
+    }
 
-	/**
-	 * Search the enum by the nick name
-	 * 
-	 * @param nick the nick name
-	 * @return BrokerDiagEnum
-	 */
-	public static BrokerDiagEnum searchNick(String nick) {
-		for (BrokerDiagEnum enumeration : BrokerDiagEnum.values()) {
-			if (nick.equals(enumeration.getNick())) {
-				return enumeration;
-			}
-		}
-		return null;
-	}
+    /**
+     * Search the enum by the nick name
+     *
+     * @param nick the nick name
+     * @return BrokerDiagEnum
+     */
+    public static BrokerDiagEnum searchNick(String nick) {
+        for (BrokerDiagEnum enumeration : BrokerDiagEnum.values()) {
+            if (nick.equals(enumeration.getNick())) {
+                return enumeration;
+            }
+        }
+        return null;
+    }
 }

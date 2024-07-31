@@ -31,23 +31,21 @@ import java.util.ArrayList;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-3-19 created by fulei
  */
-
 public class CubridCMConfConfig {
-	
-	private ArrayList<CubridCMConfProperty> propertyList = new ArrayList<CubridCMConfProperty>();
 
-	public ArrayList<CubridCMConfProperty> getPropertyList() {
-		return propertyList;
-	}
+    private ArrayList<CubridCMConfProperty> propertyList = new ArrayList<CubridCMConfProperty>();
 
-	public void setPropertyList(ArrayList<CubridCMConfProperty> propertyList) {
-		this.propertyList = propertyList;
-	}
-	
-	public void addCubridCMConfProperty (CubridCMConfProperty property) {
-		getPropertyList().add(property);
-	}
+    public ArrayList<CubridCMConfProperty> getPropertyList() {
+        return propertyList;
+    }
+
+    public void setPropertyList(ArrayList<CubridCMConfProperty> propertyList) {
+        this.propertyList = propertyList;
+    }
+
+    public void addCubridCMConfProperty(CubridCMConfProperty property) {
+        getPropertyList().add(property);
+    }
 }

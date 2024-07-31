@@ -27,169 +27,166 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.model;
 
-import org.eclipse.draw2d.geometry.Point;
-
 import com.cubrid.cubridmanager.core.broker.model.BrokerInfo;
 import com.cubrid.cubridmanager.core.broker.model.BrokerStatusInfos;
 import com.cubrid.cubridmanager.core.monitoring.model.BrokerDiagData;
+import org.eclipse.draw2d.geometry.Point;
 
 /**
- *
  * Broker node mode class
  *
  * @author pangqiren
  * @version 1.0 - 2010-8-17 created by pangqiren
  */
-public class BrokerNode extends
-		HANode {
+public class BrokerNode extends HANode {
 
-	public final static String PROP_BROKER_STATUS = "PROP_BROKER_STATUS";
+    public static final String PROP_BROKER_STATUS = "PROP_BROKER_STATUS";
 
-	private String brokerName;
-	private BrokerInfo brokerInfo;
-	private BrokerStatusInfos brokerStatusInfos;
-	private BrokerDiagData diagStatusResult;
-	private HostNode parent;
+    private String brokerName;
+    private BrokerInfo brokerInfo;
+    private BrokerStatusInfos brokerStatusInfos;
+    private BrokerDiagData diagStatusResult;
+    private HostNode parent;
 
-	private final Point clientsLocation = new Point(0, 0);
-	private final Point databasesLocation = new Point(0, 0);
+    private final Point clientsLocation = new Point(0, 0);
+    private final Point databasesLocation = new Point(0, 0);
 
-	public BrokerNode() {
-		size.height = 98;
-		size.width = 125;
-	}
+    public BrokerNode() {
+        size.height = 98;
+        size.width = 125;
+    }
 
-	public String getBrokerName() {
-		return brokerName;
-	}
+    public String getBrokerName() {
+        return brokerName;
+    }
 
-	public void setBrokerName(String brokerName) {
-		this.brokerName = brokerName;
-	}
+    public void setBrokerName(String brokerName) {
+        this.brokerName = brokerName;
+    }
 
-	public BrokerInfo getBrokerInfo() {
-		return brokerInfo;
-	}
+    public BrokerInfo getBrokerInfo() {
+        return brokerInfo;
+    }
 
-	/**
-	 * Set broker info.
-	 *
-	 * @param brokerInfo BrokerInfo
-	 */
-	public void setBrokerInfo(BrokerInfo brokerInfo) {
-		BrokerInfo old = this.brokerInfo;
-		this.brokerInfo = brokerInfo;
-		this.firePropertyChange(PROP_BROKER_STATUS, old, brokerInfo);
-	}
+    /**
+     * Set broker info.
+     *
+     * @param brokerInfo BrokerInfo
+     */
+    public void setBrokerInfo(BrokerInfo brokerInfo) {
+        BrokerInfo old = this.brokerInfo;
+        this.brokerInfo = brokerInfo;
+        this.firePropertyChange(PROP_BROKER_STATUS, old, brokerInfo);
+    }
 
-	public BrokerStatusInfos getBrokerStatusInfos() {
-		return brokerStatusInfos;
-	}
+    public BrokerStatusInfos getBrokerStatusInfos() {
+        return brokerStatusInfos;
+    }
 
-	/**
-	 * Set broker status.
-	 *
-	 * @param brokerStatusInfos BrokerStatusInfos
-	 */
-	public void setBrokerStatusInfos(BrokerStatusInfos brokerStatusInfos) {
-		BrokerStatusInfos old = this.brokerStatusInfos;
-		this.brokerStatusInfos = brokerStatusInfos;
-		this.firePropertyChange(PROP_BROKER_STATUS, old, brokerStatusInfos);
-	}
+    /**
+     * Set broker status.
+     *
+     * @param brokerStatusInfos BrokerStatusInfos
+     */
+    public void setBrokerStatusInfos(BrokerStatusInfos brokerStatusInfos) {
+        BrokerStatusInfos old = this.brokerStatusInfos;
+        this.brokerStatusInfos = brokerStatusInfos;
+        this.firePropertyChange(PROP_BROKER_STATUS, old, brokerStatusInfos);
+    }
 
-	public BrokerDiagData getBrokerDiagData() {
-		return diagStatusResult;
-	}
+    public BrokerDiagData getBrokerDiagData() {
+        return diagStatusResult;
+    }
 
-	/**
-	 * Set BrokerDiagData
-	 *
-	 * @param diagStatusResult BrokerDiagData
-	 */
-	public void setBrokerDiagData(BrokerDiagData diagStatusResult) {
-		BrokerDiagData old = this.diagStatusResult;
-		this.diagStatusResult = diagStatusResult;
-		this.firePropertyChange(PROP_BROKER_STATUS, old, diagStatusResult);
-	}
+    /**
+     * Set BrokerDiagData
+     *
+     * @param diagStatusResult BrokerDiagData
+     */
+    public void setBrokerDiagData(BrokerDiagData diagStatusResult) {
+        BrokerDiagData old = this.diagStatusResult;
+        this.diagStatusResult = diagStatusResult;
+        this.firePropertyChange(PROP_BROKER_STATUS, old, diagStatusResult);
+    }
 
-	public HostNode getParent() {
-		return parent;
-	}
+    public HostNode getParent() {
+        return parent;
+    }
 
-	public void setParent(HostNode parent) {
-		this.parent = parent;
-	}
+    public void setParent(HostNode parent) {
+        this.parent = parent;
+    }
 
-	/**
-	 * Override object's equals method.
-	 *
-	 * @param obj Object.
-	 * @return boolean
-	 */
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (obj == null) {
-			return false;
-		} else if (!(obj instanceof BrokerNode)) {
-			return false;
-		}
-		return this.toString().equals(obj.toString());
-	}
+    /**
+     * Override object's equals method.
+     *
+     * @param obj Object.
+     * @return boolean
+     */
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj == null) {
+            return false;
+        } else if (!(obj instanceof BrokerNode)) {
+            return false;
+        }
+        return this.toString().equals(obj.toString());
+    }
 
-	/**
-	 * Override object's hashCode method.
-	 *
-	 * @return DatabaseNode hashCode
-	 */
-	public int hashCode() {
-		return this.toString().hashCode();
-	}
+    /**
+     * Override object's hashCode method.
+     *
+     * @return DatabaseNode hashCode
+     */
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
 
-	/**
-	 * database node to string
-	 *
-	 * @return DatabaseNode to string
-	 */
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(parent.getUserName()).append("@").append(parent.getIp()).append(
-				":").append(parent.getPort()).append("/").append(brokerName);
-		return sb.toString();
-	}
+    /**
+     * database node to string
+     *
+     * @return DatabaseNode to string
+     */
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(parent.getUserName())
+                .append("@")
+                .append(parent.getIp())
+                .append(":")
+                .append(parent.getPort())
+                .append("/")
+                .append(brokerName);
+        return sb.toString();
+    }
 
-	/**
-	 * the clients Location
-	 *
-	 * @return the clientsLocation
-	 */
-	public Point getClientsLocation() {
-		return clientsLocation.getCopy();
-	}
+    /**
+     * the clients Location
+     *
+     * @return the clientsLocation
+     */
+    public Point getClientsLocation() {
+        return clientsLocation.getCopy();
+    }
 
-	/**
-	 * @param clientsLocation the clientsLocation to set
-	 */
-	public void setClientsLocation(Point clientsLocation) {
-		this.clientsLocation.x = clientsLocation.x;
-		this.clientsLocation.y = clientsLocation.y;
-	}
+    /** @param clientsLocation the clientsLocation to set */
+    public void setClientsLocation(Point clientsLocation) {
+        this.clientsLocation.x = clientsLocation.x;
+        this.clientsLocation.y = clientsLocation.y;
+    }
 
-	/**
-	 * the databases Location
-	 *
-	 * @return the databasesLocation
-	 */
-	public Point getDatabasesLocation() {
-		return databasesLocation.getCopy();
-	}
+    /**
+     * the databases Location
+     *
+     * @return the databasesLocation
+     */
+    public Point getDatabasesLocation() {
+        return databasesLocation.getCopy();
+    }
 
-	/**
-	 * @param databasesLocation the databasesLocation to set
-	 */
-	public void setDatabasesLocation(Point databasesLocation) {
-		this.databasesLocation.x = databasesLocation.x;
-		this.databasesLocation.y = databasesLocation.y;
-	}
-
+    /** @param databasesLocation the databasesLocation to set */
+    public void setDatabasesLocation(Point databasesLocation) {
+        this.databasesLocation.x = databasesLocation.x;
+        this.databasesLocation.y = databasesLocation.y;
+    }
 }

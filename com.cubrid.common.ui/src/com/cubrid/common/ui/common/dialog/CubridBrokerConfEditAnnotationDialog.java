@@ -27,8 +27,11 @@
  */
 package com.cubrid.common.ui.common.dialog;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.util.Map;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -38,101 +41,103 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * edit annotation of cubrid broker conf dialog
+ *
  * @author fulei
  * @version 1.0 - 2012-11-01 created by fulei
- *
  */
-public class CubridBrokerConfEditAnnotationDialog extends CMTitleAreaDialog{
+public class CubridBrokerConfEditAnnotationDialog extends CMTitleAreaDialog {
 
-	private final String parentString;
-	private String annotation;
-	private StyledText annotationText;
-	private Map<String, String> valueMap;
-	private String annotationKey;
-	
-	/**
-	 * constructor
-	 * @param parentShell
-	 * @param annotation
-	 * @param parentString
-	 */
-	public CubridBrokerConfEditAnnotationDialog (Shell parentShell, String parentString, String annotationKey, Map<String, String> valueMap) {
-		super(parentShell);
-		this.annotationKey = annotationKey;
-		this.annotation = valueMap.get(annotationKey) == null ? "" : valueMap.get(annotationKey);
-		this.parentString = parentString;
-		this.valueMap = valueMap;
-	}
-	
-	/**
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 * @param parent the parent composite to contain the dialog area
-	 * @return the dialog area control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
+    private final String parentString;
+    private String annotation;
+    private StyledText annotationText;
+    private Map<String, String> valueMap;
+    private String annotationKey;
 
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		{
-			composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-			GridLayout layout = new GridLayout(1, true);
-			layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-			layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-			layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-			layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-			composite.setLayout(layout);
-		}
-		
-		annotationText = new StyledText(composite, SWT.BORDER | SWT.WRAP
-				| SWT.V_SCROLL);
-		annotationText.setLayoutData(CommonUITool.createGridData(
-				GridData.FILL_BOTH, 2, 1, -1, 200));
-		annotationText.setText(annotation);
-		
-		setTitle(Messages.cubridBrokerConfEditorTableMenuEditAnnotation);
-		setMessage(Messages.cubridBrokerConfEditorTableMenuEditAnnotation + parentString);
-		return parentComp;
-	}
-	
-	
-	/**
-	 * Call this method when press button
-	 * 
-	 * @param buttonId the button id
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == IDialogConstants.OK_ID) {
-			String annotation = annotationText.getText();
-			
-			if (validateAnnotation (annotation)) {
-				return;
-			}
-			if (!annotation.endsWith(StringUtil.NEWLINE)) {
-				annotation += StringUtil.NEWLINE;
-			}
-			valueMap.put(annotationKey, annotation);
-			
-		}
-		super.buttonPressed(buttonId);
-	}
-	
-	private boolean validateAnnotation (String annotation) {
-		String[] lines = annotation.split(StringUtil.NEWLINE);
-		for (int i =0; i < lines.length; i ++) {
-			String line = lines[i];
-			if (!line.trim().equals("") && !line.startsWith("#")) {
-				String message = Messages.bind(Messages.cubridBrokerConfEditAnnotationDialogErrorMsg, line, Integer.toString(i + 1));
-				CommonUITool.openErrorBox(message);
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * constructor
+     *
+     * @param parentShell
+     * @param annotation
+     * @param parentString
+     */
+    public CubridBrokerConfEditAnnotationDialog(
+            Shell parentShell,
+            String parentString,
+            String annotationKey,
+            Map<String, String> valueMap) {
+        super(parentShell);
+        this.annotationKey = annotationKey;
+        this.annotation = valueMap.get(annotationKey) == null ? "" : valueMap.get(annotationKey);
+        this.parentString = parentString;
+        this.valueMap = valueMap;
+    }
+
+    /**
+     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     * @param parent the parent composite to contain the dialog area
+     * @return the dialog area control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
+
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        {
+            composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+            GridLayout layout = new GridLayout(1, true);
+            layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+            layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+            layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+            layout.horizontalSpacing =
+                    convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+            composite.setLayout(layout);
+        }
+
+        annotationText = new StyledText(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+        annotationText.setLayoutData(
+                CommonUITool.createGridData(GridData.FILL_BOTH, 2, 1, -1, 200));
+        annotationText.setText(annotation);
+
+        setTitle(Messages.cubridBrokerConfEditorTableMenuEditAnnotation);
+        setMessage(Messages.cubridBrokerConfEditorTableMenuEditAnnotation + parentString);
+        return parentComp;
+    }
+
+    /**
+     * Call this method when press button
+     *
+     * @param buttonId the button id
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+            String annotation = annotationText.getText();
+
+            if (validateAnnotation(annotation)) {
+                return;
+            }
+            if (!annotation.endsWith(StringUtil.NEWLINE)) {
+                annotation += StringUtil.NEWLINE;
+            }
+            valueMap.put(annotationKey, annotation);
+        }
+        super.buttonPressed(buttonId);
+    }
+
+    private boolean validateAnnotation(String annotation) {
+        String[] lines = annotation.split(StringUtil.NEWLINE);
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (!line.trim().equals("") && !line.startsWith("#")) {
+                String message =
+                        Messages.bind(
+                                Messages.cubridBrokerConfEditAnnotationDialogErrorMsg,
+                                line,
+                                Integer.toString(i + 1));
+                CommonUITool.openErrorBox(message);
+                return true;
+            }
+        }
+        return false;
+    }
 }

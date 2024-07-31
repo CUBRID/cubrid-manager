@@ -29,20 +29,18 @@ package com.cubrid.cubridquery.ui.spi;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.PreferenceManager;
-import org.eclipse.jface.preference.PreferenceNode;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.query.preference.QueryOptionPreferencePage;
 import com.cubrid.common.ui.spi.dialog.CMPreferenceDialog;
 import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.cubridquery.ui.CubridQueryUIPlugin;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.preference.PreferenceNode;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- *
  * This class is responsible to create the common dialog with perference
  *
  * @author pangqiren
@@ -50,34 +48,33 @@ import com.cubrid.cubridquery.ui.CubridQueryUIPlugin;
  */
 public final class PreferenceUtil {
 
-	private PreferenceUtil() {
-		noOp();
-	}
+    private PreferenceUtil() {
+        noOp();
+    }
 
-	/**
-	 *
-	 * Create property dialog related with CUBRID node
-	 *
-	 * @param parentShell the parent shell
-	 * @param node the ICubridNode object
-	 * @return the Dialog object
-	 */
-	public static Dialog createPropertyDialog(Shell parentShell, ICubridNode node) {
-		PreferenceManager mgr = new PreferenceManager();
-		String type = node.getType();
+    /**
+     * Create property dialog related with CUBRID node
+     *
+     * @param parentShell the parent shell
+     * @param node the ICubridNode object
+     * @return the Dialog object
+     */
+    public static Dialog createPropertyDialog(Shell parentShell, ICubridNode node) {
+        PreferenceManager mgr = new PreferenceManager();
+        String type = node.getType();
 
-		if (NodeType.DATABASE.equals(type)) {
-			CubridServer server = node.getServer();
-			QueryOptionPreferencePage queryEditorPage = new QueryOptionPreferencePage(server);
-			PreferenceNode queryEditorNode = new PreferenceNode(
-					com.cubrid.common.ui.query.Messages.queryTitle);
-			queryEditorNode.setPage(queryEditorPage);
-			mgr.addToRoot(queryEditorNode);
-		}
+        if (NodeType.DATABASE.equals(type)) {
+            CubridServer server = node.getServer();
+            QueryOptionPreferencePage queryEditorPage = new QueryOptionPreferencePage(server);
+            PreferenceNode queryEditorNode =
+                    new PreferenceNode(com.cubrid.common.ui.query.Messages.queryTitle);
+            queryEditorNode.setPage(queryEditorPage);
+            mgr.addToRoot(queryEditorNode);
+        }
 
-		CMPreferenceDialog dlg = new CMPreferenceDialog(parentShell, mgr,
-				Messages.titlePropertiesDialog);
-		dlg.setPreferenceStore(CubridQueryUIPlugin.getDefault().getPreferenceStore());
-		return dlg;
-	}
+        CMPreferenceDialog dlg =
+                new CMPreferenceDialog(parentShell, mgr, Messages.titlePropertiesDialog);
+        dlg.setPreferenceStore(CubridQueryUIPlugin.getDefault().getPreferenceStore());
+        return dlg;
+    }
 }

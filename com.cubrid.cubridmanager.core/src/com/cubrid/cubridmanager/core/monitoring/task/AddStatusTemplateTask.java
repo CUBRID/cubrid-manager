@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.monitoring.task;
 
@@ -34,56 +34,53 @@ import com.cubrid.cubridmanager.core.monitoring.model.TargetConfigInfo;
 
 /**
  * A task that defined the task of "addstatustemplate"
- * 
+ *
  * @author lizhiqiang 2009-4-29
  */
-public class AddStatusTemplateTask extends
-		SocketTask {
+public class AddStatusTemplateTask extends SocketTask {
 
-	private StatusTemplateInfo statusTemplateInfo;
+    private StatusTemplateInfo statusTemplateInfo;
 
-	/**
-	 * The constructor
-	 * 
-	 * @param serverInfo
-	 */
-	public AddStatusTemplateTask(ServerInfo serverInfo) {
-		super("addstatustemplate", serverInfo);
-	}
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public AddStatusTemplateTask(ServerInfo serverInfo) {
+        super("addstatustemplate", serverInfo);
+    }
 
-	/**
-	 * Builds a message which includes the items exclusive of task,token and
-	 * dbname
-	 * 
-	 * @param list
-	 * @return
-	 */
-	public void buildMsg() {
-		StringBuffer msg = new StringBuffer();
-		msg.append("name:" + statusTemplateInfo.getName());
-		msg.append("\n");
-		msg.append("desc:" + statusTemplateInfo.getDesc());
-		msg.append("\n");
-		msg.append("db_name:" + statusTemplateInfo.getDb_name());
-		msg.append("\n");
-		msg.append("sampling_term:" + statusTemplateInfo.getSampling_term());
-		msg.append("\n");
-		msg.append("open:target_config\n");
-		for (TargetConfigInfo targetConfigInfo : statusTemplateInfo.getTargetConfigInfoList()) {
-			for (String[] strings : targetConfigInfo.getList()) {
-				if (null != strings) {
-					msg.append(strings[0] + ":");
-					msg.append(strings[1] + " " + strings[2]);
-					msg.append("\n");
-				}
-			}
-		}
-		msg.append("close:target_config\n");
-		this.setAppendSendMsg(msg.toString());
-	}
+    /**
+     * Builds a message which includes the items exclusive of task,token and dbname
+     *
+     * @param list
+     * @return
+     */
+    public void buildMsg() {
+        StringBuffer msg = new StringBuffer();
+        msg.append("name:" + statusTemplateInfo.getName());
+        msg.append("\n");
+        msg.append("desc:" + statusTemplateInfo.getDesc());
+        msg.append("\n");
+        msg.append("db_name:" + statusTemplateInfo.getDb_name());
+        msg.append("\n");
+        msg.append("sampling_term:" + statusTemplateInfo.getSampling_term());
+        msg.append("\n");
+        msg.append("open:target_config\n");
+        for (TargetConfigInfo targetConfigInfo : statusTemplateInfo.getTargetConfigInfoList()) {
+            for (String[] strings : targetConfigInfo.getList()) {
+                if (null != strings) {
+                    msg.append(strings[0] + ":");
+                    msg.append(strings[1] + " " + strings[2]);
+                    msg.append("\n");
+                }
+            }
+        }
+        msg.append("close:target_config\n");
+        this.setAppendSendMsg(msg.toString());
+    }
 
-	public void setStatusTemplateInfo(StatusTemplateInfo statusTemplateInfo) {
-		this.statusTemplateInfo = statusTemplateInfo;
-	}
-
+    public void setStatusTemplateInfo(StatusTemplateInfo statusTemplateInfo) {
+        this.statusTemplateInfo = statusTemplateInfo;
+    }
 }

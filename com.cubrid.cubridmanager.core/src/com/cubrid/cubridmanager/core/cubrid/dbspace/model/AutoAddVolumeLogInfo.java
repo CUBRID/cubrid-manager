@@ -32,97 +32,72 @@ package com.cubrid.cubridmanager.core.cubrid.dbspace.model;
  * A model class that includes all the automatically added volumes logs info
  *
  * @author cn12978 2009-5-21
- *
  */
 public class AutoAddVolumeLogInfo {
-	private String dbname;
-	private String volname;
-	private String purpose;
-	private String page;
-	private String time;
-	private String outcome;
+    private String dbname;
+    private String volname;
+    private String purpose;
+    private String page;
+    private String time;
+    private String outcome;
 
-	/**
-	 * @return the dbname
-	 */
-	public String getDbname() {
-		return dbname;
-	}
+    /** @return the dbname */
+    public String getDbname() {
+        return dbname;
+    }
 
-	/**
-	 * @param dbname the dbname to set
-	 */
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
-	}
+    /** @param dbname the dbname to set */
+    public void setDbname(String dbname) {
+        this.dbname = dbname;
+    }
 
-	/**
-	 * @return the volname
-	 */
-	public String getVolname() {
-		return volname;
-	}
+    /** @return the volname */
+    public String getVolname() {
+        return volname;
+    }
 
-	/**
-	 * @param volname the volname to set
-	 */
-	public void setVolname(String volname) {
-		this.volname = volname;
-	}
+    /** @param volname the volname to set */
+    public void setVolname(String volname) {
+        this.volname = volname;
+    }
 
-	/**
-	 * @return the purpose
-	 */
-	public String getPurpose() {
-		return purpose;
-	}
+    /** @return the purpose */
+    public String getPurpose() {
+        return purpose;
+    }
 
-	/**
-	 * @param purpose the purpose to set
-	 */
-	public void setPurpose(String purpose) {
-		this.purpose = purpose;
-	}
+    /** @param purpose the purpose to set */
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
 
-	/**
-	 * @return the page
-	 */
-	public String getPage() {
-		return page;
-	}
+    /** @return the page */
+    public String getPage() {
+        return page;
+    }
 
-	/**
-	 * @param page the page to set
-	 */
-	public void setPage(String page) {
-		this.page = page;
-	}
+    /** @param page the page to set */
+    public void setPage(String page) {
+        this.page = page;
+    }
 
-	/**
-	 * @return the time
-	 */
-	public String getTime() {
-		return time;
-	}
+    /** @return the time */
+    public String getTime() {
+        return time;
+    }
 
-	/**
-	 * @param time the time to set
-	 */
-	public void setTime(String time) {
-		this.time = time;
-	}
+    /** @param time the time to set */
+    public void setTime(String time) {
+        this.time = time;
+    }
 
-	/**
-	 * @return the outcome
-	 */
-	public String getOutcome() {
-		return outcome;
-	}
+    /** @return the outcome */
+    public String getOutcome() {
+        return outcome;
+    }
 
-	/**
-	 * @param outcome the outcome to set
-	 */
-	public void setOutcome(String outcome) {
-		this.outcome = outcome;
-	}
+    /** @param outcome the outcome to set */
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
+    }
 }

@@ -27,16 +27,14 @@
  */
 package com.cubrid.common.ui.cubrid.trigger.editor;
 
+import com.cubrid.common.core.common.model.Trigger;
+import com.cubrid.common.ui.cubrid.trigger.Messages;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
 import java.util.List;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
-
-import com.cubrid.common.core.common.model.Trigger;
-import com.cubrid.common.ui.cubrid.trigger.Messages;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
 
 /**
  * Trigger Dashboard Input
@@ -45,58 +43,58 @@ import com.cubrid.common.ui.spi.model.CubridDatabase;
  * @version 1.0 - 2013-1-9 created by fulei
  */
 public class TriggerDashboardInput implements IEditorInput {
-	private final CubridDatabase database;
-	private final List<Trigger> triggerList; 
-	
-	public TriggerDashboardInput(CubridDatabase database, List<Trigger> triggerList) {
-		this.database = database;
-		this.triggerList = triggerList;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(CubridDatabase.class)) {
-			return database;
-		} else if(adapter.equals(List.class)) {
-			return triggerList;
-		}
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    private final CubridDatabase database;
+    private final List<Trigger> triggerList;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#exists()
-	 */
-	public boolean exists() {
-		return false;
-	}
+    public TriggerDashboardInput(CubridDatabase database, List<Trigger> triggerList) {
+        this.database = database;
+        this.triggerList = triggerList;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-	 */
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+     */
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(CubridDatabase.class)) {
+            return database;
+        } else if (adapter.equals(List.class)) {
+            return triggerList;
+        }
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getName()
-	 */
-	public String getName() {
-		return Messages.triggersDetailInfoPartTitle;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#exists()
+     */
+    public boolean exists() {
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getPersistable()
-	 */
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
+     */
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
-	 */
-	public String getToolTipText() {
-		return this.getName();
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getName()
+     */
+    public String getName() {
+        return Messages.triggersDetailInfoPartTitle;
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getPersistable()
+     */
+    public IPersistableElement getPersistable() {
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getToolTipText()
+     */
+    public String getToolTipText() {
+        return this.getName();
+    }
 }

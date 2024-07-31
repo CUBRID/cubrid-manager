@@ -29,6 +29,13 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.task;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.QueryUtil;
+import com.cubrid.cubridmanager.core.Messages;
+import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import com.cubrid.cubridmanager.core.cubrid.table.model.TableColumn;
+import com.cubrid.cubridmanager.core.utils.SchemaUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,16 +46,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
-
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.QueryUtil;
-import com.cubrid.cubridmanager.core.Messages;
-import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-import com.cubrid.cubridmanager.core.cubrid.table.model.TableColumn;
-import com.cubrid.cubridmanager.core.utils.SchemaUtil;
 
 /**
  * This task is responsible for getting the columns of a class
@@ -56,151 +54,155 @@ import com.cubrid.cubridmanager.core.utils.SchemaUtil;
  * @author lizhiqiang
  * @version 1.0 - 2010-12-7 created by lizhiqiang
  */
-public class GetUserClassColumnsTask extends
-		JDBCTask {
-	private static final Logger LOGGER = LogUtil.getLogger(GetUserClassColumnsTask.class);
-	private boolean isInTransation;
+public class GetUserClassColumnsTask extends JDBCTask {
+    private static final Logger LOGGER = LogUtil.getLogger(GetUserClassColumnsTask.class);
+    private boolean isInTransation;
 
-	public GetUserClassColumnsTask(DatabaseInfo dbInfo) {
-		super("getUserClassColumns", dbInfo);
-	}
+    public GetUserClassColumnsTask(DatabaseInfo dbInfo) {
+        super("getUserClassColumns", dbInfo);
+    }
 
-	/**
-	 * Get all column name and type info into list
-	 *
-	 * @param tableName String the table name
-	 * @return List<String[]>
-	 */
-	public List<TableColumn> getColumns(String tableName) {
-		List<TableColumn> columns = new ArrayList<TableColumn>();
-		try {
-			if (errorMsg != null && errorMsg.trim().length() > 0) {
-				return columns;
-			}
-			if (connection == null || connection.isClosed()) {
-				errorMsg = Messages.error_getConnection;
-				return columns;
-			}
-			columns = SchemaUtil.getTableColumn(databaseInfo, connection, tableName);
-			List<String> pkColumns = QueryUtil.getPrimaryKeys(connection, tableName, databaseInfo.isSupportUserSchema());
+    /**
+     * Get all column name and type info into list
+     *
+     * @param tableName String the table name
+     * @return List<String[]>
+     */
+    public List<TableColumn> getColumns(String tableName) {
+        List<TableColumn> columns = new ArrayList<TableColumn>();
+        try {
+            if (errorMsg != null && errorMsg.trim().length() > 0) {
+                return columns;
+            }
+            if (connection == null || connection.isClosed()) {
+                errorMsg = Messages.error_getConnection;
+                return columns;
+            }
+            columns = SchemaUtil.getTableColumn(databaseInfo, connection, tableName);
+            List<String> pkColumns =
+                    QueryUtil.getPrimaryKeys(
+                            connection, tableName, databaseInfo.isSupportUserSchema());
 
-			for (TableColumn dbColumn : columns) {
-				String columnName = dbColumn.getColumnName();
-				for (String pkColumn : pkColumns) {
-					if (columnName.equals(pkColumn)) {
-						dbColumn.setPrimaryKey(true);
-					}
-				}
-			}
-			Collections.sort(columns);
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage(), e);
-			if (e.getErrorCode() == -74) {
-				isInTransation = true;
-			}
-			errorMsg = e.getMessage();
-		} finally {
-			finish();
-		}
-		return columns;
-	}
+            for (TableColumn dbColumn : columns) {
+                String columnName = dbColumn.getColumnName();
+                for (String pkColumn : pkColumns) {
+                    if (columnName.equals(pkColumn)) {
+                        dbColumn.setPrimaryKey(true);
+                    }
+                }
+            }
+            Collections.sort(columns);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            if (e.getErrorCode() == -74) {
+                isInTransation = true;
+            }
+            errorMsg = e.getMessage();
+        } finally {
+            finish();
+        }
+        return columns;
+    }
 
-	/**
-	 * Get all column name and type info into list
-	 *
-	 * @param tableNames String the table name
-	 * @return Map<String, List<TableColumn>>
-	 */
-	public Map<String, List<TableColumn>> getColumns(List<String> tableNames) {
-		Map<String, List<TableColumn>> columnsOfTable = new HashMap<String, List<TableColumn>>();
-		try {
-			if (errorMsg != null && errorMsg.trim().length() > 0) {
-				return columnsOfTable;
-			}
-			if (connection == null || connection.isClosed()) {
-				errorMsg = Messages.error_getConnection;
-				return columnsOfTable;
-			}
-			// make talble_pk column hashed string list
-			Set<String> hashSet = new HashSet<String>();
-			Statement pkStmt = null;
-			ResultSet pkRs = null;
-			try {
-				String sql = new StringBuilder()
-				.append("SELECT \n")
-				.append("    LOWER(CONCAT(i.class_name, '-', k.key_attr_name)) AS hashcode \n")
-				.append("FROM \n")
-				.append("    db_index i, \n")
-				.append("    db_index_key k \n")
-				.append("WHERE \n")
-				.append("    i.index_name = k.index_name \n")
-				.append("    AND \n")
-				.append("    i.class_name = k.class_name \n")
-				.append("    AND \n")
-				.append("    i.is_primary_key = 'YES'\n")
-				.toString();
+    /**
+     * Get all column name and type info into list
+     *
+     * @param tableNames String the table name
+     * @return Map<String, List<TableColumn>>
+     */
+    public Map<String, List<TableColumn>> getColumns(List<String> tableNames) {
+        Map<String, List<TableColumn>> columnsOfTable = new HashMap<String, List<TableColumn>>();
+        try {
+            if (errorMsg != null && errorMsg.trim().length() > 0) {
+                return columnsOfTable;
+            }
+            if (connection == null || connection.isClosed()) {
+                errorMsg = Messages.error_getConnection;
+                return columnsOfTable;
+            }
+            // make talble_pk column hashed string list
+            Set<String> hashSet = new HashSet<String>();
+            Statement pkStmt = null;
+            ResultSet pkRs = null;
+            try {
+                String sql =
+                        new StringBuilder()
+                                .append("SELECT \n")
+                                .append(
+                                        "    LOWER(CONCAT(i.class_name, '-', k.key_attr_name)) AS hashcode \n")
+                                .append("FROM \n")
+                                .append("    db_index i, \n")
+                                .append("    db_index_key k \n")
+                                .append("WHERE \n")
+                                .append("    i.index_name = k.index_name \n")
+                                .append("    AND \n")
+                                .append("    i.class_name = k.class_name \n")
+                                .append("    AND \n")
+                                .append("    i.is_primary_key = 'YES'\n")
+                                .toString();
 
-				// [TOOLS-2425]Support shard broker
-				sql = databaseInfo.wrapShardQuery(sql);
+                // [TOOLS-2425]Support shard broker
+                sql = databaseInfo.wrapShardQuery(sql);
 
-				pkStmt = connection.createStatement();
-				pkRs = pkStmt.executeQuery(sql.toString());
-				while (pkRs.next()) {
-					hashSet.add(pkRs.getString(1));
-				}
-			} catch (SQLException e) {
-				LOGGER.error(e.getMessage(), e);
-			} finally {
-				QueryUtil.freeQuery(pkStmt, pkRs);
-			}
+                pkStmt = connection.createStatement();
+                pkRs = pkStmt.executeQuery(sql.toString());
+                while (pkRs.next()) {
+                    hashSet.add(pkRs.getString(1));
+                }
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+            } finally {
+                QueryUtil.freeQuery(pkStmt, pkRs);
+            }
 
-			for (String tableName : tableNames) {
-				try {
-					List<TableColumn> columns = SchemaUtil.getTableColumn(databaseInfo, connection,
-							tableName);
+            for (String tableName : tableNames) {
+                try {
+                    List<TableColumn> columns =
+                            SchemaUtil.getTableColumn(databaseInfo, connection, tableName);
 
-					for (TableColumn dbColumn : columns) {
-						String columnName = dbColumn.getColumnName();
-						String tableColumnHash = (tableName + "-" + columnName).trim().toLowerCase();
-						if (hashSet.contains(tableColumnHash)) {
-							dbColumn.setPrimaryKey(true);
-						}
-					}
+                    for (TableColumn dbColumn : columns) {
+                        String columnName = dbColumn.getColumnName();
+                        String tableColumnHash =
+                                (tableName + "-" + columnName).trim().toLowerCase();
+                        if (hashSet.contains(tableColumnHash)) {
+                            dbColumn.setPrimaryKey(true);
+                        }
+                    }
 
-					Collections.sort(columns);
-					columnsOfTable.put(tableName, columns);
-				} catch (SQLException e) {
-					LOGGER.error(e.getMessage(), e);
-					if (e.getErrorCode() == -74) {
-						isInTransation = true;
-					}
-					if (errorMsg == null) {
-						errorMsg = e.getMessage() + "\r\n";
-					} else {
-						errorMsg += e.getMessage() + "\r\n";
-					}
-				}
-			}
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage(), e);
-			isInTransation = false;
-			if (errorMsg == null) {
-				errorMsg = e.getMessage() + "\r\n";
-			} else {
-				errorMsg += e.getMessage() + "\r\n";
-			}
-		} finally {
-			finish();
-		}
-		return columnsOfTable;
-	}
+                    Collections.sort(columns);
+                    columnsOfTable.put(tableName, columns);
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    if (e.getErrorCode() == -74) {
+                        isInTransation = true;
+                    }
+                    if (errorMsg == null) {
+                        errorMsg = e.getMessage() + "\r\n";
+                    } else {
+                        errorMsg += e.getMessage() + "\r\n";
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            isInTransation = false;
+            if (errorMsg == null) {
+                errorMsg = e.getMessage() + "\r\n";
+            } else {
+                errorMsg += e.getMessage() + "\r\n";
+            }
+        } finally {
+            finish();
+        }
+        return columnsOfTable;
+    }
 
-	/**
-	 * Whether the field isInTransation is true
-	 *
-	 * @return the isInTransation
-	 */
-	public boolean isInTransation() {
-		return isInTransation;
-	}
+    /**
+     * Whether the field isInTransation is true
+     *
+     * @return the isInTransation
+     */
+    public boolean isInTransation() {
+        return isInTransation;
+    }
 }

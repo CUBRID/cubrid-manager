@@ -27,45 +27,40 @@
  */
 package com.cubrid.common.ui.query.editor;
 
+import com.cubrid.common.ui.query.control.CombinedQueryEditorComposite;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 
-import com.cubrid.common.ui.query.control.CombinedQueryEditorComposite;
-
 /**
  * SubQueryEditorTabItem
- * @author Kevin.Wang
  *
- * Create at 2014-4-8
+ * @author Kevin.Wang
+ *     <p>Create at 2014-4-8
  */
-public class SubQueryEditorTabItem extends CTabItem{
-	private CombinedQueryEditorComposite control;
-	private int tabIndex;
-	
-	public SubQueryEditorTabItem(CTabFolder parent, int style) {
-		super(parent, style);
-	}
-	
-	public void setControl(CombinedQueryEditorComposite control) {
-		this.control = control;
-		super.setControl(control);
-	}
-	
-	public CombinedQueryEditorComposite getControl() {
-		return control;
-	}
+public class SubQueryEditorTabItem extends CTabItem {
+    private CombinedQueryEditorComposite control;
+    private int tabIndex;
 
-	/**
-	 * @return the tabIndex
-	 */
-	public int getTabIndex() {
-		return tabIndex;
-	}
+    public SubQueryEditorTabItem(CTabFolder parent, int style) {
+        super(parent, style);
+    }
 
-	/**
-	 * @param tabIndex the tabIndex to set
-	 */
-	public void setTabIndex(int tabIndex) {
-		this.tabIndex = tabIndex;
-	}	
+    public void setControl(CombinedQueryEditorComposite control) {
+        this.control = control;
+        super.setControl(control);
+    }
+
+    public CombinedQueryEditorComposite getControl() {
+        return control;
+    }
+
+    /** @return the tabIndex */
+    public int getTabIndex() {
+        return tabIndex;
+    }
+
+    /** @param tabIndex the tabIndex to set */
+    public void setTabIndex(int tabIndex) {
+        this.tabIndex = tabIndex;
+    }
 }

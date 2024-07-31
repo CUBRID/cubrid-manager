@@ -29,21 +29,6 @@
  */
 package com.cubrid.common.ui.cubrid.table.export;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.DBAttribute;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.common.model.SerialInfo;
@@ -65,6 +50,19 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.serial.task.GetSerialInfoListTask;
 import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
 import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.slf4j.Logger;
 
 /**
  * Export Schema Thread
@@ -72,349 +70,382 @@ import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
  * @author Kevin.Wang
  * @version 1.0 - 2013-5-24 created by Kevin.Wang
  */
-public class ExportSchemaThread extends
-		AbsExportThread {
-	private static final Logger LOGGER = LogUtil.getLogger(ExportSchemaThread.class);
+public class ExportSchemaThread extends AbsExportThread {
+    private static final Logger LOGGER = LogUtil.getLogger(ExportSchemaThread.class);
 
-	protected final DatabaseInfo dbInfo;
-	protected final ExportConfig exportConfig;
-	protected final IExportDataEventHandler exportDataEventHandler;
+    protected final DatabaseInfo dbInfo;
+    protected final ExportConfig exportConfig;
+    protected final IExportDataEventHandler exportDataEventHandler;
 
-	public ExportSchemaThread(DatabaseInfo dbInfo, ExportConfig exportConfig,
-			IExportDataEventHandler exportDataEventHandler, IJobListener jobListener) {
-		super(jobListener);
-		this.dbInfo = dbInfo;
-		this.exportConfig = exportConfig;
-		this.exportDataEventHandler = exportDataEventHandler;
-	}
+    public ExportSchemaThread(
+            DatabaseInfo dbInfo,
+            ExportConfig exportConfig,
+            IExportDataEventHandler exportDataEventHandler,
+            IJobListener jobListener) {
+        super(jobListener);
+        this.dbInfo = dbInfo;
+        this.exportConfig = exportConfig;
+        this.exportDataEventHandler = exportDataEventHandler;
+    }
 
-	protected void doRun() { // FIXME move this logic to core module
+    protected void doRun() { // FIXME move this logic to core module
 
-		File dirFile = null;
-		try {
-			dirFile = new File(exportConfig.getDataFileFolder() + File.separator + "ddl");
-			if (!dirFile.exists()) {
-				dirFile.mkdir();
-			}
-		} catch (Exception e) {
-			LOGGER.error("create schema dir error : ", e);
-			return;
-		}
+        File dirFile = null;
+        try {
+            dirFile = new File(exportConfig.getDataFileFolder() + File.separator + "ddl");
+            if (!dirFile.exists()) {
+                dirFile.mkdir();
+            }
+        } catch (Exception e) {
+            LOGGER.error("create schema dir error : ", e);
+            return;
+        }
 
-		try {
-			String schemaFile = null;
-			String indexFile = null;
-			String triggerFile = null;
-			if (exportConfig.isExportSchema()) {
-				schemaFile = dirFile + File.separator + "schema.sql";
-				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
-						ExportConfig.TASK_NAME_SCHEMA));
-			}
-			if (exportConfig.isExportIndex()) {
-				indexFile = dirFile + File.separator + "index.sql";
-				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
-						ExportConfig.TASK_NAME_INDEX));
-			}
-			if (exportConfig.isExportTrigger()) {
-				triggerFile = dirFile + File.separator + "trigger.sql";
-				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
-						ExportConfig.TASK_NAME_TRIGGER));
-			}
+        try {
+            String schemaFile = null;
+            String indexFile = null;
+            String triggerFile = null;
+            if (exportConfig.isExportSchema()) {
+                schemaFile = dirFile + File.separator + "schema.sql";
+                exportDataEventHandler.handleEvent(
+                        new ExportDataBeginOneTableEvent(ExportConfig.TASK_NAME_SCHEMA));
+            }
+            if (exportConfig.isExportIndex()) {
+                indexFile = dirFile + File.separator + "index.sql";
+                exportDataEventHandler.handleEvent(
+                        new ExportDataBeginOneTableEvent(ExportConfig.TASK_NAME_INDEX));
+            }
+            if (exportConfig.isExportTrigger()) {
+                triggerFile = dirFile + File.separator + "trigger.sql";
+                exportDataEventHandler.handleEvent(
+                        new ExportDataBeginOneTableEvent(ExportConfig.TASK_NAME_TRIGGER));
+            }
 
-			Set<String> tableSet = new HashSet<String>();
-			tableSet.addAll(exportConfig.getTableNameList());
-			ExprotToOBSHandler.exportSchemaToOBSFile(dbInfo, exportDataEventHandler, tableSet,
-					schemaFile, indexFile, triggerFile, exportConfig.getFileCharset(),
-					exportConfig.isExportSerialStartValue(), false);
+            Set<String> tableSet = new HashSet<String>();
+            tableSet.addAll(exportConfig.getTableNameList());
+            ExprotToOBSHandler.exportSchemaToOBSFile(
+                    dbInfo,
+                    exportDataEventHandler,
+                    tableSet,
+                    schemaFile,
+                    indexFile,
+                    triggerFile,
+                    exportConfig.getFileCharset(),
+                    exportConfig.isExportSerialStartValue(),
+                    false);
 
-			if (exportConfig.isExportSchema()) {
-				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(
-						ExportConfig.TASK_NAME_SCHEMA));
-				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(
-						ExportConfig.TASK_NAME_SCHEMA));
-			}
-			if (exportConfig.isExportIndex()) {
-				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(
-						ExportConfig.TASK_NAME_INDEX));
-				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(
-						ExportConfig.TASK_NAME_INDEX));
-			}
-			if (exportConfig.isExportTrigger()) {
-				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(
-						ExportConfig.TASK_NAME_TRIGGER));
-				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(
-						ExportConfig.TASK_NAME_TRIGGER));
-			}
-		} catch (Exception e) {
-			if (exportConfig.isExportSchema()) {
-				exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(
-						ExportConfig.TASK_NAME_SCHEMA));
-			}
-			if (exportConfig.isExportIndex()) {
-				exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(
-						ExportConfig.TASK_NAME_INDEX));
-			}
-			if (exportConfig.isExportTrigger()) {
-				exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(
-						ExportConfig.TASK_NAME_TRIGGER));
-			}
-			LOGGER.error("create schema index trigger error : ", e);
-		}
+            if (exportConfig.isExportSchema()) {
+                exportDataEventHandler.handleEvent(
+                        new ExportDataSuccessEvent(ExportConfig.TASK_NAME_SCHEMA));
+                exportDataEventHandler.handleEvent(
+                        new ExportDataFinishOneTableEvent(ExportConfig.TASK_NAME_SCHEMA));
+            }
+            if (exportConfig.isExportIndex()) {
+                exportDataEventHandler.handleEvent(
+                        new ExportDataSuccessEvent(ExportConfig.TASK_NAME_INDEX));
+                exportDataEventHandler.handleEvent(
+                        new ExportDataFinishOneTableEvent(ExportConfig.TASK_NAME_INDEX));
+            }
+            if (exportConfig.isExportTrigger()) {
+                exportDataEventHandler.handleEvent(
+                        new ExportDataSuccessEvent(ExportConfig.TASK_NAME_TRIGGER));
+                exportDataEventHandler.handleEvent(
+                        new ExportDataFinishOneTableEvent(ExportConfig.TASK_NAME_TRIGGER));
+            }
+        } catch (Exception e) {
+            if (exportConfig.isExportSchema()) {
+                exportDataEventHandler.handleEvent(
+                        new ExportDataFailedOneTableEvent(ExportConfig.TASK_NAME_SCHEMA));
+            }
+            if (exportConfig.isExportIndex()) {
+                exportDataEventHandler.handleEvent(
+                        new ExportDataFailedOneTableEvent(ExportConfig.TASK_NAME_INDEX));
+            }
+            if (exportConfig.isExportTrigger()) {
+                exportDataEventHandler.handleEvent(
+                        new ExportDataFailedOneTableEvent(ExportConfig.TASK_NAME_TRIGGER));
+            }
+            LOGGER.error("create schema index trigger error : ", e);
+        }
 
-		try {
-			if (exportConfig.isExportSerial()) {
-				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
-						ExportConfig.TASK_NAME_SERIAL));
-				String serialFile = dirFile + File.separator + "serial.sql";
-				exportSerial(serialFile);
-				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(
-						ExportConfig.TASK_NAME_SERIAL));
-				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(
-						ExportConfig.TASK_NAME_SERIAL));
-			}
-		} catch (Exception e) {
-			exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(
-					ExportConfig.TASK_NAME_SERIAL));
-			LOGGER.error("create serial.sql error : ", e);
-		}
+        try {
+            if (exportConfig.isExportSerial()) {
+                exportDataEventHandler.handleEvent(
+                        new ExportDataBeginOneTableEvent(ExportConfig.TASK_NAME_SERIAL));
+                String serialFile = dirFile + File.separator + "serial.sql";
+                exportSerial(serialFile);
+                exportDataEventHandler.handleEvent(
+                        new ExportDataSuccessEvent(ExportConfig.TASK_NAME_SERIAL));
+                exportDataEventHandler.handleEvent(
+                        new ExportDataFinishOneTableEvent(ExportConfig.TASK_NAME_SERIAL));
+            }
+        } catch (Exception e) {
+            exportDataEventHandler.handleEvent(
+                    new ExportDataFailedOneTableEvent(ExportConfig.TASK_NAME_SERIAL));
+            LOGGER.error("create serial.sql error : ", e);
+        }
 
-		try {
-			if (exportConfig.isExportView()) {
-				exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
-						ExportConfig.TASK_NAME_VIEW));
-				String viewFile = dirFile + File.separator + "view.sql";
-				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(
-						ExportConfig.TASK_NAME_VIEW));
-				exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(
-						ExportConfig.TASK_NAME_VIEW));
-				exportView(viewFile);
-			}
-		} catch (Exception e) {
-			exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(
-					ExportConfig.TASK_NAME_VIEW));
-			LOGGER.error("create view.sql error : ", e);
-		}
-	}
+        try {
+            if (exportConfig.isExportView()) {
+                exportDataEventHandler.handleEvent(
+                        new ExportDataBeginOneTableEvent(ExportConfig.TASK_NAME_VIEW));
+                String viewFile = dirFile + File.separator + "view.sql";
+                exportDataEventHandler.handleEvent(
+                        new ExportDataSuccessEvent(ExportConfig.TASK_NAME_VIEW));
+                exportDataEventHandler.handleEvent(
+                        new ExportDataFinishOneTableEvent(ExportConfig.TASK_NAME_VIEW));
+                exportView(viewFile);
+            }
+        } catch (Exception e) {
+            exportDataEventHandler.handleEvent(
+                    new ExportDataFailedOneTableEvent(ExportConfig.TASK_NAME_VIEW));
+            LOGGER.error("create view.sql error : ", e);
+        }
+    }
 
-	public void performStop() {
-		if (!isFinished) {
-			isStoped = true;
-		}
-	}
+    public void performStop() {
+        if (!isFinished) {
+            isStoped = true;
+        }
+    }
 
-	/**
-	 * exportView
-	 *
-	 * @param filePath view file path
-	 * @throws Exception
-	 */
-	private void exportView(String filePath) throws Exception { // FIXME move this logic to core module
-		BufferedWriter fs = null;
-		boolean hasView = false;
-		File viewFile = null;
-		try {
-			fs = FileUtil.getBufferedWriter(filePath, exportConfig.getFileCharset());
-			for (String ddl : getAllViewsDDL()) {
-				fs.write(ddl);
-				fs.write(StringUtil.NEWLINE);
-				hasView = true;
-			}
-			fs.flush();
-		} finally {
-			try {
-				if (fs != null) {
-					fs.close();
-				}
-				if (!hasView) {
-					if (viewFile != null) {
-						viewFile.delete();
-					}
-				}
-			} catch (IOException e) {
-				LOGGER.error("", e);
-			}
-		}
+    /**
+     * exportView
+     *
+     * @param filePath view file path
+     * @throws Exception
+     */
+    private void exportView(String filePath)
+            throws Exception { // FIXME move this logic to core module
+        BufferedWriter fs = null;
+        boolean hasView = false;
+        File viewFile = null;
+        try {
+            fs = FileUtil.getBufferedWriter(filePath, exportConfig.getFileCharset());
+            for (String ddl : getAllViewsDDL()) {
+                fs.write(ddl);
+                fs.write(StringUtil.NEWLINE);
+                hasView = true;
+            }
+            fs.flush();
+        } finally {
+            try {
+                if (fs != null) {
+                    fs.close();
+                }
+                if (!hasView) {
+                    if (viewFile != null) {
+                        viewFile.delete();
+                    }
+                }
+            } catch (IOException e) {
+                LOGGER.error("", e);
+            }
+        }
+    }
 
-	}
+    /**
+     * exportSerial
+     *
+     * @param serialFilePath
+     * @throws Exception
+     */
+    private void exportSerial(String serialFilePath)
+            throws Exception { // FIXME move this logic to core module
+        BufferedWriter fs = null;
+        boolean hasSerial = false;
+        File serialFile = null;
+        try {
+            fs = FileUtil.getBufferedWriter(serialFilePath, exportConfig.getFileCharset());
+            if (exportConfig.isExportSerial()) {
+                GetSerialInfoListTask task = new GetSerialInfoListTask(dbInfo);
+                task.execute();
+                boolean isSupportCache = CompatibleUtil.isSupportCache(dbInfo);
+                for (SerialInfo serial : task.getSerialInfoList()) {
+                    fs.write(
+                            QueryUtil.createSerialSQLScript(
+                                    serial, isSupportCache, dbInfo.isSupportUserSchema()));
+                    fs.write(StringUtil.NEWLINE);
+                    hasSerial = true;
+                }
+                fs.flush();
+            }
+        } finally {
+            try {
+                if (fs != null) {
+                    fs.close();
+                }
+            } catch (IOException e) {
+                LOGGER.error("", e);
+            }
+            if (!hasSerial) {
+                if (serialFile != null) {
+                    serialFile.delete();
+                }
+            }
+        }
+    }
 
-	/**
-	 * exportSerial
-	 *
-	 * @param serialFilePath
-	 * @throws Exception
-	 */
-	private void exportSerial(String serialFilePath) throws Exception { // FIXME move this logic to core module
-		BufferedWriter fs = null;
-		boolean hasSerial = false;
-		File serialFile = null;
-		try {
-			fs = FileUtil.getBufferedWriter(serialFilePath, exportConfig.getFileCharset());
-			if (exportConfig.isExportSerial()) {
-				GetSerialInfoListTask task = new GetSerialInfoListTask(dbInfo);
-				task.execute();
-				boolean isSupportCache = CompatibleUtil.isSupportCache(dbInfo);
-				for (SerialInfo serial : task.getSerialInfoList()) {
-					fs.write(QueryUtil.createSerialSQLScript(serial, isSupportCache, dbInfo.isSupportUserSchema()));
-					fs.write(StringUtil.NEWLINE);
-					hasSerial = true;
-				}
-				fs.flush();
-			}
-		} finally {
-			try {
-				if (fs != null) {
-					fs.close();
-				}
-			} catch (IOException e) {
-				LOGGER.error("", e);
-			}
-			if (!hasSerial) {
-				if (serialFile != null) {
-					serialFile.delete();
-				}
-			}
-		}
-	}
+    private List<String> getAllViewsDDL() { // FIXME move this logic to core module
+        List<String> resultList = new ArrayList<String>();
+        List<String> viewNameList = new ArrayList<String>();
+        LinkedHashMap<String, String> viewQuerySpecMap = new LinkedHashMap<String, String>();
+        Connection conn = null;
+        Statement stmt = null;
+        CUBRIDResultSetProxy rs = null;
 
-	private List<String> getAllViewsDDL() { // FIXME move this logic to core module
-		List<String> resultList = new ArrayList<String>();
-		List<String> viewNameList = new ArrayList<String>();
-		LinkedHashMap<String, String> viewQuerySpecMap = new LinkedHashMap<String, String>();
-		Connection conn = null;
-		Statement stmt = null;
-		CUBRIDResultSetProxy rs = null;
+        String sql;
+        if (dbInfo.isSupportUserSchema()) {
+            sql =
+                    "SELECT c.class_name, c.owner_name, c.class_type"
+                            + " FROM db_class c, db_attribute a"
+                            + " WHERE c.class_name=a.class_name AND c.is_system_class='NO'"
+                            + " AND c.owner_name=a.owner_name"
+                            + " AND c.class_type='VCLASS'"
+                            + " GROUP BY c.owner_name, c.class_name, c.class_type"
+                            + " ORDER BY c.owner_name, c.class_type, c.class_name";
+        } else {
+            sql =
+                    "SELECT c.class_name, c.class_type"
+                            + " FROM db_class c, db_attribute a"
+                            + " WHERE c.class_name=a.class_name AND c.is_system_class='NO'"
+                            + " AND c.class_type='VCLASS'"
+                            + " GROUP BY c.class_name, c.class_type"
+                            + " ORDER BY c.class_type, c.class_name";
+        }
 
-		String sql;
-		if (dbInfo.isSupportUserSchema()) {
-			sql = "SELECT c.class_name, c.owner_name, c.class_type" + " FROM db_class c, db_attribute a"
-				+ " WHERE c.class_name=a.class_name AND c.is_system_class='NO'"
-				+ " AND c.owner_name=a.owner_name"
-				+ " AND c.class_type='VCLASS'" + " GROUP BY c.owner_name, c.class_name, c.class_type"
-				+ " ORDER BY c.owner_name, c.class_type, c.class_name";
-		} else {
-			sql = "SELECT c.class_name, c.class_type" + " FROM db_class c, db_attribute a"
-					+ " WHERE c.class_name=a.class_name AND c.is_system_class='NO'"
-					+ " AND c.class_type='VCLASS'" + " GROUP BY c.class_name, c.class_type"
-					+ " ORDER BY c.class_type, c.class_name";
-		}
+        // [TOOLS-2425]Support shard broker
+        sql = dbInfo.wrapShardQuery(sql);
+        try {
+            conn = JDBCConnectionManager.getConnection(dbInfo, false);
+            stmt =
+                    conn.createStatement(
+                            ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            ResultSet.CONCUR_READ_ONLY,
+                            ResultSet.HOLD_CURSORS_OVER_COMMIT);
 
-		// [TOOLS-2425]Support shard broker
-		sql = dbInfo.wrapShardQuery(sql);
-		try {
-			conn = JDBCConnectionManager.getConnection(dbInfo, false);
-			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+            rs = (CUBRIDResultSetProxy) stmt.executeQuery(sql);
+            while (rs.next()) {
+                if (dbInfo.isSupportUserSchema()) {
+                    String className = rs.getString(1);
+                    String ownerName = rs.getString(2);
+                    viewNameList.add(ownerName + "." + className);
+                } else {
+                    String className = rs.getString(1);
+                    viewNameList.add(className);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("", e);
+        } finally {
+            QueryUtil.freeQuery(stmt, rs);
+        }
 
-			rs = (CUBRIDResultSetProxy) stmt.executeQuery(sql);
-			while (rs.next()) {
-				if (dbInfo.isSupportUserSchema()) {
-					String className = rs.getString(1);
-					String ownerName = rs.getString(2);
-					viewNameList.add(ownerName + "." + className);
-				} else {
-					String className = rs.getString(1);
-					viewNameList.add(className);
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.error("", e);
-		} finally {
-			QueryUtil.freeQuery(stmt, rs);
-		}
+        try {
+            stmt =
+                    conn.createStatement(
+                            ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            ResultSet.CONCUR_READ_ONLY,
+                            ResultSet.HOLD_CURSORS_OVER_COMMIT);
 
-		try {
-			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+            for (String viewName : viewNameList) {
+                String querySpecSql;
+                if (dbInfo.isSupportUserSchema()) {
+                    querySpecSql =
+                            "SELECT vclass_def FROM db_vclass WHERE CONCAT(owner_name, '.' , vclass_name)='"
+                                    + viewName
+                                    + "'";
+                } else {
+                    querySpecSql =
+                            "SELECT vclass_def FROM db_vclass WHERE vclass_name='" + viewName + "'";
+                }
 
-			for (String viewName : viewNameList) {
-				String querySpecSql;
-				if (dbInfo.isSupportUserSchema()) {
-					querySpecSql = "SELECT vclass_def FROM db_vclass WHERE CONCAT(owner_name, '.' , vclass_name)='"
-						+ viewName + "'";
-				} else {
-					querySpecSql = "SELECT vclass_def FROM db_vclass WHERE vclass_name='"
-						+ viewName + "'";
-				}
+                // [TOOLS-2425]Support shard broker
+                querySpecSql = dbInfo.wrapShardQuery(querySpecSql);
 
-				// [TOOLS-2425]Support shard broker
-				querySpecSql = dbInfo.wrapShardQuery(querySpecSql);
+                try {
+                    rs = (CUBRIDResultSetProxy) stmt.executeQuery(querySpecSql);
+                    if (rs.next()) {
+                        viewQuerySpecMap.put(viewName, rs.getString(1));
+                    }
+                } finally {
+                    QueryUtil.freeQuery(rs);
+                }
+            }
 
-				try {
-					rs = (CUBRIDResultSetProxy) stmt.executeQuery(querySpecSql);
-					if (rs.next()) {
-						viewQuerySpecMap.put(viewName, rs.getString(1));
-					}
-				} finally {
-					QueryUtil.freeQuery(rs);
-				}
-			}
+        } catch (Exception e) {
+            LOGGER.error("", e);
+        } finally {
+            QueryUtil.freeQuery(conn, stmt);
+        }
 
-		} catch (Exception e) {
-			LOGGER.error("", e);
-		} finally {
-			QueryUtil.freeQuery(conn, stmt);
-		}
+        for (Map.Entry<String, String> entry : viewQuerySpecMap.entrySet()) {
+            SchemaInfo viewInfo = dbInfo.getSchemaInfo(entry.getKey());
+            String ddl = getViewDDL(viewInfo, dbInfo, entry.getValue());
+            resultList.add(ddl);
+        }
 
-		for (Map.Entry<String, String> entry : viewQuerySpecMap.entrySet()) {
-			SchemaInfo viewInfo = dbInfo.getSchemaInfo(entry.getKey());
-			String ddl = getViewDDL(viewInfo, dbInfo, entry.getValue());
-			resultList.add(ddl);
-		}
+        return resultList;
+    }
 
-		return resultList;
-	}
+    /**
+     * Return DDL of a view
+     *
+     * @param viewInfo SchemaInfo the given reference of a SChemaInfo object
+     * @param getDatabaseInfo DatabaseInfo
+     * @param querySpec String the view querySpec
+     * @return
+     */
+    private String getViewDDL(
+            SchemaInfo viewInfo,
+            DatabaseInfo getDatabaseInfo,
+            String querySpec) { // FIXME move this logic to core module
+        StringBuffer sb = new StringBuffer();
+        if (CompatibleUtil.isSupportReplaceView(getDatabaseInfo)) {
+            sb.append("CREATE OR REPLACE VIEW ");
+        } else {
+            sb.append("CREATE VIEW ");
+        }
+        sb.append(viewInfo.getUniqueName());
+        sb.append("(");
 
-	/**
-	 * Return DDL of a view
-	 *
-	 * @param viewInfo SchemaInfo the given reference of a SChemaInfo object
-	 * @param getDatabaseInfo DatabaseInfo
-	 * @param querySpec String the view querySpec
-	 * @return
-	 */
+        for (DBAttribute addr : viewInfo.getAttributes()) { // "Name", "Data
+            // type", "Shared",
+            // "Default","Default value"
+            String type = addr.getType();
+            sb.append(StringUtil.NEWLINE)
+                    .append(QuerySyntax.escapeKeyword(addr.getName()))
+                    .append(" ")
+                    .append(type);
+            String defaultType = addr.isShared() ? "shared" : "default";
+            String defaultValue = addr.getDefault();
 
-	private String getViewDDL(SchemaInfo viewInfo, DatabaseInfo getDatabaseInfo, String querySpec) { // FIXME move this logic to core module
-		StringBuffer sb = new StringBuffer();
-		if (CompatibleUtil.isSupportReplaceView(getDatabaseInfo)) {
-			sb.append("CREATE OR REPLACE VIEW ");
-		} else {
-			sb.append("CREATE VIEW ");
-		}
-		sb.append(viewInfo.getUniqueName());
-		sb.append("(");
+            if (defaultType != null
+                    && !"".equals(defaultType)
+                    && defaultValue != null
+                    && !"".equals(defaultValue)) {
+                if (type != null
+                        && (DataType.DATATYPE_CHAR.equalsIgnoreCase(type)
+                                || DataType.DATATYPE_STRING.equalsIgnoreCase(type)
+                                || DataType.DATATYPE_VARCHAR.equalsIgnoreCase(type))) {
+                    sb.append(" " + defaultType).append(" '" + defaultValue + "'");
+                } else {
+                    sb.append(" " + defaultType).append(" " + defaultValue);
+                }
+            }
+            sb.append(",");
+        }
 
-		for (DBAttribute addr : viewInfo.getAttributes()) { // "Name", "Data
-			// type", "Shared",
-			// "Default","Default value"
-			String type = addr.getType();
-			sb.append(StringUtil.NEWLINE).append(QuerySyntax.escapeKeyword(addr.getName())).append(
-					" ").append(type);
-			String defaultType = addr.isShared() ? "shared" : "default";
-			String defaultValue = addr.getDefault();
+        if (!viewInfo.getAttributes().isEmpty() && sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        sb.append(")").append(StringUtil.NEWLINE);
+        sb.append("    AS ").append(StringUtil.NEWLINE);
+        if (querySpec != null) {
+            sb.append(querySpec);
+        }
 
-			if (defaultType != null && !"".equals(defaultType) && defaultValue != null
-					&& !"".equals(defaultValue)) {
-				if (type != null
-						&& (DataType.DATATYPE_CHAR.equalsIgnoreCase(type)
-								|| DataType.DATATYPE_STRING.equalsIgnoreCase(type) || DataType.DATATYPE_VARCHAR.equalsIgnoreCase(type))) {
-					sb.append(" " + defaultType).append(" '" + defaultValue + "'");
-				} else {
-					sb.append(" " + defaultType).append(" " + defaultValue);
-				}
-			}
-			sb.append(",");
-		}
-
-		if (!viewInfo.getAttributes().isEmpty() && sb.length() > 0) {
-			sb.deleteCharAt(sb.length() - 1);
-		}
-		sb.append(")").append(StringUtil.NEWLINE);
-		sb.append("    AS ").append(StringUtil.NEWLINE);
-		if (querySpec != null) {
-			sb.append(querySpec);
-		}
-
-		sb.append(";").append(StringUtil.NEWLINE);
-		return sb.toString();
-	}
+        sb.append(";").append(StringUtil.NEWLINE);
+        return sb.toString();
+    }
 }

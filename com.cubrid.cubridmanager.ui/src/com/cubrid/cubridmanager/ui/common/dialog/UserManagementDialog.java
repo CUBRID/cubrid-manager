@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,16 +23,28 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.common.dialog;
 
+import com.cubrid.common.core.task.ITask;
+import com.cubrid.common.ui.spi.TableViewerSorter;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.dialog.CMWizardDialog;
+import com.cubrid.common.ui.spi.model.CubridServer;
+import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
+import com.cubrid.common.ui.spi.progress.TaskExecutor;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.core.common.model.ServerType;
+import com.cubrid.cubridmanager.core.common.model.ServerUserInfo;
+import com.cubrid.cubridmanager.core.common.task.DeleteCMUserTask;
+import com.cubrid.cubridmanager.ui.common.Messages;
+import com.cubrid.cubridmanager.ui.common.control.UserManagementWizard;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -51,441 +63,432 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
-import com.cubrid.common.core.task.ITask;
-import com.cubrid.common.ui.spi.TableViewerSorter;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.dialog.CMWizardDialog;
-import com.cubrid.common.ui.spi.model.CubridServer;
-import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
-import com.cubrid.common.ui.spi.progress.TaskExecutor;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.core.common.model.ServerType;
-import com.cubrid.cubridmanager.core.common.model.ServerUserInfo;
-import com.cubrid.cubridmanager.core.common.task.DeleteCMUserTask;
-import com.cubrid.cubridmanager.ui.common.Messages;
-import com.cubrid.cubridmanager.ui.common.control.UserManagementWizard;
-
 /**
- * 
  * User Management will use this dialog to view user information
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-public class UserManagementDialog extends
-		CMTitleAreaDialog {
-	private Table userManageTable = null;
-	private TableViewer tableViewer = null;
-	private CubridServer server = null;
-	private Button deleteButton;
-	private Button editButton;
-	private final List<Map<String, Object>> serverUserInfoTableList = new ArrayList<Map<String, Object>>();
-	private List<ServerUserInfo> serverUserInfoList = null;
+public class UserManagementDialog extends CMTitleAreaDialog {
+    private Table userManageTable = null;
+    private TableViewer tableViewer = null;
+    private CubridServer server = null;
+    private Button deleteButton;
+    private Button editButton;
+    private final List<Map<String, Object>> serverUserInfoTableList =
+            new ArrayList<Map<String, Object>>();
+    private List<ServerUserInfo> serverUserInfoList = null;
 
-	/**
-	 * The constructor
-	 * 
-	 * @param parentShell
-	 */
-	public UserManagementDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     */
+    public UserManagementDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	/**
-	 * Create dialog area content
-	 * 
-	 * @param parent the parent composite
-	 * @return the control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
+    /**
+     * Create dialog area content
+     *
+     * @param parent the parent composite
+     * @return the control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        composite.setLayout(layout);
 
-		Label tipLabel = new Label(composite, SWT.LEFT | SWT.WRAP);
-		tipLabel.setText(Messages.msgUserManagementList);
-		tipLabel.setLayoutData(CommonUITool.createGridData(
-				GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-		// create CUBRID Manager user information table
-		String[] columnNameArr = new String[]{Messages.tblColumnUserId,
-				Messages.tblColumnDbAuth, Messages.tblColumnBrokerAuth,
-				Messages.tblColumnMonitorAuth };
-		final ServerType serverType = server.getServerInfo().getServerType();
-		if (serverType == ServerType.DATABASE) {
-			columnNameArr = new String[]{Messages.tblColumnUserId,
-					Messages.tblColumnDbAuth, Messages.tblColumnMonitorAuth };
-		} else if (serverType == ServerType.BROKER) {
-			columnNameArr = new String[]{Messages.tblColumnUserId,
-					Messages.tblColumnBrokerAuth, Messages.tblColumnMonitorAuth };
-		}
-		tableViewer = CommonUITool.createCommonTableViewer(composite,
-				new UserManagementTableViewerSorter(), columnNameArr,
-				CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, 200));
-		userManageTable = tableViewer.getTable();
-		initialTableModel();
-		tableViewer.setInput(serverUserInfoTableList);
-		for (int i = 0; i < userManageTable.getColumnCount(); i++) {
-			userManageTable.getColumn(i).pack();
-		}
+        Label tipLabel = new Label(composite, SWT.LEFT | SWT.WRAP);
+        tipLabel.setText(Messages.msgUserManagementList);
+        tipLabel.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+        // create CUBRID Manager user information table
+        String[] columnNameArr =
+                new String[] {
+                    Messages.tblColumnUserId,
+                    Messages.tblColumnDbAuth,
+                    Messages.tblColumnBrokerAuth,
+                    Messages.tblColumnMonitorAuth
+                };
+        final ServerType serverType = server.getServerInfo().getServerType();
+        if (serverType == ServerType.DATABASE) {
+            columnNameArr =
+                    new String[] {
+                        Messages.tblColumnUserId,
+                        Messages.tblColumnDbAuth,
+                        Messages.tblColumnMonitorAuth
+                    };
+        } else if (serverType == ServerType.BROKER) {
+            columnNameArr =
+                    new String[] {
+                        Messages.tblColumnUserId,
+                        Messages.tblColumnBrokerAuth,
+                        Messages.tblColumnMonitorAuth
+                    };
+        }
+        tableViewer =
+                CommonUITool.createCommonTableViewer(
+                        composite,
+                        new UserManagementTableViewerSorter(),
+                        columnNameArr,
+                        CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, 200));
+        userManageTable = tableViewer.getTable();
+        initialTableModel();
+        tableViewer.setInput(serverUserInfoTableList);
+        for (int i = 0; i < userManageTable.getColumnCount(); i++) {
+            userManageTable.getColumn(i).pack();
+        }
 
-		userManageTable.addSelectionListener(new SelectionAdapter() {
-			@SuppressWarnings("rawtypes")
-			public void widgetSelected(SelectionEvent event) {
-				if (userManageTable.getSelectionCount() > 0) {
-					StructuredSelection selection = (StructuredSelection) tableViewer.getSelection();
-					boolean isHasAdmin = false;
-					if (selection != null && !selection.isEmpty()) {
-						Iterator it = selection.iterator();
-						while (it.hasNext()) {
-							Map map = (Map) it.next();
-							if (map.get("0").equals("admin")) {
-								isHasAdmin = true;
-								break;
-							}
-						}
-					}
-					deleteButton.setEnabled(!isHasAdmin);
-				} else {
-					deleteButton.setEnabled(false);
-				}
-				if (userManageTable.getSelectionCount() == 1) {
-					editButton.setEnabled(true);
-				} else {
-					editButton.setEnabled(false);
-				}
-			}
-		});
-		// create button
-		Composite buttonComp = new Composite(composite, SWT.NONE);
-		RowLayout rowLayout = new RowLayout();
-		rowLayout.spacing = 5;
-		buttonComp.setLayout(rowLayout);
-		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		gridData.horizontalAlignment = GridData.END;
-		buttonComp.setLayoutData(gridData);
+        userManageTable.addSelectionListener(
+                new SelectionAdapter() {
+                    @SuppressWarnings("rawtypes")
+                    public void widgetSelected(SelectionEvent event) {
+                        if (userManageTable.getSelectionCount() > 0) {
+                            StructuredSelection selection =
+                                    (StructuredSelection) tableViewer.getSelection();
+                            boolean isHasAdmin = false;
+                            if (selection != null && !selection.isEmpty()) {
+                                Iterator it = selection.iterator();
+                                while (it.hasNext()) {
+                                    Map map = (Map) it.next();
+                                    if (map.get("0").equals("admin")) {
+                                        isHasAdmin = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            deleteButton.setEnabled(!isHasAdmin);
+                        } else {
+                            deleteButton.setEnabled(false);
+                        }
+                        if (userManageTable.getSelectionCount() == 1) {
+                            editButton.setEnabled(true);
+                        } else {
+                            editButton.setEnabled(false);
+                        }
+                    }
+                });
+        // create button
+        Composite buttonComp = new Composite(composite, SWT.NONE);
+        RowLayout rowLayout = new RowLayout();
+        rowLayout.spacing = 5;
+        buttonComp.setLayout(rowLayout);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.horizontalAlignment = GridData.END;
+        buttonComp.setLayoutData(gridData);
 
-		Button addButton = new Button(buttonComp, SWT.PUSH);
-		addButton.setText(Messages.btnAdd);
-		addButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				UserManagementWizard userManagementWizard = new UserManagementWizard(
-						server, null, serverUserInfoList);
-				CMWizardDialog dialog = new CMWizardDialog(getShell(),
-						userManagementWizard);
-				int returnCode = dialog.open();
-				if (returnCode == IDialogConstants.OK_ID) {
-					ServerUserInfo userInfo = userManagementWizard.getServerUserInfo();
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("0", userInfo.getUserName());
-					if (serverType == ServerType.BOTH) {
-						map.put("1", userInfo.getDbCreateAuthType().getText());
-						map.put("2", userInfo.getCasAuth().getText());
-						map.put("3", userInfo.getStatusMonitorAuth().getText());
-						map.put("4", userInfo);
-					}
-					if (serverType == ServerType.DATABASE) {
-						map.put("1", userInfo.getDbCreateAuthType().getText());
-						map.put("2", userInfo.getStatusMonitorAuth().getText());
-						map.put("3", userInfo);
-					} else if (serverType == ServerType.BROKER) {
-						map.put("1", userInfo.getCasAuth().getText());
-						map.put("2", userInfo.getStatusMonitorAuth().getText());
-						map.put("3", userInfo);
-					}
+        Button addButton = new Button(buttonComp, SWT.PUSH);
+        addButton.setText(Messages.btnAdd);
+        addButton.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        UserManagementWizard userManagementWizard =
+                                new UserManagementWizard(server, null, serverUserInfoList);
+                        CMWizardDialog dialog =
+                                new CMWizardDialog(getShell(), userManagementWizard);
+                        int returnCode = dialog.open();
+                        if (returnCode == IDialogConstants.OK_ID) {
+                            ServerUserInfo userInfo = userManagementWizard.getServerUserInfo();
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("0", userInfo.getUserName());
+                            if (serverType == ServerType.BOTH) {
+                                map.put("1", userInfo.getDbCreateAuthType().getText());
+                                map.put("2", userInfo.getCasAuth().getText());
+                                map.put("3", userInfo.getStatusMonitorAuth().getText());
+                                map.put("4", userInfo);
+                            }
+                            if (serverType == ServerType.DATABASE) {
+                                map.put("1", userInfo.getDbCreateAuthType().getText());
+                                map.put("2", userInfo.getStatusMonitorAuth().getText());
+                                map.put("3", userInfo);
+                            } else if (serverType == ServerType.BROKER) {
+                                map.put("1", userInfo.getCasAuth().getText());
+                                map.put("2", userInfo.getStatusMonitorAuth().getText());
+                                map.put("3", userInfo);
+                            }
 
-					serverUserInfoTableList.add(map);
-					serverUserInfoList.add(userInfo);
-					tableViewer.refresh();
-					for (int i = 0; i < userManageTable.getColumnCount(); i++) {
-						userManageTable.getColumn(i).pack();
-					}
-				}
-			}
-		});
+                            serverUserInfoTableList.add(map);
+                            serverUserInfoList.add(userInfo);
+                            tableViewer.refresh();
+                            for (int i = 0; i < userManageTable.getColumnCount(); i++) {
+                                userManageTable.getColumn(i).pack();
+                            }
+                        }
+                    }
+                });
 
-		editButton = new Button(buttonComp, SWT.PUSH);
-		editButton.setText(Messages.btnEdit);
-		editButton.addSelectionListener(new SelectionAdapter() {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			public void widgetSelected(SelectionEvent event) {
-				StructuredSelection selection = (StructuredSelection) tableViewer.getSelection();
-				ServerUserInfo serverUserInfo = null;
-				if (selection != null && !selection.isEmpty()) {
-					Map map = (Map) selection.getFirstElement();
-					if (serverType == ServerType.BOTH) {
-						serverUserInfo = (ServerUserInfo) map.get("4");
-					} else {
-						serverUserInfo = (ServerUserInfo) map.get("3");
-					}
-					UserManagementWizard userManagementWizard = new UserManagementWizard(
-							server, serverUserInfo, serverUserInfoList);
-					CMWizardDialog dialog = new CMWizardDialog(getShell(),
-							userManagementWizard);
-					int returnCode = dialog.open();
-					if (returnCode == IDialogConstants.OK_ID) {
-						ServerUserInfo userInfo = userManagementWizard.getServerUserInfo();
-						map.put("0", userInfo.getUserName());
-						if (serverType == ServerType.BOTH) {
-							map.put("1",
-									userInfo.getDbCreateAuthType().getText());
-							map.put("2", userInfo.getCasAuth().getText());
-							map.put("3",
-									userInfo.getStatusMonitorAuth().getText());
-							map.put("4", userInfo);
-						}
-						if (serverType == ServerType.DATABASE) {
-							map.put("1",
-									userInfo.getDbCreateAuthType().getText());
-							map.put("2",
-									userInfo.getStatusMonitorAuth().getText());
-							map.put("3", userInfo);
-						} else if (serverType == ServerType.BROKER) {
-							map.put("1", userInfo.getCasAuth().getText());
-							map.put("2",
-									userInfo.getStatusMonitorAuth().getText());
-							map.put("3", userInfo);
-						}
-						tableViewer.refresh();
-						for (int i = 0; i < userManageTable.getColumnCount(); i++) {
-							userManageTable.getColumn(i).pack();
-						}
-					}
-				}
-			}
-		});
-		editButton.setEnabled(userManageTable.getSelectionCount() == 1);
+        editButton = new Button(buttonComp, SWT.PUSH);
+        editButton.setText(Messages.btnEdit);
+        editButton.addSelectionListener(
+                new SelectionAdapter() {
+                    @SuppressWarnings({"rawtypes", "unchecked"})
+                    public void widgetSelected(SelectionEvent event) {
+                        StructuredSelection selection =
+                                (StructuredSelection) tableViewer.getSelection();
+                        ServerUserInfo serverUserInfo = null;
+                        if (selection != null && !selection.isEmpty()) {
+                            Map map = (Map) selection.getFirstElement();
+                            if (serverType == ServerType.BOTH) {
+                                serverUserInfo = (ServerUserInfo) map.get("4");
+                            } else {
+                                serverUserInfo = (ServerUserInfo) map.get("3");
+                            }
+                            UserManagementWizard userManagementWizard =
+                                    new UserManagementWizard(
+                                            server, serverUserInfo, serverUserInfoList);
+                            CMWizardDialog dialog =
+                                    new CMWizardDialog(getShell(), userManagementWizard);
+                            int returnCode = dialog.open();
+                            if (returnCode == IDialogConstants.OK_ID) {
+                                ServerUserInfo userInfo = userManagementWizard.getServerUserInfo();
+                                map.put("0", userInfo.getUserName());
+                                if (serverType == ServerType.BOTH) {
+                                    map.put("1", userInfo.getDbCreateAuthType().getText());
+                                    map.put("2", userInfo.getCasAuth().getText());
+                                    map.put("3", userInfo.getStatusMonitorAuth().getText());
+                                    map.put("4", userInfo);
+                                }
+                                if (serverType == ServerType.DATABASE) {
+                                    map.put("1", userInfo.getDbCreateAuthType().getText());
+                                    map.put("2", userInfo.getStatusMonitorAuth().getText());
+                                    map.put("3", userInfo);
+                                } else if (serverType == ServerType.BROKER) {
+                                    map.put("1", userInfo.getCasAuth().getText());
+                                    map.put("2", userInfo.getStatusMonitorAuth().getText());
+                                    map.put("3", userInfo);
+                                }
+                                tableViewer.refresh();
+                                for (int i = 0; i < userManageTable.getColumnCount(); i++) {
+                                    userManageTable.getColumn(i).pack();
+                                }
+                            }
+                        }
+                    }
+                });
+        editButton.setEnabled(userManageTable.getSelectionCount() == 1);
 
-		deleteButton = new Button(buttonComp, SWT.PUSH);
-		deleteButton.setText(Messages.btnDelete);
-		deleteButton.addSelectionListener(new SelectionAdapter() {
-			@SuppressWarnings("rawtypes")
-			public void widgetSelected(SelectionEvent event) {
-				boolean isDelete = CommonUITool.openConfirmBox(getShell(),
-						Messages.msgDeleteUserConfirm);
-				if (!isDelete) {
-					return;
-				}
-				StructuredSelection selection = (StructuredSelection) tableViewer.getSelection();
+        deleteButton = new Button(buttonComp, SWT.PUSH);
+        deleteButton.setText(Messages.btnDelete);
+        deleteButton.addSelectionListener(
+                new SelectionAdapter() {
+                    @SuppressWarnings("rawtypes")
+                    public void widgetSelected(SelectionEvent event) {
+                        boolean isDelete =
+                                CommonUITool.openConfirmBox(
+                                        getShell(), Messages.msgDeleteUserConfirm);
+                        if (!isDelete) {
+                            return;
+                        }
+                        StructuredSelection selection =
+                                (StructuredSelection) tableViewer.getSelection();
 
-				if (selection != null && !selection.isEmpty()) {
-					Map[] userInfoMapArr = new Map[selection.size()];
-					Iterator it = selection.iterator();
-					int i = 0;
-					while (it.hasNext()) {
-						Map map = (Map) it.next();
-						userInfoMapArr[i] = map;
-						i++;
-					}
-					deleteUser(userInfoMapArr);
-				}
-				tableViewer.refresh();
-			}
-		});
-		deleteButton.setEnabled(userManageTable.getSelectionCount() == 1);
+                        if (selection != null && !selection.isEmpty()) {
+                            Map[] userInfoMapArr = new Map[selection.size()];
+                            Iterator it = selection.iterator();
+                            int i = 0;
+                            while (it.hasNext()) {
+                                Map map = (Map) it.next();
+                                userInfoMapArr[i] = map;
+                                i++;
+                            }
+                            deleteUser(userInfoMapArr);
+                        }
+                        tableViewer.refresh();
+                    }
+                });
+        deleteButton.setEnabled(userManageTable.getSelectionCount() == 1);
 
-		setTitle(Messages.titleUserManagementDialog);
-		setMessage(Messages.msgUserManagementDialog);
-		return parentComp;
-	}
+        setTitle(Messages.titleUserManagementDialog);
+        setMessage(Messages.msgUserManagementDialog);
+        return parentComp;
+    }
 
-	/**
-	 * 
-	 * Initial the table model of user list table
-	 * 
-	 */
-	private void initialTableModel() {
-		ServerType serverType = server.getServerInfo().getServerType();
-		for (int i = 0; serverUserInfoList != null
-				&& i < serverUserInfoList.size(); i++) {
-			ServerUserInfo userInfo = serverUserInfoList.get(i);
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("0", userInfo.getUserName());
-			if (serverType == ServerType.BOTH) {
-				map.put("1", userInfo.getDbCreateAuthType().getText());
-				map.put("2", userInfo.getCasAuth().getText());
-				map.put("3", userInfo.getStatusMonitorAuth().getText());
-				map.put("4", userInfo);
-			}
-			if (serverType == ServerType.DATABASE) {
-				map.put("1", userInfo.getDbCreateAuthType().getText());
-				map.put("2", userInfo.getStatusMonitorAuth().getText());
-				map.put("3", userInfo);
-			} else if (serverType == ServerType.BROKER) {
-				map.put("1", userInfo.getCasAuth().getText());
-				map.put("2", userInfo.getStatusMonitorAuth().getText());
-				map.put("3", userInfo);
-			}
-			serverUserInfoTableList.add(map);
-		}
-	}
+    /** Initial the table model of user list table */
+    private void initialTableModel() {
+        ServerType serverType = server.getServerInfo().getServerType();
+        for (int i = 0; serverUserInfoList != null && i < serverUserInfoList.size(); i++) {
+            ServerUserInfo userInfo = serverUserInfoList.get(i);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("0", userInfo.getUserName());
+            if (serverType == ServerType.BOTH) {
+                map.put("1", userInfo.getDbCreateAuthType().getText());
+                map.put("2", userInfo.getCasAuth().getText());
+                map.put("3", userInfo.getStatusMonitorAuth().getText());
+                map.put("4", userInfo);
+            }
+            if (serverType == ServerType.DATABASE) {
+                map.put("1", userInfo.getDbCreateAuthType().getText());
+                map.put("2", userInfo.getStatusMonitorAuth().getText());
+                map.put("3", userInfo);
+            } else if (serverType == ServerType.BROKER) {
+                map.put("1", userInfo.getCasAuth().getText());
+                map.put("2", userInfo.getStatusMonitorAuth().getText());
+                map.put("3", userInfo);
+            }
+            serverUserInfoTableList.add(map);
+        }
+    }
 
-	/**
-	 * 
-	 * Execute task and delete user
-	 * 
-	 * @param userInfoMapArr the user info map
-	 */
-	@SuppressWarnings("rawtypes")
-	private void deleteUser(final Map[] userInfoMapArr) {
-		TaskExecutor taskExcutor = new TaskExecutor() {
-			public boolean exec(final IProgressMonitor monitor) {
-				if (monitor.isCanceled()) {
-					return false;
-				}
-				monitor.beginTask(Messages.delUserTaskName,
-						IProgressMonitor.UNKNOWN);
-				for (ITask task : taskList) {
-					task.execute();
-					final String msg = task.getErrorMsg();
-					if (openErrorBox(getShell(), msg, monitor)) {
-						return false;
-					}
-					if (monitor.isCanceled()) {
-						return false;
-					}
-					if (task instanceof DeleteCMUserTask) {
-						DeleteCMUserTask deleteCMUserTask = (DeleteCMUserTask) task;
-						String userId = deleteCMUserTask.getUserId();
-						for (int i = 0; i < userInfoMapArr.length; i++) {
-							String id = (String) userInfoMapArr[i].get("0");
-							if (userId.equals(id)) {
-								serverUserInfoTableList.remove(userInfoMapArr[i]);
-								ServerType serverType = server.getServerInfo().getServerType();
-								if (serverType == ServerType.BOTH) {
-									serverUserInfoList.remove(userInfoMapArr[i].get("4"));
-								} else {
-									serverUserInfoList.remove(userInfoMapArr[i].get("3"));
-								}
-								break;
-							}
-						}
-					}
-				}
-				return true;
-			}
-		};
-		for (int i = 0; userInfoMapArr != null && i < userInfoMapArr.length; i++) {
-			DeleteCMUserTask deleteTask = new DeleteCMUserTask(
-					server.getServerInfo());
-			Map map = userInfoMapArr[i];
-			deleteTask.setUserId((String) map.get("0"));
-			taskExcutor.addTask(deleteTask);
-		}
-		new ExecTaskWithProgress(taskExcutor).exec(true, true);
-	}
+    /**
+     * Execute task and delete user
+     *
+     * @param userInfoMapArr the user info map
+     */
+    @SuppressWarnings("rawtypes")
+    private void deleteUser(final Map[] userInfoMapArr) {
+        TaskExecutor taskExcutor =
+                new TaskExecutor() {
+                    public boolean exec(final IProgressMonitor monitor) {
+                        if (monitor.isCanceled()) {
+                            return false;
+                        }
+                        monitor.beginTask(Messages.delUserTaskName, IProgressMonitor.UNKNOWN);
+                        for (ITask task : taskList) {
+                            task.execute();
+                            final String msg = task.getErrorMsg();
+                            if (openErrorBox(getShell(), msg, monitor)) {
+                                return false;
+                            }
+                            if (monitor.isCanceled()) {
+                                return false;
+                            }
+                            if (task instanceof DeleteCMUserTask) {
+                                DeleteCMUserTask deleteCMUserTask = (DeleteCMUserTask) task;
+                                String userId = deleteCMUserTask.getUserId();
+                                for (int i = 0; i < userInfoMapArr.length; i++) {
+                                    String id = (String) userInfoMapArr[i].get("0");
+                                    if (userId.equals(id)) {
+                                        serverUserInfoTableList.remove(userInfoMapArr[i]);
+                                        ServerType serverType =
+                                                server.getServerInfo().getServerType();
+                                        if (serverType == ServerType.BOTH) {
+                                            serverUserInfoList.remove(userInfoMapArr[i].get("4"));
+                                        } else {
+                                            serverUserInfoList.remove(userInfoMapArr[i].get("3"));
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                };
+        for (int i = 0; userInfoMapArr != null && i < userInfoMapArr.length; i++) {
+            DeleteCMUserTask deleteTask = new DeleteCMUserTask(server.getServerInfo());
+            Map map = userInfoMapArr[i];
+            deleteTask.setUserId((String) map.get("0"));
+            taskExcutor.addTask(deleteTask);
+        }
+        new ExecTaskWithProgress(taskExcutor).exec(true, true);
+    }
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.titleUserManagementDialog);
-	}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.titleUserManagementDialog);
+    }
 
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, Messages.btnClose, true);
-	}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, IDialogConstants.OK_ID, Messages.btnClose, true);
+    }
 
-	/**
-	 * 
-	 * Get CubridServer
-	 * 
-	 * @return the CubridServer object
-	 */
-	public CubridServer getServer() {
-		return server;
-	}
+    /**
+     * Get CubridServer
+     *
+     * @return the CubridServer object
+     */
+    public CubridServer getServer() {
+        return server;
+    }
 
-	/**
-	 * 
-	 * Set CubridServer
-	 * 
-	 * @param server the CubridServer object
-	 */
-	public void setServer(CubridServer server) {
-		this.server = server;
-	}
+    /**
+     * Set CubridServer
+     *
+     * @param server the CubridServer object
+     */
+    public void setServer(CubridServer server) {
+        this.server = server;
+    }
 
-	/**
-	 * 
-	 * Set server user information list
-	 * 
-	 * @param serverUserInfoList the serverUserInfoList
-	 */
-	public void setServerUserInfoList(List<ServerUserInfo> serverUserInfoList) {
-		this.serverUserInfoList = serverUserInfoList;
-	}
+    /**
+     * Set server user information list
+     *
+     * @param serverUserInfoList the serverUserInfoList
+     */
+    public void setServerUserInfoList(List<ServerUserInfo> serverUserInfoList) {
+        this.serverUserInfoList = serverUserInfoList;
+    }
 }
 
 /**
- * 
  * User management table viewer sorter for sorting user management table content
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-class UserManagementTableViewerSorter extends
-		TableViewerSorter {
-	/**
-	 * Compare the object
-	 * 
-	 * @param viewer the viewer
-	 * @param e1 the object1
-	 * @param e2 the object2
-	 * @return <code>1<code> e1>e2;<code>0</code> e1==e2;<code>-1</code>e1<e2
-	 */
-	@SuppressWarnings("rawtypes")
-	public int compare(Viewer viewer, Object e1, Object e2) {
-		if (!(e1 instanceof Map) || !(e2 instanceof Map)) {
-			return 0;
-		}
-		int rc = 0;
-		Map map1 = (Map) e1;
-		Map map2 = (Map) e2;
-		String userName1 = (String) map1.get("0");
-		String userName2 = (String) map2.get("0");
-		if ("admin".equals(userName1) || "admin".equals(userName2)) {
-			if ("admin".equals(userName1)) {
-				rc = -1;
-			} else if ("admin".equals(userName2)) {
-				rc = 1;
-			}
-			return rc;
-		} else {
-			Object obj1 = map1.get("" + column);
-			Object obj2 = map2.get("" + column);
-			if (obj1 instanceof Number && obj2 instanceof Number) {
-				Number num1 = (Number) obj1;
-				Number num2 = (Number) obj2;
-				if (num1.doubleValue() > num2.doubleValue()) {
-					rc = 1;
-				} else if (num1.doubleValue() < num2.doubleValue()) {
-					rc = -1;
-				} else {
-					rc = 0;
-				}
-			} else if (obj1 instanceof String && obj2 instanceof String) {
-				String str1 = (String) obj1;
-				String str2 = (String) obj2;
-				rc = str1.compareTo(str2);
-			}
-		}
-		// If descending order, flip the direction
-		if (direction == DESCENDING) {
-			rc = -rc;
-		}
-		return rc;
-	}
+class UserManagementTableViewerSorter extends TableViewerSorter {
+    /**
+     * Compare the object
+     *
+     * @param viewer the viewer
+     * @param e1 the object1
+     * @param e2 the object2
+     * @return <code>1<code> e1>e2;<code>0</code> e1==e2;<code>-1</code>e1<e2
+     */
+    @SuppressWarnings("rawtypes")
+    public int compare(Viewer viewer, Object e1, Object e2) {
+        if (!(e1 instanceof Map) || !(e2 instanceof Map)) {
+            return 0;
+        }
+        int rc = 0;
+        Map map1 = (Map) e1;
+        Map map2 = (Map) e2;
+        String userName1 = (String) map1.get("0");
+        String userName2 = (String) map2.get("0");
+        if ("admin".equals(userName1) || "admin".equals(userName2)) {
+            if ("admin".equals(userName1)) {
+                rc = -1;
+            } else if ("admin".equals(userName2)) {
+                rc = 1;
+            }
+            return rc;
+        } else {
+            Object obj1 = map1.get("" + column);
+            Object obj2 = map2.get("" + column);
+            if (obj1 instanceof Number && obj2 instanceof Number) {
+                Number num1 = (Number) obj1;
+                Number num2 = (Number) obj2;
+                if (num1.doubleValue() > num2.doubleValue()) {
+                    rc = 1;
+                } else if (num1.doubleValue() < num2.doubleValue()) {
+                    rc = -1;
+                } else {
+                    rc = 0;
+                }
+            } else if (obj1 instanceof String && obj2 instanceof String) {
+                String str1 = (String) obj1;
+                String str2 = (String) obj2;
+                rc = str1.compareTo(str2);
+            }
+        }
+        // If descending order, flip the direction
+        if (direction == DESCENDING) {
+            rc = -rc;
+        }
+        return rc;
+    }
 }

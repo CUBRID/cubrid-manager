@@ -27,8 +27,14 @@
  */
 package com.cubrid.cubridmanager.ui.replication.control;
 
+import com.cubrid.common.ui.spi.model.ICubridNode;
+import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
+import com.cubrid.cubridmanager.core.cubrid.table.model.DBClasses;
+import com.cubrid.cubridmanager.core.replication.model.MasterInfo;
+import com.cubrid.cubridmanager.core.replication.model.ReplicationInfo;
+import com.cubrid.cubridmanager.ui.replication.Messages;
+import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
 import java.util.List;
-
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -38,125 +44,112 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
-import com.cubrid.cubridmanager.core.cubrid.table.model.DBClasses;
-import com.cubrid.cubridmanager.core.replication.model.MasterInfo;
-import com.cubrid.cubridmanager.core.replication.model.ReplicationInfo;
-import com.cubrid.cubridmanager.ui.replication.Messages;
-import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
-
 /**
- *
  * Select replicated tables wizard page for changing replicated tables wizard
  *
  * @author pangqiren
  * @version 1.0 - 2009-8-26 created by pangqiren
  */
-public class ChangeTablesPage extends
-		WizardPage implements
-		IPageChangedListener {
+public class ChangeTablesPage extends WizardPage implements IPageChangedListener {
 
-	public final static String PAGENAME = "ChangeReplTablesWizard/ChangeTablesPage";
-	private final ICubridNode replNode;
-	SelectTableComp selectTableComp = null;
+    public static final String PAGENAME = "ChangeReplTablesWizard/ChangeTablesPage";
+    private final ICubridNode replNode;
+    SelectTableComp selectTableComp = null;
 
-	/**
-	 * The constructor
-	 */
-	public ChangeTablesPage(ICubridNode node) {
-		super(PAGENAME);
-		replNode = node;
-		selectTableComp = new SelectTableComp();
-		setPageComplete(false);
-	}
+    /** The constructor */
+    public ChangeTablesPage(ICubridNode node) {
+        super(PAGENAME);
+        replNode = node;
+        selectTableComp = new SelectTableComp();
+        setPageComplete(false);
+    }
 
-	/**
-	 * Create the control for this page
-	 *
-	 * @param parent Composite
-	 */
-	public void createControl(Composite parent) {
+    /**
+     * Create the control for this page
+     *
+     * @param parent Composite
+     */
+    public void createControl(Composite parent) {
 
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = 10;
-		layout.marginWidth = 10;
-		composite.setLayout(layout);
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		composite.setLayoutData(gridData);
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 10;
+        layout.marginWidth = 10;
+        composite.setLayout(layout);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        composite.setLayoutData(gridData);
 
-		selectTableComp.createTableGroup(composite);
+        selectTableComp.createTableGroup(composite);
 
-		setTitle(Messages.titleChangeReplTables);
-		setMessage(Messages.msgSelectReplTables);
+        setTitle(Messages.titleChangeReplTables);
+        setMessage(Messages.msgSelectReplTables);
 
-		setControl(composite);
-	}
+        setControl(composite);
+    }
 
-	/**
-	 * initialize some values
-	 */
-	private void initialize() {
-		MasterInfo masterInfo = null;
-		if (replNode != null) {
-			String type = replNode.getType();
-			if (CubridNodeType.DATABASE.equals(type)) {
-				ReplicationInfo replInfo = (ReplicationInfo) replNode.getAdapter(ReplicationInfo.class);
-				masterInfo = replInfo != null
-						&& replInfo.getMasterList() != null
-						&& replInfo.getMasterList().size() > 0 ? replInfo.getMasterList().get(
-						0)
-						: null;
-			}
-		}
-		if (masterInfo == null) {
-			return;
-		}
-		List<String> replClassList = masterInfo.getReplTableList();
-		boolean isReplAll = masterInfo.isReplAllTable();
-		selectTableComp.setReplAllTables(isReplAll);
-		selectTableComp.setSelectedTableList(replClassList);
-	}
+    /** initialize some values */
+    private void initialize() {
+        MasterInfo masterInfo = null;
+        if (replNode != null) {
+            String type = replNode.getType();
+            if (CubridNodeType.DATABASE.equals(type)) {
+                ReplicationInfo replInfo =
+                        (ReplicationInfo) replNode.getAdapter(ReplicationInfo.class);
+                masterInfo =
+                        replInfo != null
+                                        && replInfo.getMasterList() != null
+                                        && replInfo.getMasterList().size() > 0
+                                ? replInfo.getMasterList().get(0)
+                                : null;
+            }
+        }
+        if (masterInfo == null) {
+            return;
+        }
+        List<String> replClassList = masterInfo.getReplTableList();
+        boolean isReplAll = masterInfo.isReplAllTable();
+        selectTableComp.setReplAllTables(isReplAll);
+        selectTableComp.setSelectedTableList(replClassList);
+    }
 
-	/**
-	 * @see org.eclipse.jface.dialogs.IPageChangedListener#pageChanged(org.eclipse.jface.dialogs.PageChangedEvent)
-	 * @param event PageChangedEvent
-	 */
-	public void pageChanged(PageChangedEvent event) {
-		IWizardPage page = (IWizardPage) event.getSelectedPage();
-		if (page.getName().equals(PAGENAME)) {
-			SetDatabaseInfoPage selectDatabasePage = (SetDatabaseInfoPage) getWizard().getPage(
-					SetDatabaseInfoPage.PAGENAME);
-			String ip = selectDatabasePage.getIp();
-			String port = selectDatabasePage.getPort();
-			String userName = selectDatabasePage.getUserName();
-			String password = selectDatabasePage.getPassword();
+    /**
+     * @see
+     *     org.eclipse.jface.dialogs.IPageChangedListener#pageChanged(org.eclipse.jface.dialogs.PageChangedEvent)
+     * @param event PageChangedEvent
+     */
+    public void pageChanged(PageChangedEvent event) {
+        IWizardPage page = (IWizardPage) event.getSelectedPage();
+        if (page.getName().equals(PAGENAME)) {
+            SetDatabaseInfoPage selectDatabasePage =
+                    (SetDatabaseInfoPage) getWizard().getPage(SetDatabaseInfoPage.PAGENAME);
+            String ip = selectDatabasePage.getIp();
+            String port = selectDatabasePage.getPort();
+            String userName = selectDatabasePage.getUserName();
+            String password = selectDatabasePage.getPassword();
 
-			String dbName = selectDatabasePage.getMasterDbName();
-			String dbaPassword = selectDatabasePage.getMasterDbaPassword();
+            String dbName = selectDatabasePage.getMasterDbName();
+            String dbaPassword = selectDatabasePage.getMasterDbaPassword();
 
-			GetAllClassesTaskExecutor taskExcutor = new GetAllClassesTaskExecutor(
-					getShell(), ip, port, userName, password, dbName,
-					dbaPassword);
-			new ExecTaskWithProgress(taskExcutor).exec(true, true);
-			if (taskExcutor.isSuccess()) {
-				DBClasses dbClasses = taskExcutor.getDBClasses();
-				selectTableComp.fillTableViewer(dbClasses);
-				initialize();
-				setErrorMessage(null);
-			} else {
-				setErrorMessage(Messages.errPreviousPage);
-			}
-		}
+            GetAllClassesTaskExecutor taskExcutor =
+                    new GetAllClassesTaskExecutor(
+                            getShell(), ip, port, userName, password, dbName, dbaPassword);
+            new ExecTaskWithProgress(taskExcutor).exec(true, true);
+            if (taskExcutor.isSuccess()) {
+                DBClasses dbClasses = taskExcutor.getDBClasses();
+                selectTableComp.fillTableViewer(dbClasses);
+                initialize();
+                setErrorMessage(null);
+            } else {
+                setErrorMessage(Messages.errPreviousPage);
+            }
+        }
+    }
 
-	}
+    public List<String> getReplTableList() {
+        return selectTableComp.getSelectedTableList();
+    }
 
-	public List<String> getReplTableList() {
-		return selectTableComp.getSelectedTableList();
-	}
-
-	public boolean isReplAllTables() {
-		return selectTableComp.isReplAllTables();
-	}
+    public boolean isReplAllTables() {
+        return selectTableComp.isReplAllTables();
+    }
 }

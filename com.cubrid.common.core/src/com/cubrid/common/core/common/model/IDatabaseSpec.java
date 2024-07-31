@@ -35,13 +35,13 @@ import com.cubrid.common.core.util.FileUtil;
  * @author CUBRID Tool Developer
  */
 public interface IDatabaseSpec {
-	public String getVersion();
+    public String getVersion();
 
-	public boolean isShard();
+    public boolean isShard();
 
-	public void setShard(boolean isShard);
+    public void setShard(boolean isShard);
 
-	public String wrapShardQuery(String sql);
+    public String wrapShardQuery(String sql);
 
-	public FileUtil.OsInfoType getServerOsInfo();
+    public FileUtil.OsInfoType getServerOsInfo();
 }

@@ -28,62 +28,60 @@
 
 package com.cubrid.common.ui.query.editor;
 
-import java.util.List;
-
-import org.eclipse.jface.text.rules.IWordDetector;
-
 import com.cubrid.common.core.util.QuerySyntax;
+import java.util.List;
+import org.eclipse.jface.text.rules.IWordDetector;
 
 /**
  * This class detects words of cubrid database object
  *
  * @author pangqiren 2009-3-2
  */
-public class QueryWordDetector implements
-		IWordDetector {
-	/**
-	 * Gets whether the specified character is the start of a word
-	 *
-	 * @param ch char
-	 * @return boolean
-	 */
-	public boolean isWordStart(char ch) {
-		char upperChar = Character.toUpperCase(ch);
-		if (QuerySyntax.KEYWORDINDEXMAP.get(upperChar) == null) {
-			return false;
-		}
-		return true;
-	}
+public class QueryWordDetector implements IWordDetector {
+    /**
+     * Gets whether the specified character is the start of a word
+     *
+     * @param ch char
+     * @return boolean
+     */
+    public boolean isWordStart(char ch) {
+        char upperChar = Character.toUpperCase(ch);
+        if (QuerySyntax.KEYWORDINDEXMAP.get(upperChar) == null) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * Gets whether the specified character is part of a word
-	 *
-	 * @param ch char
-	 * @return boolean
-	 */
-	public boolean isWordPart(char ch) {
-		for (int i = 0; i < QuerySyntax.KEYWORDS.length; i++) {
-			if (QuerySyntax.KEYWORDS[i].indexOf(String.valueOf(ch).toUpperCase()) != -1) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Gets whether the specified character is part of a word
+     *
+     * @param ch char
+     * @return boolean
+     */
+    public boolean isWordPart(char ch) {
+        for (int i = 0; i < QuerySyntax.KEYWORDS.length; i++) {
+            if (QuerySyntax.KEYWORDS[i].indexOf(String.valueOf(ch).toUpperCase()) != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Gets whether the specified character is part of a word
-	 *
-	 * @param startChar char
-	 * @param ch char
-	 * @return boolean
-	 */
-	public boolean isWordPart(char startChar, char ch) {
-		List<String> keyWordList = QuerySyntax.KEYWORDINDEXMAP.get(Character.toUpperCase(startChar));
-		for (String keyWord : keyWordList) {
-			if (keyWord.indexOf(String.valueOf(ch).toUpperCase()) != -1) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Gets whether the specified character is part of a word
+     *
+     * @param startChar char
+     * @param ch char
+     * @return boolean
+     */
+    public boolean isWordPart(char startChar, char ch) {
+        List<String> keyWordList =
+                QuerySyntax.KEYWORDINDEXMAP.get(Character.toUpperCase(startChar));
+        for (String keyWord : keyWordList) {
+            if (keyWord.indexOf(String.valueOf(ch).toUpperCase()) != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

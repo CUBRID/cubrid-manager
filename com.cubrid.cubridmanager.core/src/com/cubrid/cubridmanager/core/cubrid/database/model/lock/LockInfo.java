@@ -37,56 +37,54 @@ import java.util.List;
  * @version 1.0 - 2009-12-28 created by sq
  */
 public class LockInfo {
-	private int esc;
-	private int dinterval;
-	private List<DatabaseTransaction> transaction;
+    private int esc;
+    private int dinterval;
+    private List<DatabaseTransaction> transaction;
 
-	private DbLotInfo dbLotInfo;
+    private DbLotInfo dbLotInfo;
 
-	public int getEsc() {
-		return esc;
-	}
+    public int getEsc() {
+        return esc;
+    }
 
-	public void setEsc(int esc) {
-		this.esc = esc;
-	}
+    public void setEsc(int esc) {
+        this.esc = esc;
+    }
 
-	public int getDinterval() {
-		return dinterval;
-	}
+    public int getDinterval() {
+        return dinterval;
+    }
 
-	public void setDinterval(int dinterval) {
-		this.dinterval = dinterval;
-	}
+    public void setDinterval(int dinterval) {
+        this.dinterval = dinterval;
+    }
 
-	public List<DatabaseTransaction> getTransaction() {
-		return transaction;
-	}
+    public List<DatabaseTransaction> getTransaction() {
+        return transaction;
+    }
 
-	/**
-	 *Add an instance of DatabaseTransaction into transaction
-	 *
-	 *
-	 * @param bean DatabaseTransaction an instance of DatabaseTransaction
-	 */
-	public void addTransaction(DatabaseTransaction bean) {
+    /**
+     * Add an instance of DatabaseTransaction into transaction
+     *
+     * @param bean DatabaseTransaction an instance of DatabaseTransaction
+     */
+    public void addTransaction(DatabaseTransaction bean) {
 
-		if (transaction == null) {
-			transaction = new ArrayList<DatabaseTransaction>();
-		}
-		this.transaction.add(bean);
-	}
+        if (transaction == null) {
+            transaction = new ArrayList<DatabaseTransaction>();
+        }
+        this.transaction.add(bean);
+    }
 
-	public DbLotInfo getDbLotInfo() {
-		return dbLotInfo;
-	}
-/**
- * set an instance of DbLotInfo
- *
- * @param dbLotInfo DbLotInfo an instance of DBLotInfo
- */
-	public void addLot(DbLotInfo dbLotInfo) {
-		this.dbLotInfo = dbLotInfo;
-	}
-
+    public DbLotInfo getDbLotInfo() {
+        return dbLotInfo;
+    }
+    /**
+     * set an instance of DbLotInfo
+     *
+     * @param dbLotInfo DbLotInfo an instance of DBLotInfo
+     */
+    public void addLot(DbLotInfo dbLotInfo) {
+        this.dbLotInfo = dbLotInfo;
+    }
 }

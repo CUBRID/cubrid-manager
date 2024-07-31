@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,50 +24,48 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.tool.editor.property;
 
+import com.cubrid.tool.editor.DocumentProvider;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.ui.IEditorInput;
 
-import com.cubrid.tool.editor.DocumentProvider;
-
 /**
  * XML Document Provider.
- * 
+ *
  * @author Kevin Cao
  * @version 1.0 - 2011-1-21 created by Kevin Cao
  */
-public class PropDocumentProvider implements
-		DocumentProvider {
+public class PropDocumentProvider implements DocumentProvider {
 
-	/**
-	 * Retrieves the document to be edited.
-	 * 
-	 * @param element Object
-	 * @return IDocument
-	 */
-	public IDocument getDocument(Object element) {
-		IDocument document = null;
-		if (element instanceof IEditorInput) {
-			IEditorInput ei = ((IEditorInput) element);
-			DocumentProvider dp = (DocumentProvider) ei.getAdapter(DocumentProvider.class);
-			if (dp != null) {
-				document = dp.getDocument(element);
-			}
-		}
-		if (document == null) {
-			document = new Document();
-		}
-		IDocumentPartitioner partitioner = new FastPartitioner(
-				new PropPartitionScanner(),
-				PropPartitionScanner.LEGAL_CONTENT_TYPES);
-		partitioner.connect(document);
-		document.setDocumentPartitioner(partitioner);
-		return document;
-	}
+    /**
+     * Retrieves the document to be edited.
+     *
+     * @param element Object
+     * @return IDocument
+     */
+    public IDocument getDocument(Object element) {
+        IDocument document = null;
+        if (element instanceof IEditorInput) {
+            IEditorInput ei = ((IEditorInput) element);
+            DocumentProvider dp = (DocumentProvider) ei.getAdapter(DocumentProvider.class);
+            if (dp != null) {
+                document = dp.getDocument(element);
+            }
+        }
+        if (document == null) {
+            document = new Document();
+        }
+        IDocumentPartitioner partitioner =
+                new FastPartitioner(
+                        new PropPartitionScanner(), PropPartitionScanner.LEGAL_CONTENT_TYPES);
+        partitioner.connect(document);
+        document.setDocumentPartitioner(partitioner);
+        return document;
+    }
 }

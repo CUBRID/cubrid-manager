@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,7 +24,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.logs.model;
@@ -33,52 +33,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * This class is responsible to store manger log infolist
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2009-4-3 created by wuyingshi
  */
 public class ManagerLogInfoList {
 
-	private List<ManagerLogInfo> managerLogInfoList = null;
+    private List<ManagerLogInfo> managerLogInfoList = null;
 
-	/**
-	 * The constructor
-	 */
-	public ManagerLogInfoList() {
-		managerLogInfoList = new ArrayList<ManagerLogInfo>();
-	}
+    /** The constructor */
+    public ManagerLogInfoList() {
+        managerLogInfoList = new ArrayList<ManagerLogInfo>();
+    }
 
-	/**
-	 * add a managerLogInfo to managerLogInfoList
-	 * 
-	 * @param managerLogInfo ManagerLogInfo
-	 */
-	public void addLog(ManagerLogInfo managerLogInfo) {
-		synchronized (this) {
-			if (!managerLogInfoList.contains(managerLogInfo)) {
-				managerLogInfoList.add(managerLogInfo);
-			}
-		}
-	}
+    /**
+     * add a managerLogInfo to managerLogInfoList
+     *
+     * @param managerLogInfo ManagerLogInfo
+     */
+    public void addLog(ManagerLogInfo managerLogInfo) {
+        synchronized (this) {
+            if (!managerLogInfoList.contains(managerLogInfo)) {
+                managerLogInfoList.add(managerLogInfo);
+            }
+        }
+    }
 
-	/**
-	 * clear the managerLogInfoList.
-	 * 
-	 */
-	public void removeAllLog() {
-		synchronized (this) {
-			managerLogInfoList.clear();
-		}
-	}
+    /** clear the managerLogInfoList. */
+    public void removeAllLog() {
+        synchronized (this) {
+            managerLogInfoList.clear();
+        }
+    }
 
-	/**
-	 * get the managerLogInfoList.
-	 * 
-	 * @return List<ManagerLogInfo>
-	 */
-	public List<ManagerLogInfo> getManagerLogInfoList() {
-		return managerLogInfoList;
-	}
+    /**
+     * get the managerLogInfoList.
+     *
+     * @return List<ManagerLogInfo>
+     */
+    public List<ManagerLogInfo> getManagerLogInfoList() {
+        return managerLogInfoList;
+    }
 }

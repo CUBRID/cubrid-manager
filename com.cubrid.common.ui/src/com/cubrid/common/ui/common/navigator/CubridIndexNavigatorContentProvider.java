@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2013 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,52 +23,50 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.common.navigator;
 
+import com.cubrid.common.core.common.model.Constraint;
+import com.cubrid.common.core.common.model.SchemaInfo;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.cubrid.common.core.common.model.Constraint;
-import com.cubrid.common.core.common.model.SchemaInfo;
-
 /**
  * Index Quick View Content Provider
- * 
+ *
  * @author Isaiah Choe 2013-06-30
  */
 public class CubridIndexNavigatorContentProvider implements IStructuredContentProvider {
-	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof SchemaInfo) {
-			SchemaInfo schema = (SchemaInfo) inputElement;
-			List<Constraint> list = new ArrayList<Constraint>();
-			List<Constraint> constraints = schema.getConstraints();
-			for (Constraint constraint : constraints) {
-				if (constraint.getType().equals(Constraint.ConstraintType.INDEX.getText())
-						|| constraint.getType().equals(
-								Constraint.ConstraintType.UNIQUE.getText())
-						|| constraint.getType().equals(
-								Constraint.ConstraintType.REVERSEINDEX.getText())
-						|| constraint.getType().equals(
-								Constraint.ConstraintType.REVERSEUNIQUE.getText())
-						|| constraint.getType().equals(
-								Constraint.ConstraintType.PRIMARYKEY.getText())) {
-					list.add(constraint);
-				}
-			}
-			return list.toArray();
-		} else {
-			return new Object[0];
-		}
-	}
+    public Object[] getElements(Object inputElement) {
+        if (inputElement instanceof SchemaInfo) {
+            SchemaInfo schema = (SchemaInfo) inputElement;
+            List<Constraint> list = new ArrayList<Constraint>();
+            List<Constraint> constraints = schema.getConstraints();
+            for (Constraint constraint : constraints) {
+                if (constraint.getType().equals(Constraint.ConstraintType.INDEX.getText())
+                        || constraint.getType().equals(Constraint.ConstraintType.UNIQUE.getText())
+                        || constraint
+                                .getType()
+                                .equals(Constraint.ConstraintType.REVERSEINDEX.getText())
+                        || constraint
+                                .getType()
+                                .equals(Constraint.ConstraintType.REVERSEUNIQUE.getText())
+                        || constraint
+                                .getType()
+                                .equals(Constraint.ConstraintType.PRIMARYKEY.getText())) {
+                    list.add(constraint);
+                }
+            }
+            return list.toArray();
+        } else {
+            return new Object[0];
+        }
+    }
 
-	public void dispose() {
-	}
+    public void dispose() {}
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	}
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 }

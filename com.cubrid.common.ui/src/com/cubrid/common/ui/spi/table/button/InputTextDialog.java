@@ -27,6 +27,10 @@
  */
 package com.cubrid.common.ui.spi.table.button;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -37,95 +41,89 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 public class InputTextDialog extends CMTitleAreaDialog {
-	private Text txtInput;
-	private String labelName;
-	private String title;
-	private String message;
-	private String result;
+    private Text txtInput;
+    private String labelName;
+    private String title;
+    private String message;
+    private String result;
 
-	public InputTextDialog(Shell parentShell, String title, String message, String labelName,
-			String initialData) {
-		super(parentShell);
-		this.labelName = labelName;
-		this.title = title;
-		this.message = message;
-		this.result = initialData;
-	}
+    public InputTextDialog(
+            Shell parentShell, String title, String message, String labelName, String initialData) {
+        super(parentShell);
+        this.labelName = labelName;
+        this.title = title;
+        this.message = message;
+        this.result = initialData;
+    }
 
-	/**
-	 * Create dialog area content
-	 * 
-	 * @param parent the parent composite
-	 * @return the control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		setTitle(title);
-		setMessage(message);
+    /**
+     * Create dialog area content
+     *
+     * @param parent the parent composite
+     * @return the control
+     */
+    protected Control createDialogArea(Composite parent) {
+        setTitle(title);
+        setMessage(message);
 
-		Composite parentComp = (Composite) super.createDialogArea(parent);
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		{
-			GridLayout layout = new GridLayout();
-			layout.numColumns = 2;
-			layout.marginHeight = 5;
-			layout.marginWidth = 5;
-			layout.verticalSpacing = 5;
-			layout.horizontalSpacing = 5;
-			composite.setLayout(layout);
-		}
+        Composite parentComp = (Composite) super.createDialogArea(parent);
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        {
+            GridLayout layout = new GridLayout();
+            layout.numColumns = 2;
+            layout.marginHeight = 5;
+            layout.marginWidth = 5;
+            layout.verticalSpacing = 5;
+            layout.horizontalSpacing = 5;
+            composite.setLayout(layout);
+        }
 
-		Label lbl = new Label(composite, SWT.NONE);
-		lbl.setText(labelName);
-		lbl.setLayoutData(CommonUITool.createGridData(GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 1, -1, -1));
+        Label lbl = new Label(composite, SWT.NONE);
+        lbl.setText(labelName);
+        lbl.setLayoutData(
+                CommonUITool.createGridData(GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 1, -1, -1));
 
-		txtInput = new Text(composite, SWT.BORDER);
-		txtInput.setText(StringUtil.nvl(result));
-		txtInput.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-		txtInput.setSelection(0, txtInput.getText().length());
+        txtInput = new Text(composite, SWT.BORDER);
+        txtInput.setText(StringUtil.nvl(result));
+        txtInput.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+        txtInput.setSelection(0, txtInput.getText().length());
 
-		return parentComp;
-	}
-	
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		this.getShell().setSize(450, 200);
-		CommonUITool.centerShell(getShell());
-		getShell().setText(title);
-	}
-	
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, Messages.btnOK, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, Messages.btnCancel, false);
-	}
+        return parentComp;
+    }
 
-	/**
-	 * Call this method when the button in button bar is pressed
-	 * 
-	 * @param buttonId the button id
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == IDialogConstants.OK_ID) {
-			result = txtInput.getText();
-		}
-		super.buttonPressed(buttonId);
-	}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        this.getShell().setSize(450, 200);
+        CommonUITool.centerShell(getShell());
+        getShell().setText(title);
+    }
 
-	public String getResult() {
-		return result;
-	}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, IDialogConstants.OK_ID, Messages.btnOK, true);
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.btnCancel, false);
+    }
+
+    /**
+     * Call this method when the button in button bar is pressed
+     *
+     * @param buttonId the button id
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+            result = txtInput.getText();
+        }
+        super.buttonPressed(buttonId);
+    }
+
+    public String getResult() {
+        return result;
+    }
 }

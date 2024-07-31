@@ -28,103 +28,99 @@
 
 package com.cubrid.common.core.common.model;
 
-import java.util.Locale;
 
-public class Synonym implements
-		Comparable<Synonym> { 
-	private String name;
-	private String owner;
-	private String targetName;
-	private String targetOwner;
-	private String comment;
+public class Synonym implements Comparable<Synonym> {
+    private String name;
+    private String owner;
+    private String targetName;
+    private String targetOwner;
+    private String comment;
 
-	/**
-	 * compare to the argument obj
-	 *
-	 * @param obj Synonym
-	 * @return int
-	 */
-	public int compareTo(Synonym obj) {
-		return getUniqueName().compareTo(obj.getUniqueName());
-	}
+    /**
+     * compare to the argument obj
+     *
+     * @param obj Synonym
+     * @return int
+     */
+    public int compareTo(Synonym obj) {
+        return getUniqueName().compareTo(obj.getUniqueName());
+    }
 
-	/**
-	 * compare to the argument obj
-	 *
-	 * @param obj Synonym
-	 * @return int
-	 */
-	public int targetCompareTo(Synonym obj) {
-		return getTargetUniqueName().compareTo(obj.getTargetUniqueName());
-	}	
-	
-	/**
-	 * @param obj the reference object with which to compare.
-	 * @return true if this object is the same as the obj argument; false
-	 *         otherwise.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof Synonym && getUniqueName().equals(((Synonym) obj).getUniqueName());
-	}
+    /**
+     * compare to the argument obj
+     *
+     * @param obj Synonym
+     * @return int
+     */
+    public int targetCompareTo(Synonym obj) {
+        return getTargetUniqueName().compareTo(obj.getTargetUniqueName());
+    }
 
-	public boolean targetEquals(Object obj) {
-		return obj instanceof Synonym && getTargetUniqueName().equals(((Synonym) obj).getTargetUniqueName());
-	}
-	
-	/**
-	 * @return a hash code value for this object.
-	 */
-	@Override
-	public int hashCode() {
-		return name.hashCode();
-	}
+    /**
+     * @param obj the reference object with which to compare.
+     * @return true if this object is the same as the obj argument; false otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Synonym && getUniqueName().equals(((Synonym) obj).getUniqueName());
+    }
 
-	public String getName() {
-		return name;
-	}
+    public boolean targetEquals(Object obj) {
+        return obj instanceof Synonym
+                && getTargetUniqueName().equals(((Synonym) obj).getTargetUniqueName());
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    /** @return a hash code value for this object. */
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
-	
-	public String getTargetName() {
-		return targetName;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setTargetName(String name) {
-		this.targetName = name;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public String getTargetOwner() {
-		return targetOwner;
-	}
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
-	public void setTargetOwner(String owner) {
-		this.targetOwner = owner;
-	}
-	
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    public String getTargetName() {
+        return targetName;
+    }
 
-	public String getComment() {
-		return comment;
-	}
-	
-	public String getUniqueName() {
-		return owner + "." + name;
-	}
-	
-	public String getTargetUniqueName() {
-		return targetOwner + "." + targetName;
-	}
+    public void setTargetName(String name) {
+        this.targetName = name;
+    }
+
+    public String getTargetOwner() {
+        return targetOwner;
+    }
+
+    public void setTargetOwner(String owner) {
+        this.targetOwner = owner;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getUniqueName() {
+        return owner + "." + name;
+    }
+
+    public String getTargetUniqueName() {
+        return targetOwner + "." + targetName;
+    }
 }

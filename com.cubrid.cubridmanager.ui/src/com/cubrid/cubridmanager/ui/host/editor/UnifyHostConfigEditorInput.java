@@ -27,167 +27,170 @@
  */
 package com.cubrid.cubridmanager.ui.host.editor;
 
+import com.cubrid.common.ui.spi.model.CubridServer;
+import com.cubrid.cubridmanager.ui.host.Messages;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.cubrid.common.ui.spi.model.CubridServer;
-import com.cubrid.cubridmanager.ui.host.Messages;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-1-31 created by fulei
  */
-
 public class UnifyHostConfigEditorInput implements IEditorInput {
 
-	private final CubridServer[] cubridServers;
-	private boolean editCubridConf = false;
-	private boolean editBrokerConf= false;
-	private boolean editCMConf = false;
-	private boolean editHAConf = false;
-	private boolean editACLConf = false;
-	
-	private int brokerConfPropertyCount = 0;
-	private int cubridConfPropertyCount = 0;
-	private int cubridCMConfPropertyCount = 0;
-	
-	public UnifyHostConfigEditorInput (final CubridServer[] cubridServers) {
-		this.cubridServers = cubridServers;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(CubridServer[].class)) {
-			return cubridServers;
-		}
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    private final CubridServer[] cubridServers;
+    private boolean editCubridConf = false;
+    private boolean editBrokerConf = false;
+    private boolean editCMConf = false;
+    private boolean editHAConf = false;
+    private boolean editACLConf = false;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#exists()
-	 */
-	public boolean exists() {
-		return false;
-	}
+    private int brokerConfPropertyCount = 0;
+    private int cubridConfPropertyCount = 0;
+    private int cubridCMConfPropertyCount = 0;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-	 */
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    public UnifyHostConfigEditorInput(final CubridServer[] cubridServers) {
+        this.cubridServers = cubridServers;
+    }
+    /* (non-Javadoc)
+     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+     */
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(CubridServer[].class)) {
+            return cubridServers;
+        }
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getName()
-	 */
-	public String getName() {
-		return Messages.unifyHostConfigEditorTitle;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#exists()
+     */
+    public boolean exists() {
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getPersistable()
-	 */
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
+     */
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
-	 */
-	public String getToolTipText() {
-		return this.getName();
-	}
-	
-	public boolean isEditCubridConf() {
-		return editCubridConf;
-	}
-	
-	public void setEditCubridConf(boolean editCubridConf) {
-		this.editCubridConf = editCubridConf;
-	}
-	public boolean isEditBrokerConf() {
-		return editBrokerConf;
-	}
-	
-	public void setEditBrokerConf(boolean editBrokerConf) {
-		this.editBrokerConf = editBrokerConf;
-	}
-	
-	public boolean isEditCMConf() {
-		return editCMConf;
-	}
-	
-	public void setEditCMConf(boolean editCMConf) {
-		this.editCMConf = editCMConf;
-	}
-	
-	public boolean isEditHAConf() {
-		return editHAConf;
-	}
-	
-	public void setEditHAConf(boolean editHAConf) {
-		this.editHAConf = editHAConf;
-	}
-	
-	public boolean isEditACLConf() {
-		return editACLConf;
-	}
-	
-	public void setEditACLConf(boolean editACLConf) {
-		this.editACLConf = editACLConf;
-	}
-	
-	public CubridServer[] getCubridServers() {
-		return cubridServers;
-	}
-	
-	public int getBrokerConfPropertyCount() {
-		return brokerConfPropertyCount;
-	}
-	public void setBrokerConfPropertyCount(int brokerConfPropertyCount) {
-		this.brokerConfPropertyCount = brokerConfPropertyCount;
-	}
-	public int getCubridConfPropertyCount() {
-		return cubridConfPropertyCount;
-	}
-	public void setCubridConfPropertyCount(int cubridConfPropertyCount) {
-		this.cubridConfPropertyCount = cubridConfPropertyCount;
-	}
-	
-	public int getCubridCMConfPropertyCount() {
-		return cubridCMConfPropertyCount;
-	}
-	public void setCubridCMConfPropertyCount(int cubridCMConfPropertyCount) {
-		this.cubridCMConfPropertyCount = cubridCMConfPropertyCount;
-	}
-	
-	/**
-	 * get loading data task count 
-	 * @return
-	 */
-	public int getTaskCountValue () {
-		int editTypeCount = 0;
-		if (isEditCubridConf()) {
-			editTypeCount ++;
-		}
-		if (isEditBrokerConf()) {
-			editTypeCount ++;
-		}
-		if (isEditCMConf()) {
-			editTypeCount ++;
-		}
-		if (isEditHAConf()) {
-			editTypeCount ++;
-		}
-		if (isEditACLConf()) {
-			editTypeCount ++;
-		}
-		
-		return editTypeCount * cubridServers.length;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getName()
+     */
+    public String getName() {
+        return Messages.unifyHostConfigEditorTitle;
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getPersistable()
+     */
+    public IPersistableElement getPersistable() {
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getToolTipText()
+     */
+    public String getToolTipText() {
+        return this.getName();
+    }
+
+    public boolean isEditCubridConf() {
+        return editCubridConf;
+    }
+
+    public void setEditCubridConf(boolean editCubridConf) {
+        this.editCubridConf = editCubridConf;
+    }
+
+    public boolean isEditBrokerConf() {
+        return editBrokerConf;
+    }
+
+    public void setEditBrokerConf(boolean editBrokerConf) {
+        this.editBrokerConf = editBrokerConf;
+    }
+
+    public boolean isEditCMConf() {
+        return editCMConf;
+    }
+
+    public void setEditCMConf(boolean editCMConf) {
+        this.editCMConf = editCMConf;
+    }
+
+    public boolean isEditHAConf() {
+        return editHAConf;
+    }
+
+    public void setEditHAConf(boolean editHAConf) {
+        this.editHAConf = editHAConf;
+    }
+
+    public boolean isEditACLConf() {
+        return editACLConf;
+    }
+
+    public void setEditACLConf(boolean editACLConf) {
+        this.editACLConf = editACLConf;
+    }
+
+    public CubridServer[] getCubridServers() {
+        return cubridServers;
+    }
+
+    public int getBrokerConfPropertyCount() {
+        return brokerConfPropertyCount;
+    }
+
+    public void setBrokerConfPropertyCount(int brokerConfPropertyCount) {
+        this.brokerConfPropertyCount = brokerConfPropertyCount;
+    }
+
+    public int getCubridConfPropertyCount() {
+        return cubridConfPropertyCount;
+    }
+
+    public void setCubridConfPropertyCount(int cubridConfPropertyCount) {
+        this.cubridConfPropertyCount = cubridConfPropertyCount;
+    }
+
+    public int getCubridCMConfPropertyCount() {
+        return cubridCMConfPropertyCount;
+    }
+
+    public void setCubridCMConfPropertyCount(int cubridCMConfPropertyCount) {
+        this.cubridCMConfPropertyCount = cubridCMConfPropertyCount;
+    }
+
+    /**
+     * get loading data task count
+     *
+     * @return
+     */
+    public int getTaskCountValue() {
+        int editTypeCount = 0;
+        if (isEditCubridConf()) {
+            editTypeCount++;
+        }
+        if (isEditBrokerConf()) {
+            editTypeCount++;
+        }
+        if (isEditCMConf()) {
+            editTypeCount++;
+        }
+        if (isEditHAConf()) {
+            editTypeCount++;
+        }
+        if (isEditACLConf()) {
+            editTypeCount++;
+        }
+
+        return editTypeCount * cubridServers.length;
+    }
 }

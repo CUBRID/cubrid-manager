@@ -35,9 +35,9 @@ import com.cubrid.common.core.util.FileUtil;
  * @author CUBRID Tool Developer
  */
 public interface IServerSpec {
-	public String getServerVersionKey();
+    public String getServerVersionKey();
 
-	public FileUtil.OsInfoType getServerOsInfo();
+    public FileUtil.OsInfoType getServerOsInfo();
 
-	public String getCubridConfPara(String para, String databaseName);
+    public String getCubridConfPara(String para, String databaseName);
 }

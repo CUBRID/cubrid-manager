@@ -31,56 +31,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * An java bean that includes the info of Database Lock info
  *
  * @author sq
  * @version 1.0 - 2009-12-28 created by sq
  */
 public class DbLotInfo {
-	private int numlocked;
-	private int maxnumlock;
+    private int numlocked;
+    private int maxnumlock;
 
-	private List<DbLotEntry> dbLotEntryList;
+    private List<DbLotEntry> dbLotEntryList;
 
-	public int getNumlocked() {
-		return numlocked;
-	}
+    public int getNumlocked() {
+        return numlocked;
+    }
 
-	public void setNumlocked(int numlocked) {
-		this.numlocked = numlocked;
-	}
+    public void setNumlocked(int numlocked) {
+        this.numlocked = numlocked;
+    }
 
-	public int getMaxnumlock() {
-		return maxnumlock;
-	}
+    public int getMaxnumlock() {
+        return maxnumlock;
+    }
 
-	public void setMaxnumlock(int maxnumlock) {
-		this.maxnumlock = maxnumlock;
-	}
+    public void setMaxnumlock(int maxnumlock) {
+        this.maxnumlock = maxnumlock;
+    }
 
-	/**
-	 * Get the instance of dbLotEntryList
-	 *
-	 * @return List<DbLotEntry>
-	 */
-	public List<DbLotEntry> getDbLotEntryList() {
-		if (dbLotEntryList == null) {
-			dbLotEntryList = new ArrayList<DbLotEntry>();
-		}
-		return dbLotEntryList;
-	}
+    /**
+     * Get the instance of dbLotEntryList
+     *
+     * @return List<DbLotEntry>
+     */
+    public List<DbLotEntry> getDbLotEntryList() {
+        if (dbLotEntryList == null) {
+            dbLotEntryList = new ArrayList<DbLotEntry>();
+        }
+        return dbLotEntryList;
+    }
 
-	/**
-	 * add an instance of DbLotEntry into dbLotEntryList
-	 *
-	 * @param bean DbLotEntry an instance of DbLotEntry
-	 */
-	public void addEntry(DbLotEntry bean) {
-		if (dbLotEntryList == null) {
-			dbLotEntryList = new ArrayList<DbLotEntry>();
-		}
-		this.dbLotEntryList.add(bean);
-	}
-
+    /**
+     * add an instance of DbLotEntry into dbLotEntryList
+     *
+     * @param bean DbLotEntry an instance of DbLotEntry
+     */
+    public void addEntry(DbLotEntry bean) {
+        if (dbLotEntryList == null) {
+            dbLotEntryList = new ArrayList<DbLotEntry>();
+        }
+        this.dbLotEntryList.add(bean);
+    }
 }

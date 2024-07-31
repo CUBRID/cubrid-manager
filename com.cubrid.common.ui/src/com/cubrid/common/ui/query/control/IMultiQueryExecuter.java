@@ -33,13 +33,12 @@ import org.eclipse.swt.widgets.Composite;
  * IMultiQueryExecuter
  *
  * @author Kevin.Wang
- *
- *         Create at 2014-4-11
+ *     <p>Create at 2014-4-11
  */
 public interface IMultiQueryExecuter {
-	public void initialize();
+    public void initialize();
 
-	public void runQueries();
+    public void runQueries();
 
-	public Composite getControl();
+    public Composite getControl();
 }

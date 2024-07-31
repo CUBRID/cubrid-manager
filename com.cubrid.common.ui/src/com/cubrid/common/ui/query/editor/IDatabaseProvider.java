@@ -40,9 +40,9 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
  * @version 1.0 - 2013-4-22 created by Kevin.Wang
  */
 public interface IDatabaseProvider {
-	public CubridDatabase getDatabase();
+    public CubridDatabase getDatabase();
 
-	public DatabaseInfo getDatabaseInfo();
+    public DatabaseInfo getDatabaseInfo();
 
-	public ServerInfo getServerInfo();
+    public ServerInfo getServerInfo();
 }

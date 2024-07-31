@@ -27,6 +27,8 @@
  */
 package com.cubrid.cubridmanager.app;
 
+import com.cubrid.common.ui.cubrid.table.preference.ImportPreferencePage;
+import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
@@ -37,82 +39,76 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.model.ContributionComparator;
 import org.eclipse.ui.model.IContributionService;
 
-import com.cubrid.common.ui.cubrid.table.preference.ImportPreferencePage;
-import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
-
 /**
- *
- * This workbench advisor creates the window advisor, and specifies the
- * perspective id for the initial window.
+ * This workbench advisor creates the window advisor, and specifies the perspective id for the
+ * initial window.
  *
  * @author pangqiren
  * @version 1.0 - 2009-12-23 created by pangqiren
  */
-public class ApplicationWorkbenchAdvisor extends
-		WorkbenchAdvisor {
+public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	/**
-	 * Creates a new workbench window advisor for configuring a new workbench
-	 * window via the given workbench window configurer.
-	 *
-	 * @param configurer the workbench window configurer
-	 * @return a new workbench window advisor
-	 */
-	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-			IWorkbenchWindowConfigurer configurer) {
-		return new ApplicationWorkbenchWindowAdvisor(configurer);
-	}
+    /**
+     * Creates a new workbench window advisor for configuring a new workbench window via the given
+     * workbench window configurer.
+     *
+     * @param configurer the workbench window configurer
+     * @return a new workbench window advisor
+     */
+    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
+            IWorkbenchWindowConfigurer configurer) {
+        return new ApplicationWorkbenchWindowAdvisor(configurer);
+    }
 
-	/**
-	 * Returns the id of the perspective to use for the initial workbench window
-	 *
-	 * @return the id of the perspective for the initial window, or
-	 *         <code>null</code> if no initial perspective should be shown
-	 */
-	public String getInitialWindowPerspectiveId() {
-		return Perspective.ID;
-	}
+    /**
+     * Returns the id of the perspective to use for the initial workbench window
+     *
+     * @return the id of the perspective for the initial window, or <code>null</code> if no initial
+     *     perspective should be shown
+     */
+    public String getInitialWindowPerspectiveId() {
+        return Perspective.ID;
+    }
 
-	/**
-	 * Performs arbitrary initialization before the workbench starts running.
-	 *
-	 * @param configurer an object for configuring the workbench
-	 */
-	public void initialize(IWorkbenchConfigurer configurer) {
-		super.initialize(configurer);
-		configurer.setSaveAndRestore(false);
-		PlatformUI.getPreferenceStore().setValue(
-				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
-				false);
-		PlatformUI.getPreferenceStore().setValue(
-				IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true);
-//		PlatformUI.getPreferenceStore().setValue(
-//				IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID,
-//				"com.cubrid.cubridmanager.app.PresentationFactory");
+    /**
+     * Performs arbitrary initialization before the workbench starts running.
+     *
+     * @param configurer an object for configuring the workbench
+     */
+    public void initialize(IWorkbenchConfigurer configurer) {
+        super.initialize(configurer);
+        configurer.setSaveAndRestore(false);
+        PlatformUI.getPreferenceStore()
+                .setValue(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
+        PlatformUI.getPreferenceStore()
+                .setValue(IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true);
+        //		PlatformUI.getPreferenceStore().setValue(
+        //				IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID,
+        //				"com.cubrid.cubridmanager.app.PresentationFactory");
 
-		DataType.setNULLValuesForImport(ImportPreferencePage.getImportNULLValueList());
-	}
+        DataType.setNULLValuesForImport(ImportPreferencePage.getImportNULLValueList());
+    }
 
-	/**
-	 * Return the contribution comparator for the particular type of
-	 * contribution.or it can be a value defined by the user.
-	 *
-	 * @param contributionType the contribution type
-	 * @return the comparator, must not return <code>null</code>
-	 * @see IContributionService#getComparatorFor(String)
-	 */
-	public ContributionComparator getComparatorFor(String contributionType) {
-		if (IContributionService.TYPE_PREFERENCE.equals(contributionType)) {
-			return new CMPreferenceNodeComparator();
-		}
-		return super.getComparatorFor(contributionType);
-	}
+    /**
+     * Return the contribution comparator for the particular type of contribution.or it can be a
+     * value defined by the user.
+     *
+     * @param contributionType the contribution type
+     * @return the comparator, must not return <code>null</code>
+     * @see IContributionService#getComparatorFor(String)
+     */
+    public ContributionComparator getComparatorFor(String contributionType) {
+        if (IContributionService.TYPE_PREFERENCE.equals(contributionType)) {
+            return new CMPreferenceNodeComparator();
+        }
+        return super.getComparatorFor(contributionType);
+    }
 
-	@Override
-	public void postStartup() {
-		super.postStartup();
-		/*Remove the help content in preference*/
-	    PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager( );
-	    pm.remove( "org.eclipse.help.ui.browsersPreferencePage");
-	}
+    @Override
+    public void postStartup() {
+        super.postStartup();
+        /*Remove the help content in preference*/
+        PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
+        pm.remove("org.eclipse.help.ui.browsersPreferencePage");
+    }
 }

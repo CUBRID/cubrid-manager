@@ -29,239 +29,207 @@
  */
 package com.cubrid.common.ui.common.persist;
 
+import com.cubrid.common.configuration.jdbc.IJDBCConnecInfo;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.jdbc.proxy.manage.JdbcClassLoaderFactory;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.cubrid.common.configuration.jdbc.IJDBCConnecInfo;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.jdbc.proxy.manage.JdbcClassLoaderFactory;
+/** The ConnectionInfo Description : ConnectionInfo Author : Kevin.Wang Create date : 2014-2-27 */
+public class ConnectionInfo implements IJDBCConnecInfo { // FIXME logic code move to core module
+    private String conName;
+    private int port;
+    private String host;
+    private String dbName;
+    private String conUser;
+    private String conPassword;
+    private String driverFileName;
+    private String charset;
+    private String version;
+    private boolean isAutoCommit;
+    private String jdbcAttrs;
+    private Map<String, Object> parameterMap = new HashMap<String, Object>();
 
-/**
- *
- * The ConnectionInfo Description : ConnectionInfo Author : Kevin.Wang Create
- * date : 2014-2-27
- *
- */
-public class ConnectionInfo implements
-		IJDBCConnecInfo { // FIXME logic code move to core module
-	private String conName;
-	private int port;
-	private String host;
-	private String dbName;
-	private String conUser;
-	private String conPassword;
-	private String driverFileName;
-	private String charset;
-	private String version;
-	private boolean isAutoCommit;
-	private String jdbcAttrs;
-	private Map<String, Object> parameterMap = new HashMap<String, Object>();
+    public ConnectionInfo(
+            String conName,
+            String host,
+            int port,
+            String dbName,
+            String conUser,
+            String conPassword,
+            String driverFileName,
+            String charset) {
+        this.conName = conName;
+        this.port = port;
+        this.host = host;
+        this.dbName = dbName;
+        this.conUser = conUser;
+        this.conPassword = conPassword;
+        this.driverFileName = driverFileName;
+        this.charset = charset;
+    }
 
-	public ConnectionInfo(String conName, String host, int port, String dbName, String conUser, String conPassword,
-			String driverFileName, String charset) {
-		this.conName = conName;
-		this.port = port;
-		this.host = host;
-		this.dbName = dbName;
-		this.conUser = conUser;
-		this.conPassword = conPassword;
-		this.driverFileName = driverFileName;
-		this.charset = charset;
-	}
+    public ConnectionInfo(
+            String conName,
+            String host,
+            int port,
+            String dbName,
+            String conUser,
+            String conPassword,
+            String driverFileName,
+            String charset,
+            boolean isAutoCommit,
+            String version,
+            String jdbcAttrs) {
+        this(conName, host, port, dbName, conUser, conPassword, driverFileName, charset);
+        this.isAutoCommit = isAutoCommit;
+        if (StringUtil.isNotEmpty(version)) {
+            this.version = version;
+        } else if (StringUtil.isNotEmpty(driverFileName)) {
+            try {
+                this.version = JdbcClassLoaderFactory.getJdbcJarVersion(driverFileName);
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+        this.jdbcAttrs = jdbcAttrs;
+    }
 
-	public ConnectionInfo(String conName, String host, int port, String dbName, String conUser, String conPassword,
-			String driverFileName, String charset, boolean isAutoCommit, String version, String jdbcAttrs) {
-		this(conName, host, port, dbName, conUser, conPassword, driverFileName, charset);
-		this.isAutoCommit = isAutoCommit;
-		if (StringUtil.isNotEmpty(version)) {
-			this.version = version;
-		} else if (StringUtil.isNotEmpty(driverFileName)) {
-			try {
-				this.version = JdbcClassLoaderFactory.getJdbcJarVersion(driverFileName);
-			} catch (IOException e) {
-				// ignore
-			}
-		}
-		this.jdbcAttrs = jdbcAttrs;
-	}
+    /** @return the conName */
+    public String getConName() {
+        return conName;
+    }
 
-	/**
-	 * @return the conName
-	 */
-	public String getConName() {
-		return conName;
-	}
+    /** @return the port */
+    public int getPort() {
+        return port;
+    }
 
-	/**
-	 * @return the port
-	 */
-	public int getPort() {
-		return port;
-	}
+    /** @return the host */
+    public String getHost() {
+        return host;
+    }
 
-	/**
-	 * @return the host
-	 */
-	public String getHost() {
-		return host;
-	}
+    /** @return the dbName */
+    public String getDbName() {
+        return dbName;
+    }
 
-	/**
-	 * @return the dbName
-	 */
-	public String getDbName() {
-		return dbName;
-	}
+    /** @return the conUser */
+    public String getConUser() {
+        return conUser;
+    }
 
-	/**
-	 * @return the conUser
-	 */
-	public String getConUser() {
-		return conUser;
-	}
+    /** @return the conPassword */
+    public String getConPassword() {
+        return conPassword;
+    }
 
-	/**
-	 * @return the conPassword
-	 */
-	public String getConPassword() {
-		return conPassword;
-	}
+    /** @return the driverFileName */
+    public String getDriverFileName() {
+        return driverFileName;
+    }
 
-	/**
-	 * @return the driverFileName
-	 */
-	public String getDriverFileName() {
-		return driverFileName;
-	}
+    public int getDbType() {
+        return 1;
+    }
 
-	public int getDbType() {
-		return 1;
-	}
+    public String getCharset() {
+        return charset;
+    }
 
-	public String getCharset() {
-		return charset;
-	}
+    public String getJDBCAttrs() {
+        return this.jdbcAttrs;
+    }
 
-	public String getJDBCAttrs() {
-		return this.jdbcAttrs;
-	}
+    public boolean isAutoCommit() {
+        return isAutoCommit;
+    }
 
-	public boolean isAutoCommit() {
-		return isAutoCommit;
-	}
+    public void setParameter(String key, Object value) {
+        parameterMap.put(key, value);
+    }
 
-	public void setParameter(String key, Object value) {
-		parameterMap.put(key, value);
-	}
+    public Object getParameter(String key) {
+        return parameterMap.get(key);
+    }
 
-	public Object getParameter(String key) {
-		return parameterMap.get(key);
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public String getVersion() {
-		return version;
-	}
+    /** @return the jdbcAttrs */
+    public String getJdbcAttrs() {
+        return jdbcAttrs;
+    }
 
-	/**
-	 * @return the jdbcAttrs
-	 */
-	public String getJdbcAttrs() {
-		return jdbcAttrs;
-	}
+    /** @param jdbcAttrs the jdbcAttrs to set */
+    public void setJdbcAttrs(String jdbcAttrs) {
+        this.jdbcAttrs = jdbcAttrs;
+    }
 
-	/**
-	 * @param jdbcAttrs the jdbcAttrs to set
-	 */
-	public void setJdbcAttrs(String jdbcAttrs) {
-		this.jdbcAttrs = jdbcAttrs;
-	}
+    /** @return the parameterMap */
+    public Map<String, Object> getParameterMap() {
+        return parameterMap;
+    }
 
-	/**
-	 * @return the parameterMap
-	 */
-	public Map<String, Object> getParameterMap() {
-		return parameterMap;
-	}
+    /** @param parameterMap the parameterMap to set */
+    public void setParameterMap(Map<String, Object> parameterMap) {
+        this.parameterMap = parameterMap;
+    }
 
-	/**
-	 * @param parameterMap the parameterMap to set
-	 */
-	public void setParameterMap(Map<String, Object> parameterMap) {
-		this.parameterMap = parameterMap;
-	}
+    /** @param conName the conName to set */
+    public void setConName(String conName) {
+        this.conName = conName;
+    }
 
-	/**
-	 * @param conName the conName to set
-	 */
-	public void setConName(String conName) {
-		this.conName = conName;
-	}
+    /** @param port the port to set */
+    public void setPort(int port) {
+        this.port = port;
+    }
 
-	/**
-	 * @param port the port to set
-	 */
-	public void setPort(int port) {
-		this.port = port;
-	}
+    /** @param host the host to set */
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	/**
-	 * @param host the host to set
-	 */
-	public void setHost(String host) {
-		this.host = host;
-	}
+    /** @param dbName the dbName to set */
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
 
-	/**
-	 * @param dbName the dbName to set
-	 */
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-	}
+    /** @param conUser the conUser to set */
+    public void setConUser(String conUser) {
+        this.conUser = conUser;
+    }
 
-	/**
-	 * @param conUser the conUser to set
-	 */
-	public void setConUser(String conUser) {
-		this.conUser = conUser;
-	}
+    /** @param conPassword the conPassword to set */
+    public void setConPassword(String conPassword) {
+        this.conPassword = conPassword;
+    }
 
-	/**
-	 * @param conPassword the conPassword to set
-	 */
-	public void setConPassword(String conPassword) {
-		this.conPassword = conPassword;
-	}
+    /** @param driverFileName the driverFileName to set */
+    public void setDriverFileName(String driverFileName) {
+        this.driverFileName = driverFileName;
+    }
 
-	/**
-	 * @param driverFileName the driverFileName to set
-	 */
-	public void setDriverFileName(String driverFileName) {
-		this.driverFileName = driverFileName;
-	}
+    /** @param charset the charset to set */
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
 
-	/**
-	 * @param charset the charset to set
-	 */
-	public void setCharset(String charset) {
-		this.charset = charset;
-	}
+    /** @param version the version to set */
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-	/**
-	 * @param version the version to set
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    /** @param isAutoCommit the isAutoCommit to set */
+    public void setAutoCommit(boolean isAutoCommit) {
+        this.isAutoCommit = isAutoCommit;
+    }
 
-	/**
-	 * @param isAutoCommit the isAutoCommit to set
-	 */
-	public void setAutoCommit(boolean isAutoCommit) {
-		this.isAutoCommit = isAutoCommit;
-	}
-
-	public String getSchema() {
-		return null;
-	}
+    public String getSchema() {
+        return null;
+    }
 }

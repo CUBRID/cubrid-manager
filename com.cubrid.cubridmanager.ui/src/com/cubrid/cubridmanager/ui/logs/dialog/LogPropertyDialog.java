@@ -27,6 +27,12 @@
  */
 package com.cubrid.cubridmanager.ui.logs.dialog;
 
+import com.cubrid.common.core.util.FileUtil;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.model.DefaultCubridNode;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.core.logs.model.LogInfo;
+import com.cubrid.cubridmanager.ui.logs.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.swt.SWT;
@@ -40,147 +46,138 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.cubrid.common.core.util.FileUtil;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.model.DefaultCubridNode;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.core.logs.model.LogInfo;
-import com.cubrid.cubridmanager.ui.logs.Messages;
-
 /**
- *
  * The dialog is used to show log property.
  *
  * @author wuyingshi
  * @version 1.0 - 2009-3-18 created by wuyingshi
  */
-public class LogPropertyDialog extends
-		CMTitleAreaDialog {
+public class LogPropertyDialog extends CMTitleAreaDialog {
 
-	private LogInfo logInfo = null;
-	private static Table table = null;
-	private DefaultCubridNode node = null;
+    private LogInfo logInfo = null;
+    private static Table table = null;
+    private DefaultCubridNode node = null;
 
-	/**
-	 * The constructor
-	 *
-	 * @param parentShell
-	 */
-	public LogPropertyDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     */
+    public LogPropertyDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	/**
-	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 * @param parent The parent composite to contain the dialog area
-	 * @return the dialog area control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
+    /**
+     * @see
+     *     org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     * @param parent The parent composite to contain the dialog area
+     * @return the dialog area control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
 
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
 
-		GridData gridData1 = new GridData(GridData.CENTER);
-		gridData1.heightHint = 30;
-		Composite top = new Composite(parentComp, SWT.NONE);
-		top.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		top.setLayout(layout);
-		top.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridData gridData1 = new GridData(GridData.CENTER);
+        gridData1.heightHint = 30;
+        Composite top = new Composite(parentComp, SWT.NONE);
+        top.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+        top.setLayout(layout);
+        top.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		gridData.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
-		gridData.grabExcessVerticalSpace = true;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
-		table = new Table(top, SWT.FULL_SELECTION | SWT.BORDER);
-		table.setHeaderVisible(true);
-		table.setLayoutData(gridData);
-		table.setLinesVisible(true);
-		TableLayout tlayout = new TableLayout();
-		table.setLayout(tlayout);
-		table.setSize(530, 500);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
+        gridData.grabExcessVerticalSpace = true;
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
+        table = new Table(top, SWT.FULL_SELECTION | SWT.BORDER);
+        table.setHeaderVisible(true);
+        table.setLayoutData(gridData);
+        table.setLinesVisible(true);
+        TableLayout tlayout = new TableLayout();
+        table.setLayout(tlayout);
+        table.setSize(530, 500);
 
-		TableColumn tblColumn = new TableColumn(table, SWT.LEFT);
-		tblColumn.setText(Messages.tableProperty);
-		tblColumn.setWidth(100);
-		tblColumn = new TableColumn(table, SWT.LEFT);
-		tblColumn.setText(Messages.tableValue);
-		tblColumn.setWidth(430);
-		TableItem item;
+        TableColumn tblColumn = new TableColumn(table, SWT.LEFT);
+        tblColumn.setText(Messages.tableProperty);
+        tblColumn.setWidth(100);
+        tblColumn = new TableColumn(table, SWT.LEFT);
+        tblColumn.setText(Messages.tableValue);
+        tblColumn.setWidth(430);
+        TableItem item;
 
-		if (logInfo.getType() != null) {
-			item = new TableItem(table, SWT.NONE);
-			item.setText(0, Messages.tableLogType);
-			item.setText(1, logInfo.getType());
-		}
-		item = new TableItem(table, SWT.NONE);
-		item.setText(0, Messages.tableFileName);
-		item.setText(1, logInfo.getName());
+        if (logInfo.getType() != null) {
+            item = new TableItem(table, SWT.NONE);
+            item.setText(0, Messages.tableLogType);
+            item.setText(1, logInfo.getType());
+        }
+        item = new TableItem(table, SWT.NONE);
+        item.setText(0, Messages.tableFileName);
+        item.setText(1, logInfo.getName());
 
-		item = new TableItem(table, SWT.NONE);
-		item.setText(0, Messages.tableFileOwner);
-		item.setText(1, logInfo.getOwner());
+        item = new TableItem(table, SWT.NONE);
+        item.setText(0, Messages.tableFileOwner);
+        item.setText(1, logInfo.getOwner());
 
-		item = new TableItem(table, SWT.NONE);
-		item.setText(0, Messages.tableFileSize);
-		item.setText(1, logInfo.getSize() + " " + Messages.msgFileSize);
+        item = new TableItem(table, SWT.NONE);
+        item.setText(0, Messages.tableFileSize);
+        item.setText(1, logInfo.getSize() + " " + Messages.msgFileSize);
 
-		item = new TableItem(table, SWT.NONE);
-		item.setText(0, Messages.tableChangeDate);
-		item.setText(1, logInfo.getLastupdate());
+        item = new TableItem(table, SWT.NONE);
+        item.setText(0, Messages.tableChangeDate);
+        item.setText(1, logInfo.getLastupdate());
 
-		item = new TableItem(table, SWT.NONE);
-		item.setText(0, Messages.tableFilePath);
+        item = new TableItem(table, SWT.NONE);
+        item.setText(0, Messages.tableFilePath);
 
-		item.setText(1, FileUtil.changeSeparatorByOS(logInfo.getPath(),
-				node.getServer().getServerInfo().getServerOsInfo()));
+        item.setText(
+                1,
+                FileUtil.changeSeparatorByOS(
+                        logInfo.getPath(), node.getServer().getServerInfo().getServerOsInfo()));
 
-		setTitle(Messages.titleLogPropertyDialog);
-		setMessage(logInfo.getName());
-		return parentComp;
-	}
+        setTitle(Messages.titleLogPropertyDialog);
+        setMessage(logInfo.getName());
+        return parentComp;
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog#constrainShellSize()
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.titleLogPropertyDialog);
+    /** @see com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog#constrainShellSize() */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.titleLogPropertyDialog);
+    }
 
-	}
+    /**
+     * @see
+     *     org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+     * @param parent the button bar composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.buttonClose, true);
+    }
 
-	/**
-	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
-	 * @param parent the button bar composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.CANCEL_ID, Messages.buttonClose,
-				true);
-	}
+    /**
+     * get the log information.
+     *
+     * @return logInfo
+     */
+    public LogInfo getLogInfo() {
+        return logInfo;
+    }
 
-	/**
-	 * get the log information.
-	 *
-	 * @return logInfo
-	 */
-	public LogInfo getLogInfo() {
-		return logInfo;
-	}
-
-	/**
-	 * set the log information.
-	 *
-	 * @param logInfo LogInfo
-	 * @param node DefaultCubridNode
-	 */
-	public void setLogInfo(LogInfo logInfo, DefaultCubridNode node) {
-		this.logInfo = logInfo;
-		this.node = node;
-	}
-
+    /**
+     * set the log information.
+     *
+     * @param logInfo LogInfo
+     * @param node DefaultCubridNode
+     */
+    public void setLogInfo(LogInfo logInfo, DefaultCubridNode node) {
+        this.logInfo = logInfo;
+        this.node = node;
+    }
 }

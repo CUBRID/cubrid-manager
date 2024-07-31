@@ -27,6 +27,9 @@
  */
 package com.cubrid.common.ui.query.action;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.dialog.ReformatColumnsAliasDialog;
+import com.cubrid.common.ui.spi.action.FocusAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
@@ -34,59 +37,57 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.query.dialog.ReformatColumnsAliasDialog;
-import com.cubrid.common.ui.spi.action.FocusAction;
-
 /**
  * This action is responsible to reformat columns's alias
  *
  * @author Iasiah Choe 2012-10-19
  */
-public class ReformatColumnsAliasAction extends
-		FocusAction {
+public class ReformatColumnsAliasAction extends FocusAction {
 
-	public static final String ID = ReformatColumnsAliasAction.class.getName();
+    public static final String ID = ReformatColumnsAliasAction.class.getName();
 
-	public ReformatColumnsAliasAction(Shell shell, Control focusProvider, String text, ImageDescriptor icon) {
-		super(shell, focusProvider, text, icon);
-		this.setId(ID);
-	}
+    public ReformatColumnsAliasAction(
+            Shell shell, Control focusProvider, String text, ImageDescriptor icon) {
+        super(shell, focusProvider, text, icon);
+        this.setId(ID);
+    }
 
-	public ReformatColumnsAliasAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    public ReformatColumnsAliasAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	public void focusGained(FocusEvent event) {
-		setEnabled(false);
-		if (event.getSource() instanceof StyledText) {
-			StyledText stext = (StyledText) event.getSource();
-			boolean isEnabled = stext != null && stext.getSelectionText() != null
-					&& stext.getSelectionText().trim().length() > 0;
-			setEnabled(isEnabled);
-		}
-	}
+    public void focusGained(FocusEvent event) {
+        setEnabled(false);
+        if (event.getSource() instanceof StyledText) {
+            StyledText stext = (StyledText) event.getSource();
+            boolean isEnabled =
+                    stext != null
+                            && stext.getSelectionText() != null
+                            && stext.getSelectionText().trim().length() > 0;
+            setEnabled(isEnabled);
+        }
+    }
 
-	public void run() { // FIXME move this logic to core module
-		Control control = getFocusProvider();
-		if (!(control instanceof StyledText)) {
-			return;
-		}
+    public void run() { // FIXME move this logic to core module
+        Control control = getFocusProvider();
+        if (!(control instanceof StyledText)) {
+            return;
+        }
 
-		StyledText styledText = (StyledText) control;
-		final String columnsRawText = styledText.getSelectionText();
-		if (StringUtil.isEmpty(columnsRawText)) {
-			return;
-		}
+        StyledText styledText = (StyledText) control;
+        final String columnsRawText = styledText.getSelectionText();
+        if (StringUtil.isEmpty(columnsRawText)) {
+            return;
+        }
 
-		Point p = styledText.getSelectionRange();
-		String prefix = ReformatColumnsAliasDialog.openDialog();
-		prefix = prefix.trim();
-		if (prefix.charAt(prefix.length() - 1) != '.') {
-			prefix += ".";
-		}
+        Point p = styledText.getSelectionRange();
+        String prefix = ReformatColumnsAliasDialog.openDialog();
+        prefix = prefix.trim();
+        if (prefix.charAt(prefix.length() - 1) != '.') {
+            prefix += ".";
+        }
 
-		String newcolumns = StringUtil.appendPrefixOnColumns(columnsRawText, prefix);
-		styledText.replaceTextRange(p.x, p.y, newcolumns);
-	}
+        String newcolumns = StringUtil.appendPrefixOnColumns(columnsRawText, prefix);
+        styledText.replaceTextRange(p.x, p.y, newcolumns);
+    }
 }

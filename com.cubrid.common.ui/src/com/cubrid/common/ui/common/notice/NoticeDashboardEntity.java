@@ -27,6 +27,16 @@
  */
 package com.cubrid.common.ui.common.notice;
 
+import com.cubrid.common.core.util.FileUtil;
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.sun.syndication.feed.synd.SyndCategory;
+import com.sun.syndication.feed.synd.SyndContent;
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.io.FeedException;
+import com.sun.syndication.io.SyndFeedInput;
+import com.sun.syndication.io.XmlReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -46,20 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.eclipse.core.runtime.Platform;
 import org.slf4j.Logger;
-
-import com.cubrid.common.core.util.FileUtil;
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.sun.syndication.feed.synd.SyndCategory;
-import com.sun.syndication.feed.synd.SyndContent;
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.io.SyndFeedInput;
-import com.sun.syndication.io.XmlReader;
 
 /**
  * CUBRID Manager dashboard entity.
@@ -69,210 +67,217 @@ import com.sun.syndication.io.XmlReader;
  * @date 2013-1-31
  */
 public class NoticeDashboardEntity {
-	private static final Logger LOGGER = LogUtil.getLogger(NoticeDashboardEntity.class);
-	private static final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-	private static final String NOTICE_CONTENT_CACHE_FILE = "notice.cache";
+    private static final Logger LOGGER = LogUtil.getLogger(NoticeDashboardEntity.class);
+    private static final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final String NOTICE_CONTENT_CACHE_FILE = "notice.cache";
 
-	private String rssurl;
-	private SyndFeed rssData;
-	private Map<Set<String>, Set<SyndEntry>> contents = new HashMap<Set<String>, Set<SyndEntry>>();
-	private Date cacheDate = new Date();
+    private String rssurl;
+    private SyndFeed rssData;
+    private Map<Set<String>, Set<SyndEntry>> contents = new HashMap<Set<String>, Set<SyndEntry>>();
+    private Date cacheDate = new Date();
 
-	public NoticeDashboardEntity(String rssurl) {
-		this.rssurl = rssurl;
-	}
+    public NoticeDashboardEntity(String rssurl) {
+        this.rssurl = rssurl;
+    }
 
-	private static File rssCacheFile;
+    private static File rssCacheFile;
 
-	static {
-		String path = Platform.getInstanceLocation().getURL().getPath();
-		rssCacheFile = new File(path, NOTICE_CONTENT_CACHE_FILE);
-	}
+    static {
+        String path = Platform.getInstanceLocation().getURL().getPath();
+        rssCacheFile = new File(path, NOTICE_CONTENT_CACHE_FILE);
+    }
 
-	/**
-	 * Refresh data form RSS.
-	 *
-	 * @throws Exception
-	 */
-	public int refresh() {
-		// success
-		int statusCode = RssStatusCode.SUCCESS;
-		try {
-			readFeedFromRemote();
-			organizeContentByCategory();
-		} catch (IllegalArgumentException e) {
-			statusCode = RssStatusCode.FAILED_ERROR_FORMAT;
-			LOGGER.error("", e);
-		} catch (FeedException e) {
-			statusCode = RssStatusCode.FAILED_ERROR_FORMAT;
-			LOGGER.error("", e);
-		} catch (IOException e) {
-			statusCode = RssStatusCode.FAILED_NETWORK;
-			LOGGER.error("", e);
-		}
+    /**
+     * Refresh data form RSS.
+     *
+     * @throws Exception
+     */
+    public int refresh() {
+        // success
+        int statusCode = RssStatusCode.SUCCESS;
+        try {
+            readFeedFromRemote();
+            organizeContentByCategory();
+        } catch (IllegalArgumentException e) {
+            statusCode = RssStatusCode.FAILED_ERROR_FORMAT;
+            LOGGER.error("", e);
+        } catch (FeedException e) {
+            statusCode = RssStatusCode.FAILED_ERROR_FORMAT;
+            LOGGER.error("", e);
+        } catch (IOException e) {
+            statusCode = RssStatusCode.FAILED_NETWORK;
+            LOGGER.error("", e);
+        }
 
-		if (statusCode != RssStatusCode.SUCCESS) {
-			loadRssFromCache();
-			if (!contents.isEmpty()) {
-				statusCode = RssStatusCode.SUCCESS_GET_FROM_CACHE;
-			}
-		}
+        if (statusCode != RssStatusCode.SUCCESS) {
+            loadRssFromCache();
+            if (!contents.isEmpty()) {
+                statusCode = RssStatusCode.SUCCESS_GET_FROM_CACHE;
+            }
+        }
 
-		return statusCode;
-	}
+        return statusCode;
+    }
 
-	private void saveRssToCache() {
-		ObjectOutputStream out = null;
-		try {
-			out = new ObjectOutputStream(new FileOutputStream(rssCacheFile));
-			out.writeObject(new Date());
-			out.writeObject(contents);
-			out.close();
-		} catch (IOException e) {
-			LOGGER.error("", e);
-		} finally {
-			FileUtil.close(out);
-		}
-	}
+    private void saveRssToCache() {
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(new FileOutputStream(rssCacheFile));
+            out.writeObject(new Date());
+            out.writeObject(contents);
+            out.close();
+        } catch (IOException e) {
+            LOGGER.error("", e);
+        } finally {
+            FileUtil.close(out);
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	private void loadRssFromCache() {
-		ObjectInputStream in = null;
-		try {
-			in = new ObjectInputStream(new FileInputStream(rssCacheFile));
-			cacheDate = (Date) in.readObject();
-			contents = (Map<Set<String>, Set<SyndEntry>>) in.readObject();
-		} catch (IOException e) {
-			LOGGER.error("", e);
-		} catch (ClassNotFoundException e) {
-			LOGGER.error("", e);
-		} finally {
-			FileUtil.close(in);
-		}
-	}
+    @SuppressWarnings("unchecked")
+    private void loadRssFromCache() {
+        ObjectInputStream in = null;
+        try {
+            in = new ObjectInputStream(new FileInputStream(rssCacheFile));
+            cacheDate = (Date) in.readObject();
+            contents = (Map<Set<String>, Set<SyndEntry>>) in.readObject();
+        } catch (IOException e) {
+            LOGGER.error("", e);
+        } catch (ClassNotFoundException e) {
+            LOGGER.error("", e);
+        } finally {
+            FileUtil.close(in);
+        }
+    }
 
-	/**
-	 * get syndFeed from rss
-	 *
-	 * @param source
-	 * @return
-	 * @throws IllegalArgumentException
-	 * @throws FeedException
-	 * @throws IOException
-	 */
-	private void readFeedFromRemote() throws IllegalArgumentException, FeedException, IOException {
-		SyndFeedInput input = new SyndFeedInput();
-		// Locale.setDefault(Locale.ENGLISH);
-		URLConnection feedUrl = new URL(rssurl).openConnection();
-		// java.io.IOException: Server returned HTTP response code: 403
-		feedUrl.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-		feedUrl.setConnectTimeout(5000);
+    /**
+     * get syndFeed from rss
+     *
+     * @param source
+     * @return
+     * @throws IllegalArgumentException
+     * @throws FeedException
+     * @throws IOException
+     */
+    private void readFeedFromRemote() throws IllegalArgumentException, FeedException, IOException {
+        SyndFeedInput input = new SyndFeedInput();
+        // Locale.setDefault(Locale.ENGLISH);
+        URLConnection feedUrl = new URL(rssurl).openConnection();
+        // java.io.IOException: Server returned HTTP response code: 403
+        feedUrl.setRequestProperty(
+                "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+        feedUrl.setConnectTimeout(5000);
 
-		XmlReader xmlReader = new XmlReader(feedUrl);
-		rssData = input.build(xmlReader);
-	}
+        XmlReader xmlReader = new XmlReader(feedUrl);
+        rssData = input.build(xmlReader);
+    }
 
-	@SuppressWarnings("unused")
-	private void readFeedFromLocalCache() throws IllegalArgumentException, FeedException, IOException {
-		// TODO
-		String file = "";
-		SyndFeedInput input = new SyndFeedInput();
-		File feedUrl = new File(file);
-		rssData = input.build(new XmlReader(feedUrl));
-	}
+    @SuppressWarnings("unused")
+    private void readFeedFromLocalCache()
+            throws IllegalArgumentException, FeedException, IOException {
+        // TODO
+        String file = "";
+        SyndFeedInput input = new SyndFeedInput();
+        File feedUrl = new File(file);
+        rssData = input.build(new XmlReader(feedUrl));
+    }
 
-	private void organizeContentByCategory() {
-		if (rssData != null) {
-			// Get RSS item entities
-			@SuppressWarnings("unchecked")
-			List<SyndEntry> entries = rssData.getEntries();
-			for (SyndEntry entry : entries) {
-				// category: language, type, client
-				@SuppressWarnings("unchecked")
-				List<SyndCategory> categoryList = entry.getCategories();
-				Set<String> categories = new HashSet<String>();
-				if (categoryList != null) {
-					for (SyndCategory category : categoryList) {
-						categories.add(category.getName());
-					}
-				}
-				Set<SyndEntry> syndEntries;
-				if (!contents.containsKey(categories)) {
-					syndEntries = new HashSet<SyndEntry>();
-					contents.put(categories, syndEntries);
-				} else {
-					syndEntries = contents.get(categories);
-				}
-				syndEntries.add(entry);
-			}
-			saveRssToCache();
-		}
-	}
+    private void organizeContentByCategory() {
+        if (rssData != null) {
+            // Get RSS item entities
+            @SuppressWarnings("unchecked")
+            List<SyndEntry> entries = rssData.getEntries();
+            for (SyndEntry entry : entries) {
+                // category: language, type, client
+                @SuppressWarnings("unchecked")
+                List<SyndCategory> categoryList = entry.getCategories();
+                Set<String> categories = new HashSet<String>();
+                if (categoryList != null) {
+                    for (SyndCategory category : categoryList) {
+                        categories.add(category.getName());
+                    }
+                }
+                Set<SyndEntry> syndEntries;
+                if (!contents.containsKey(categories)) {
+                    syndEntries = new HashSet<SyndEntry>();
+                    contents.put(categories, syndEntries);
+                } else {
+                    syndEntries = contents.get(categories);
+                }
+                syndEntries.add(entry);
+            }
+            saveRssToCache();
+        }
+    }
 
-	/**
-	 * Get HTML content by category.
-	 *
-	 * @param categories
-	 * @return
-	 */
-	public String getHtmlContent(String... categories) {
-		Set<String> categorySet = new HashSet<String>();
-		if (categories == null) {
-			return "";
-		}
+    /**
+     * Get HTML content by category.
+     *
+     * @param categories
+     * @return
+     */
+    public String getHtmlContent(String... categories) {
+        Set<String> categorySet = new HashSet<String>();
+        if (categories == null) {
+            return "";
+        }
 
-		for (String category : categories) {
-			if (category != null) {
-				categorySet.add(category);
-			}
-		}
+        for (String category : categories) {
+            if (category != null) {
+                categorySet.add(category);
+            }
+        }
 
-		Set<SyndEntry> syndEntries = new HashSet<SyndEntry>();
-		if (contents == null || contents.entrySet() == null) {
-			return "";
-		}
+        Set<SyndEntry> syndEntries = new HashSet<SyndEntry>();
+        if (contents == null || contents.entrySet() == null) {
+            return "";
+        }
 
-		for (Entry<Set<String>, Set<SyndEntry>> entity : contents.entrySet()) {
-			if (entity.getKey().containsAll(categorySet)) {
-				syndEntries.addAll(entity.getValue());
-			}
-		}
+        for (Entry<Set<String>, Set<SyndEntry>> entity : contents.entrySet()) {
+            if (entity.getKey().containsAll(categorySet)) {
+                syndEntries.addAll(entity.getValue());
+            }
+        }
 
-		List<SyndEntry> syndEntryList = new ArrayList<SyndEntry>(syndEntries);
-		Collections.sort(syndEntryList, new Comparator<SyndEntry>() {
-			public int compare(SyndEntry o1, SyndEntry o2) {
-				if (o1 == null || o2 == null || o1.getPublishedDate() == null || o2.getPublishedDate() == null) {
-					return 0;
-				}
-				return o2.getPublishedDate().compareTo(o1.getPublishedDate());
-			}
-		});
+        List<SyndEntry> syndEntryList = new ArrayList<SyndEntry>(syndEntries);
+        Collections.sort(
+                syndEntryList,
+                new Comparator<SyndEntry>() {
+                    public int compare(SyndEntry o1, SyndEntry o2) {
+                        if (o1 == null
+                                || o2 == null
+                                || o1.getPublishedDate() == null
+                                || o2.getPublishedDate() == null) {
+                            return 0;
+                        }
+                        return o2.getPublishedDate().compareTo(o1.getPublishedDate());
+                    }
+                });
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("<p>");
-		if (syndEntryList != null && !syndEntryList.isEmpty()) {
-			for (SyndEntry entry : syndEntryList) {
-				SyndContent description = entry.getDescription();
-				sb.append("<li>");
-				sb.append("<img href=\"icons/action/host_connect.png\"/>");
-				sb.append("<a href=\"").append(entry.getLink()).append("\">");
-				sb.append(entry.getTitle());
-				sb.append("</a>");
-				sb.append("</li>");
-				if (!StringUtil.isEmpty(description.getValue())) {
-					sb.append("<p>");
-					sb.append(description.getValue().trim());
-					sb.append("</p>");
-				}
-			}
-		} else {
-			sb.append("<p>No data.</p>");
-		}
-		sb.append("</p>");
-		return sb.toString();
-	}
+        StringBuilder sb = new StringBuilder();
+        sb.append("<p>");
+        if (syndEntryList != null && !syndEntryList.isEmpty()) {
+            for (SyndEntry entry : syndEntryList) {
+                SyndContent description = entry.getDescription();
+                sb.append("<li>");
+                sb.append("<img href=\"icons/action/host_connect.png\"/>");
+                sb.append("<a href=\"").append(entry.getLink()).append("\">");
+                sb.append(entry.getTitle());
+                sb.append("</a>");
+                sb.append("</li>");
+                if (!StringUtil.isEmpty(description.getValue())) {
+                    sb.append("<p>");
+                    sb.append(description.getValue().trim());
+                    sb.append("</p>");
+                }
+            }
+        } else {
+            sb.append("<p>No data.</p>");
+        }
+        sb.append("</p>");
+        return sb.toString();
+    }
 
-	public String getCacheDate() {
-		return cacheDate != null ? dateformat.format(cacheDate) : "";
-	}
+    public String getCacheDate() {
+        return cacheDate != null ? dateformat.format(cacheDate) : "";
+    }
 }

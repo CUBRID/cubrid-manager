@@ -27,85 +27,84 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.task;
 
-import java.sql.Connection;
-
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.utils.ModelUtil;
+import java.sql.Connection;
 
 /**
- * This class is to get information of a class in CUBRID database, whether it is
- * a class or virtual class(view).
+ * This class is to get information of a class in CUBRID database, whether it is a class or virtual
+ * class(view).
  *
- * Usage: You must first set dbname and classname by invoking setDbName(String)
- * and setClassName(String) methods, then call sendMsg() method to send a
- * request message, the response message is the information of the special
- * class.
+ * <p>Usage: You must first set dbname and classname by invoking setDbName(String) and
+ * setClassName(String) methods, then call sendMsg() method to send a request message, the response
+ * message is the information of the special class.
  *
  * @author moulinwang 2009-3-2
  */
-public class ClassTask extends
-		SocketTask {
-	private DatabaseInfo dbInfo;
-	private final static String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dbname", "classname", };
+public class ClassTask extends SocketTask {
+    private DatabaseInfo dbInfo;
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {
+                "task", "token", "dbname", "classname",
+            };
 
-	public ClassTask(DatabaseInfo dbInfo) {
-		super("class", dbInfo.getServerInfo(), SEND_MSG_ITEMS);
-		this.dbInfo = dbInfo;
-	}
+    public ClassTask(DatabaseInfo dbInfo) {
+        super("class", dbInfo.getServerInfo(), SEND_MSG_ITEMS);
+        this.dbInfo = dbInfo;
+    }
 
-	public ClassTask(DatabaseInfo dbInfo, String charset) {
-		super("class", dbInfo.getServerInfo(), SEND_MSG_ITEMS, charset, charset);
-		this.dbInfo = dbInfo;
-	}
+    public ClassTask(DatabaseInfo dbInfo, String charset) {
+        super("class", dbInfo.getServerInfo(), SEND_MSG_ITEMS, charset, charset);
+        this.dbInfo = dbInfo;
+    }
 
-	/**
-	 * Set the key "dbname" in request message
-	 *
-	 * @param dbname String
-	 */
-	public void setDbName(String dbname) {
-		this.setMsgItem("dbname", dbname);
-	}
+    /**
+     * Set the key "dbname" in request message
+     *
+     * @param dbname String
+     */
+    public void setDbName(String dbname) {
+        this.setMsgItem("dbname", dbname);
+    }
 
-	/**
-	 * Set the key "classname" in request message
-	 *
-	 * @param className String
-	 */
-	public void setClassName(String className) {
-		this.setMsgItem("classname", className);
-	}
+    /**
+     * Set the key "classname" in request message
+     *
+     * @param className String
+     */
+    public void setClassName(String className) {
+        this.setMsgItem("classname", className);
+    }
 
-	/**
-	 * Get the SchemaInfo object from the response
-	 *
-	 * @return SchemaInfo
-	 */
-	public SchemaInfo getSchemaInfo() {
-		if (isSuccess()) {
-			TreeNode classinfo = getResponse().getChildren().get(0);
-			return ModelUtil.getSchemaInfo(classinfo, dbInfo);
-		} else {
-			return null;
-		}
-	}
+    /**
+     * Get the SchemaInfo object from the response
+     *
+     * @return SchemaInfo
+     */
+    public SchemaInfo getSchemaInfo() {
+        if (isSuccess()) {
+            TreeNode classinfo = getResponse().getChildren().get(0);
+            return ModelUtil.getSchemaInfo(classinfo, dbInfo);
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * Get the SchemaInfo object from the response (using for compatibility with CQB)
-	 *
-	 * @param connection
-	 * @return SchemaInfo
-	 */
-	public SchemaInfo getSchemaInfo(Connection connection) {
-		if (isSuccess()) {
-			TreeNode classinfo = getResponse().getChildren().get(0);
-			return ModelUtil.getSchemaInfo(classinfo, dbInfo);
-		} else {
-			return null;
-		}
-	}
+    /**
+     * Get the SchemaInfo object from the response (using for compatibility with CQB)
+     *
+     * @param connection
+     * @return SchemaInfo
+     */
+    public SchemaInfo getSchemaInfo(Connection connection) {
+        if (isSuccess()) {
+            TreeNode classinfo = getResponse().getChildren().get(0);
+            return ModelUtil.getSchemaInfo(classinfo, dbInfo);
+        } else {
+            return null;
+        }
+    }
 }

@@ -30,32 +30,29 @@ package com.cubrid.cubridmanager.core.cubrid.database.model.lock;
 import com.cubrid.cubridmanager.core.common.model.IModel;
 
 /**
- *
  * A model that extends IModel includes the info lockinfo
  *
  * @author robin
  * @version 1.0 - 2009-12-25 created by robin
  */
-public class DatabaseLockInfo implements
-		IModel {
+public class DatabaseLockInfo implements IModel {
 
-	private LockInfo lockInfo;
+    private LockInfo lockInfo;
 
-	public LockInfo getLockInfo() {
-		return lockInfo;
-	}
+    public LockInfo getLockInfo() {
+        return lockInfo;
+    }
 
-	/**
-	 *
-	 * add a instance of LockInfo
-	 *
-	 * @param lockInfo LockInfo The instance of LockInfo
-	 */
-	public void addLockInfo(LockInfo lockInfo) {
-		this.lockInfo = lockInfo;
-	}
+    /**
+     * add a instance of LockInfo
+     *
+     * @param lockInfo LockInfo The instance of LockInfo
+     */
+    public void addLockInfo(LockInfo lockInfo) {
+        this.lockInfo = lockInfo;
+    }
 
-	public String getTaskName() {
-		return "lockdb";
-	}
+    public String getTaskName() {
+        return "lockdb";
+    }
 }

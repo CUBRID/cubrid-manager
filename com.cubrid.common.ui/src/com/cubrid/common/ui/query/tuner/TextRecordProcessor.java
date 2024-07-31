@@ -29,17 +29,6 @@
  */
 package com.cubrid.common.ui.query.tuner;
 
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.query.control.ColumnInfo;
 import com.cubrid.common.ui.query.control.QueryInfo;
@@ -49,6 +38,15 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.DBAttrTypeFormatter;
 import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
 import com.cubrid.jdbc.proxy.driver.CUBRIDOIDProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
 
 /**
  * Text Record Processor
@@ -56,119 +54,119 @@ import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
  * @author Kevin.Wang
  * @version 1.0 - 2013-4-12 created by Kevin.Wang
  */
-public class TextRecordProcessor implements
-		IRecordProcessor {
+public class TextRecordProcessor implements IRecordProcessor {
 
-	private static final DecimalFormat formater = new DecimalFormat();
-	private static final String FORMAT_DOUBLE = "0.000000000000000E000";
-	private static final String FORMAT_FLOAT = "0.000000E000";
-	private static final Logger LOGGER = LogUtil.getLogger(TextRecordProcessor.class);
+    private static final DecimalFormat formater = new DecimalFormat();
+    private static final String FORMAT_DOUBLE = "0.000000000000000E000";
+    private static final String FORMAT_FLOAT = "0.000000E000";
+    private static final Logger LOGGER = LogUtil.getLogger(TextRecordProcessor.class);
 
-	public void process(CUBRIDResultSetProxy resultSet, QueryRecord queryRecord) throws SQLException {
-		List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+    public void process(CUBRIDResultSetProxy resultSet, QueryRecord queryRecord)
+            throws SQLException {
+        List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 
-		try {
-			int columnCount = queryRecord.getColumnInfoList().size();
-			QueryInfo queryInfo = queryRecord.getQueryInfo();
-			if(queryInfo == null) {
-				queryInfo = new QueryInfo();
-				queryRecord.setQueryInfo(queryInfo);
-			}
-			int dataID = 1;
-			while (resultSet.next()) {
-				Map<String, String> data = new HashMap<String, String>();
-				data.put(String.valueOf(0), String.valueOf(dataID++));
-				for (int i = 1; i <= columnCount; i++) {
-					data.put(String.valueOf(i),
-							getTextData(resultSet, i, queryRecord));
-				}
-				dataList.add(data);
-			}
+        try {
+            int columnCount = queryRecord.getColumnInfoList().size();
+            QueryInfo queryInfo = queryRecord.getQueryInfo();
+            if (queryInfo == null) {
+                queryInfo = new QueryInfo();
+                queryRecord.setQueryInfo(queryInfo);
+            }
+            int dataID = 1;
+            while (resultSet.next()) {
+                Map<String, String> data = new HashMap<String, String>();
+                data.put(String.valueOf(0), String.valueOf(dataID++));
+                for (int i = 1; i <= columnCount; i++) {
+                    data.put(String.valueOf(i), getTextData(resultSet, i, queryRecord));
+                }
+                dataList.add(data);
+            }
 
-			resultSet.last();
-			int totalRow = resultSet.getRow();
-			queryInfo.setTotalRs(totalRow);
+            resultSet.last();
+            int totalRow = resultSet.getRow();
+            queryInfo.setTotalRs(totalRow);
 
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage());
-		}
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
 
-		queryRecord.setDataList(dataList);
-	}
+        queryRecord.setDataList(dataList);
+    }
 
-	/**
-	 * Get text data
-	 *
-	 * @param dataIndex - column index
-	 * @return
-	 * @throws SQLException
-	 */
-	private String getTextData(CUBRIDResultSetProxy resultSet, int dataIndex,
-			QueryRecord queryRecord) throws SQLException { // FIXME move this logic to core module
-		ColumnInfo columnInfo = (ColumnInfo) queryRecord.getColumnInfoList().get(
-				dataIndex - 1);
-		String columnType = columnInfo.getType();
-		Object rsObj = resultSet.getObject(dataIndex);
-		String dataToput = null;
-		if (rsObj != null) {
-			if (DataType.DATATYPE_SET.equals(columnType)
-					|| DataType.DATATYPE_MULTISET.equals(columnType)
-					|| DataType.DATATYPE_SEQUENCE.equals(columnType)) {
-				StringBuffer data = new StringBuffer();
-				Object[] set = (Object[]) resultSet.getCollection(dataIndex);
-				data.append("{");
-				for (int i = 0; i < set.length; i++) {
-					Object setI = set[i];
-					if (null == setI) {
-						data.append(DataType.VALUE_NULL);
-					} else if (setI.getClass() == CUBRIDOIDProxy.getCUBRIDOIDClass(resultSet.getJdbcVersion())) {
-						data.append((new CUBRIDOIDProxy(setI)).getOidString());
-					} else {
-						data.append(setI);
-					}
-					if (i < set.length - 1) {
-						data.append(",");
-					}
-				}
-				data.append("}");
-				dataToput = data.toString();
-			} else if (DataType.DATATYPE_DATETIME.equalsIgnoreCase(columnType)) {
-				dataToput = CommonUITool.formatDate(
-						resultSet.getTimestamp(dataIndex),
-						FieldHandlerUtils.FORMAT_DATETIME);
-			} else if (DataType.DATATYPE_BIT_VARYING.equalsIgnoreCase(columnType)
-					|| DataType.DATATYPE_BIT.equalsIgnoreCase(columnType)) {
-				byte[] dataTmp = resultSet.getBytes(dataIndex);
-				if (dataTmp.length > FieldHandlerUtils.BIT_TYPE_MUCH_VALUE_LENGTH) {
-					dataToput = DataType.BIT_EXPORT_FORMAT;
-				} else {
-					dataToput = "X'"
-							+ DBAttrTypeFormatter.getHexString(dataTmp) + "'";
-				}
-			} else if (DataType.DATATYPE_FLOAT.equalsIgnoreCase(columnType)) {
-				formater.applyPattern(FORMAT_FLOAT);
-				dataToput = formater.format(resultSet.getFloat(dataIndex));
-			} else if (DataType.DATATYPE_DOUBLE.equalsIgnoreCase(columnType)) {
-				formater.applyPattern(FORMAT_DOUBLE);
-				dataToput = formater.format(resultSet.getDouble(dataIndex));
-			} else if (DataType.DATATYPE_BLOB.equalsIgnoreCase(columnType)
-					|| rsObj instanceof Blob) {
-				columnInfo.setType(DataType.DATATYPE_BLOB);
-				dataToput = DataType.BLOB_EXPORT_FORMAT;
-			} else if (DataType.DATATYPE_CLOB.equalsIgnoreCase(columnType)
-					|| rsObj instanceof Clob) {
-				columnInfo.setType(DataType.DATATYPE_CLOB);
-				dataToput = DataType.CLOB_EXPORT_FORMAT;
-			} else if (DataType.DATATYPE_NCHAR.equalsIgnoreCase(columnType)) {
-				columnInfo.setType(DataType.DATATYPE_NCHAR);
-				dataToput = "N'" + resultSet.getString(dataIndex) + "'";
-			} else if (DataType.DATATYPE_NCHAR_VARYING.equalsIgnoreCase(columnType)) {
-				columnInfo.setType(DataType.DATATYPE_NCHAR_VARYING);
-				dataToput = "N'" + resultSet.getString(dataIndex) + "'";
-			} else {
-				dataToput = resultSet.getString(dataIndex);
-			}
-		}
-		return dataToput;
-	}
+    /**
+     * Get text data
+     *
+     * @param dataIndex - column index
+     * @return
+     * @throws SQLException
+     */
+    private String getTextData(
+            CUBRIDResultSetProxy resultSet, int dataIndex, QueryRecord queryRecord)
+            throws SQLException { // FIXME move this logic to core module
+        ColumnInfo columnInfo = (ColumnInfo) queryRecord.getColumnInfoList().get(dataIndex - 1);
+        String columnType = columnInfo.getType();
+        Object rsObj = resultSet.getObject(dataIndex);
+        String dataToput = null;
+        if (rsObj != null) {
+            if (DataType.DATATYPE_SET.equals(columnType)
+                    || DataType.DATATYPE_MULTISET.equals(columnType)
+                    || DataType.DATATYPE_SEQUENCE.equals(columnType)) {
+                StringBuffer data = new StringBuffer();
+                Object[] set = (Object[]) resultSet.getCollection(dataIndex);
+                data.append("{");
+                for (int i = 0; i < set.length; i++) {
+                    Object setI = set[i];
+                    if (null == setI) {
+                        data.append(DataType.VALUE_NULL);
+                    } else if (setI.getClass()
+                            == CUBRIDOIDProxy.getCUBRIDOIDClass(resultSet.getJdbcVersion())) {
+                        data.append((new CUBRIDOIDProxy(setI)).getOidString());
+                    } else {
+                        data.append(setI);
+                    }
+                    if (i < set.length - 1) {
+                        data.append(",");
+                    }
+                }
+                data.append("}");
+                dataToput = data.toString();
+            } else if (DataType.DATATYPE_DATETIME.equalsIgnoreCase(columnType)) {
+                dataToput =
+                        CommonUITool.formatDate(
+                                resultSet.getTimestamp(dataIndex),
+                                FieldHandlerUtils.FORMAT_DATETIME);
+            } else if (DataType.DATATYPE_BIT_VARYING.equalsIgnoreCase(columnType)
+                    || DataType.DATATYPE_BIT.equalsIgnoreCase(columnType)) {
+                byte[] dataTmp = resultSet.getBytes(dataIndex);
+                if (dataTmp.length > FieldHandlerUtils.BIT_TYPE_MUCH_VALUE_LENGTH) {
+                    dataToput = DataType.BIT_EXPORT_FORMAT;
+                } else {
+                    dataToput = "X'" + DBAttrTypeFormatter.getHexString(dataTmp) + "'";
+                }
+            } else if (DataType.DATATYPE_FLOAT.equalsIgnoreCase(columnType)) {
+                formater.applyPattern(FORMAT_FLOAT);
+                dataToput = formater.format(resultSet.getFloat(dataIndex));
+            } else if (DataType.DATATYPE_DOUBLE.equalsIgnoreCase(columnType)) {
+                formater.applyPattern(FORMAT_DOUBLE);
+                dataToput = formater.format(resultSet.getDouble(dataIndex));
+            } else if (DataType.DATATYPE_BLOB.equalsIgnoreCase(columnType)
+                    || rsObj instanceof Blob) {
+                columnInfo.setType(DataType.DATATYPE_BLOB);
+                dataToput = DataType.BLOB_EXPORT_FORMAT;
+            } else if (DataType.DATATYPE_CLOB.equalsIgnoreCase(columnType)
+                    || rsObj instanceof Clob) {
+                columnInfo.setType(DataType.DATATYPE_CLOB);
+                dataToput = DataType.CLOB_EXPORT_FORMAT;
+            } else if (DataType.DATATYPE_NCHAR.equalsIgnoreCase(columnType)) {
+                columnInfo.setType(DataType.DATATYPE_NCHAR);
+                dataToput = "N'" + resultSet.getString(dataIndex) + "'";
+            } else if (DataType.DATATYPE_NCHAR_VARYING.equalsIgnoreCase(columnType)) {
+                columnInfo.setType(DataType.DATATYPE_NCHAR_VARYING);
+                dataToput = "N'" + resultSet.getString(dataIndex) + "'";
+            } else {
+                dataToput = resultSet.getString(dataIndex);
+            }
+        }
+        return dataToput;
+    }
 }

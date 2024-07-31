@@ -27,22 +27,6 @@
  */
 package com.cubrid.common.ui.common.sqlrunner.event.handler;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import jxl.format.Border;
-import jxl.format.BorderLineStyle;
-import jxl.format.Colour;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
-
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.common.sqlrunner.event.BeginOneFileEvent;
 import com.cubrid.common.ui.common.sqlrunner.event.FailedEvent;
@@ -51,192 +35,201 @@ import com.cubrid.common.ui.common.sqlrunner.event.FinishOneFileEvent;
 import com.cubrid.common.ui.common.sqlrunner.event.RunSQLEvent;
 import com.cubrid.common.ui.common.sqlrunner.event.SuccessEvent;
 import com.cubrid.common.ui.common.sqlrunner.event.monitor.IRunSQLMonitor;
+import java.io.File;
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import jxl.format.Border;
+import jxl.format.BorderLineStyle;
+import jxl.format.Colour;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import org.slf4j.Logger;
 
 /**
- * <p>
  * Run SQL Event handler
- * </p>
  *
  * @author fulei
  */
-public class RunSQLEventHandler implements
-		IRunSQLEventHandler {
-	private static final Logger LOGGER = LogUtil.getLogger(RunSQLEventHandler.class);
+public class RunSQLEventHandler implements IRunSQLEventHandler {
+    private static final Logger LOGGER = LogUtil.getLogger(RunSQLEventHandler.class);
 
-	private final IRunSQLMonitor migrationMonitor;
-	private final ExecutorService handlerExecutor = Executors.newFixedThreadPool(1);
-	private final HashMap<String, Integer> excelSheetIndexMap = new HashMap<String, Integer>();
-	private final WritableCellFormat normalCellStyle = getNormalCell();
-	private FinishAllFileEvent mfe;
-	private HashMap<String, WritableSheet> excelSheetMap;
-	private WritableWorkbook wwb;
-	private File excelFile;
-	private boolean hasErrData = false;
-	private boolean isStop = false;
+    private final IRunSQLMonitor migrationMonitor;
+    private final ExecutorService handlerExecutor = Executors.newFixedThreadPool(1);
+    private final HashMap<String, Integer> excelSheetIndexMap = new HashMap<String, Integer>();
+    private final WritableCellFormat normalCellStyle = getNormalCell();
+    private FinishAllFileEvent mfe;
+    private HashMap<String, WritableSheet> excelSheetMap;
+    private WritableWorkbook wwb;
+    private File excelFile;
+    private boolean hasErrData = false;
+    private boolean isStop = false;
 
-	public RunSQLEventHandler(IRunSQLMonitor migrationMonitor, File excelFile,
-			WritableWorkbook wwb, HashMap<String, WritableSheet> excelSheetMap) {
-		this.migrationMonitor = migrationMonitor;
-		this.excelSheetMap = excelSheetMap;
-		this.wwb = wwb;
-		this.excelFile = excelFile;
-	}
+    public RunSQLEventHandler(
+            IRunSQLMonitor migrationMonitor,
+            File excelFile,
+            WritableWorkbook wwb,
+            HashMap<String, WritableSheet> excelSheetMap) {
+        this.migrationMonitor = migrationMonitor;
+        this.excelSheetMap = excelSheetMap;
+        this.wwb = wwb;
+        this.excelFile = excelFile;
+    }
 
-	public void handleEvent(RunSQLEvent event) {
-		handlerExecutor.execute(new EventHandlerRunnable(event));
-	}
+    public void handleEvent(RunSQLEvent event) {
+        handlerExecutor.execute(new EventHandlerRunnable(event));
+    }
 
-	public void dispose() {
-		migrationMonitor.finished();
-		handlerExecutor.shutdown();
-	}
+    public void dispose() {
+        migrationMonitor.finished();
+        handlerExecutor.shutdown();
+    }
 
-	/**
-	 * <p>
-	 * Event Handler Runner class.
-	 * </p>
-	 *
-	 * @author fulei
-	 */
-	protected class EventHandlerRunnable implements
-			Runnable {
-		private final RunSQLEvent event;
+    /**
+     * Event Handler Runner class.
+     *
+     * @author fulei
+     */
+    protected class EventHandlerRunnable implements Runnable {
+        private final RunSQLEvent event;
 
-		public EventHandlerRunnable(RunSQLEvent event) {
-			this.event = event;
-		}
+        public EventHandlerRunnable(RunSQLEvent event) {
+            this.event = event;
+        }
 
-		public void run() {
-			try {
-				if (isStop()) {
-					return;
-				}
+        public void run() {
+            try {
+                if (isStop()) {
+                    return;
+                }
 
-				// After finished event, new event will not be accepted.
-				if (mfe != null) {
-					return;
-				}
+                // After finished event, new event will not be accepted.
+                if (mfe != null) {
+                    return;
+                }
 
-				if (event instanceof FinishAllFileEvent) {
-					// Only receives the first MigrationFinishedEvent.
-					mfe = (FinishAllFileEvent) event;
-					migrationMonitor.addEvent(event);
-					writeExcel();
-					dispose();
-				} else if (event instanceof SuccessEvent || event instanceof BeginOneFileEvent
-						|| event instanceof FinishOneFileEvent) {
-					migrationMonitor.addEvent(event);
-				} else if (event instanceof FailedEvent) {
-					migrationMonitor.addEvent(event);
-					hasErrData = true;
-					if (wwb != null) {
-						writeFailedInfoToExcel((FailedEvent) event);
-					}
-				}
-			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-	}
+                if (event instanceof FinishAllFileEvent) {
+                    // Only receives the first MigrationFinishedEvent.
+                    mfe = (FinishAllFileEvent) event;
+                    migrationMonitor.addEvent(event);
+                    writeExcel();
+                    dispose();
+                } else if (event instanceof SuccessEvent
+                        || event instanceof BeginOneFileEvent
+                        || event instanceof FinishOneFileEvent) {
+                    migrationMonitor.addEvent(event);
+                } else if (event instanceof FailedEvent) {
+                    migrationMonitor.addEvent(event);
+                    hasErrData = true;
+                    if (wwb != null) {
+                        writeFailedInfoToExcel((FailedEvent) event);
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+    }
 
-	/**
-	 * Write failed data to excel.
-	 *
-	 * @param event
-	 */
-	public void writeFailedInfoToExcel(FailedEvent event) { // FIXME logic code move to core module
-		WritableSheet sheet = excelSheetMap.get(event.getFileName());
-		Integer row = excelSheetIndexMap.get(event.getFileName());
-		if (row == null) {
-			row = 1;
-		}
+    /**
+     * Write failed data to excel.
+     *
+     * @param event
+     */
+    public void writeFailedInfoToExcel(FailedEvent event) { // FIXME logic code move to core module
+        WritableSheet sheet = excelSheetMap.get(event.getFileName());
+        Integer row = excelSheetIndexMap.get(event.getFileName());
+        if (row == null) {
+            row = 1;
+        }
 
-		try {
-			jxl.write.Number lineNmuber = new jxl.write.Number(0, row, event.getIndex(),
-					normalCellStyle);
-			sheet.addCell(lineNmuber);
-			jxl.write.Label sql = new jxl.write.Label(1, row, event.getSql(), normalCellStyle);
-			sheet.addCell(sql);
-			jxl.write.Label errMessage = new jxl.write.Label(2, row, event.getErrorMessage(),
-					normalCellStyle);
-			sheet.addCell(errMessage);
-			excelSheetIndexMap.put(event.getFileName(), ++row);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-	}
+        try {
+            jxl.write.Number lineNmuber =
+                    new jxl.write.Number(0, row, event.getIndex(), normalCellStyle);
+            sheet.addCell(lineNmuber);
+            jxl.write.Label sql = new jxl.write.Label(1, row, event.getSql(), normalCellStyle);
+            sheet.addCell(sql);
+            jxl.write.Label errMessage =
+                    new jxl.write.Label(2, row, event.getErrorMessage(), normalCellStyle);
+            sheet.addCell(errMessage);
+            excelSheetIndexMap.put(event.getFileName(), ++row);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 
-	/**
-	 * Write excel and close it
-	 */
-	public void writeExcel() {
-		if (wwb == null) {
-			return;
-		}
+    /** Write excel and close it */
+    public void writeExcel() {
+        if (wwb == null) {
+            return;
+        }
 
-		try {
-			wwb.write();
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-		} finally {
-			try {
-				if (wwb != null) {
-					wwb.close();
-					if (!hasErrData && excelFile != null) {
-						excelFile.delete();
-					}
-				}
-			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-	}
+        try {
+            wwb.write();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            try {
+                if (wwb != null) {
+                    wwb.close();
+                    if (!hasErrData && excelFile != null) {
+                        excelFile.delete();
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+    }
 
-	/**
-	 * Return the normal cell format.
-	 *
-	 * @return WritableCellFormat
-	 */
-	public static WritableCellFormat getNormalCell() { // FIXME logic code move to core module
-		WritableFont font = new WritableFont(WritableFont.TIMES, 12);
-		WritableCellFormat format = new WritableCellFormat(font);
-		try {
-			format.setAlignment(jxl.format.Alignment.LEFT);
-			format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);
-			format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-			format.setWrap(true);
-		} catch (WriteException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
+    /**
+     * Return the normal cell format.
+     *
+     * @return WritableCellFormat
+     */
+    public static WritableCellFormat getNormalCell() { // FIXME logic code move to core module
+        WritableFont font = new WritableFont(WritableFont.TIMES, 12);
+        WritableCellFormat format = new WritableCellFormat(font);
+        try {
+            format.setAlignment(jxl.format.Alignment.LEFT);
+            format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);
+            format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+            format.setWrap(true);
+        } catch (WriteException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
 
-		return format;
-	}
+        return format;
+    }
 
-	public HashMap<String, WritableSheet> getExcelSheetMap() {
-		return excelSheetMap;
-	}
+    public HashMap<String, WritableSheet> getExcelSheetMap() {
+        return excelSheetMap;
+    }
 
-	public void setExcelSheetMap(HashMap<String, WritableSheet> excelSheetMap) {
-		this.excelSheetMap = excelSheetMap;
-	}
+    public void setExcelSheetMap(HashMap<String, WritableSheet> excelSheetMap) {
+        this.excelSheetMap = excelSheetMap;
+    }
 
-	public WritableWorkbook getWwb() {
-		return wwb;
-	}
+    public WritableWorkbook getWwb() {
+        return wwb;
+    }
 
-	public void setWwb(WritableWorkbook wwb) {
-		this.wwb = wwb;
-	}
+    public void setWwb(WritableWorkbook wwb) {
+        this.wwb = wwb;
+    }
 
-	public boolean hasErrData() {
-		return hasErrData;
-	}
+    public boolean hasErrData() {
+        return hasErrData;
+    }
 
-	public boolean isStop() {
-		return isStop;
-	}
+    public boolean isStop() {
+        return isStop;
+    }
 
-	public void setStop(boolean isStop) {
-		this.isStop = isStop;
-	}
+    public void setStop(boolean isStop) {
+        this.isStop = isStop;
+    }
 }

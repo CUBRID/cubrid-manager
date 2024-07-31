@@ -29,47 +29,44 @@ package com.cubrid.cubridquery.ui.connection.editor;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.cubridquery.ui.spi.model.DatabaseUIWrapper;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.cubridquery.ui.spi.model.DatabaseUIWrapper;
+public class DatabaseInfoTableViewerContentProvider implements IStructuredContentProvider {
+    public void dispose() {
+        noOp();
+    }
 
-public class DatabaseInfoTableViewerContentProvider implements
-		IStructuredContentProvider {
-	public void dispose() {
-		noOp();
-	}
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        if (newInput instanceof List) {
+            List<DatabaseUIWrapper> outputs = new ArrayList<DatabaseUIWrapper>();
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (newInput instanceof List) {
-			List<DatabaseUIWrapper> outputs = new ArrayList<DatabaseUIWrapper>();
+            List list = (List) newInput;
+            for (Object obj : list) {
+                if (obj instanceof DatabaseUIWrapper) {
+                    break;
+                } else if (obj instanceof CubridDatabase) {
+                    DatabaseUIWrapper wrapper = new DatabaseUIWrapper((CubridDatabase) obj);
+                    outputs.add(list.indexOf(obj), wrapper);
+                }
+            }
+            if (!outputs.isEmpty()) {
+                list.clear();
+                list.addAll(outputs);
+            }
+        }
+    }
 
-			List list = (List) newInput;
-			for (Object obj : list) {
-				if (obj instanceof DatabaseUIWrapper) {
-					break;
-				} else if (obj instanceof CubridDatabase) {
-					DatabaseUIWrapper wrapper = new DatabaseUIWrapper((CubridDatabase) obj);
-					outputs.add(list.indexOf(obj), wrapper);
-				}
-			}
-			if (!outputs.isEmpty()) {
-				list.clear();
-				list.addAll(outputs);
-			}
-		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof List) {
-			return ((List) inputElement).toArray();
-		}
-		return new DatabaseUIWrapper[0];
-	}
+    @SuppressWarnings("rawtypes")
+    public Object[] getElements(Object inputElement) {
+        if (inputElement instanceof List) {
+            return ((List) inputElement).toArray();
+        }
+        return new DatabaseUIWrapper[0];
+    }
 }

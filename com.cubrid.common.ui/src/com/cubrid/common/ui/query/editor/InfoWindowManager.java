@@ -28,93 +28,97 @@
  */
 package com.cubrid.common.ui.query.editor;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.eclipse.ui.PlatformUI;
-
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.query.dialog.InformationWindow;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * The QueryEditor Information Window Manager
  *
  * @author Kevin.Wang
- *
  */
 public class InfoWindowManager {
-	private static InfoWindowManager instance;
-	private static InformationWindow informationWindow;
+    private static InfoWindowManager instance;
+    private static InformationWindow informationWindow;
 
-	private InfoWindowManager() {
-		Set<String> keyWords = new HashSet<String>();
-		keyWords.add(Messages.msgCalcInfoCount);
-		keyWords.add(Messages.msgCalcInfoSUM);
-		keyWords.add(Messages.msgCalcInfoAVG);
+    private InfoWindowManager() {
+        Set<String> keyWords = new HashSet<String>();
+        keyWords.add(Messages.msgCalcInfoCount);
+        keyWords.add(Messages.msgCalcInfoSUM);
+        keyWords.add(Messages.msgCalcInfoAVG);
 
-		informationWindow = new InformationWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-		informationWindow.open();
-		informationWindow.updateLocation();
-	}
+        informationWindow =
+                new InformationWindow(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+        informationWindow.open();
+        informationWindow.updateLocation();
+    }
 
-	/**
-	 * Get the instance
-	 *
-	 * @return
-	 */
-	public static InfoWindowManager getInstance() {
-		synchronized (InfoWindowManager.class) {
-			if (instance == null && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() != null
-					&& !PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().isDisposed()) {
-				instance = new InfoWindowManager();
-			}
-		}
-		return instance;
-	}
+    /**
+     * Get the instance
+     *
+     * @return
+     */
+    public static InfoWindowManager getInstance() {
+        synchronized (InfoWindowManager.class) {
+            if (instance == null
+                    && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() != null
+                    && !PlatformUI.getWorkbench()
+                            .getActiveWorkbenchWindow()
+                            .getShell()
+                            .isDisposed()) {
+                instance = new InfoWindowManager();
+            }
+        }
+        return instance;
+    }
 
-	/**
-	 * Set the information visible
-	 *
-	 * @param isVisible
-	 */
-	public synchronized static void setVisible(boolean isVisible) {
-		if (informationWindow != null && informationWindow.getShell() != null
-				&& !informationWindow.getShell().isDisposed()) {
-			informationWindow.getShell().setVisible(isVisible);
-		}
-	}
+    /**
+     * Set the information visible
+     *
+     * @param isVisible
+     */
+    public static synchronized void setVisible(boolean isVisible) {
+        if (informationWindow != null
+                && informationWindow.getShell() != null
+                && !informationWindow.getShell().isDisposed()) {
+            informationWindow.getShell().setVisible(isVisible);
+        }
+    }
 
-	public static boolean isVisible() {
-		if (informationWindow != null && informationWindow.getShell() != null
-				&& !informationWindow.getShell().isDisposed()) {
-			return informationWindow.getShell().isVisible();
-		}
+    public static boolean isVisible() {
+        if (informationWindow != null
+                && informationWindow.getShell() != null
+                && !informationWindow.getShell().isDisposed()) {
+            return informationWindow.getShell().isVisible();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Update the content
-	 *
-	 * @param queryResultTableCalcInfo
-	 */
-	public void updateContent(IInformationWindowNotifier notifier) {
-		if (notifier != null) {
-			informationWindow.updateInfo(notifier.getMessages(), notifier.getDecoratorWords());
-		} else {
-			informationWindow.updateInfo(null, null);
-		}
-	}
+    /**
+     * Update the content
+     *
+     * @param queryResultTableCalcInfo
+     */
+    public void updateContent(IInformationWindowNotifier notifier) {
+        if (notifier != null) {
+            informationWindow.updateInfo(notifier.getMessages(), notifier.getDecoratorWords());
+        } else {
+            informationWindow.updateInfo(null, null);
+        }
+    }
 
-	/**
-	 * Dispose
-	 */
-	public synchronized static void dispose() {
-		if (informationWindow != null && informationWindow.getShell() != null
-				&& !informationWindow.getShell().isDisposed()) {
-			informationWindow.close();
-		}
-		informationWindow = null;
-		instance = null;
-	}
+    /** Dispose */
+    public static synchronized void dispose() {
+        if (informationWindow != null
+                && informationWindow.getShell() != null
+                && !informationWindow.getShell().isDisposed()) {
+            informationWindow.close();
+        }
+        informationWindow = null;
+        instance = null;
+    }
 }

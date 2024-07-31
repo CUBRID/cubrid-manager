@@ -35,14 +35,14 @@ import java.util.List;
  * @author CHOE JUNGYEON
  */
 public class TrimTag extends SqlMapCondition {
-	private static final long serialVersionUID = 5071864812217053951L;
+    private static final long serialVersionUID = 5071864812217053951L;
 
-	public TrimTag() {
-		this.setType("trim");
-	}
+    public TrimTag() {
+        this.setType("trim");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return true;
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return true;
+    }
 }

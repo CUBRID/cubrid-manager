@@ -27,150 +27,147 @@
  */
 package com.cubrid.cubridmanager.ui.replication.editor.model;
 
+import com.cubrid.cubridmanager.core.common.model.PropertyChangeProvider;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 
-import com.cubrid.cubridmanager.core.common.model.PropertyChangeProvider;
-
 /**
- *
  * The node model object
  *
  * @author pangqiren
  * @version 1.0 - 2009-8-26 created by pangqiren
  */
-public class Node extends
-		PropertyChangeProvider {
+public class Node extends PropertyChangeProvider {
 
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 3906932274669630514L;
-	public final static String PROP_LOCATION = "PROP_LOCATION";
-	public final static String PROP_SIZE = "PROP_SIZE";
-	public final static String PROP_NAME = "PROP_NAME";
-	public final static String PROP_INPUTS = "PROP_INPUTS";
-	public final static String PROP_OUTPUTS = "PROP_OUTPUTS";
-	protected Point location = new Point(0, 0);
-	protected Dimension size = new Dimension(100, 150);
-	protected String name = "Node";
-	protected List<ArrowConnection> outputs = new ArrayList<ArrowConnection>();
-	protected List<ArrowConnection> inputs = new ArrayList<ArrowConnection>();
-	protected PropertyChangeProvider parentNode = null;
+    @SuppressWarnings("unused")
+    private static final long serialVersionUID = 3906932274669630514L;
 
-	public PropertyChangeProvider getParent() {
-		return parentNode;
-	}
+    public static final String PROP_LOCATION = "PROP_LOCATION";
+    public static final String PROP_SIZE = "PROP_SIZE";
+    public static final String PROP_NAME = "PROP_NAME";
+    public static final String PROP_INPUTS = "PROP_INPUTS";
+    public static final String PROP_OUTPUTS = "PROP_OUTPUTS";
+    protected Point location = new Point(0, 0);
+    protected Dimension size = new Dimension(100, 150);
+    protected String name = "Node";
+    protected List<ArrowConnection> outputs = new ArrayList<ArrowConnection>();
+    protected List<ArrowConnection> inputs = new ArrayList<ArrowConnection>();
+    protected PropertyChangeProvider parentNode = null;
 
-	public void setParent(PropertyChangeProvider parent) {
-		parentNode = parent;
-	}
+    public PropertyChangeProvider getParent() {
+        return parentNode;
+    }
 
-	/**
-	 * add connection to inputs & execute method of fireStructureChange()
-	 *
-	 * @param connection ArrowConnection
-	 */
-	public void addInput(ArrowConnection connection) {
-		this.inputs.add(connection);
-		fireStructureChange(PROP_INPUTS, connection);
-	}
+    public void setParent(PropertyChangeProvider parent) {
+        parentNode = parent;
+    }
 
-	/**
-	 * add connection to outputs & execute method of fireStructureChange()
-	 *
-	 * @param connection ArrowConnection
-	 */
-	public void addOutput(ArrowConnection connection) {
-		this.outputs.add(connection);
-		fireStructureChange(PROP_OUTPUTS, connection);
-	}
+    /**
+     * add connection to inputs & execute method of fireStructureChange()
+     *
+     * @param connection ArrowConnection
+     */
+    public void addInput(ArrowConnection connection) {
+        this.inputs.add(connection);
+        fireStructureChange(PROP_INPUTS, connection);
+    }
 
-	public List<ArrowConnection> getIncomingConnections() {
-		return this.inputs;
-	}
+    /**
+     * add connection to outputs & execute method of fireStructureChange()
+     *
+     * @param connection ArrowConnection
+     */
+    public void addOutput(ArrowConnection connection) {
+        this.outputs.add(connection);
+        fireStructureChange(PROP_OUTPUTS, connection);
+    }
 
-	public List<ArrowConnection> getOutgoingConnections() {
-		return this.outputs;
-	}
+    public List<ArrowConnection> getIncomingConnections() {
+        return this.inputs;
+    }
 
-	/**
-	 * remove connection to inputs & execute method of fireStructureChange()
-	 *
-	 * @param connection ArrowConnection
-	 */
-	public void removeInput(ArrowConnection connection) {
-		this.inputs.remove(connection);
-		fireStructureChange(PROP_INPUTS, connection);
-	}
+    public List<ArrowConnection> getOutgoingConnections() {
+        return this.outputs;
+    }
 
-	/**
-	 * remove connection from outputs & execute method of fireStructureChange()
-	 *
-	 * @param connection ArrowConnection
-	 */
-	public void removeOutput(ArrowConnection connection) {
-		this.outputs.remove(connection);
-		fireStructureChange(PROP_OUTPUTS, connection);
-	}
+    /**
+     * remove connection to inputs & execute method of fireStructureChange()
+     *
+     * @param connection ArrowConnection
+     */
+    public void removeInput(ArrowConnection connection) {
+        this.inputs.remove(connection);
+        fireStructureChange(PROP_INPUTS, connection);
+    }
 
-	public String getName() {
-		return name;
-	}
+    /**
+     * remove connection from outputs & execute method of fireStructureChange()
+     *
+     * @param connection ArrowConnection
+     */
+    public void removeOutput(ArrowConnection connection) {
+        this.outputs.remove(connection);
+        fireStructureChange(PROP_OUTPUTS, connection);
+    }
 
-	/**
-	 * set the name
-	 *
-	 * @param name String
-	 */
-	public void setName(String name) {
-		if (this.name.equals(name)) {
-			return;
-		}
-		this.name = name;
-		firePropertyChange(PROP_NAME, null, name);
-	}
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * set the location
-	 *
-	 * @param point Point
-	 */
-	public void setLocation(Point point) {
-		if (this.location.equals(point)) {
-			return;
-		}
-		this.location = point;
-		firePropertyChange(PROP_LOCATION, null, point);
-	}
+    /**
+     * set the name
+     *
+     * @param name String
+     */
+    public void setName(String name) {
+        if (this.name.equals(name)) {
+            return;
+        }
+        this.name = name;
+        firePropertyChange(PROP_NAME, null, name);
+    }
 
-	public Point getLocation() {
-		return location;
-	}
+    /**
+     * set the location
+     *
+     * @param point Point
+     */
+    public void setLocation(Point point) {
+        if (this.location.equals(point)) {
+            return;
+        }
+        this.location = point;
+        firePropertyChange(PROP_LOCATION, null, point);
+    }
 
-	/**
-	 * set the size
-	 *
-	 * @param dimension Dimension
-	 */
-	public void setSize(Dimension dimension) {
-		if (this.size.equals(dimension)) {
-			return;
-		}
-		this.size = dimension;
-		firePropertyChange(PROP_SIZE, null, dimension);
-	}
+    public Point getLocation() {
+        return location;
+    }
 
-	public Dimension getSize() {
-		return size;
-	}
+    /**
+     * set the size
+     *
+     * @param dimension Dimension
+     */
+    public void setSize(Dimension dimension) {
+        if (this.size.equals(dimension)) {
+            return;
+        }
+        this.size = dimension;
+        firePropertyChange(PROP_SIZE, null, dimension);
+    }
 
-	/**
-	 * @see com.cubrid.cubridmanager.ui.replication.editor.model.Node#isValid()
-	 * @return boolean
-	 */
-	public boolean isValid() {
-		return true;
-	}
+    public Dimension getSize() {
+        return size;
+    }
+
+    /**
+     * @see com.cubrid.cubridmanager.ui.replication.editor.model.Node#isValid()
+     * @return boolean
+     */
+    public boolean isValid() {
+        return true;
+    }
 }

@@ -33,34 +33,31 @@ import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 
 /**
  * CMS API "get_mon_interval"
- * 
+ *
  * @author Santiago Wang 2013-06-24
  */
-public class GetMonitorIntervalTask extends
-		SocketTask {
+public class GetMonitorIntervalTask extends SocketTask {
 
-	/**
-	 * The constructor
-	 * 
-	 * @param serverInfo
-	 */
-	public GetMonitorIntervalTask(ServerInfo serverInfo) {
-		super("get_mon_interval", serverInfo);
-	}
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public GetMonitorIntervalTask(ServerInfo serverInfo) {
+        super("get_mon_interval", serverInfo);
+    }
 
-	/**
-	 * Get the monitor statistic interval
-	 * 
-	 * @return monitor statistic interval
-	 */
-	public String getInterval() {
-		TreeNode node = getResponse();
-		if (node == null
-				|| (getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
-			return null;
-		}
-		String interval = node.getValue("interval");
-		return interval;
-	}
-
+    /**
+     * Get the monitor statistic interval
+     *
+     * @return monitor statistic interval
+     */
+    public String getInterval() {
+        TreeNode node = getResponse();
+        if (node == null || (getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
+            return null;
+        }
+        String interval = node.getValue("interval");
+        return interval;
+    }
 }

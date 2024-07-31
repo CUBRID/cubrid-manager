@@ -30,20 +30,20 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of isNull tag.
- * <isNull property="" prepend="" open="" close="" removeFirstPrepend="true"></isNull>
+ * A definition of isNull tag. <isNull property="" prepend="" open="" close=""
+ * removeFirstPrepend="true"></isNull>
  *
  * @author Bumsik, Jang
  */
 public class IsNullTag extends SqlMapCondition {
-	private static final long serialVersionUID = -6515269403263962944L;
+    private static final long serialVersionUID = -6515269403263962944L;
 
-	public IsNullTag() {
-		this.setType("isNull");
-	}
+    public IsNullTag() {
+        this.setType("isNull");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return !super.isMatchCondition(parameterList);
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return !super.isMatchCondition(parameterList);
+    }
 }

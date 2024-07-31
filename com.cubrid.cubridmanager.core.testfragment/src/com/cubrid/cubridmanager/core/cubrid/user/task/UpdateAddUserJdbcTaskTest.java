@@ -27,115 +27,112 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.user.task;
 
+import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
+import com.cubrid.cubridmanager.core.cubrid.table.model.ClassAuthorizations;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-import com.cubrid.cubridmanager.core.cubrid.table.model.ClassAuthorizations;
 
 /**
  * @author fulei
- * 
  * @version 1.0 - 2012-11-30 created by fulei
  */
+public class UpdateAddUserJdbcTaskTest extends SetupJDBCTestCase {
 
-public class UpdateAddUserJdbcTaskTest extends
-		SetupJDBCTestCase {
+    public void testUpdateUserAuthorizations() {
+        Map<String, ClassAuthorizations> authorizationsMap =
+                new HashMap<String, ClassAuthorizations>();
+        authorizationsMap.put("test_a1", new ClassAuthorizations());
+        Map<String, Object> authMap = new HashMap<String, Object>();
+        authMap.put("0", "test_a1");
+        authMap.put("1", true);
+        authMap.put("8", false);
+        authMap.put("2", true);
+        authMap.put("9", false);
+        authMap.put("3", true);
+        authMap.put("10", false);
+        authMap.put("4", true);
+        authMap.put("11", false);
+        authMap.put("5", true);
+        authMap.put("12", false);
+        authMap.put("6", true);
+        authMap.put("13", false);
+        authMap.put("7", true);
+        authMap.put("14", false);
+        ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        list.add(authMap);
+        UpdateAddUserJdbcTask task =
+                new UpdateAddUserJdbcTask(
+                        databaseInfo, "testuser", authorizationsMap, list, false, false);
+        task.setDba(false);
+        task.isDba();
+        task.execute();
 
-	public void testUpdateUserAuthorizations() {
-		Map<String, ClassAuthorizations> authorizationsMap = new HashMap<String, ClassAuthorizations>();
-		authorizationsMap.put("test_a1", new ClassAuthorizations());
-		Map<String, Object> authMap = new HashMap<String, Object>();
-		authMap.put("0", "test_a1");
-		authMap.put("1", true);
-		authMap.put("8", false);
-		authMap.put("2", true);
-		authMap.put("9", false);
-		authMap.put("3", true);
-		authMap.put("10", false);
-		authMap.put("4", true);
-		authMap.put("11", false);
-		authMap.put("5", true);
-		authMap.put("12", false);
-		authMap.put("6", true);
-		authMap.put("13", false);
-		authMap.put("7", true);
-		authMap.put("14", false);
-		ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		list.add(authMap);
-		UpdateAddUserJdbcTask task = new UpdateAddUserJdbcTask(databaseInfo,
-				"testuser", authorizationsMap, list, false, false);
-		task.setDba(false);
-		task.isDba();
-		task.execute();
+        authMap = new HashMap<String, Object>();
+        authMap.put("0", "test_a1");
+        authMap.put("1", false);
+        authMap.put("8", true);
+        authMap.put("2", false);
+        authMap.put("9", true);
+        authMap.put("3", false);
+        authMap.put("10", true);
+        authMap.put("4", false);
+        authMap.put("11", true);
+        authMap.put("5", false);
+        authMap.put("12", true);
+        authMap.put("6", false);
+        authMap.put("13", true);
+        authMap.put("7", false);
+        authMap.put("14", true);
+        list.clear();
+        list.add(authMap);
+        task =
+                new UpdateAddUserJdbcTask(
+                        databaseInfo, "testuser", authorizationsMap, list, false, false);
+        task.execute();
 
-		authMap = new HashMap<String, Object>();
-		authMap.put("0", "test_a1");
-		authMap.put("1", false);
-		authMap.put("8", true);
-		authMap.put("2", false);
-		authMap.put("9", true);
-		authMap.put("3", false);
-		authMap.put("10", true);
-		authMap.put("4", false);
-		authMap.put("11", true);
-		authMap.put("5", false);
-		authMap.put("12", true);
-		authMap.put("6", false);
-		authMap.put("13", true);
-		authMap.put("7", false);
-		authMap.put("14", true);
-		list.clear();
-		list.add(authMap);
-		task = new UpdateAddUserJdbcTask(databaseInfo, "testuser",
-				authorizationsMap, list, false, false);
-		task.execute();
+        authMap = new HashMap<String, Object>();
+        authMap.put("0", "test_a1");
+        authMap.put("1", false);
+        authMap.put("2", false);
+        authMap.put("3", false);
+        authMap.put("4", false);
+        authMap.put("5", false);
+        authMap.put("6", false);
+        authMap.put("7", false);
+        authMap.put("8", false);
+        authMap.put("9", false);
+        authMap.put("10", false);
+        authMap.put("11", false);
+        authMap.put("12", false);
+        authMap.put("13", false);
+        authMap.put("14", false);
 
-		authMap = new HashMap<String, Object>();
-		authMap.put("0", "test_a1");
-		authMap.put("1", false);
-		authMap.put("2", false);
-		authMap.put("3", false);
-		authMap.put("4", false);
-		authMap.put("5", false);
-		authMap.put("6", false);
-		authMap.put("7", false);
-		authMap.put("8", false);
-		authMap.put("9", false);
-		authMap.put("10", false);
-		authMap.put("11", false);
-		authMap.put("12", false);
-		authMap.put("13", false);
-		authMap.put("14", false);
+        Map<String, Object> grantMap = new HashMap<String, Object>();
+        grantMap.put("0", "test_a1");
+        grantMap.put("1", true);
+        grantMap.put("2", true);
+        grantMap.put("3", true);
+        grantMap.put("4", true);
+        grantMap.put("5", true);
+        grantMap.put("6", true);
+        grantMap.put("7", true);
+        grantMap.put("8", true);
+        grantMap.put("9", true);
+        grantMap.put("10", true);
+        grantMap.put("11", true);
+        grantMap.put("12", true);
+        grantMap.put("13", true);
+        grantMap.put("14", true);
 
-		Map<String, Object> grantMap = new HashMap<String, Object>();
-		grantMap.put("0", "test_a1");
-		grantMap.put("1", true);
-		grantMap.put("2", true);
-		grantMap.put("3", true);
-		grantMap.put("4", true);
-		grantMap.put("5", true);
-		grantMap.put("6", true);
-		grantMap.put("7", true);
-		grantMap.put("8", true);
-		grantMap.put("9", true);
-		grantMap.put("10", true);
-		grantMap.put("11", true);
-		grantMap.put("12", true);
-		grantMap.put("13", true);
-		grantMap.put("14", true);
+        list.clear();
+        list.add(authMap);
 
-		list.clear();
-		list.add(authMap);
-
-		ArrayList<Map<String, Object>> listOld = new ArrayList<Map<String, Object>>();
-		listOld.add(grantMap);
-		task = new UpdateAddUserJdbcTask(databaseInfo, "testuser",
-				authorizationsMap, list, listOld, false, false);
-		task.execute();
-
-	}
+        ArrayList<Map<String, Object>> listOld = new ArrayList<Map<String, Object>>();
+        listOld.add(grantMap);
+        task =
+                new UpdateAddUserJdbcTask(
+                        databaseInfo, "testuser", authorizationsMap, list, listOld, false, false);
+        task.execute();
+    }
 }

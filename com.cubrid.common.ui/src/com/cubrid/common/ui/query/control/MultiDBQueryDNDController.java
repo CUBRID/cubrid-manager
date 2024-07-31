@@ -27,9 +27,10 @@
  */
 package com.cubrid.common.ui.query.control;
 
+import com.cubrid.common.ui.perspective.PerspectiveManager;
+import com.cubrid.common.ui.spi.model.ICubridNode;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -41,91 +42,80 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 
-import com.cubrid.common.ui.perspective.PerspectiveManager;
-import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
-/**
- * 
- * @author Kevin.Wang
- *
- */
+/** @author Kevin.Wang */
 public class MultiDBQueryDNDController {
-	
-	private static Map<String, TreeViewer> perspectiveTreeviewerMap = new HashMap<String, TreeViewer>();
-	private MultiDBQueryComposite multiDBQueryComposite;
-	
-	public MultiDBQueryDNDController(MultiDBQueryComposite multiDBQueryComposite, ContainerCheckedTreeViewer ctv) {
-		this.multiDBQueryComposite = multiDBQueryComposite;
-	}
-	
-	/**
-	 * 
-	 * Register the drag source
-	 * 
-	 * @param treeViewer TreeViewer
-	 */
-	public static void registerDragSource(String perspectiveId, TreeViewer treeViewer) {
-		synchronized (MultiDBQueryDNDController.class) {
-			if (perspectiveId != null && treeViewer != null) {
-				perspectiveTreeviewerMap.put(perspectiveId, treeViewer);
-			}
 
-		}
-	}
-	
-	/**
-	 * register drag source and DB tree target
-	 */
-	public void registerDropTarget() {
-		synchronized (this) {
-			DropTarget target = new DropTarget(multiDBQueryComposite,
-					DND.DROP_MOVE);
-			target.setTransfer(new Transfer[]{TextTransfer.getInstance() });
-			target.addDropListener(new DropTargetAdapter() {
-				/**
-				 * @see org.eclipse.swt.dnd.DropTargetAdapter#drop(org.eclipse.swt.dnd.DropTargetEvent)
-				 * @param event the information associated with the drop event
-				 */
-				public void drop(DropTargetEvent event) {
-					setTreeSelectedItems();
-				}
-			});
-		}
-	}
-	
-	/**
-	 * setTreeSelectedItems
-	 */
-	public void setTreeSelectedItems() {
-		//refresh to make the tree get the new item
-		
-		synchronized (this) {
-			//queryTree.refresh();
-			TreeViewer treeViewer = perspectiveTreeviewerMap.get(PerspectiveManager.getInstance().getCurrentPerspectiveId());
-			if (treeViewer == null) {
-				return;
-			}
-			ISelection selection = treeViewer.getSelection();
-			if (!(selection instanceof TreeSelection)) {
-				return;
-			}
-			
-			TreeSelection ts = (TreeSelection) selection;
-			Object[] objs = ts.toArray();
-			for (Object obj : objs) {
-				//			queryTree.setChecked(obj, true);
-				if (obj instanceof ICubridNode) {
-					multiDBQueryComposite.getSelectedNodes().add(
-							(ICubridNode) obj);
-				}
-			}
-			//		multiDBQueryComposite.initialIndex();
-			//refresh again make the new drag item can be selected
-			//		queryTree.refresh();
-			multiDBQueryComposite.setInput();
-			//queryTree.refresh();
-		}
-	}
-	
+    private static Map<String, TreeViewer> perspectiveTreeviewerMap =
+            new HashMap<String, TreeViewer>();
+    private MultiDBQueryComposite multiDBQueryComposite;
+
+    public MultiDBQueryDNDController(
+            MultiDBQueryComposite multiDBQueryComposite, ContainerCheckedTreeViewer ctv) {
+        this.multiDBQueryComposite = multiDBQueryComposite;
+    }
+
+    /**
+     * Register the drag source
+     *
+     * @param treeViewer TreeViewer
+     */
+    public static void registerDragSource(String perspectiveId, TreeViewer treeViewer) {
+        synchronized (MultiDBQueryDNDController.class) {
+            if (perspectiveId != null && treeViewer != null) {
+                perspectiveTreeviewerMap.put(perspectiveId, treeViewer);
+            }
+        }
+    }
+
+    /** register drag source and DB tree target */
+    public void registerDropTarget() {
+        synchronized (this) {
+            DropTarget target = new DropTarget(multiDBQueryComposite, DND.DROP_MOVE);
+            target.setTransfer(new Transfer[] {TextTransfer.getInstance()});
+            target.addDropListener(
+                    new DropTargetAdapter() {
+                        /**
+                         * @see
+                         *     org.eclipse.swt.dnd.DropTargetAdapter#drop(org.eclipse.swt.dnd.DropTargetEvent)
+                         * @param event the information associated with the drop event
+                         */
+                        public void drop(DropTargetEvent event) {
+                            setTreeSelectedItems();
+                        }
+                    });
+        }
+    }
+
+    /** setTreeSelectedItems */
+    public void setTreeSelectedItems() {
+        // refresh to make the tree get the new item
+
+        synchronized (this) {
+            // queryTree.refresh();
+            TreeViewer treeViewer =
+                    perspectiveTreeviewerMap.get(
+                            PerspectiveManager.getInstance().getCurrentPerspectiveId());
+            if (treeViewer == null) {
+                return;
+            }
+            ISelection selection = treeViewer.getSelection();
+            if (!(selection instanceof TreeSelection)) {
+                return;
+            }
+
+            TreeSelection ts = (TreeSelection) selection;
+            Object[] objs = ts.toArray();
+            for (Object obj : objs) {
+                //			queryTree.setChecked(obj, true);
+                if (obj instanceof ICubridNode) {
+                    multiDBQueryComposite.getSelectedNodes().add((ICubridNode) obj);
+                }
+            }
+            //		multiDBQueryComposite.initialIndex();
+            // refresh again make the new drag item can be selected
+            //		queryTree.refresh();
+            multiDBQueryComposite.setInput();
+            // queryTree.refresh();
+        }
+    }
 }

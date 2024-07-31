@@ -27,43 +27,39 @@
  */
 package com.cubrid.common.ui.common.sqlrunner.event;
 
-/**
- * @author fulei
- */
-
+/** @author fulei */
 public class FailedEvent extends RunSQLEvent {
-	private String fileName;
-	private String sql;
-	private long index = 0;
-	private String errorMessage;
-	private int workSize;
-	
-	public FailedEvent(String fileName, String sql, long index,
-			String errorMessage, int workSize) {
-		this.fileName = fileName;
-		this.sql = sql;
-		this.index = index;
-		this.errorMessage = errorMessage;
-		this.workSize = workSize;
-	}
-	
-	public String getFileName() {
-		return this.fileName;
-	}
-	
-	public String getSql() {
-		return sql;
-	}
+    private String fileName;
+    private String sql;
+    private long index = 0;
+    private String errorMessage;
+    private int workSize;
 
-	public long getIndex() {
-		return index;
-	}
+    public FailedEvent(String fileName, String sql, long index, String errorMessage, int workSize) {
+        this.fileName = fileName;
+        this.sql = sql;
+        this.index = index;
+        this.errorMessage = errorMessage;
+        this.workSize = workSize;
+    }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    public String getFileName() {
+        return this.fileName;
+    }
 
-	public int getWorkSize() {
-		return workSize;
-	}
+    public String getSql() {
+        return sql;
+    }
+
+    public long getIndex() {
+        return index;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public int getWorkSize() {
+        return workSize;
+    }
 }

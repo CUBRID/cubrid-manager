@@ -29,18 +29,6 @@
  */
 package com.cubrid.common.ui.cubrid.table.export.handler;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.Closer;
 import com.cubrid.common.core.util.FileUtil;
 import com.cubrid.common.core.util.LogUtil;
@@ -59,6 +47,16 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetMetaDataProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
 
 /**
  * ExportToTxtHandler Description
@@ -66,290 +64,332 @@ import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
  * @author Kevin.Wang
  * @version 1.0 - 2013-5-24 created by Kevin.Wang
  */
-public class ExportToTxtHandler extends
-		AbsExportDataHandler {
-	private static final Logger LOGGER = LogUtil.getLogger(ExportToTxtHandler.class);
+public class ExportToTxtHandler extends AbsExportDataHandler {
+    private static final Logger LOGGER = LogUtil.getLogger(ExportToTxtHandler.class);
 
-	protected String surround = "";
-	protected String columnSeprator;
-	protected String rowSeprator;
+    protected String surround = "";
+    protected String columnSeprator;
+    protected String rowSeprator;
 
-	public ExportToTxtHandler(DatabaseInfo dbInfo, ExportConfig exportConfig,
-			IExportDataEventHandler exportDataEventHandler) {
-		super(dbInfo, exportConfig, exportDataEventHandler);
+    public ExportToTxtHandler(
+            DatabaseInfo dbInfo,
+            ExportConfig exportConfig,
+            IExportDataEventHandler exportDataEventHandler) {
+        super(dbInfo, exportConfig, exportDataEventHandler);
 
-		this.columnSeprator = exportConfig.getColumnDelimeter();
-		this.rowSeprator = exportConfig.getRowDelimeter();
-		if (columnSeprator.equals("")) {
-			columnSeprator = ",";
-		}
-		if (rowSeprator.equals("")) {
-			rowSeprator = StringUtil.CRLF;
-		}
-	}
+        this.columnSeprator = exportConfig.getColumnDelimeter();
+        this.rowSeprator = exportConfig.getRowDelimeter();
+        if (columnSeprator.equals("")) {
+            columnSeprator = ",";
+        }
+        if (rowSeprator.equals("")) {
+            rowSeprator = StringUtil.CRLF;
+        }
+    }
 
-	public void handle(String tableName) throws IOException, SQLException { // FIXME move this logic to core module
-		if (StringUtil.isEmpty(tableName)) {
-			return;
-		}
-		
-		long totalRecord = exportConfig.getTotalCount(tableName);
-		if (totalRecord == 0) {
-			return;
-		}
-		
-		if(exportConfig.isExportFromCache()){
-			exportFromCache(tableName);
-		}else{
-			exportByQuerying(tableName);
-		}
-	}
+    public void handle(String tableName)
+            throws IOException, SQLException { // FIXME move this logic to core module
+        if (StringUtil.isEmpty(tableName)) {
+            return;
+        }
 
-	public void exportByQuerying(String tableName) throws IOException, SQLException {
-		BufferedWriter fs = null;
-		Connection conn = null;
-		CUBRIDPreparedStatementProxy pStmt = null;
-		CUBRIDResultSetProxy rs = null;
-		boolean hasNextPage = true;
-		long totalRecord = exportConfig.getTotalCount(tableName);
-		long beginIndex = 1;
-		int exportedCount = 0;
-		String whereCondition = exportConfig.getWhereCondition(tableName);
-		boolean isExportedColumnTitles = false;
-		List<String> columnTitles = new ArrayList<String>();
-		try {
-			conn = getConnection();
-			fs = FileUtil.getBufferedWriter(exportConfig.getDataFilePath(tableName),
-					exportConfig.getFileCharset());
-			String sql = getSelectSQL(conn, tableName, dbInfo.isSupportUserSchema());
-			isPaginating = isPagination(tableName, sql, whereCondition);
-			while (hasNextPage) {
-				try {
-					String executeSQL = null;
-					if (isPaginating) {
-						long endIndex = beginIndex + RSPAGESIZE;
-						executeSQL = getExecuteSQL(sql, beginIndex, endIndex, whereCondition);
-						executeSQL = dbInfo.wrapShardQuery(executeSQL);
-						beginIndex = endIndex + 1;
-					} else {
-						executeSQL = getExecuteSQL(sql, whereCondition);
-						executeSQL = dbInfo.wrapShardQuery(sql);
-						beginIndex = totalRecord + 1;
-					}
+        long totalRecord = exportConfig.getTotalCount(tableName);
+        if (totalRecord == 0) {
+            return;
+        }
 
-					pStmt = getStatement(conn, executeSQL, tableName);
-					rs = (CUBRIDResultSetProxy) pStmt.executeQuery();
+        if (exportConfig.isExportFromCache()) {
+            exportFromCache(tableName);
+        } else {
+            exportByQuerying(tableName);
+        }
+    }
 
-					CUBRIDResultSetMetaDataProxy rsmt = (CUBRIDResultSetMetaDataProxy) rs.getMetaData();
-					int colCount = rsmt.getColumnCount();
-					// Init title
-					if (!isExportedColumnTitles) {
-						for (int j = 1; j < colCount; j++) {
+    public void exportByQuerying(String tableName) throws IOException, SQLException {
+        BufferedWriter fs = null;
+        Connection conn = null;
+        CUBRIDPreparedStatementProxy pStmt = null;
+        CUBRIDResultSetProxy rs = null;
+        boolean hasNextPage = true;
+        long totalRecord = exportConfig.getTotalCount(tableName);
+        long beginIndex = 1;
+        int exportedCount = 0;
+        String whereCondition = exportConfig.getWhereCondition(tableName);
+        boolean isExportedColumnTitles = false;
+        List<String> columnTitles = new ArrayList<String>();
+        try {
+            conn = getConnection();
+            fs =
+                    FileUtil.getBufferedWriter(
+                            exportConfig.getDataFilePath(tableName), exportConfig.getFileCharset());
+            String sql = getSelectSQL(conn, tableName, dbInfo.isSupportUserSchema());
+            isPaginating = isPagination(tableName, sql, whereCondition);
+            while (hasNextPage) {
+                try {
+                    String executeSQL = null;
+                    if (isPaginating) {
+                        long endIndex = beginIndex + RSPAGESIZE;
+                        executeSQL = getExecuteSQL(sql, beginIndex, endIndex, whereCondition);
+                        executeSQL = dbInfo.wrapShardQuery(executeSQL);
+                        beginIndex = endIndex + 1;
+                    } else {
+                        executeSQL = getExecuteSQL(sql, whereCondition);
+                        executeSQL = dbInfo.wrapShardQuery(sql);
+                        beginIndex = totalRecord + 1;
+                    }
 
-							String columnName = rsmt.getColumnName(j);
-							String columnType = rsmt.getColumnTypeName(j);
-							int precision = rsmt.getPrecision(j);
-							columnType = columnType == null ? "" : columnType;
-							setIsHasBigValue(columnType, precision);
-							columnTitles.add(columnName);
-						}
-						isExportedColumnTitles = true;
+                    pStmt = getStatement(conn, executeSQL, tableName);
+                    rs = (CUBRIDResultSetProxy) pStmt.executeQuery();
 
-						if (exportConfig.isFirstRowAsColumnName()) {
-							for (int j = 1; j < rsmt.getColumnCount() + 1; j++) {
-								fs.write(surround + rsmt.getColumnName(j) + surround);
-								if (j != rsmt.getColumnCount()) {
-									fs.write(columnSeprator);
-								}
-							}
-							fs.write(rowSeprator);
-							fs.flush();
-						}
-					}
+                    CUBRIDResultSetMetaDataProxy rsmt =
+                            (CUBRIDResultSetMetaDataProxy) rs.getMetaData();
+                    int colCount = rsmt.getColumnCount();
+                    // Init title
+                    if (!isExportedColumnTitles) {
+                        for (int j = 1; j < colCount; j++) {
 
-					while (rs.next()) {
-						writeNextLine(tableName, fs, rs, rsmt, columnSeprator, rowSeprator,
-								surround);
-						fs.write(rowSeprator);
-						exportedCount++;
-						if (exportedCount >= COMMIT_LINES) {
-							fs.flush();
-							exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(
-									tableName, exportedCount));
-							exportedCount = 0;
-						}
+                            String columnName = rsmt.getColumnName(j);
+                            String columnType = rsmt.getColumnTypeName(j);
+                            int precision = rsmt.getPrecision(j);
+                            columnType = columnType == null ? "" : columnType;
+                            setIsHasBigValue(columnType, precision);
+                            columnTitles.add(columnName);
+                        }
+                        isExportedColumnTitles = true;
 
-						if (stop) {
-							break;
-						}
-					}
-					exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(tableName,
-							exportedCount));
-					exportedCount = 0;
-				} catch (Exception e) {
-					LOGGER.error("", e);
-					exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(tableName));
-				} finally {
-					QueryUtil.freeQuery(pStmt, rs);
-				}
-				if (hasNextPage(beginIndex, totalRecord)) {
-					hasNextPage = true;
-					fs.write(rowSeprator);
-				} else {
-					hasNextPage = false;
-				}
+                        if (exportConfig.isFirstRowAsColumnName()) {
+                            for (int j = 1; j < rsmt.getColumnCount() + 1; j++) {
+                                fs.write(surround + rsmt.getColumnName(j) + surround);
+                                if (j != rsmt.getColumnCount()) {
+                                    fs.write(columnSeprator);
+                                }
+                            }
+                            fs.write(rowSeprator);
+                            fs.flush();
+                        }
+                    }
 
-				System.gc();
-			}
-		} finally {
-			QueryUtil.freeQuery(conn);
-			Closer.close(fs);
-		}
-	}
+                    while (rs.next()) {
+                        writeNextLine(
+                                tableName, fs, rs, rsmt, columnSeprator, rowSeprator, surround);
+                        fs.write(rowSeprator);
+                        exportedCount++;
+                        if (exportedCount >= COMMIT_LINES) {
+                            fs.flush();
+                            exportDataEventHandler.handleEvent(
+                                    new ExportDataSuccessEvent(tableName, exportedCount));
+                            exportedCount = 0;
+                        }
 
-	public void exportFromCache(String tableName) throws IOException {
-		BufferedWriter fs = null;
-		int exportedCount = 0;
-		ResultSetDataCache resultSetDataCache = exportConfig.getResultSetDataCache();
-		try {
-			fs = FileUtil.getBufferedWriter(exportConfig.getDataFilePath(tableName),
-					exportConfig.getFileCharset());
-			try {
+                        if (stop) {
+                            break;
+                        }
+                    }
+                    exportDataEventHandler.handleEvent(
+                            new ExportDataSuccessEvent(tableName, exportedCount));
+                    exportedCount = 0;
+                } catch (Exception e) {
+                    LOGGER.error("", e);
+                    exportDataEventHandler.handleEvent(
+                            new ExportDataFailedOneTableEvent(tableName));
+                } finally {
+                    QueryUtil.freeQuery(pStmt, rs);
+                }
+                if (hasNextPage(beginIndex, totalRecord)) {
+                    hasNextPage = true;
+                    fs.write(rowSeprator);
+                } else {
+                    hasNextPage = false;
+                }
 
-				List<ColumnInfo> columnInfos = resultSetDataCache.getColumnInfos();
-				int colCount = columnInfos.size();
-				for (int j = 0; j < colCount; j++) {
-					fs.write(surround + columnInfos.get(j).getName() + surround);
-					if (j != colCount - 1) {
-						fs.write(columnSeprator);
-					}
-				}
-				fs.write(rowSeprator);
-				fs.flush();
+                System.gc();
+            }
+        } finally {
+            QueryUtil.freeQuery(conn);
+            Closer.close(fs);
+        }
+    }
 
-				List<ArrayList<Object>> datas = resultSetDataCache.getDatas();
-				for (ArrayList<Object> rowData : datas) {
-					writeNextLine(tableName, fs, columnInfos, rowData, columnSeprator, rowSeprator,
-							surround);
-					fs.write(rowSeprator);
-					exportedCount++;
-					if (exportedCount >= COMMIT_LINES) {
-						fs.flush();
-						exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(tableName,
-								exportedCount));
-						exportedCount = 0;
-					}
-					if (stop) {
-						break;
-					}
-				}
-				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(tableName,
-						exportedCount));
-				exportedCount = 0;
-			} catch (Exception e) {
-				LOGGER.error("", e);
-				exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(tableName));
-			}
-			System.gc();
-		} finally {
-			Closer.close(fs);
-		}
-	}
+    public void exportFromCache(String tableName) throws IOException {
+        BufferedWriter fs = null;
+        int exportedCount = 0;
+        ResultSetDataCache resultSetDataCache = exportConfig.getResultSetDataCache();
+        try {
+            fs =
+                    FileUtil.getBufferedWriter(
+                            exportConfig.getDataFilePath(tableName), exportConfig.getFileCharset());
+            try {
 
-	/**
-	 * Write a line to a CSV file
-	 * 
-	 * @param fs BufferedWriter
-	 * @param rs CUBRIDResultSetProxy
-	 * @param rsmt CUBRIDResultSetMetaDataProxy
-	 * @throws SQLException The exception
-	 * @throws IOException The exception
-	 */
-	private void writeNextLine(String tableName, BufferedWriter fs, CUBRIDResultSetProxy rs,
-			CUBRIDResultSetMetaDataProxy rsmt, String columnSeprator, String rowSeprator,
-			String surround) throws SQLException, IOException { // FIXME move this logic to core module
-		int colCount = rsmt.getColumnCount();
-		for (int j = 1; j <= colCount; j++) {
-			String columnType = rsmt.getColumnTypeName(j);
-			int precision = rsmt.getPrecision(j);
-			columnType = FieldHandlerUtils.amendDataTypeByResult(rs, j, columnType);
-			setIsHasBigValue(columnType, precision);
-			Object value = null;
-			if (DataType.DATATYPE_BLOB.equals(columnType)) {
-				String fileName = exportBlobData(tableName, rs, j);
-				if (StringUtil.isNotEmpty(fileName)) {
-					value = DBAttrTypeFormatter.FILE_URL_PREFIX + tableName + BLOB_FOLDER_POSTFIX
-							+ File.separator + fileName;
-				} else {
-					value = DataType.NULL_EXPORT_FORMAT;
-				}
-			} else if (DataType.DATATYPE_CLOB.equals(columnType)) {
-				String fileName = exportClobData(tableName, rs, j);
-				if (StringUtil.isNotEmpty(fileName)) {
-					value = DBAttrTypeFormatter.FILE_URL_PREFIX + tableName + CLOB_FOLDER_POSTFIX
-							+ File.separator + fileName;
-				} else {
-					value = DataType.NULL_EXPORT_FORMAT;
-				}
-			} else {
-				value = FieldHandlerUtils.getRsValueForExport(columnType, rs, j,
-						exportConfig.getNULLValueTranslation());
-			}
+                List<ColumnInfo> columnInfos = resultSetDataCache.getColumnInfos();
+                int colCount = columnInfos.size();
+                for (int j = 0; j < colCount; j++) {
+                    fs.write(surround + columnInfos.get(j).getName() + surround);
+                    if (j != colCount - 1) {
+                        fs.write(columnSeprator);
+                    }
+                }
+                fs.write(rowSeprator);
+                fs.flush();
 
-			fs.write(surround);
-			fs.write(value.toString().replaceAll("\"", "\"\""));
-			fs.write(surround);
-			if (j != colCount) {
-				fs.write(columnSeprator);
-			}
-		}
-	}
+                List<ArrayList<Object>> datas = resultSetDataCache.getDatas();
+                for (ArrayList<Object> rowData : datas) {
+                    writeNextLine(
+                            tableName,
+                            fs,
+                            columnInfos,
+                            rowData,
+                            columnSeprator,
+                            rowSeprator,
+                            surround);
+                    fs.write(rowSeprator);
+                    exportedCount++;
+                    if (exportedCount >= COMMIT_LINES) {
+                        fs.flush();
+                        exportDataEventHandler.handleEvent(
+                                new ExportDataSuccessEvent(tableName, exportedCount));
+                        exportedCount = 0;
+                    }
+                    if (stop) {
+                        break;
+                    }
+                }
+                exportDataEventHandler.handleEvent(
+                        new ExportDataSuccessEvent(tableName, exportedCount));
+                exportedCount = 0;
+            } catch (Exception e) {
+                LOGGER.error("", e);
+                exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(tableName));
+            }
+            System.gc();
+        } finally {
+            Closer.close(fs);
+        }
+    }
 
-	/**
-	 * Write a line to a txt file
-	 * 
-	 * @param fs BufferedWriter
-	 * @param columns List<ColumnInfo>
-	 * @param rowValues List<Object>
-	 * @throws SQLException The exception
-	 * @throws IOException The exception
-	 */
-	private void writeNextLine(String tableName, BufferedWriter fs, List<ColumnInfo> columns,
-			List<Object> rowValues, String columnSeprator, String rowSeprator, String surround) throws SQLException, IOException {
-		int colCount = columns.size();
-		for (int j = 0; j < colCount; j++) {
-			String columnType = columns.get(j).getType();
-			int precision = columns.get(j).getPrecision();
-			setIsHasBigValue(columnType, precision);
-			Object value = null;
-			if (DataType.DATATYPE_BLOB.equals(columnType)) {
+    /**
+     * Write a line to a CSV file
+     *
+     * @param fs BufferedWriter
+     * @param rs CUBRIDResultSetProxy
+     * @param rsmt CUBRIDResultSetMetaDataProxy
+     * @throws SQLException The exception
+     * @throws IOException The exception
+     */
+    private void writeNextLine(
+            String tableName,
+            BufferedWriter fs,
+            CUBRIDResultSetProxy rs,
+            CUBRIDResultSetMetaDataProxy rsmt,
+            String columnSeprator,
+            String rowSeprator,
+            String surround)
+            throws SQLException, IOException { // FIXME move this logic to core module
+        int colCount = rsmt.getColumnCount();
+        for (int j = 1; j <= colCount; j++) {
+            String columnType = rsmt.getColumnTypeName(j);
+            int precision = rsmt.getPrecision(j);
+            columnType = FieldHandlerUtils.amendDataTypeByResult(rs, j, columnType);
+            setIsHasBigValue(columnType, precision);
+            Object value = null;
+            if (DataType.DATATYPE_BLOB.equals(columnType)) {
+                String fileName = exportBlobData(tableName, rs, j);
+                if (StringUtil.isNotEmpty(fileName)) {
+                    value =
+                            DBAttrTypeFormatter.FILE_URL_PREFIX
+                                    + tableName
+                                    + BLOB_FOLDER_POSTFIX
+                                    + File.separator
+                                    + fileName;
+                } else {
+                    value = DataType.NULL_EXPORT_FORMAT;
+                }
+            } else if (DataType.DATATYPE_CLOB.equals(columnType)) {
+                String fileName = exportClobData(tableName, rs, j);
+                if (StringUtil.isNotEmpty(fileName)) {
+                    value =
+                            DBAttrTypeFormatter.FILE_URL_PREFIX
+                                    + tableName
+                                    + CLOB_FOLDER_POSTFIX
+                                    + File.separator
+                                    + fileName;
+                } else {
+                    value = DataType.NULL_EXPORT_FORMAT;
+                }
+            } else {
+                value =
+                        FieldHandlerUtils.getRsValueForExport(
+                                columnType, rs, j, exportConfig.getNULLValueTranslation());
+            }
 
-				String fileName = exportBlobData(tableName, (Blob) rowValues.get(j));
-				if (StringUtil.isNotEmpty(fileName)) {
-					value = DBAttrTypeFormatter.FILE_URL_PREFIX + tableName + BLOB_FOLDER_POSTFIX
-							+ File.separator + fileName;
-				} else {
-					value = DataType.NULL_EXPORT_FORMAT;
-				}
-			} else if (DataType.DATATYPE_CLOB.equals(columnType)) {
-				String fileName = exportClobData(tableName, (Clob) rowValues.get(j));
-				if (StringUtil.isNotEmpty(fileName)) {
-					value = DBAttrTypeFormatter.FILE_URL_PREFIX + tableName + CLOB_FOLDER_POSTFIX
-							+ File.separator + fileName;
-				} else {
-					value = DataType.NULL_EXPORT_FORMAT;
-				}
-			} else {
-				Object obj = rowValues.get(j);
-				value = (obj == null) ? exportConfig.getNULLValueTranslation() : obj;
-			}
+            fs.write(surround);
+            fs.write(value.toString().replaceAll("\"", "\"\""));
+            fs.write(surround);
+            if (j != colCount) {
+                fs.write(columnSeprator);
+            }
+        }
+    }
 
-			fs.write(surround);
-			fs.write(value.toString().replaceAll("\"", "\"\""));
-			fs.write(surround);
-			if (j != colCount - 1) {
-				fs.write(columnSeprator);
-			}
-		}
-	}
+    /**
+     * Write a line to a txt file
+     *
+     * @param fs BufferedWriter
+     * @param columns List<ColumnInfo>
+     * @param rowValues List<Object>
+     * @throws SQLException The exception
+     * @throws IOException The exception
+     */
+    private void writeNextLine(
+            String tableName,
+            BufferedWriter fs,
+            List<ColumnInfo> columns,
+            List<Object> rowValues,
+            String columnSeprator,
+            String rowSeprator,
+            String surround)
+            throws SQLException, IOException {
+        int colCount = columns.size();
+        for (int j = 0; j < colCount; j++) {
+            String columnType = columns.get(j).getType();
+            int precision = columns.get(j).getPrecision();
+            setIsHasBigValue(columnType, precision);
+            Object value = null;
+            if (DataType.DATATYPE_BLOB.equals(columnType)) {
+
+                String fileName = exportBlobData(tableName, (Blob) rowValues.get(j));
+                if (StringUtil.isNotEmpty(fileName)) {
+                    value =
+                            DBAttrTypeFormatter.FILE_URL_PREFIX
+                                    + tableName
+                                    + BLOB_FOLDER_POSTFIX
+                                    + File.separator
+                                    + fileName;
+                } else {
+                    value = DataType.NULL_EXPORT_FORMAT;
+                }
+            } else if (DataType.DATATYPE_CLOB.equals(columnType)) {
+                String fileName = exportClobData(tableName, (Clob) rowValues.get(j));
+                if (StringUtil.isNotEmpty(fileName)) {
+                    value =
+                            DBAttrTypeFormatter.FILE_URL_PREFIX
+                                    + tableName
+                                    + CLOB_FOLDER_POSTFIX
+                                    + File.separator
+                                    + fileName;
+                } else {
+                    value = DataType.NULL_EXPORT_FORMAT;
+                }
+            } else {
+                Object obj = rowValues.get(j);
+                value = (obj == null) ? exportConfig.getNULLValueTranslation() : obj;
+            }
+
+            fs.write(surround);
+            fs.write(value.toString().replaceAll("\"", "\"\""));
+            fs.write(surround);
+            if (j != colCount - 1) {
+                fs.write(columnSeprator);
+            }
+        }
+    }
 }

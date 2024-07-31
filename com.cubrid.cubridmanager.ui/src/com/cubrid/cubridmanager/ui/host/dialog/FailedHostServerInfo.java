@@ -31,24 +31,27 @@ import com.cubrid.common.ui.spi.model.CubridServer;
 
 public class FailedHostServerInfo {
 
-	private CubridServer cubridServer;
-	private String errConnectionMsg;
+    private CubridServer cubridServer;
+    private String errConnectionMsg;
 
-	public CubridServer getCubridServer() {
-		return cubridServer;
-	}
-	public void setCubridServer(CubridServer cubridServer) {
-		this.cubridServer = cubridServer;
-	}
-	public String getErrConnectionMsg() {
-		return errConnectionMsg;
-	}
-	public void setErrConnectionMsg(String errConnectionMsg) {
-		this.errConnectionMsg = errConnectionMsg;
-	}
+    public CubridServer getCubridServer() {
+        return cubridServer;
+    }
 
-	public FailedHostServerInfo(CubridServer cubridServer, String errConnectionMsg) {
-		this.cubridServer = cubridServer;
-		this.errConnectionMsg = errConnectionMsg;
-	}
+    public void setCubridServer(CubridServer cubridServer) {
+        this.cubridServer = cubridServer;
+    }
+
+    public String getErrConnectionMsg() {
+        return errConnectionMsg;
+    }
+
+    public void setErrConnectionMsg(String errConnectionMsg) {
+        this.errConnectionMsg = errConnectionMsg;
+    }
+
+    public FailedHostServerInfo(CubridServer cubridServer, String errConnectionMsg) {
+        this.cubridServer = cubridServer;
+        this.errConnectionMsg = errConnectionMsg;
+    }
 }

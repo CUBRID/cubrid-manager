@@ -27,8 +27,5 @@
  */
 package com.cubrid.common.ui.common.sqlrunner.event;
 
-/**
- * @author fulei
- */
-public class FinishAllFileEvent extends RunSQLEvent {
-}
+/** @author fulei */
+public class FinishAllFileEvent extends RunSQLEvent {}

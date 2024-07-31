@@ -39,63 +39,58 @@ import org.eclipse.swt.dnd.Transfer;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-2-1 created by fulei
  */
-
 public class UnifyHostConfigDialogDNDController {
-	
-	private static TreeViewer navigatorTreeViewer;
-	private UnifyHostConfigDialog dialog;
-	
-	public UnifyHostConfigDialogDNDController (UnifyHostConfigDialog dialog) {
-		this.dialog = dialog;
-	}
 
-	/**
-	 * Register the drag source
-	 *
-	 * @param treeViewer TreeViewer
-	 */
-	public static void registerDragSource(final TreeViewer treeViewer) {
-		synchronized (UnifyHostConfigDialogDNDController.class) {
-			UnifyHostConfigDialogDNDController.navigatorTreeViewer = treeViewer;
-		}
-	}
-	
-	/**
-	 * register drag source and DB tree target
-	 */
-	public void registerDropTarget() {
-		synchronized (this) {
-			DropTarget target = new DropTarget(dialog.getTableComposite(),
-					DND.DROP_MOVE);
-			target.setTransfer(new Transfer[]{TextTransfer.getInstance() });
-			target.addDropListener(new DropTargetAdapter() {
-				/**
-				 * @see org.eclipse.swt.dnd.DropTargetAdapter#drop(org.eclipse.swt.dnd.DropTargetEvent)
-				 * @param event the information associated with the drop event
-				 */
-				public void drop(DropTargetEvent event) {
-					addHost();
-				}
-			});
-		}
-	}
-	
-	/**
-	 * add database
-	 */
-	public void addHost() {
-		synchronized (this) {
-			ISelection selection = navigatorTreeViewer.getSelection();
-			if (!(selection instanceof TreeSelection)) {
-				return;
-			}
+    private static TreeViewer navigatorTreeViewer;
+    private UnifyHostConfigDialog dialog;
 
-			TreeSelection ts = (TreeSelection) selection;
-			Object[] objs = ts.toArray();
-			dialog.addHost(objs);
-		}
-	}
+    public UnifyHostConfigDialogDNDController(UnifyHostConfigDialog dialog) {
+        this.dialog = dialog;
+    }
+
+    /**
+     * Register the drag source
+     *
+     * @param treeViewer TreeViewer
+     */
+    public static void registerDragSource(final TreeViewer treeViewer) {
+        synchronized (UnifyHostConfigDialogDNDController.class) {
+            UnifyHostConfigDialogDNDController.navigatorTreeViewer = treeViewer;
+        }
+    }
+
+    /** register drag source and DB tree target */
+    public void registerDropTarget() {
+        synchronized (this) {
+            DropTarget target = new DropTarget(dialog.getTableComposite(), DND.DROP_MOVE);
+            target.setTransfer(new Transfer[] {TextTransfer.getInstance()});
+            target.addDropListener(
+                    new DropTargetAdapter() {
+                        /**
+                         * @see
+                         *     org.eclipse.swt.dnd.DropTargetAdapter#drop(org.eclipse.swt.dnd.DropTargetEvent)
+                         * @param event the information associated with the drop event
+                         */
+                        public void drop(DropTargetEvent event) {
+                            addHost();
+                        }
+                    });
+        }
+    }
+
+    /** add database */
+    public void addHost() {
+        synchronized (this) {
+            ISelection selection = navigatorTreeViewer.getSelection();
+            if (!(selection instanceof TreeSelection)) {
+                return;
+            }
+
+            TreeSelection ts = (TreeSelection) selection;
+            Object[] objs = ts.toArray();
+            dialog.addHost(objs);
+        }
+    }
 }

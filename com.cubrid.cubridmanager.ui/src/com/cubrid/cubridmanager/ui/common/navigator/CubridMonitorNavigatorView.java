@@ -27,23 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.common.navigator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.TreeExpansionEvent;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.contexts.IContextService;
-
 import com.cubrid.common.ui.common.action.ShowToolTipAction;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
 import com.cubrid.common.ui.common.navigator.DeferredContentProvider;
@@ -64,250 +47,258 @@ import com.cubrid.cubridmanager.ui.spi.model.CubridNodeTypeManager;
 import com.cubrid.cubridmanager.ui.spi.persist.CMGroupNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.MonitorDashboardPersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.MonitorStatisticPersistManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.contexts.IContextService;
 
 /**
- *
  * CUBRID Monitor dash board navigator view part
  *
  * @author pangqiren
  * @version 1.0 - 2010-5-27 created by pangqiren
  */
-public class CubridMonitorNavigatorView extends
-		CubridNavigatorView {
+public class CubridMonitorNavigatorView extends CubridNavigatorView {
 
-	public static final String ID = "com.cubrid.cubridmanager.dashboard.navigator";
+    public static final String ID = "com.cubrid.cubridmanager.dashboard.navigator";
 
-	/**
-	 * It does't support group nodes.
-	 *
-	 * @return false.
-	 */
-	protected boolean isSupportGroup() {
-		return false;
-	}
+    /**
+     * It does't support group nodes.
+     *
+     * @return false.
+     */
+    protected boolean isSupportGroup() {
+        return false;
+    }
 
-	/**
-	 * Create the navigator
-	 *
-	 */
-	protected void createNavigator() {
-		tv.setContentProvider(new DeferredContentProvider());
-		tv.setLabelProvider(new NavigatorTreeLabelProvider());
-		tv.addDoubleClickListener(LayoutManager.getInstance());
-		tv.addTreeListener(new ITreeViewerListener() {
-			public void treeCollapsed(TreeExpansionEvent event) {
-				CommonUITool.clearExpandedElements(tv);
-			}
+    /** Create the navigator */
+    protected void createNavigator() {
+        tv.setContentProvider(new DeferredContentProvider());
+        tv.setLabelProvider(new NavigatorTreeLabelProvider());
+        tv.addDoubleClickListener(LayoutManager.getInstance());
+        tv.addTreeListener(
+                new ITreeViewerListener() {
+                    public void treeCollapsed(TreeExpansionEvent event) {
+                        CommonUITool.clearExpandedElements(tv);
+                    }
 
-			public void treeExpanded(TreeExpansionEvent event) {
-				CommonUITool.clearExpandedElements(tv);
-			}
-		});
+                    public void treeExpanded(TreeExpansionEvent event) {
+                        CommonUITool.clearExpandedElements(tv);
+                    }
+                });
 
-		tv.setInput(getTreeViewerInput());
-	}
+        tv.setInput(getTreeViewerInput());
+    }
 
-	/**
-	 *
-	 * Build the context menu
-	 *
-	 * @param menuManager IMenuManager
-	 */
-	protected void buildPopupMenu(final IMenuManager menuManager) {
+    /**
+     * Build the context menu
+     *
+     * @param menuManager IMenuManager
+     */
+    protected void buildPopupMenu(final IMenuManager menuManager) {
 
-		IStructuredSelection selection = (IStructuredSelection) tv.getSelection();
-		if (selection == null || selection.isEmpty()) {
-			ActionManager.addActionToManager(menuManager,
-					ActionManager.getInstance().getAction(
-							AddMonitorDashboardAction.ID));
-			ActionManager.addActionToManager(menuManager,
-					ActionManager.getInstance().getAction(
-							AddMonitorStatisticPageAction.ID));
-			return;
-		}
-		ICubridNode node = null;
-		Object obj = selection.getFirstElement();
-		if (obj instanceof ICubridNode) {
-			node = (ICubridNode) obj;
-		} else {
-			ActionManager.addActionToManager(menuManager,
-					ActionManager.getInstance().getAction(
-							AddMonitorDashboardAction.ID));
-			ActionManager.addActionToManager(menuManager,
-					ActionManager.getInstance().getAction(
-							AddMonitorStatisticPageAction.ID));
-			return;
-		}
-		ActionManager.getInstance().setActionsMenu(menuManager);
-		if (CubridNodeTypeManager.isCanRefresh(node.getType())) {
-			menuManager.add(new Separator());
-			ActionManager.addActionToManager(menuManager,
-					ActionManager.getInstance().getAction(RefreshAction.ID));
-		}
-	}
+        IStructuredSelection selection = (IStructuredSelection) tv.getSelection();
+        if (selection == null || selection.isEmpty()) {
+            ActionManager.addActionToManager(
+                    menuManager,
+                    ActionManager.getInstance().getAction(AddMonitorDashboardAction.ID));
+            ActionManager.addActionToManager(
+                    menuManager,
+                    ActionManager.getInstance().getAction(AddMonitorStatisticPageAction.ID));
+            return;
+        }
+        ICubridNode node = null;
+        Object obj = selection.getFirstElement();
+        if (obj instanceof ICubridNode) {
+            node = (ICubridNode) obj;
+        } else {
+            ActionManager.addActionToManager(
+                    menuManager,
+                    ActionManager.getInstance().getAction(AddMonitorDashboardAction.ID));
+            ActionManager.addActionToManager(
+                    menuManager,
+                    ActionManager.getInstance().getAction(AddMonitorStatisticPageAction.ID));
+            return;
+        }
+        ActionManager.getInstance().setActionsMenu(menuManager);
+        if (CubridNodeTypeManager.isCanRefresh(node.getType())) {
+            menuManager.add(new Separator());
+            ActionManager.addActionToManager(
+                    menuManager, ActionManager.getInstance().getAction(RefreshAction.ID));
+        }
+    }
 
-	/**
-	 * Active the navigator context
-	 */
-	protected void activeContext() {
-		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
-		if (contextService != null) {
-			contextService.activateContext("com.cubrid.cubridmanager.contexts.navigator");
-		}
-	}
+    /** Active the navigator context */
+    protected void activeContext() {
+        IContextService contextService =
+                (IContextService) getSite().getService(IContextService.class);
+        if (contextService != null) {
+            contextService.activateContext("com.cubrid.cubridmanager.contexts.navigator");
+        }
+    }
 
-	/**
-	 *
-	 * Add listener
-	 *
-	 */
-	protected void addListener() {
-		tv.getTree().addMouseListener(new MouseAdapter() {
-			public void mouseUp(MouseEvent event) {
-				if (event.button == 1
-						&& LayoutManager.getInstance().isUseClickOnce()) {
-					ISelection selection = tv.getSelection();
-					if (selection == null || selection.isEmpty()) {
-						return;
-					}
-					Object obj = ((IStructuredSelection) selection).getFirstElement();
-					if (!(obj instanceof ICubridNode)) {
-						return;
-					}
-					ICubridNode cubridNode = (ICubridNode) obj;
-					if (CubridNodeType.MONITOR_DASHBOARD.equals(cubridNode.getType())) {
-						ISelectionAction action = (ISelectionAction) ActionManager.getInstance().getAction(
-								OpenMonitorDashboardAction.ID);
-						if (action != null && action.isSupported(cubridNode)) {
-							action.run();
-							return;
-						}
-					} else {
-						LayoutManager.getInstance().getWorkbenchContrItem().openEditorOrView(
-								cubridNode);
-					}
-				}
-			}
-		});
-	}
+    /** Add listener */
+    protected void addListener() {
+        tv.getTree()
+                .addMouseListener(
+                        new MouseAdapter() {
+                            public void mouseUp(MouseEvent event) {
+                                if (event.button == 1
+                                        && LayoutManager.getInstance().isUseClickOnce()) {
+                                    ISelection selection = tv.getSelection();
+                                    if (selection == null || selection.isEmpty()) {
+                                        return;
+                                    }
+                                    Object obj =
+                                            ((IStructuredSelection) selection).getFirstElement();
+                                    if (!(obj instanceof ICubridNode)) {
+                                        return;
+                                    }
+                                    ICubridNode cubridNode = (ICubridNode) obj;
+                                    if (CubridNodeType.MONITOR_DASHBOARD.equals(
+                                            cubridNode.getType())) {
+                                        ISelectionAction action =
+                                                (ISelectionAction)
+                                                        ActionManager.getInstance()
+                                                                .getAction(
+                                                                        OpenMonitorDashboardAction
+                                                                                .ID);
+                                        if (action != null && action.isSupported(cubridNode)) {
+                                            action.run();
+                                            return;
+                                        }
+                                    } else {
+                                        LayoutManager.getInstance()
+                                                .getWorkbenchContrItem()
+                                                .openEditorOrView(cubridNode);
+                                    }
+                                }
+                            }
+                        });
+    }
 
-	/**
-	 * Call this method when focus
-	 */
-	public void setFocus() {
-		if (tv != null && tv.getControl() != null
-				&& !tv.getControl().isDisposed()) {
-			tv.getControl().setFocus();
-			// select the first element by default
-			int count = tv.getTree().getSelectionCount();
-			TreeItem[] items = tv.getTree().getItems();
-			if (count == 0 && items != null && items.length > 0) {
-				tv.getTree().select(items[0]);
-			}
-			ActionManager.getInstance().changeSelectionProvider(tv);
-			LayoutManager.getInstance().changeSelectionProvider(tv);
-			CubridNodeManager.getInstance().addCubridNodeChangeListener(
-					LayoutManager.getInstance());
-		}
-	}
+    /** Call this method when focus */
+    public void setFocus() {
+        if (tv != null && tv.getControl() != null && !tv.getControl().isDisposed()) {
+            tv.getControl().setFocus();
+            // select the first element by default
+            int count = tv.getTree().getSelectionCount();
+            TreeItem[] items = tv.getTree().getItems();
+            if (count == 0 && items != null && items.length > 0) {
+                tv.getTree().select(items[0]);
+            }
+            ActionManager.getInstance().changeSelectionProvider(tv);
+            LayoutManager.getInstance().changeSelectionProvider(tv);
+            CubridNodeManager.getInstance()
+                    .addCubridNodeChangeListener(LayoutManager.getInstance());
+        }
+    }
 
-	/**
-	 *
-	 * Get tree viewer
-	 *
-	 * @return the TreeViewer
-	 */
-	public TreeViewer getViewer() {
-		return tv;
-	}
+    /**
+     * Get tree viewer
+     *
+     * @return the TreeViewer
+     */
+    public TreeViewer getViewer() {
+        return tv;
+    }
 
-	/**
-	 *
-	 * Build the view toolbar
-	 *
-	 * @param toolBarManager IToolBarManager
-	 */
-	protected void buildToolBar(IToolBarManager toolBarManager) {
-		// empty
-	}
+    /**
+     * Build the view toolbar
+     *
+     * @param toolBarManager IToolBarManager
+     */
+    protected void buildToolBar(IToolBarManager toolBarManager) {
+        // empty
+    }
 
-	/**
-	 *
-	 * Build the view menu
-	 *
-	 * @param menuManager IMenuManager
-	 */
-	protected void buildViewMenu(final IMenuManager menuManager) {
-		super.buildViewMenu(menuManager);
-		menuManager.remove(ShowToolTipAction.ID);
-	}
+    /**
+     * Build the view menu
+     *
+     * @param menuManager IMenuManager
+     */
+    protected void buildViewMenu(final IMenuManager menuManager) {
+        super.buildViewMenu(menuManager);
+        menuManager.remove(ShowToolTipAction.ID);
+    }
 
-	/**
-	 * Get the cubrid group node manager
-	 *
-	 * @return ICubridGroupNodeManager
-	 */
-	public ICubridGroupNodeManager getGroupNodeManager() {
-		return CMGroupNodePersistManager.getInstance();
-	}
+    /**
+     * Get the cubrid group node manager
+     *
+     * @return ICubridGroupNodeManager
+     */
+    public ICubridGroupNodeManager getGroupNodeManager() {
+        return CMGroupNodePersistManager.getInstance();
+    }
 
-	/**
-	 * Get all group items
-	 *
-	 * @return Object
-	 */
-	protected Object getGroupItems() {
-		return getTreeViewerInput();
-	}
+    /**
+     * Get all group items
+     *
+     * @return Object
+     */
+    protected Object getGroupItems() {
+        return getTreeViewerInput();
+    }
 
-	/**
-	 *
-	 * Get tooltip string
-	 *
-	 * @param cubridNode ICubridNode
-	 * @return String
-	 */
-	protected String getToolTip(ICubridNode cubridNode) {
-		return "";
-	}
+    /**
+     * Get tooltip string
+     *
+     * @param cubridNode ICubridNode
+     * @return String
+     */
+    protected String getToolTip(ICubridNode cubridNode) {
+        return "";
+    }
 
-	/**
-	 * Return whether support group
-	 *
-	 * @return boolean
-	 */
-	public boolean isShowGroup() {
-		return false;
-	}
+    /**
+     * Return whether support group
+     *
+     * @return boolean
+     */
+    public boolean isShowGroup() {
+        return false;
+    }
 
-	/**
-	 * Does the node support DND.
-	 *
-	 * @param data the draged node.
-	 * @return support or not.
-	 */
-	protected boolean dataSupportDND(TreeItem[] data) {
-		return false;
-	}
+    /**
+     * Does the node support DND.
+     *
+     * @param data the draged node.
+     * @return support or not.
+     */
+    protected boolean dataSupportDND(TreeItem[] data) {
+        return false;
+    }
 
-	/**
-	 * Does the node support DND.
-	 *
-	 * @param data the draged node.
-	 * @return support or not.
-	 */
-	protected boolean dataSupportDragOver(ICubridNode data) {
-		return false;
-	}
+    /**
+     * Does the node support DND.
+     *
+     * @param data the draged node.
+     * @return support or not.
+     */
+    protected boolean dataSupportDragOver(ICubridNode data) {
+        return false;
+    }
 
-	public static List<ICubridNode> getTreeViewerInput() {
-		List<ICubridNode> nodeList = new ArrayList<ICubridNode>();
-		List<ICubridNode> dashboardList = MonitorDashboardPersistManager.getInstance().getAllMonitorDashboards();
-		List<MonitorStatistic> monitorStatisticList = MonitorStatisticPersistManager.getInstance().getMonitorStatisticListByHostId(
-				null);
-		nodeList.addAll(dashboardList);
-		nodeList.addAll(monitorStatisticList);
-		Collections.sort(nodeList);
-		return nodeList;
-	}
+    public static List<ICubridNode> getTreeViewerInput() {
+        List<ICubridNode> nodeList = new ArrayList<ICubridNode>();
+        List<ICubridNode> dashboardList =
+                MonitorDashboardPersistManager.getInstance().getAllMonitorDashboards();
+        List<MonitorStatistic> monitorStatisticList =
+                MonitorStatisticPersistManager.getInstance().getMonitorStatisticListByHostId(null);
+        nodeList.addAll(dashboardList);
+        nodeList.addAll(monitorStatisticList);
+        Collections.sort(nodeList);
+        return nodeList;
+    }
 }

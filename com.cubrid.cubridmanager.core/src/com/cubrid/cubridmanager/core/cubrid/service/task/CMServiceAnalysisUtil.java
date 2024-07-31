@@ -27,102 +27,99 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.service.task;
 
-import java.util.List;
-import java.util.Map;
-
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.cubrid.service.model.DbLocationInfo;
 import com.cubrid.cubridmanager.core.cubrid.service.model.NodeType;
+import java.util.List;
+import java.util.Map;
 
 public class CMServiceAnalysisUtil {
 
-	public static boolean isLocalHost(String host) {
-		if ("localhost".equals(host) || "127.0.0.1".equals(host)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    public static boolean isLocalHost(String host) {
+        if ("localhost".equals(host) || "127.0.0.1".equals(host)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public static boolean isIp(String host) {
-		if (StringUtil.isEmpty(host)) {
-			return false;
-		}
-		boolean isIp = true;
-		String[] ar = host.split("\\.");
-		if (ar.length == 4) {
-			try {
-				for (String s : ar) {
-					int temp = Integer.parseInt(s);
-					if (temp < 0 || temp > 255) {
-						isIp = false;
-						break;
-					}
-				}
-			} catch (NumberFormatException e) {
-				isIp = false;
-			}
-		} else {
-			isIp = false;
-		}
-		return isIp;
-	}
+    public static boolean isIp(String host) {
+        if (StringUtil.isEmpty(host)) {
+            return false;
+        }
+        boolean isIp = true;
+        String[] ar = host.split("\\.");
+        if (ar.length == 4) {
+            try {
+                for (String s : ar) {
+                    int temp = Integer.parseInt(s);
+                    if (temp < 0 || temp > 255) {
+                        isIp = false;
+                        break;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                isIp = false;
+            }
+        } else {
+            isIp = false;
+        }
+        return isIp;
+    }
 
-	/**
-	 * Put DbLocationInfo(s) into
-	 * <i>dbLocationInfoList(List<DbLocationInfo>)</i>. DbLocationInfo is
-	 * constructed by the info stored in <i>dbParamMapList(List<Map<String,
-	 * String>>)</i>
-	 *
-	 * @param dbParamMapList
-	 * @param dbLocationInfoList
-	 */
-	public static void addDbLocaltionInfos(List<Map<String, String>> dbParamMapList,
-			List<DbLocationInfo> dbLocationInfoList) {
-		if (dbParamMapList == null || dbLocationInfoList == null) {
-			return;
-		}
+    /**
+     * Put DbLocationInfo(s) into <i>dbLocationInfoList(List<DbLocationInfo>)</i>. DbLocationInfo is
+     * constructed by the info stored in <i>dbParamMapList(List<Map<String, String>>)</i>
+     *
+     * @param dbParamMapList
+     * @param dbLocationInfoList
+     */
+    public static void addDbLocaltionInfos(
+            List<Map<String, String>> dbParamMapList, List<DbLocationInfo> dbLocationInfoList) {
+        if (dbParamMapList == null || dbLocationInfoList == null) {
+            return;
+        }
 
-		for (Map<String, String> dbParamMap : dbParamMapList) {
-			if (StringUtil.isEmpty(dbParamMap.get("db-name"))) {
-				continue;
-			}
-			DbLocationInfo dbLocalInfo = new DbLocationInfo();
-			dbLocalInfo.setDbName(dbParamMap.get("db-name"));
-			dbLocalInfo.setVolPath(dbParamMap.get("vol-path"));
-			if (!StringUtil.isEmpty(dbParamMap.get("db-host"))) {
-				String[] dbHostAr = dbParamMap.get("db-host").split(":");
-				dbLocalInfo.addAllDbHosts(dbHostAr);
-			}
-			dbLocalInfo.setLogPath(dbParamMap.get("log-path"));
-			dbLocalInfo.setLobBasePath(dbParamMap.get("lob-base-path"));
-			dbLocationInfoList.add(dbLocalInfo);
-		}
-	}
+        for (Map<String, String> dbParamMap : dbParamMapList) {
+            if (StringUtil.isEmpty(dbParamMap.get("db-name"))) {
+                continue;
+            }
+            DbLocationInfo dbLocalInfo = new DbLocationInfo();
+            dbLocalInfo.setDbName(dbParamMap.get("db-name"));
+            dbLocalInfo.setVolPath(dbParamMap.get("vol-path"));
+            if (!StringUtil.isEmpty(dbParamMap.get("db-host"))) {
+                String[] dbHostAr = dbParamMap.get("db-host").split(":");
+                dbLocalInfo.addAllDbHosts(dbHostAr);
+            }
+            dbLocalInfo.setLogPath(dbParamMap.get("log-path"));
+            dbLocalInfo.setLobBasePath(dbParamMap.get("lob-base-path"));
+            dbLocationInfoList.add(dbLocalInfo);
+        }
+    }
 
-	public static NodeType convertHaStatToNodeType(String status) {
-		if ("master".equals(status)) {
-			return NodeType.MASTER;
-		} else if ("slave".equals(status)) {
-			return NodeType.SLAVE;
-		} else if ("replica".equals(status)) {
-			return NodeType.REPLICA;
-		} else {
-			return NodeType.NORMAL;
-		}
-	}
+    public static NodeType convertHaStatToNodeType(String status) {
+        if ("master".equals(status)) {
+            return NodeType.MASTER;
+        } else if ("slave".equals(status)) {
+            return NodeType.SLAVE;
+        } else if ("replica".equals(status)) {
+            return NodeType.REPLICA;
+        } else {
+            return NodeType.NORMAL;
+        }
+    }
 
-	public static boolean isAccessedByRemoteHost(List<DbLocationInfo> dbLocationInfoList) {
-		boolean isSupported = false;
-		for (DbLocationInfo dbLocalInfo : dbLocationInfoList) {
-			for (String host : dbLocalInfo.getDbHosts()) {
-				if (!isLocalHost(host)) {
-					isSupported = true;
-					break;
-				}
-			}
-		}
+    public static boolean isAccessedByRemoteHost(List<DbLocationInfo> dbLocationInfoList) {
+        boolean isSupported = false;
+        for (DbLocationInfo dbLocalInfo : dbLocationInfoList) {
+            for (String host : dbLocalInfo.getDbHosts()) {
+                if (!isLocalHost(host)) {
+                    isSupported = true;
+                    break;
+                }
+            }
+        }
 
-		return isSupported;
-	}
+        return isSupported;
+    }
 }

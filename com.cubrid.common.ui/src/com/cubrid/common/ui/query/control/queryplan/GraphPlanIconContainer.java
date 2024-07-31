@@ -29,13 +29,12 @@ package com.cubrid.common.ui.query.control.queryplan;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.swt.graphics.Image;
 
 public class GraphPlanIconContainer {
-	private static final Map<String, Image> images = new HashMap<String, Image>();
+    private static final Map<String, Image> images = new HashMap<String, Image>();
 
-	public static Image getImage(String key) {
-		return images.get(key);
-	}
+    public static Image getImage(String key) {
+        return images.get(key);
+    }
 }

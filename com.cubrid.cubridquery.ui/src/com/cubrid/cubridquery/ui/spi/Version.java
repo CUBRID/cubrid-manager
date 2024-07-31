@@ -35,13 +35,13 @@ import org.eclipse.osgi.util.NLS;
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-public class Version extends
-		NLS {
-	static {
-		NLS.initializeMessages("version", Version.class);
-	}
-	public static String productName;
-	public static String releaseStr;
-	public static String releaseVersion;
-	public static String buildVersionId;
+public class Version extends NLS {
+    static {
+        NLS.initializeMessages("version", Version.class);
+    }
+
+    public static String productName;
+    public static String releaseStr;
+    public static String releaseVersion;
+    public static String buildVersionId;
 }

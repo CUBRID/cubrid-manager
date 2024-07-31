@@ -29,44 +29,42 @@
  */
 package com.cubrid.common.ui.cubrid.table.event;
 
-public class ExportDataSuccessEvent extends
-		ExportDataEvent {
+public class ExportDataSuccessEvent extends ExportDataEvent {
 
-	private String tableName;
-	private long index = 0;
-	private int successCount = 1;
+    private String tableName;
+    private long index = 0;
+    private int successCount = 1;
 
-	public ExportDataSuccessEvent(String tableName) {
-		this.tableName = tableName;
-	}
+    public ExportDataSuccessEvent(String tableName) {
+        this.tableName = tableName;
+    }
 
-	public ExportDataSuccessEvent(String tableName, int successCount) {
-		this.successCount = successCount;
-		this.tableName = tableName;
-	}
+    public ExportDataSuccessEvent(String tableName, int successCount) {
+        this.successCount = successCount;
+        this.tableName = tableName;
+    }
 
-	public String getTableName() {
-		return tableName;
-	}
+    public String getTableName() {
+        return tableName;
+    }
 
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
-	public long getIndex() {
-		return index;
-	}
+    public long getIndex() {
+        return index;
+    }
 
-	public void setIndex(long index) {
-		this.index = index;
-	}
+    public void setIndex(long index) {
+        this.index = index;
+    }
 
-	public int getSuccessCount() {
-		return successCount;
-	}
+    public int getSuccessCount() {
+        return successCount;
+    }
 
-	public void setSuccessCount(int successCount) {
-		this.successCount = successCount;
-	}
-
+    public void setSuccessCount(int successCount) {
+        this.successCount = successCount;
+    }
 }

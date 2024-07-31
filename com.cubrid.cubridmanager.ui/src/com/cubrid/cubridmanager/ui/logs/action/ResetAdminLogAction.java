@@ -28,16 +28,6 @@
  */
 package com.cubrid.cubridmanager.ui.logs.action;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.DefaultCubridNode;
@@ -54,129 +44,126 @@ import com.cubrid.cubridmanager.core.logs.task.ResetLogTask;
 import com.cubrid.cubridmanager.ui.logs.Messages;
 import com.cubrid.cubridmanager.ui.logs.editor.LogEditorPart;
 import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
 
 /**
- *
  * This action is responsible to reset admin log.
  *
  * @author wuyingshi
  * @version 1.0 - 2009-3-10 created by wuyingshi
  */
-public class ResetAdminLogAction extends
-		SelectionAction {
-	private static final Logger LOGGER = LogUtil.getLogger(LogViewAction.class);
-	public static final String ID = ResetAdminLogAction.class.getName();
+public class ResetAdminLogAction extends SelectionAction {
+    private static final Logger LOGGER = LogUtil.getLogger(LogViewAction.class);
+    public static final String ID = ResetAdminLogAction.class.getName();
 
-	/**
-	 * The Constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public ResetAdminLogAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The Constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public ResetAdminLogAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The Constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param textsss
-	 * @param icon
-	 */
-	public ResetAdminLogAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The Constructor
+     *
+     * @param shell
+     * @param provider
+     * @param textsss
+     * @param icon
+     */
+    public ResetAdminLogAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj Object
-	 * @return boolean(whether to support)
-	 */
-	public boolean isSupported(Object obj) {
-		if (obj instanceof ICubridNode) {
-			ICubridNode node = (ICubridNode) obj;
-			if (node.getServer() == null) {
-				return false;
-			}
-			ServerUserInfo serverUserInfo = node.getServer().getServerInfo().getLoginedUserInfo();
-			if (serverUserInfo == null || !serverUserInfo.isAdmin()) {
-				return false;
-			}
-			if (CubridNodeType.LOGS_BROKER_ADMIN_LOG.equals(node.getType())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj Object
+     * @return boolean(whether to support)
+     */
+    public boolean isSupported(Object obj) {
+        if (obj instanceof ICubridNode) {
+            ICubridNode node = (ICubridNode) obj;
+            if (node.getServer() == null) {
+                return false;
+            }
+            ServerUserInfo serverUserInfo = node.getServer().getServerInfo().getLoginedUserInfo();
+            if (serverUserInfo == null || !serverUserInfo.isAdmin()) {
+                return false;
+            }
+            if (CubridNodeType.LOGS_BROKER_ADMIN_LOG.equals(node.getType())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Reset Admin log
-	 */
-	public void run() {
-		if (!CommonUITool.openConfirmBox(Messages.warningResetAdminLog)) {
-			return;
-		}
-		Object[] selected = this.getSelectedObj();
-		LogInfo logInfo = (LogInfo) ((DefaultCubridNode) selected[0]).getAdapter(LogInfo.class);
-		ResetLogTask resetLogTask = new ResetLogTask(
-				((DefaultCubridNode) selected[0]).getServer().getServerInfo());
-		resetLogTask.setPath(logInfo.getPath());
-		TaskExecutor taskExecutor = new CommonTaskExec(
-				Messages.resetAdminLogTaskName);
-		taskExecutor.addTask(resetLogTask);
-		new ExecTaskWithProgress(taskExecutor).exec();
-		if (taskExecutor.isSuccess()) {
-			refreshLogEditor((ICubridNode) selected[0]);
-			CommonUITool.openInformationBox(Messages.msgSuccess,
-					Messages.msgDeleteAllLog);
-		}
-	}
+    /** Reset Admin log */
+    public void run() {
+        if (!CommonUITool.openConfirmBox(Messages.warningResetAdminLog)) {
+            return;
+        }
+        Object[] selected = this.getSelectedObj();
+        LogInfo logInfo = (LogInfo) ((DefaultCubridNode) selected[0]).getAdapter(LogInfo.class);
+        ResetLogTask resetLogTask =
+                new ResetLogTask(((DefaultCubridNode) selected[0]).getServer().getServerInfo());
+        resetLogTask.setPath(logInfo.getPath());
+        TaskExecutor taskExecutor = new CommonTaskExec(Messages.resetAdminLogTaskName);
+        taskExecutor.addTask(resetLogTask);
+        new ExecTaskWithProgress(taskExecutor).exec();
+        if (taskExecutor.isSuccess()) {
+            refreshLogEditor((ICubridNode) selected[0]);
+            CommonUITool.openInformationBox(Messages.msgSuccess, Messages.msgDeleteAllLog);
+        }
+    }
 
-	/**
-	 *
-	 * Refresh the log editor
-	 *
-	 * @param node ICubridNode
-	 */
-	private void refreshLogEditor(ICubridNode node) {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		IWorkbenchPage activePage = window.getActivePage();
-		IEditorPart editor = activePage.findEditor(node);
-		if (null != editor) {
-			LogInfo logInfo = (LogInfo) node.getAdapter(LogInfo.class);
-			TaskExecutor taskExecutor = new CommonTaskExec(
-					Messages.viewLogJobName);
-			GetLogListTask task = new GetLogListTask(
-					node.getServer().getServerInfo());
-			task.setPath(logInfo.getPath());
-			task.setStart("1");
-			task.setEnd("100");
-			taskExecutor.addTask(task);
-			new ExecTaskWithProgress(taskExecutor).busyCursorWhile();
-			LogContentInfo logContentInfo = (LogContentInfo) task.getLogContent();
-			try {
-				editor = window.getActivePage().openEditor(node,
-						LogEditorPart.ID);
-				((LogEditorPart) editor).setTableInfo(logContentInfo, true);
-			} catch (PartInitException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-	}
+    /**
+     * Refresh the log editor
+     *
+     * @param node ICubridNode
+     */
+    private void refreshLogEditor(ICubridNode node) {
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchPage activePage = window.getActivePage();
+        IEditorPart editor = activePage.findEditor(node);
+        if (null != editor) {
+            LogInfo logInfo = (LogInfo) node.getAdapter(LogInfo.class);
+            TaskExecutor taskExecutor = new CommonTaskExec(Messages.viewLogJobName);
+            GetLogListTask task = new GetLogListTask(node.getServer().getServerInfo());
+            task.setPath(logInfo.getPath());
+            task.setStart("1");
+            task.setEnd("100");
+            taskExecutor.addTask(task);
+            new ExecTaskWithProgress(taskExecutor).busyCursorWhile();
+            LogContentInfo logContentInfo = (LogContentInfo) task.getLogContent();
+            try {
+                editor = window.getActivePage().openEditor(node, LogEditorPart.ID);
+                ((LogEditorPart) editor).setTableInfo(logContentInfo, true);
+            } catch (PartInitException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+    }
 }

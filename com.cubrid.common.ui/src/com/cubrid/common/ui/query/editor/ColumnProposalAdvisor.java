@@ -29,22 +29,6 @@
  */
 package com.cubrid.common.ui.query.editor;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.DBAttribute;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
@@ -64,329 +48,348 @@ import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetAllSchemaTask;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetSchemaTask;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.slf4j.Logger;
 
 /**
- * 
  * ColumnProposalHandler Description
- * 
+ *
  * @author Kevin.Wang
  * @version 1.0 - 2013-4-8 created by Kevin.Wang
  */
-public class ColumnProposalAdvisor implements
-		ICubridNodeChangedListener {
-	private static final Logger LOGGER = LogUtil.getLogger(ColumnProposalAdvisor.class);
-	
-	private static ColumnProposalAdvisor instance = null;
-	
-	private static final Map<String, ColumnProposal> cachedMap = new HashMap<String, ColumnProposal>();
-	private static final Set<String> collectingKeys = new HashSet<String>();
+public class ColumnProposalAdvisor implements ICubridNodeChangedListener {
+    private static final Logger LOGGER = LogUtil.getLogger(ColumnProposalAdvisor.class);
 
-	/**
-	 * Get the instance
-	 * 
-	 * @return
-	 */
-	public static ColumnProposalAdvisor getInstance() {
-		synchronized (ColumnProposalAdvisor.class) {
-			if (instance == null) {
-				instance = new ColumnProposalAdvisor();
-			}
-		}
-		return instance;
-	}
+    private static ColumnProposalAdvisor instance = null;
 
-	/**
-	 * The constructor
-	 */
-	private ColumnProposalAdvisor() {
-		CubridNodeManager.getInstance().addCubridNodeChangeListener(this);
-	}
+    private static final Map<String, ColumnProposal> cachedMap =
+            new HashMap<String, ColumnProposal>();
+    private static final Set<String> collectingKeys = new HashSet<String>();
 
-	public ColumnProposal findProposal(final DatabaseInfo dbInfo) {
-		String key = makeKey(dbInfo);
-		ColumnProposal proposal = null;
+    /**
+     * Get the instance
+     *
+     * @return
+     */
+    public static ColumnProposalAdvisor getInstance() {
+        synchronized (ColumnProposalAdvisor.class) {
+            if (instance == null) {
+                instance = new ColumnProposalAdvisor();
+            }
+        }
+        return instance;
+    }
 
-		synchronized (ColumnProposalAdvisor.class) {
-			// TOOLS-4290, Performance issue
-			if (isMoreThan500Tables(dbInfo)) {
-				return null;
-			}
-			/*Judge whether loading*/
-			if (collectingKeys.contains(key)) {
-				return null;
-			}
-			proposal = cachedMap.get(key);
-		}
-		/*Load the data*/
-		if (proposal == null) {
-			loadProposal(dbInfo);
-		}
+    /** The constructor */
+    private ColumnProposalAdvisor() {
+        CubridNodeManager.getInstance().addCubridNodeChangeListener(this);
+    }
 
-		return proposal;
-	}
+    public ColumnProposal findProposal(final DatabaseInfo dbInfo) {
+        String key = makeKey(dbInfo);
+        ColumnProposal proposal = null;
 
-	private boolean isMoreThan500Tables(DatabaseInfo dbInfo) {
-		int count = 0;
-		Connection conn = null;
-		try {
-			conn = JDBCConnectionManager.getConnection(dbInfo, true);
-			count = (int) QueryUtil.countRecords(conn, "db_class");
-		} catch (SQLException e) {
-			LOGGER.error("", e);
-		} finally {
-			QueryUtil.freeQuery(conn);
-		}
-		return count > 500;
-	}
+        synchronized (ColumnProposalAdvisor.class) {
+            // TOOLS-4290, Performance issue
+            if (isMoreThan500Tables(dbInfo)) {
+                return null;
+            }
+            /*Judge whether loading*/
+            if (collectingKeys.contains(key)) {
+                return null;
+            }
+            proposal = cachedMap.get(key);
+        }
+        /*Load the data*/
+        if (proposal == null) {
+            loadProposal(dbInfo);
+        }
 
-	/**
-	 * load proposal for database
-	 * 
-	 * @param databaseInfo
-	 */
-	private void loadProposal(final DatabaseInfo databaseInfo) {
-		final String key = makeKey(databaseInfo);
-		Job job = new Job("Load database schema information job") {
-			protected IStatus run(IProgressMonitor monitor) {
-				List<String> tableNames = new ArrayList<String>();
-				Map<String, List<ColumnProposalDetailInfo>> columns = new HashMap<String, List<ColumnProposalDetailInfo>>();
-				GetAllSchemaTask task = null;
-				try {
-					task = new GetAllSchemaTask(databaseInfo, monitor);
-					task.setNeedCollationInfo(false);
-					task.execute();
+        return proposal;
+    }
 
-					/*Check is canceled*/
-					if (task.isCancel()) {
-						return Status.CANCEL_STATUS;
-					}
+    private boolean isMoreThan500Tables(DatabaseInfo dbInfo) {
+        int count = 0;
+        Connection conn = null;
+        try {
+            conn = JDBCConnectionManager.getConnection(dbInfo, true);
+            count = (int) QueryUtil.countRecords(conn, "db_class");
+        } catch (SQLException e) {
+            LOGGER.error("", e);
+        } finally {
+            QueryUtil.freeQuery(conn);
+        }
+        return count > 500;
+    }
 
-					if (task.isSuccess()) {
-						Map<String, SchemaInfo> schemas = task.getSchemas();
-						Map<String, SchemaComment> descriptions = task.getComments();
-						List<String> fetchedTableNames = new ArrayList<String>();
+    /**
+     * load proposal for database
+     *
+     * @param databaseInfo
+     */
+    private void loadProposal(final DatabaseInfo databaseInfo) {
+        final String key = makeKey(databaseInfo);
+        Job job =
+                new Job("Load database schema information job") {
+                    protected IStatus run(IProgressMonitor monitor) {
+                        List<String> tableNames = new ArrayList<String>();
+                        Map<String, List<ColumnProposalDetailInfo>> columns =
+                                new HashMap<String, List<ColumnProposalDetailInfo>>();
+                        GetAllSchemaTask task = null;
+                        try {
+                            task = new GetAllSchemaTask(databaseInfo, monitor);
+                            task.setNeedCollationInfo(false);
+                            task.execute();
 
-						for (SchemaInfo schemaInfo : schemas.values()) {
-							if (schemaInfo.isSystemClass()) {
-								continue;
-							}
+                            /*Check is canceled*/
+                            if (task.isCancel()) {
+                                return Status.CANCEL_STATUS;
+                            }
 
-							String tableName = schemaInfo.getUniqueName();
-							if (ConstantsUtil.isExtensionalSystemTable(tableName)) {
-								continue;
-							}
-							fetchedTableNames.add(tableName);
-						}
+                            if (task.isSuccess()) {
+                                Map<String, SchemaInfo> schemas = task.getSchemas();
+                                Map<String, SchemaComment> descriptions = task.getComments();
+                                List<String> fetchedTableNames = new ArrayList<String>();
 
-						Collections.sort(fetchedTableNames);
+                                for (SchemaInfo schemaInfo : schemas.values()) {
+                                    if (schemaInfo.isSystemClass()) {
+                                        continue;
+                                    }
 
-						for (String tableName : fetchedTableNames) {
-							if (!tableNames.contains(tableName)) {
-								tableNames.add(tableName);
-							}
-							if (columns.containsKey(tableName)) {
-								continue;
-							}
-							SchemaInfo schemaInfo = schemas.get(tableName);
-							if (schemaInfo == null) {
-								continue;
-							}
-							if (descriptions != null) {
-								SchemaComment schemaComment = SchemaCommentHandler.find(
-										descriptions, tableName, null);
-								if (schemaComment != null) {
-									String description = schemaComment.getDescription();
-									schemaInfo.setDescription(description);
-								}
-							}
+                                    String tableName = schemaInfo.getUniqueName();
+                                    if (ConstantsUtil.isExtensionalSystemTable(tableName)) {
+                                        continue;
+                                    }
+                                    fetchedTableNames.add(tableName);
+                                }
 
-							List<ColumnProposalDetailInfo> colInfoList = new ArrayList<ColumnProposalDetailInfo>();
-							columns.put(tableName, colInfoList);
+                                Collections.sort(fetchedTableNames);
 
-							List<DBAttribute> dbClassAttrList = schemaInfo.getClassAttributes();
-							for (DBAttribute attr : dbClassAttrList) {
-								ColumnProposalDetailInfo colInfo = new ColumnProposalDetailInfo(
-										schemaInfo, attr);
-								colInfoList.add(colInfo);
-							}
+                                for (String tableName : fetchedTableNames) {
+                                    if (!tableNames.contains(tableName)) {
+                                        tableNames.add(tableName);
+                                    }
+                                    if (columns.containsKey(tableName)) {
+                                        continue;
+                                    }
+                                    SchemaInfo schemaInfo = schemas.get(tableName);
+                                    if (schemaInfo == null) {
+                                        continue;
+                                    }
+                                    if (descriptions != null) {
+                                        SchemaComment schemaComment =
+                                                SchemaCommentHandler.find(
+                                                        descriptions, tableName, null);
+                                        if (schemaComment != null) {
+                                            String description = schemaComment.getDescription();
+                                            schemaInfo.setDescription(description);
+                                        }
+                                    }
 
-							List<DBAttribute> attrList = schemaInfo.getAttributes();
-							for (DBAttribute attr : attrList) {
-								ColumnProposalDetailInfo colInfo = new ColumnProposalDetailInfo(
-										schemaInfo, attr);
-								colInfoList.add(colInfo);
-							}
-							columns.put(schemaInfo.getUniqueName(), colInfoList);
-						}
-						/*Cache the data*/
-						ColumnProposal proposal = new ColumnProposal();
-						proposal.setTableNames(tableNames);
-						proposal.setColumns(columns);
-						synchronized (ColumnProposalAdvisor.class) {
-							cachedMap.put(key, proposal);
-						}
-					}
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-				} finally {
-					synchronized (ColumnProposalAdvisor.class) {
-						collectingKeys.remove(key);
-					}
-					task.finish();
-				}
+                                    List<ColumnProposalDetailInfo> colInfoList =
+                                            new ArrayList<ColumnProposalDetailInfo>();
+                                    columns.put(tableName, colInfoList);
 
-				return Status.OK_STATUS;
-			}
-		};
-		
-		/*Record collecting key*/
-		synchronized (ColumnProposalAdvisor.class) {
-			collectingKeys.add(key);
-			job.schedule();
-		}
-	}
+                                    List<DBAttribute> dbClassAttrList =
+                                            schemaInfo.getClassAttributes();
+                                    for (DBAttribute attr : dbClassAttrList) {
+                                        ColumnProposalDetailInfo colInfo =
+                                                new ColumnProposalDetailInfo(schemaInfo, attr);
+                                        colInfoList.add(colInfo);
+                                    }
 
-	/**
-	 * Load proposal for table
-	 * 
-	 * @param databaseInfo
-	 * @param tableName
-	 * @param proposal
-	 */
-	private void loadProposal(final DatabaseInfo databaseInfo,
-			final String tableName, final ColumnProposal proposal) {
-		Job job = new Job("Load schema information job") {
-			protected IStatus run(IProgressMonitor monitor) {
-				LOGGER.info("Load table info in ColumnProposalHandler");
-				GetSchemaTask getSchemaTask = null;
-				try {
-					getSchemaTask = new GetSchemaTask(databaseInfo, tableName, monitor);
-					getSchemaTask.setNeedCollationInfo(false);
-					getSchemaTask.execute();
+                                    List<DBAttribute> attrList = schemaInfo.getAttributes();
+                                    for (DBAttribute attr : attrList) {
+                                        ColumnProposalDetailInfo colInfo =
+                                                new ColumnProposalDetailInfo(schemaInfo, attr);
+                                        colInfoList.add(colInfo);
+                                    }
+                                    columns.put(schemaInfo.getUniqueName(), colInfoList);
+                                }
+                                /*Cache the data*/
+                                ColumnProposal proposal = new ColumnProposal();
+                                proposal.setTableNames(tableNames);
+                                proposal.setColumns(columns);
+                                synchronized (ColumnProposalAdvisor.class) {
+                                    cachedMap.put(key, proposal);
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                        } finally {
+                            synchronized (ColumnProposalAdvisor.class) {
+                                collectingKeys.remove(key);
+                            }
+                            task.finish();
+                        }
 
-					if (getSchemaTask.isSuccess()) {
-						SchemaInfo schemaInfo = getSchemaTask.getSchema();
-						if (schemaInfo != null) {
-							List<ColumnProposalDetailInfo> columnList = new ArrayList<ColumnProposalDetailInfo>();
-							for (DBAttribute attr : schemaInfo.getAttributes()) {
-								columnList.add(new ColumnProposalDetailInfo(schemaInfo, attr));
-							}
-							proposal.addSchemaInfo(tableName, schemaInfo, columnList);
-						}
-					}
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-				} finally {
-					getSchemaTask.finish();
-				}
-				return Status.OK_STATUS;
-			}
-		};
+                        return Status.OK_STATUS;
+                    }
+                };
 
-		job.schedule();
-	}
-	
-	/**
-	 * Remove proposal for database
-	 * 
-	 * @param dbInfo
-	 */
-	public void removeProposal(DatabaseInfo dbInfo) {
-		String key = makeKey(dbInfo);
-		cachedMap.remove(key);
-		collectingKeys.remove(key);
-	}
+        /*Record collecting key*/
+        synchronized (ColumnProposalAdvisor.class) {
+            collectingKeys.add(key);
+            job.schedule();
+        }
+    }
 
-	/**
-	 * Get database key
-	 * 
-	 * @param dbInfo
-	 * @return
-	 */
-	private String makeKey(DatabaseInfo dbInfo) {
-		String key = dbInfo.getBrokerIP() + ":" + dbInfo.getBrokerPort() + ":"
-				+ dbInfo.getDbName();
-		return key;
-	}
+    /**
+     * Load proposal for table
+     *
+     * @param databaseInfo
+     * @param tableName
+     * @param proposal
+     */
+    private void loadProposal(
+            final DatabaseInfo databaseInfo,
+            final String tableName,
+            final ColumnProposal proposal) {
+        Job job =
+                new Job("Load schema information job") {
+                    protected IStatus run(IProgressMonitor monitor) {
+                        LOGGER.info("Load table info in ColumnProposalHandler");
+                        GetSchemaTask getSchemaTask = null;
+                        try {
+                            getSchemaTask = new GetSchemaTask(databaseInfo, tableName, monitor);
+                            getSchemaTask.setNeedCollationInfo(false);
+                            getSchemaTask.execute();
 
-	/**
-	 * Remove the table from catch
-	 * 
-	 * @param databaseInfo
-	 * @param tableName
-	 */
-	private void removeTable(DatabaseInfo databaseInfo, String tableName) {
-		String key = makeKey(databaseInfo);
+                            if (getSchemaTask.isSuccess()) {
+                                SchemaInfo schemaInfo = getSchemaTask.getSchema();
+                                if (schemaInfo != null) {
+                                    List<ColumnProposalDetailInfo> columnList =
+                                            new ArrayList<ColumnProposalDetailInfo>();
+                                    for (DBAttribute attr : schemaInfo.getAttributes()) {
+                                        columnList.add(
+                                                new ColumnProposalDetailInfo(schemaInfo, attr));
+                                    }
+                                    proposal.addSchemaInfo(tableName, schemaInfo, columnList);
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                        } finally {
+                            getSchemaTask.finish();
+                        }
+                        return Status.OK_STATUS;
+                    }
+                };
 
-		ColumnProposal proposal = cachedMap.get(key);
-		if (proposal != null) {
-			proposal.removeSchemaInfo(tableName);
-		}
-	}
+        job.schedule();
+    }
 
-	/**
-	 * Refresh the table
-	 * 
-	 * @param databaseInfo
-	 * @param tableName
-	 */
-	private void refreshTable(final DatabaseInfo databaseInfo,
-			final String tableName) {
-		removeTable(databaseInfo, tableName);
-		String key = makeKey(databaseInfo);
-		final ColumnProposal proposal = cachedMap.get(key);
-		if (proposal == null) {
-			return;
-		}
-		loadProposal(databaseInfo, tableName, proposal);
-	}
+    /**
+     * Remove proposal for database
+     *
+     * @param dbInfo
+     */
+    public void removeProposal(DatabaseInfo dbInfo) {
+        String key = makeKey(dbInfo);
+        cachedMap.remove(key);
+        collectingKeys.remove(key);
+    }
 
-	/**
-	 * Perform node changed event
-	 */
-	public void nodeChanged(CubridNodeChangedEvent event) {
-		ICubridNode cubridNode = event.getCubridNode();
-		CubridNodeChangedEventType eventType = event.getType();
-		if (cubridNode == null || eventType == null) {
-			return;
-		}
+    /**
+     * Get database key
+     *
+     * @param dbInfo
+     * @return
+     */
+    private String makeKey(DatabaseInfo dbInfo) {
+        String key = dbInfo.getBrokerIP() + ":" + dbInfo.getBrokerPort() + ":" + dbInfo.getDbName();
+        return key;
+    }
 
-		if ((NodeType.USER_TABLE.equals(cubridNode.getType()) || NodeType.USER_VIEW.equals(cubridNode.getType()))
-				&& cubridNode instanceof DefaultSchemaNode) {
+    /**
+     * Remove the table from catch
+     *
+     * @param databaseInfo
+     * @param tableName
+     */
+    private void removeTable(DatabaseInfo databaseInfo, String tableName) {
+        String key = makeKey(databaseInfo);
 
-			DefaultSchemaNode schemaNode = (DefaultSchemaNode) cubridNode;
-			DatabaseInfo databaseInfo = schemaNode.getDatabase().getDatabaseInfo();
-			if (CubridNodeChangedEventType.NODE_REMOVE.equals(eventType)) {
-				removeTable(databaseInfo, schemaNode.getName());
-			} else if (CubridNodeChangedEventType.NODE_ADD.equals(eventType)
-					|| CubridNodeChangedEventType.NODE_REFRESH.equals(eventType)) {
-				refreshTable(databaseInfo, schemaNode.getName());
-			}
-		}
-		if(NodeType.DATABASE.equals(cubridNode.getType()) && cubridNode instanceof CubridDatabase) {
-			CubridDatabase database = (CubridDatabase)cubridNode;
-			if(CubridNodeChangedEventType.DATABASE_LOGIN.equals(eventType))  {
-				removeProposal(database.getDatabaseInfo());
-				findProposal(database.getDatabaseInfo());
-			}
-			
-			if(CubridNodeChangedEventType.DATABASE_LOGOUT.equals(eventType)) {
-				removeProposal(database.getDatabaseInfo());
-			}
-			
-			if(CubridNodeChangedEventType.CONTAINER_NODE_REFRESH.equals(eventType)) {
-				removeProposal(database.getDatabaseInfo());
-				findProposal(database.getDatabaseInfo());
-			}
-		}
-		
-		if (NodeType.TABLE_FOLDER.equals(cubridNode.getType())
-				|| NodeType.VIEW_FOLDER.equals(cubridNode.getType())
-				&& CubridNodeChangedEventType.CONTAINER_NODE_REFRESH.equals(eventType)
-				&& cubridNode instanceof DefaultSchemaNode) {
-			DefaultSchemaNode schemaNode = (DefaultSchemaNode)cubridNode;
-			removeProposal(schemaNode.getDatabase().getDatabaseInfo());
-			findProposal(schemaNode.getDatabase().getDatabaseInfo());
-		}
-	}
+        ColumnProposal proposal = cachedMap.get(key);
+        if (proposal != null) {
+            proposal.removeSchemaInfo(tableName);
+        }
+    }
+
+    /**
+     * Refresh the table
+     *
+     * @param databaseInfo
+     * @param tableName
+     */
+    private void refreshTable(final DatabaseInfo databaseInfo, final String tableName) {
+        removeTable(databaseInfo, tableName);
+        String key = makeKey(databaseInfo);
+        final ColumnProposal proposal = cachedMap.get(key);
+        if (proposal == null) {
+            return;
+        }
+        loadProposal(databaseInfo, tableName, proposal);
+    }
+
+    /** Perform node changed event */
+    public void nodeChanged(CubridNodeChangedEvent event) {
+        ICubridNode cubridNode = event.getCubridNode();
+        CubridNodeChangedEventType eventType = event.getType();
+        if (cubridNode == null || eventType == null) {
+            return;
+        }
+
+        if ((NodeType.USER_TABLE.equals(cubridNode.getType())
+                        || NodeType.USER_VIEW.equals(cubridNode.getType()))
+                && cubridNode instanceof DefaultSchemaNode) {
+
+            DefaultSchemaNode schemaNode = (DefaultSchemaNode) cubridNode;
+            DatabaseInfo databaseInfo = schemaNode.getDatabase().getDatabaseInfo();
+            if (CubridNodeChangedEventType.NODE_REMOVE.equals(eventType)) {
+                removeTable(databaseInfo, schemaNode.getName());
+            } else if (CubridNodeChangedEventType.NODE_ADD.equals(eventType)
+                    || CubridNodeChangedEventType.NODE_REFRESH.equals(eventType)) {
+                refreshTable(databaseInfo, schemaNode.getName());
+            }
+        }
+        if (NodeType.DATABASE.equals(cubridNode.getType())
+                && cubridNode instanceof CubridDatabase) {
+            CubridDatabase database = (CubridDatabase) cubridNode;
+            if (CubridNodeChangedEventType.DATABASE_LOGIN.equals(eventType)) {
+                removeProposal(database.getDatabaseInfo());
+                findProposal(database.getDatabaseInfo());
+            }
+
+            if (CubridNodeChangedEventType.DATABASE_LOGOUT.equals(eventType)) {
+                removeProposal(database.getDatabaseInfo());
+            }
+
+            if (CubridNodeChangedEventType.CONTAINER_NODE_REFRESH.equals(eventType)) {
+                removeProposal(database.getDatabaseInfo());
+                findProposal(database.getDatabaseInfo());
+            }
+        }
+
+        if (NodeType.TABLE_FOLDER.equals(cubridNode.getType())
+                || NodeType.VIEW_FOLDER.equals(cubridNode.getType())
+                        && CubridNodeChangedEventType.CONTAINER_NODE_REFRESH.equals(eventType)
+                        && cubridNode instanceof DefaultSchemaNode) {
+            DefaultSchemaNode schemaNode = (DefaultSchemaNode) cubridNode;
+            removeProposal(schemaNode.getDatabase().getDatabaseInfo());
+            findProposal(schemaNode.getDatabase().getDatabaseInfo());
+        }
+    }
 }

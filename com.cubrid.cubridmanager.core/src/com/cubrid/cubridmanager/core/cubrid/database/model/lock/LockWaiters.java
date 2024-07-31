@@ -30,46 +30,48 @@ package com.cubrid.cubridmanager.core.cubrid.database.model.lock;
 /**
  * A Java bean that includes the info of Lock waiters
  *
- *
  * @author sq
  * @version 1.0 - 2009-12-28 created by sq
  */
 public class LockWaiters {
 
-	private int tran_index;
-	private String b_mode;
-	private String start_at;
-	private String waitfornsec;
+    private int tran_index;
+    private String b_mode;
+    private String start_at;
+    private String waitfornsec;
 
-	public int getTran_index() {
-		return tran_index;
-	}
+    public int getTran_index() {
+        return tran_index;
+    }
 
-	public void setTran_index(int tranIndex) {
-		this.tran_index = tranIndex;
-	}
+    public void setTran_index(int tranIndex) {
+        this.tran_index = tranIndex;
+    }
 
-	public String getB_mode() {
-		return b_mode;
-	}
+    public String getB_mode() {
+        return b_mode;
+    }
 
-	public void setB_mode(String bMode) {
-		this.b_mode = bMode;
-	}
+    public void setB_mode(String bMode) {
+        this.b_mode = bMode;
+    }
 
-	public String getStart_at() {
-		return start_at;
-	}
+    public String getStart_at() {
+        return start_at;
+    }
 
-	public void setStart_at(String startAt) {
-		this.start_at = startAt == null ? null : startAt.trim(); // eg. [Mon Jun 29 21:29:12 2009       ].trim()
-	}
+    public void setStart_at(String startAt) {
+        this.start_at =
+                startAt == null
+                        ? null
+                        : startAt.trim(); // eg. [Mon Jun 29 21:29:12 2009       ].trim()
+    }
 
-	public String getWaitfornsec() {
-		return waitfornsec;
-	}
+    public String getWaitfornsec() {
+        return waitfornsec;
+    }
 
-	public void setWaitfornsec(String waitfornsec) {
-		this.waitfornsec = waitfornsec;
-	}
+    public void setWaitfornsec(String waitfornsec) {
+        this.waitfornsec = waitfornsec;
+    }
 }

@@ -27,17 +27,7 @@
  */
 package com.cubrid.common.ui.schemacomment.action;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
-import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.ConstantsUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.common.Messages;
@@ -48,6 +38,13 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import java.sql.Connection;
+import java.sql.SQLException;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
 
 /**
  * Schema Comment Install action
@@ -56,107 +53,111 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
  * @version 1.0 - 2012-12-09 created by Isaiah Choe
  */
 public class SchemaCommentInstallAction extends SelectionAction {
-	private static final Logger LOGGER = LogUtil.getLogger(SchemaCommentInstallAction.class);
-	public static final String ID = SchemaCommentInstallAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(SchemaCommentInstallAction.class);
+    public static final String ID = SchemaCommentInstallAction.class.getName();
 
-	public SchemaCommentInstallAction(Shell shell, String text,
-			ImageDescriptor enabledIcon, ImageDescriptor disabledIcon) {
-		super(shell, null, text, enabledIcon);
-		this.setDisabledImageDescriptor(disabledIcon);
-		this.setId(ID);
-	}
+    public SchemaCommentInstallAction(
+            Shell shell, String text, ImageDescriptor enabledIcon, ImageDescriptor disabledIcon) {
+        super(shell, null, text, enabledIcon);
+        this.setDisabledImageDescriptor(disabledIcon);
+        this.setId(ID);
+    }
 
-	private CubridDatabase getSelectedDatabase() {
-		CubridDatabase cubridDatabase = null;
-		Object[] objs = this.getSelectedObj();
-		for (Object obj : objs){
-			if (obj instanceof ISchemaNode){
-				cubridDatabase = ((ISchemaNode) obj).getDatabase();
-				if (cubridDatabase != null) {
-					break;
-				}
-			} 
-		}
+    private CubridDatabase getSelectedDatabase() {
+        CubridDatabase cubridDatabase = null;
+        Object[] objs = this.getSelectedObj();
+        for (Object obj : objs) {
+            if (obj instanceof ISchemaNode) {
+                cubridDatabase = ((ISchemaNode) obj).getDatabase();
+                if (cubridDatabase != null) {
+                    break;
+                }
+            }
+        }
 
-		return cubridDatabase;
-	}
-	
-	public void run() {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
+        return cubridDatabase;
+    }
 
-		CubridDatabase cubridDatabase = getSelectedDatabase();
-		if (cubridDatabase == null) {
-			CommonUITool.openErrorBox(Messages.msgTableCommentNotSelectedDb);
-			return;
-		}
+    public void run() {
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (window == null) {
+            return;
+        }
 
-		if (!cubridDatabase.isLogined()
-				|| cubridDatabase.getRunningType() != DbRunningType.CS) {
-			CommonUITool.openErrorBox(Messages.msgTableCommentNotLoginedDb);
-			return;
-		}
+        CubridDatabase cubridDatabase = getSelectedDatabase();
+        if (cubridDatabase == null) {
+            CommonUITool.openErrorBox(Messages.msgTableCommentNotSelectedDb);
+            return;
+        }
 
-		boolean isDBA = cubridDatabase.getDatabaseInfo().getAuthLoginedDbUserInfo().isDbaAuthority();
-		if (!isDBA) {
-			CommonUITool.openErrorBox(Messages.msgTableCommentNotDBA);
-			return;
-		}
+        if (!cubridDatabase.isLogined() || cubridDatabase.getRunningType() != DbRunningType.CS) {
+            CommonUITool.openErrorBox(Messages.msgTableCommentNotLoginedDb);
+            return;
+        }
 
-		DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
+        boolean isDBA =
+                cubridDatabase.getDatabaseInfo().getAuthLoginedDbUserInfo().isDbaAuthority();
+        if (!isDBA) {
+            CommonUITool.openErrorBox(Messages.msgTableCommentNotDBA);
+            return;
+        }
 
-		String msg = Messages.bind(Messages.msgTableCommentConfirm, 
-				ConstantsUtil.SCHEMA_DESCRIPTION_TABLE);
-		boolean needToCreate = CommonUITool.openConfirmBox(msg);
-		if (!needToCreate) {
-			CommonUITool.openInformationBox(Messages.msgTableCommentAlertTitle,
-					Messages.msgTableCommentCancel);
-			return;
-		}
+        DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
 
-		Connection conn = null;
-		boolean success = false;
-		String error = null;
-		try {
-			conn = JDBCConnectionManager.getConnection(dbInfo, false);
+        String msg =
+                Messages.bind(
+                        Messages.msgTableCommentConfirm, ConstantsUtil.SCHEMA_DESCRIPTION_TABLE);
+        boolean needToCreate = CommonUITool.openConfirmBox(msg);
+        if (!needToCreate) {
+            CommonUITool.openInformationBox(
+                    Messages.msgTableCommentAlertTitle, Messages.msgTableCommentCancel);
+            return;
+        }
 
-			if (SchemaCommentHandler.isInstalledMetaTable(dbInfo, conn)) {
-				msg = Messages.bind(Messages.msgTableCommentAlreadyInstalled,
-						ConstantsUtil.SCHEMA_DESCRIPTION_TABLE);
-				CommonUITool.openErrorBox(msg);
-				return;
-			}
+        Connection conn = null;
+        boolean success = false;
+        String error = null;
+        try {
+            conn = JDBCConnectionManager.getConnection(dbInfo, false);
 
-			if (dbInfo.isShard()) {
-				msg = Messages.errTableCommentCannotInstallOnShard;
-				CommonUITool.openErrorBox(msg);
-				return;
-			}
+            if (SchemaCommentHandler.isInstalledMetaTable(dbInfo, conn)) {
+                msg =
+                        Messages.bind(
+                                Messages.msgTableCommentAlreadyInstalled,
+                                ConstantsUtil.SCHEMA_DESCRIPTION_TABLE);
+                CommonUITool.openErrorBox(msg);
+                return;
+            }
 
-			success = SchemaCommentHandler.installMetaTable(dbInfo, conn);
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage(), e);
-			error = e.getMessage();
-		}
+            if (dbInfo.isShard()) {
+                msg = Messages.errTableCommentCannotInstallOnShard;
+                CommonUITool.openErrorBox(msg);
+                return;
+            }
 
-		if (!success) {
-			msg = Messages.bind(Messages.errTableCommentInstall, error);
-			CommonUITool.openErrorBox(msg);
-			return;
-		}
+            success = SchemaCommentHandler.installMetaTable(dbInfo, conn);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            error = e.getMessage();
+        }
 
-		msg = Messages.bind(Messages.msgTableCommentSuccess, 
-				ConstantsUtil.SCHEMA_DESCRIPTION_TABLE);
-		CommonUITool.openInformationBox(Messages.msgTableCommentAlertTitle, msg);
-	}
+        if (!success) {
+            msg = Messages.bind(Messages.errTableCommentInstall, error);
+            CommonUITool.openErrorBox(msg);
+            return;
+        }
 
-	public boolean allowMultiSelections() {
-		return false;
-	}
+        msg =
+                Messages.bind(
+                        Messages.msgTableCommentSuccess, ConstantsUtil.SCHEMA_DESCRIPTION_TABLE);
+        CommonUITool.openInformationBox(Messages.msgTableCommentAlertTitle, msg);
+    }
 
-	public boolean isSupported(Object obj) {
-		return true;
-	}
+    public boolean allowMultiSelections() {
+        return false;
+    }
+
+    public boolean isSupported(Object obj) {
+        return true;
+    }
 }

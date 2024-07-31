@@ -27,6 +27,14 @@
  */
 package com.cubrid.cubridmanager.ui.replication.action;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.spi.LayoutManager;
+import com.cubrid.common.ui.spi.action.SelectionAction;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.common.ui.spi.model.ICubridNode;
+import com.cubrid.common.ui.spi.util.LayoutUtil;
+import com.cubrid.cubridmanager.core.common.model.ServerUserInfo;
+import com.cubrid.cubridmanager.ui.replication.editor.ReplicationMonitorViewPart;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Shell;
@@ -37,117 +45,104 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.spi.LayoutManager;
-import com.cubrid.common.ui.spi.action.SelectionAction;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.util.LayoutUtil;
-import com.cubrid.cubridmanager.core.common.model.ServerUserInfo;
-import com.cubrid.cubridmanager.ui.replication.editor.ReplicationMonitorViewPart;
-
 /**
- *
  * This action is responsible for monitoring replication performance
  *
  * @author pangqiren
  * @version 1.0 - 2009-11-26 created by pangqiren
  */
-public class MonitorReplicationPerfAction extends
-		SelectionAction {
+public class MonitorReplicationPerfAction extends SelectionAction {
 
-	private static final Logger LOGGER = LogUtil.getLogger(MonitorReplicationPerfAction.class);
-	public static final String ID = MonitorReplicationPerfAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(MonitorReplicationPerfAction.class);
+    public static final String ID = MonitorReplicationPerfAction.class.getName();
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public MonitorReplicationPerfAction(Shell shell, String text,
-			ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public MonitorReplicationPerfAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public MonitorReplicationPerfAction(Shell shell,
-			ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public MonitorReplicationPerfAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj Object
-	 * @return boolean(whether to support)
-	 */
-	public boolean isSupported(Object obj) {
-		if (obj instanceof CubridDatabase) {
-			CubridDatabase database = (CubridDatabase) obj;
-			if (!database.isLogined()) {
-				return false;
-			}
-			ServerUserInfo serverUserInfo = database.getServer().getServerInfo().getLoginedUserInfo();
-			if (serverUserInfo == null || !serverUserInfo.isAdmin()) {
-				return false;
-			}
-			return database.isDistributorDb();
-		}
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj Object
+     * @return boolean(whether to support)
+     */
+    public boolean isSupported(Object obj) {
+        if (obj instanceof CubridDatabase) {
+            CubridDatabase database = (CubridDatabase) obj;
+            if (!database.isLogined()) {
+                return false;
+            }
+            ServerUserInfo serverUserInfo =
+                    database.getServer().getServerInfo().getLoginedUserInfo();
+            if (serverUserInfo == null || !serverUserInfo.isAdmin()) {
+                return false;
+            }
+            return database.isDistributorDb();
+        }
+        return false;
+    }
 
-	/**
-	 * monitor replication performance
-	 */
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		if (obj == null || obj.length == 0 || !isSupported(obj[0])) {
-			return;
-		}
-		ICubridNode cubridNode = (ICubridNode) obj[0];
-		try {
-			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			IViewPart viewPart = LayoutUtil.getViewPart(cubridNode,
-					ReplicationMonitorViewPart.ID);
-			if (viewPart == null) {
-				IWorkbenchPage page = window.getActivePage();
-				String secondId = cubridNode.getServer().getLabel() + "_"
-						+ cubridNode.getLabel();
-				viewPart = page.showView(ReplicationMonitorViewPart.ID,
-						secondId, IWorkbenchPage.VIEW_CREATE);
-				window.getActivePage().bringToTop(viewPart);
-			} else {
-				window.getActivePage().bringToTop(viewPart);
-			}
-			if (viewPart != null) {
-				LayoutManager.getInstance().getTitleLineContrItem().changeTitleForViewOrEditPart(
-						cubridNode, viewPart);
-				LayoutManager.getInstance().getStatusLineContrItem().changeStuatusLineForViewOrEditPart(
-						cubridNode, viewPart);
-			}
-		} catch (PartInitException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-	}
-
+    /** monitor replication performance */
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        if (obj == null || obj.length == 0 || !isSupported(obj[0])) {
+            return;
+        }
+        ICubridNode cubridNode = (ICubridNode) obj[0];
+        try {
+            IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            IViewPart viewPart = LayoutUtil.getViewPart(cubridNode, ReplicationMonitorViewPart.ID);
+            if (viewPart == null) {
+                IWorkbenchPage page = window.getActivePage();
+                String secondId = cubridNode.getServer().getLabel() + "_" + cubridNode.getLabel();
+                viewPart =
+                        page.showView(
+                                ReplicationMonitorViewPart.ID,
+                                secondId,
+                                IWorkbenchPage.VIEW_CREATE);
+                window.getActivePage().bringToTop(viewPart);
+            } else {
+                window.getActivePage().bringToTop(viewPart);
+            }
+            if (viewPart != null) {
+                LayoutManager.getInstance()
+                        .getTitleLineContrItem()
+                        .changeTitleForViewOrEditPart(cubridNode, viewPart);
+                LayoutManager.getInstance()
+                        .getStatusLineContrItem()
+                        .changeStuatusLineForViewOrEditPart(cubridNode, viewPart);
+            }
+        } catch (PartInitException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 }

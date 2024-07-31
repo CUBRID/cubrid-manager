@@ -8,71 +8,48 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-
-})
+@XmlType(
+        name = "",
+        propOrder = {})
 @XmlRootElement(name = "Key_Group_Member")
 public class KeyGroupMember {
 
-	@XmlElement(name = "Key_Group_MemberProps", required = true)
-	protected KeyGroupMemberPropsList keyGroupMemberProps;
-	@XmlAttribute(name = "id", required = true)
-	protected String id;
-	@XmlAttribute(name = "Name")
-	protected String name;
+    @XmlElement(name = "Key_Group_MemberProps", required = true)
+    protected KeyGroupMemberPropsList keyGroupMemberProps;
 
-	/**
-	 * 
-	 * @return possible object is {@link KeyGroupMemberPropsList }
-	 * 
-	 */
-	public KeyGroupMemberPropsList getKeyGroupMemberProps() {
-		return keyGroupMemberProps;
-	}
+    @XmlAttribute(name = "id", required = true)
+    protected String id;
 
-	/**
-	 * 
-	 * @param value allowed object is {@link KeyGroupMemberPropsList }
-	 * 
-	 */
-	public void setKeyGroupMemberProps(KeyGroupMemberPropsList value) {
-		this.keyGroupMemberProps = value;
-	}
+    @XmlAttribute(name = "Name")
+    protected String name;
 
-	/**
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getId() {
-		return id;
-	}
+    /** @return possible object is {@link KeyGroupMemberPropsList } */
+    public KeyGroupMemberPropsList getKeyGroupMemberProps() {
+        return keyGroupMemberProps;
+    }
 
-	/**
-	 * 
-	 * @param value allowed object is {@link String }
-	 * 
-	 */
-	public void setId(String value) {
-		this.id = value;
-	}
+    /** @param value allowed object is {@link KeyGroupMemberPropsList } */
+    public void setKeyGroupMemberProps(KeyGroupMemberPropsList value) {
+        this.keyGroupMemberProps = value;
+    }
 
-	/**
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getName() {
-		return name;
-	}
+    /** @return possible object is {@link String } */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * 
-	 * @param value allowed object is {@link String }
-	 * 
-	 */
-	public void setName(String value) {
-		this.name = value;
-	}
+    /** @param value allowed object is {@link String } */
+    public void setId(String value) {
+        this.id = value;
+    }
 
+    /** @return possible object is {@link String } */
+    public String getName() {
+        return name;
+    }
+
+    /** @param value allowed object is {@link String } */
+    public void setName(String value) {
+        this.name = value;
+    }
 }

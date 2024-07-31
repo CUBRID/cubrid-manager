@@ -30,21 +30,19 @@ package com.cubrid.cubridmanager.ui.replication.editor.model;
 import org.eclipse.draw2d.geometry.Dimension;
 
 /**
- *
  * The leaf node model object
  *
  * @author pangqiren
  * @version 1.0 - 2009-8-26 created by pangqiren
  */
-public class LeafNode extends
-		Node {
+public class LeafNode extends Node {
 
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 3256728381147132977L;
+    @SuppressWarnings("unused")
+    private static final long serialVersionUID = 3256728381147132977L;
 
-	public LeafNode() {
-		super();
-		setName("LeafNode");
-		setSize(new Dimension(80, 40));
-	}
+    public LeafNode() {
+        super();
+        setName("LeafNode");
+        setSize(new Dimension(80, 40));
+    }
 }

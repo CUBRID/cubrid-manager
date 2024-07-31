@@ -29,22 +29,20 @@
  */
 package com.cubrid.common.ui.cubrid.table.importhandler.handler;
 
+import com.cubrid.common.core.reader.CSVReader;
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.cubrid.table.importhandler.ImportFileDescription;
+import com.cubrid.common.ui.cubrid.table.importhandler.ImportFileHandler;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
-
-import com.cubrid.common.core.reader.CSVReader;
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.cubrid.table.importhandler.ImportFileDescription;
-import com.cubrid.common.ui.cubrid.table.importhandler.ImportFileHandler;
 
 /**
  * CSV Import File Handler
@@ -52,91 +50,94 @@ import com.cubrid.common.ui.cubrid.table.importhandler.ImportFileHandler;
  * @author Kevin Cao
  * @version 1.0 - 2011-3-22 created by Kevin Cao
  */
-public class CSVImportFileHandler implements
-		ImportFileHandler {
+public class CSVImportFileHandler implements ImportFileHandler {
 
-	private static final Logger LOGGER = LogUtil.getLogger(CSVImportFileHandler.class);
+    private static final Logger LOGGER = LogUtil.getLogger(CSVImportFileHandler.class);
 
-	private final String fileName;
-	private final String fileCharset;
+    private final String fileName;
+    private final String fileCharset;
 
-	public CSVImportFileHandler(String fileName, String fileCharset) {
-		this.fileName = fileName;
-		this.fileCharset = fileCharset;
-	}
+    public CSVImportFileHandler(String fileName, String fileCharset) {
+        this.fileName = fileName;
+        this.fileCharset = fileCharset;
+    }
 
-	/**
-	 * Get the source file information
-	 *
-	 * @return ImportFileDescription
-	 * @throws Exception in process.
-	 */
-	public ImportFileDescription getSourceFileInfo() throws Exception { // FIXME move this logic to core module
+    /**
+     * Get the source file information
+     *
+     * @return ImportFileDescription
+     * @throws Exception in process.
+     */
+    public ImportFileDescription getSourceFileInfo()
+            throws Exception { // FIXME move this logic to core module
 
-		final List<String> colsList = new ArrayList<String>();
-		final List<Integer> itemsNumberOfSheets = new ArrayList<Integer>();
+        final List<String> colsList = new ArrayList<String>();
+        final List<Integer> itemsNumberOfSheets = new ArrayList<Integer>();
 
-		final ImportFileDescription importFileDescription = new ImportFileDescription(
-				0, 1, colsList);
-		importFileDescription.setItemsNumberOfSheets(itemsNumberOfSheets);
+        final ImportFileDescription importFileDescription =
+                new ImportFileDescription(0, 1, colsList);
+        importFileDescription.setItemsNumberOfSheets(itemsNumberOfSheets);
 
-		IRunnableWithProgress runnable = new IRunnableWithProgress() {
-			public void run(final IProgressMonitor monitor) {
-				monitor.beginTask("", IProgressMonitor.UNKNOWN);
-				int totalRowCount = 0;
-				CSVReader csvReader = null;
-				try {
-					if (fileCharset == null || fileCharset.trim().length() == 0) {
-						csvReader = new CSVReader(new FileReader(fileName));
-					} else {
-						csvReader = new CSVReader(new InputStreamReader(
-								new FileInputStream(fileName), fileCharset));
-					}
+        IRunnableWithProgress runnable =
+                new IRunnableWithProgress() {
+                    public void run(final IProgressMonitor monitor) {
+                        monitor.beginTask("", IProgressMonitor.UNKNOWN);
+                        int totalRowCount = 0;
+                        CSVReader csvReader = null;
+                        try {
+                            if (fileCharset == null || fileCharset.trim().length() == 0) {
+                                csvReader = new CSVReader(new FileReader(fileName));
+                            } else {
+                                csvReader =
+                                        new CSVReader(
+                                                new InputStreamReader(
+                                                        new FileInputStream(fileName),
+                                                        fileCharset));
+                            }
 
-					String[] cvsRow = csvReader.readNext();
-					if (cvsRow != null) {
-						totalRowCount++;
-						for (String title : cvsRow) {
-							colsList.add(title);
-						}
-					}
-					while (!monitor.isCanceled()
-							&& csvReader.readNext() != null) {
-						totalRowCount++;
-					}
-					itemsNumberOfSheets.add(Integer.valueOf(totalRowCount));
-					if (monitor.isCanceled()) {
-						throw new InterruptedException();
-					}
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-					throw new RuntimeException(e);
-				} finally {
-					importFileDescription.setTotalCount(totalRowCount);
-					importFileDescription.setFirstRowCols(colsList);
-					importFileDescription.setItemsNumberOfSheets(itemsNumberOfSheets);
-					closeFile(csvReader);
-					monitor.done();
-				}
-			}
-		};
-		PlatformUI.getWorkbench().getProgressService().busyCursorWhile(runnable);
+                            String[] cvsRow = csvReader.readNext();
+                            if (cvsRow != null) {
+                                totalRowCount++;
+                                for (String title : cvsRow) {
+                                    colsList.add(title);
+                                }
+                            }
+                            while (!monitor.isCanceled() && csvReader.readNext() != null) {
+                                totalRowCount++;
+                            }
+                            itemsNumberOfSheets.add(Integer.valueOf(totalRowCount));
+                            if (monitor.isCanceled()) {
+                                throw new InterruptedException();
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                            throw new RuntimeException(e);
+                        } finally {
+                            importFileDescription.setTotalCount(totalRowCount);
+                            importFileDescription.setFirstRowCols(colsList);
+                            importFileDescription.setItemsNumberOfSheets(itemsNumberOfSheets);
+                            closeFile(csvReader);
+                            monitor.done();
+                        }
+                    }
+                };
+        PlatformUI.getWorkbench().getProgressService().busyCursorWhile(runnable);
 
-		return importFileDescription;
-	}
+        return importFileDescription;
+    }
 
-	/**
-	 * Close CSV file
-	 *
-	 * @param csvReader the read need to be closed.
-	 */
-	private void closeFile(CSVReader csvReader) { // FIXME move this logic to core module
-		if (csvReader != null) {
-			try {
-				csvReader.close();
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage());
-			}
-		}
-	}
+    /**
+     * Close CSV file
+     *
+     * @param csvReader the read need to be closed.
+     */
+    private void closeFile(CSVReader csvReader) { // FIXME move this logic to core module
+        if (csvReader != null) {
+            try {
+                csvReader.close();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+    }
 }

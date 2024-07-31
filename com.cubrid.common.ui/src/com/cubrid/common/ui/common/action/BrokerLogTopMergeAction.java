@@ -27,33 +27,32 @@
  */
 package com.cubrid.common.ui.common.action;
 
+import com.cubrid.common.ui.common.dialog.BrokerLogTopMergeDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import com.cubrid.common.ui.common.dialog.BrokerLogTopMergeDialog;
-
 /**
  * Open the broker_log_top merging dialog
- * 
+ *
  * @author fulei
  * @version 1.0 - 2009-07-16 created by fulei
  * @version 1.1 - 2012-09-05 updated by Isaiah Choe
  */
 public class BrokerLogTopMergeAction extends Action {
-	public static final String ID = BrokerLogTopMergeAction.class.getName();
+    public static final String ID = BrokerLogTopMergeAction.class.getName();
 
-	public BrokerLogTopMergeAction(String text) {
-		super(text);
-		this.setId(ID);
-	}
+    public BrokerLogTopMergeAction(String text) {
+        super(text);
+        this.setId(ID);
+    }
 
-	public void run() {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
+    public void run() {
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (window == null) {
+            return;
+        }
 
-		new BrokerLogTopMergeDialog(window.getShell()).open();
-	}
+        new BrokerLogTopMergeDialog(window.getShell()).open();
+    }
 }

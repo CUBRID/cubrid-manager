@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,7 +24,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.tool.editor;
 
@@ -42,135 +42,127 @@ import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.swt.custom.StyleRange;
 
 /**
- * 
  * Non Rule Based Damager & Repairer Class.
- * 
+ *
  * @author Kevin Cao
  * @version 1.0 - 2011-1-21 created by Kevin Cao
  */
-public class NonRuleBasedDamagerRepairer implements
-		IPresentationDamager,
-		IPresentationRepairer {
+public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPresentationRepairer {
 
-	/** The document this object works on */
-	protected IDocument fDocument;
-	/**
-	 * The default text attribute if non is returned as data by the current
-	 * token
-	 */
-	protected TextAttribute fDefaultTextAttribute;
+    /** The document this object works on */
+    protected IDocument fDocument;
+    /** The default text attribute if non is returned as data by the current token */
+    protected TextAttribute fDefaultTextAttribute;
 
-	/**
-	 * Constructor for NonRuleBasedDamagerRepairer.
-	 */
-	public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
-		Assert.isNotNull(defaultTextAttribute);
+    /** Constructor for NonRuleBasedDamagerRepairer. */
+    public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
+        Assert.isNotNull(defaultTextAttribute);
 
-		fDefaultTextAttribute = defaultTextAttribute;
-	}
+        fDefaultTextAttribute = defaultTextAttribute;
+    }
 
-	/**
-	 * Set document.
-	 * 
-	 *@param document IDocument
-	 */
-	public void setDocument(IDocument document) {
-		fDocument = document;
-	}
+    /**
+     * Set document.
+     *
+     * @param document IDocument
+     */
+    public void setDocument(IDocument document) {
+        fDocument = document;
+    }
 
-	/**
-	 * Returns the end offset of the line that contains the specified offset or
-	 * if the offset is inside a line delimiter, the end offset of the next
-	 * line.
-	 * 
-	 * @param offset the offset whose line end offset must be computed
-	 * @return the line end offset for the given offset
-	 * @exception BadLocationException if offset is invalid in the current
-	 *            document
-	 */
-	protected int endOfLineOf(int offset) throws BadLocationException {
+    /**
+     * Returns the end offset of the line that contains the specified offset or if the offset is
+     * inside a line delimiter, the end offset of the next line.
+     *
+     * @param offset the offset whose line end offset must be computed
+     * @return the line end offset for the given offset
+     * @exception BadLocationException if offset is invalid in the current document
+     */
+    protected int endOfLineOf(int offset) throws BadLocationException {
 
-		IRegion info = fDocument.getLineInformationOfOffset(offset);
-		if (offset <= info.getOffset() + info.getLength()) {
-			return info.getOffset() + info.getLength();
-		}
+        IRegion info = fDocument.getLineInformationOfOffset(offset);
+        if (offset <= info.getOffset() + info.getLength()) {
+            return info.getOffset() + info.getLength();
+        }
 
-		int line = fDocument.getLineOfOffset(offset);
-		try {
-			info = fDocument.getLineInformation(line + 1);
-			return info.getOffset() + info.getLength();
-		} catch (BadLocationException x) {
-			return fDocument.getLength();
-		}
-	}
+        int line = fDocument.getLineOfOffset(offset);
+        try {
+            info = fDocument.getLineInformation(line + 1);
+            return info.getOffset() + info.getLength();
+        } catch (BadLocationException x) {
+            return fDocument.getLength();
+        }
+    }
 
-	/**
-	 * Get damage region.
-	 * 
-	 * @param partition ITypedRegion
-	 * @param event DocumentEvent
-	 * @param documentPartitioningChanged boolean
-	 * @return damage region.
-	 */
-	public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent event,
-			boolean documentPartitioningChanged) {
-		if (!documentPartitioningChanged) {
-			try {
+    /**
+     * Get damage region.
+     *
+     * @param partition ITypedRegion
+     * @param event DocumentEvent
+     * @param documentPartitioningChanged boolean
+     * @return damage region.
+     */
+    public IRegion getDamageRegion(
+            ITypedRegion partition, DocumentEvent event, boolean documentPartitioningChanged) {
+        if (!documentPartitioningChanged) {
+            try {
 
-				IRegion info = fDocument.getLineInformationOfOffset(event.getOffset());
-				int start = Math.max(partition.getOffset(), info.getOffset());
+                IRegion info = fDocument.getLineInformationOfOffset(event.getOffset());
+                int start = Math.max(partition.getOffset(), info.getOffset());
 
-				int end = event.getOffset()
-						+ (event.getText() == null ? event.getLength()
-								: event.getText().length());
+                int end =
+                        event.getOffset()
+                                + (event.getText() == null
+                                        ? event.getLength()
+                                        : event.getText().length());
 
-				if (info.getOffset() <= end
-						&& end <= info.getOffset() + info.getLength()) {
-					// optimize the case of the same line
-					end = info.getOffset() + info.getLength();
-				} else {
-					end = endOfLineOf(end);
-				}
+                if (info.getOffset() <= end && end <= info.getOffset() + info.getLength()) {
+                    // optimize the case of the same line
+                    end = info.getOffset() + info.getLength();
+                } else {
+                    end = endOfLineOf(end);
+                }
 
-				end = Math.min(partition.getOffset() + partition.getLength(),
-						end);
-				return new Region(start, end - start);
+                end = Math.min(partition.getOffset() + partition.getLength(), end);
+                return new Region(start, end - start);
 
-			} catch (BadLocationException x) {
-				return partition;
-			}
-		}
+            } catch (BadLocationException x) {
+                return partition;
+            }
+        }
 
-		return partition;
-	}
+        return partition;
+    }
 
-	/**
-	 * Fills the given presentation with the style ranges which when applied to
-	 * the presentation reconciler's text viewer repair the presentation damage
-	 * described by the given region.
-	 * 
-	 * @param presentation the text presentation to be filled by this repairer
-	 * @param region the region of damage to be repaired
-	 */
-	public void createPresentation(TextPresentation presentation,
-			ITypedRegion region) {
-		addRange(presentation, region.getOffset(), region.getLength(),
-				fDefaultTextAttribute);
-	}
+    /**
+     * Fills the given presentation with the style ranges which when applied to the presentation
+     * reconciler's text viewer repair the presentation damage described by the given region.
+     *
+     * @param presentation the text presentation to be filled by this repairer
+     * @param region the region of damage to be repaired
+     */
+    public void createPresentation(TextPresentation presentation, ITypedRegion region) {
+        addRange(presentation, region.getOffset(), region.getLength(), fDefaultTextAttribute);
+    }
 
-	/**
-	 * Adds style information to the given text presentation.
-	 * 
-	 * @param presentation the text presentation to be extended
-	 * @param offset the offset of the range to be styled
-	 * @param length the length of the range to be styled
-	 * @param attr the attribute describing the style of the range to be styled
-	 */
-	protected void addRange(TextPresentation presentation, int offset,
-			int length, TextAttribute attr) {
-		if (attr != null) {
-			presentation.addStyleRange(new StyleRange(offset, length,
-					attr.getForeground(), attr.getBackground(), attr.getStyle()));
-		}
-	}
+    /**
+     * Adds style information to the given text presentation.
+     *
+     * @param presentation the text presentation to be extended
+     * @param offset the offset of the range to be styled
+     * @param length the length of the range to be styled
+     * @param attr the attribute describing the style of the range to be styled
+     */
+    protected void addRange(
+            TextPresentation presentation, int offset, int length, TextAttribute attr) {
+        if (attr != null) {
+            presentation.addStyleRange(
+                    new StyleRange(
+                            offset,
+                            length,
+                            attr.getForeground(),
+                            attr.getBackground(),
+                            attr.getStyle()));
+        }
+    }
 }

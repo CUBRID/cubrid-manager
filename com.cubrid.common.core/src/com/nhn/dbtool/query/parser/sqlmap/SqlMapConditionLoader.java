@@ -27,9 +27,8 @@
  */
 package com.nhn.dbtool.query.parser.sqlmap;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapCondition;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Dynamic 쿼리의 Tag에 해당하는 Class를 동적으로 생성하여 전달하는 처리
@@ -37,44 +36,44 @@ import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapCondition;
  * @author Bumsik, Jang
  */
 public class SqlMapConditionLoader {
-	private static final String SQLMAP_MODEL_PACKAGE_NAME = "com.nhn.dbtool.query.parser.sqlmap.model."; // TODO SQLMAP
+    private static final String SQLMAP_MODEL_PACKAGE_NAME =
+            "com.nhn.dbtool.query.parser.sqlmap.model."; // TODO SQLMAP
 
-	/**
-	 * Dynamic 쿼리의 Tag에 해당하는 Class를 동적으로 생성
-	 *
-	 * @param tagName Dynamic 쿼리의 Tag 이름 (isNull, isNotNull, isEmpty, ...)
-	 * @return 해당  Tag 이름에 맞는 SqlMapCondition 객체
-	 * @throws Exception 오류
-	 */
-	public static SqlMapCondition getSqlMapConditionTag(String tagName) throws Exception {
-		if (StringUtils.isEmpty(tagName)) {
-			throw new Exception("It has no value on the tagName parameter.");
-		}
+    /**
+     * Dynamic 쿼리의 Tag에 해당하는 Class를 동적으로 생성
+     *
+     * @param tagName Dynamic 쿼리의 Tag 이름 (isNull, isNotNull, isEmpty, ...)
+     * @return 해당 Tag 이름에 맞는 SqlMapCondition 객체
+     * @throws Exception 오류
+     */
+    public static SqlMapCondition getSqlMapConditionTag(String tagName) throws Exception {
+        if (StringUtils.isEmpty(tagName)) {
+            throw new Exception("It has no value on the tagName parameter.");
+        }
 
-		String classFullName = getClassFullName(tagName);
-		try {
-			ClassLoader classLoader = SqlMapConditionLoader.class.getClassLoader();
-			Class<?> conditionClass = classLoader.loadClass(classFullName);
-			SqlMapCondition conditionTag = (SqlMapCondition) conditionClass.newInstance();
-			return conditionTag;
-		} catch (ClassNotFoundException e) {
-			throw new Exception("The SqlMapConditionTag was not defined. [" + classFullName + "]");
-		} catch (InstantiationException e) {
-			throw new Exception("The SqlMapConditionTag was not defined. [" + classFullName + "]");
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
+        String classFullName = getClassFullName(tagName);
+        try {
+            ClassLoader classLoader = SqlMapConditionLoader.class.getClassLoader();
+            Class<?> conditionClass = classLoader.loadClass(classFullName);
+            SqlMapCondition conditionTag = (SqlMapCondition) conditionClass.newInstance();
+            return conditionTag;
+        } catch (ClassNotFoundException e) {
+            throw new Exception("The SqlMapConditionTag was not defined. [" + classFullName + "]");
+        } catch (InstantiationException e) {
+            throw new Exception("The SqlMapConditionTag was not defined. [" + classFullName + "]");
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private static String getClassFullName(String tagName) {
-		StringBuffer classFullName = new StringBuffer();
-		classFullName.append(SQLMAP_MODEL_PACKAGE_NAME);
-		classFullName.append(tagName.substring(0, 1).toUpperCase());
-		classFullName.append(tagName.substring(1));
-		classFullName.append("Tag");
-		return classFullName.toString();
-	}
-
+    private static String getClassFullName(String tagName) {
+        StringBuffer classFullName = new StringBuffer();
+        classFullName.append(SQLMAP_MODEL_PACKAGE_NAME);
+        classFullName.append(tagName.substring(0, 1).toUpperCase());
+        classFullName.append(tagName.substring(1));
+        classFullName.append("Tag");
+        return classFullName.toString();
+    }
 }

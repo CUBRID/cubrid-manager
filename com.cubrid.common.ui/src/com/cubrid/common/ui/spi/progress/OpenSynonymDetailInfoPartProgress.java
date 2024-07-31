@@ -27,77 +27,75 @@
  */
 package com.cubrid.common.ui.spi.progress;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.Synonym;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.synonym.JDBCGetSynonymListTask;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-1-9 created by fulei
  */
 public class OpenSynonymDetailInfoPartProgress implements IRunnableWithProgress {
 
-	private static final Logger LOGGER = LogUtil.getLogger(OpenViewsDetailInfoPartProgress.class);
-	private final CubridDatabase database;
-	private List<Synonym> synonymList = null;
-	private boolean success = false;
-	
-	public OpenSynonymDetailInfoPartProgress (CubridDatabase database) {
-		this.database = database;
-	}
-	
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,
-			InterruptedException {
-		DatabaseInfo databaseInfo = database.getDatabaseInfo();
-		ITask task = null;
-		task = new JDBCGetSynonymListTask(databaseInfo);
-		
-		task.execute();
-		if (!task.isSuccess()) {
-			LOGGER.error(task.getErrorMsg());
-			return;
-		}
-		synonymList = ((JDBCGetSynonymListTask) task).getSynonymInfoList();
-		success = true;
-	}
+    private static final Logger LOGGER = LogUtil.getLogger(OpenViewsDetailInfoPartProgress.class);
+    private final CubridDatabase database;
+    private List<Synonym> synonymList = null;
+    private boolean success = false;
 
-	/**
-	 * load trigger info list
-	 * 
-	 * @return Catalog
-	 */
-	public void loadSynonymInfoList() {
-		Display display = Display.getDefault();
-		display.syncExec(new Runnable() {
-			public void run() {
-				try {
-					new ProgressMonitorDialog(null).run(true, false,
-							OpenSynonymDetailInfoPartProgress.this);
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-				}
-			}
-		});
-	}
-	
-	public List<Synonym> getSynonymList() {
-		return synonymList;
-	}
+    public OpenSynonymDetailInfoPartProgress(CubridDatabase database) {
+        this.database = database;
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    public void run(IProgressMonitor monitor)
+            throws InvocationTargetException, InterruptedException {
+        DatabaseInfo databaseInfo = database.getDatabaseInfo();
+        ITask task = null;
+        task = new JDBCGetSynonymListTask(databaseInfo);
+
+        task.execute();
+        if (!task.isSuccess()) {
+            LOGGER.error(task.getErrorMsg());
+            return;
+        }
+        synonymList = ((JDBCGetSynonymListTask) task).getSynonymInfoList();
+        success = true;
+    }
+
+    /**
+     * load trigger info list
+     *
+     * @return Catalog
+     */
+    public void loadSynonymInfoList() {
+        Display display = Display.getDefault();
+        display.syncExec(
+                new Runnable() {
+                    public void run() {
+                        try {
+                            new ProgressMonitorDialog(null)
+                                    .run(true, false, OpenSynonymDetailInfoPartProgress.this);
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                        }
+                    }
+                });
+    }
+
+    public List<Synonym> getSynonymList() {
+        return synonymList;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
 }

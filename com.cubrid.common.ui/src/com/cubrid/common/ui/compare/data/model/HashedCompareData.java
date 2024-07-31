@@ -25,59 +25,59 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- package com.cubrid.common.ui.compare.data.model;
+package com.cubrid.common.ui.compare.data.model;
 
 import java.io.Serializable;
 import java.util.List;
 
-
 public class HashedCompareData implements Serializable {
-	private static final long serialVersionUID = 8168226173234387962L;
+    private static final long serialVersionUID = 8168226173234387962L;
 
-	public static final String STRING_TYPE = "S";
-	public static final String NUMBER_TYPE = "N";
+    public static final String STRING_TYPE = "S";
+    public static final String NUMBER_TYPE = "N";
 
-	private List<String> pkColumns;
-	private List<String> pkValues;
-	private List<String> pkTypes;
-	private String hash;
+    private List<String> pkColumns;
+    private List<String> pkValues;
+    private List<String> pkTypes;
+    private String hash;
 
-	public HashedCompareData(List<String> pkColumns, List<String> pkValues, List<String> pkTypes, String hash) {
-		this.pkColumns = pkColumns;
-		this.pkValues = pkValues;
-		this.pkTypes = pkTypes;
-		this.hash = hash;
-	}
+    public HashedCompareData(
+            List<String> pkColumns, List<String> pkValues, List<String> pkTypes, String hash) {
+        this.pkColumns = pkColumns;
+        this.pkValues = pkValues;
+        this.pkTypes = pkTypes;
+        this.hash = hash;
+    }
 
-	public List<String> getPkColumns() {
-		return pkColumns;
-	}
+    public List<String> getPkColumns() {
+        return pkColumns;
+    }
 
-	public void setPkColumns(List<String> pkColumns) {
-		this.pkColumns = pkColumns;
-	}
+    public void setPkColumns(List<String> pkColumns) {
+        this.pkColumns = pkColumns;
+    }
 
-	public List<String> getPkValues() {
-		return pkValues;
-	}
+    public List<String> getPkValues() {
+        return pkValues;
+    }
 
-	public void setPkValues(List<String> pkValues) {
-		this.pkValues = pkValues;
-	}
+    public void setPkValues(List<String> pkValues) {
+        this.pkValues = pkValues;
+    }
 
-	public List<String> getPkTypes() {
-		return pkTypes;
-	}
+    public List<String> getPkTypes() {
+        return pkTypes;
+    }
 
-	public void setPkTypes(List<String> pkTypes) {
-		this.pkTypes = pkTypes;
-	}
+    public void setPkTypes(List<String> pkTypes) {
+        this.pkTypes = pkTypes;
+    }
 
-	public String getHash() {
-		return hash;
-	}
+    public String getHash() {
+        return hash;
+    }
 
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
 }

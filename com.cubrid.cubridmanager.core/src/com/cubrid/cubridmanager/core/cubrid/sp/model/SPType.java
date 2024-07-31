@@ -28,22 +28,22 @@
 package com.cubrid.cubridmanager.core.cubrid.sp.model;
 
 /**
- *
  * Stored procedure type
  *
  * @author pangqiren
  * @version 1.0 - 2009-5-8 created by pangqiren
  */
 public enum SPType {
-	FUNCTION("FUNCTION"), PROCEDURE("PROCEDURE");
+    FUNCTION("FUNCTION"),
+    PROCEDURE("PROCEDURE");
 
-	String text = null;
+    String text = null;
 
-	SPType(String text) {
-		this.text = text;
-	}
+    SPType(String text) {
+        this.text = text;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 }

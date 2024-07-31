@@ -34,67 +34,67 @@ package com.cubrid.cubridmanager.core.cubrid.database.model.lock;
  * @version 1.0 - 2009-4-13 created by robin
  */
 public class BlockedHolders {
-	private int tran_index;
-	private String granted_mode;
-	private int count;
-	private int nsubgranules;
-	private String blocked_mode;
-	private String start_at;
-	private String wait_for_sec;
+    private int tran_index;
+    private String granted_mode;
+    private int count;
+    private int nsubgranules;
+    private String blocked_mode;
+    private String start_at;
+    private String wait_for_sec;
 
-	public int getTran_index() {
-		return tran_index;
-	}
+    public int getTran_index() {
+        return tran_index;
+    }
 
-	public void setTran_index(int tranIndex) {
-		this.tran_index = tranIndex;
-	}
+    public void setTran_index(int tranIndex) {
+        this.tran_index = tranIndex;
+    }
 
-	public String getGranted_mode() {
-		return granted_mode;
-	}
+    public String getGranted_mode() {
+        return granted_mode;
+    }
 
-	public void setGranted_mode(String grantedMode) {
-		this.granted_mode = grantedMode;
-	}
+    public void setGranted_mode(String grantedMode) {
+        this.granted_mode = grantedMode;
+    }
 
-	public int getCount() {
-		return count;
-	}
+    public int getCount() {
+        return count;
+    }
 
-	public void setCount(int count) {
-		this.count = count;
-	}
+    public void setCount(int count) {
+        this.count = count;
+    }
 
-	public int getNsubgranules() {
-		return nsubgranules;
-	}
+    public int getNsubgranules() {
+        return nsubgranules;
+    }
 
-	public void setNsubgranules(int nsubgranules) {
-		this.nsubgranules = nsubgranules;
-	}
+    public void setNsubgranules(int nsubgranules) {
+        this.nsubgranules = nsubgranules;
+    }
 
-	public String getBlocked_mode() {
-		return blocked_mode;
-	}
+    public String getBlocked_mode() {
+        return blocked_mode;
+    }
 
-	public void setBlocked_mode(String blockedMode) {
-		this.blocked_mode = blockedMode;
-	}
+    public void setBlocked_mode(String blockedMode) {
+        this.blocked_mode = blockedMode;
+    }
 
-	public String getStart_at() {
-		return start_at;
-	}
+    public String getStart_at() {
+        return start_at;
+    }
 
-	public void setStart_at(String startAt) {
-		this.start_at = startAt;
-	}
+    public void setStart_at(String startAt) {
+        this.start_at = startAt;
+    }
 
-	public String getWait_for_sec() {
-		return wait_for_sec;
-	}
+    public String getWait_for_sec() {
+        return wait_for_sec;
+    }
 
-	public void setWait_for_sec(String waitForSec) {
-		this.wait_for_sec = waitForSec;
-	}
+    public void setWait_for_sec(String waitForSec) {
+        this.wait_for_sec = waitForSec;
+    }
 }

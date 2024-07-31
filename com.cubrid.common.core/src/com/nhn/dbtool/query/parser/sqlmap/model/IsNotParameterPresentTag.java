@@ -30,20 +30,20 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of isNotParameterPresent tag.
- * <isNotParameterPresent prepend="" open="" close="" removeFirstPrepend="true"></isNotParameterPresent>
+ * A definition of isNotParameterPresent tag. <isNotParameterPresent prepend="" open="" close=""
+ * removeFirstPrepend="true"></isNotParameterPresent>
  *
  * @author Bumsik, Jang
  */
 public class IsNotParameterPresentTag extends SqlMapCondition {
-	private static final long serialVersionUID = -2381620991916698011L;
+    private static final long serialVersionUID = -2381620991916698011L;
 
-	public IsNotParameterPresentTag() {
-		this.setType("isNotParameterPresent");
-	}
+    public IsNotParameterPresentTag() {
+        this.setType("isNotParameterPresent");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return !super.isMatchCondition(parameterList);
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return !super.isMatchCondition(parameterList);
+    }
 }

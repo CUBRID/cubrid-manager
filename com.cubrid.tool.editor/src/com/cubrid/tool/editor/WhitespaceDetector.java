@@ -36,15 +36,14 @@ import org.eclipse.jface.text.rules.IWhitespaceDetector;
  * @author Kevin Cao
  * @version 1.0 - 2011-1-21 created by Kevin Cao
  */
-public class WhitespaceDetector implements
-		IWhitespaceDetector {
-	/**
-	 * Retrieves the char is white space.
-	 *
-	 * @param chr char
-	 * @return true:Input is white space or new line.false:Is not.
-	 */
-	public boolean isWhitespace(char chr) {
-		return (chr == ' ' || chr == '\t' || chr == '\n' || chr == '\r');
-	}
+public class WhitespaceDetector implements IWhitespaceDetector {
+    /**
+     * Retrieves the char is white space.
+     *
+     * @param chr char
+     * @return true:Input is white space or new line.false:Is not.
+     */
+    public boolean isWhitespace(char chr) {
+        return (chr == ' ' || chr == '\t' || chr == '\n' || chr == '\r');
+    }
 }

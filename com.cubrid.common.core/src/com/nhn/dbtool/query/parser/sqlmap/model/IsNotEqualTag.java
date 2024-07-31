@@ -30,41 +30,43 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of isNotEqual tag.
- * <isNotEqual property="" prepend="" open="" close="" removeFirstPrepend="true" compareProperty="" compareValue=""></isNotEqual>
+ * A definition of isNotEqual tag. <isNotEqual property="" prepend="" open="" close=""
+ * removeFirstPrepend="true" compareProperty="" compareValue=""></isNotEqual>
  *
  * @author Bumsik, Jang
  */
 public class IsNotEqualTag extends SqlMapCondition {
-	private static final long serialVersionUID = 2186450696238733033L;
+    private static final long serialVersionUID = 2186450696238733033L;
 
-	public IsNotEqualTag() {
-		this.setType("isNotEqual");
-	}
+    public IsNotEqualTag() {
+        this.setType("isNotEqual");
+    }
 
-	@Override
-	public String getExpectedCompareValue() {
-		return compareValue != null ? "!= " + compareValue
-				: (compareProperty != null ? "!= #" + compareProperty + "#" : null);
-	}
+    @Override
+    public String getExpectedCompareValue() {
+        return compareValue != null
+                ? "!= " + compareValue
+                : (compareProperty != null ? "!= #" + compareProperty + "#" : null);
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		for (String parameter : parameterList) {
-			if (parameter.startsWith(getProperty())) {
-				String[] value = parameter.split(":");
-				try {
-					if (value.length == 1 || (value.length == 2
-							&& (value[1].equals(this.getExpectedCompareValue())
-							|| !value[1].equals(this.compareValue)))) {
-						return true;
-					}
-				} catch (Exception e) {
-					// ignore
-				}
-			}
-		}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        for (String parameter : parameterList) {
+            if (parameter.startsWith(getProperty())) {
+                String[] value = parameter.split(":");
+                try {
+                    if (value.length == 1
+                            || (value.length == 2
+                                    && (value[1].equals(this.getExpectedCompareValue())
+                                            || !value[1].equals(this.compareValue)))) {
+                        return true;
+                    }
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

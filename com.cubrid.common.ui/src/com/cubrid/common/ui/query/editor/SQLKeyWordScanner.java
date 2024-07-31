@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,14 +24,15 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.common.ui.query.editor;
 
+import com.cubrid.common.core.util.QuerySyntax;
+import com.cubrid.common.ui.spi.ResourceManager;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -41,51 +42,50 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.swt.SWT;
 
-import com.cubrid.common.core.util.QuerySyntax;
-import com.cubrid.common.ui.spi.ResourceManager;
-
 /**
- * 
  * SQL keywords scanner
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2011-4-21 created by pangqiren
  */
-public class SQLKeyWordScanner extends
-		RuleBasedScanner {
+public class SQLKeyWordScanner extends RuleBasedScanner {
 
-	public SQLKeyWordScanner() {
-		// Create the tokens for keywords, strings, and other (everything else)
-		IToken keywordToken = new Token(new TextAttribute(
-				ResourceManager.getColor(ISQLPartitions.COLOR_KEYWORD),
-				null, // ResourceManager.getColor(ISQLPartitions.COLOR_BACKGROUND)
-				SWT.BOLD));
-		IToken defaultToken = new Token(new TextAttribute(
-				ResourceManager.getColor(ISQLPartitions.COLOR_DEFAULT)));
+    public SQLKeyWordScanner() {
+        // Create the tokens for keywords, strings, and other (everything else)
+        IToken keywordToken =
+                new Token(
+                        new TextAttribute(
+                                ResourceManager.getColor(ISQLPartitions.COLOR_KEYWORD),
+                                null, // ResourceManager.getColor(ISQLPartitions.COLOR_BACKGROUND)
+                                SWT.BOLD));
+        IToken defaultToken =
+                new Token(
+                        new TextAttribute(ResourceManager.getColor(ISQLPartitions.COLOR_DEFAULT)));
 
-		setDefaultReturnToken(defaultToken);
+        setDefaultReturnToken(defaultToken);
 
-		List<IRule> rules = new ArrayList<IRule>();
+        List<IRule> rules = new ArrayList<IRule>();
 
-		// Add rule for whitespace
-		rules.add(new WhitespaceRule(new IWhitespaceDetector() {
-			public boolean isWhitespace(char whitespace) {
-				return Character.isWhitespace(whitespace);
-			}
-		}));
+        // Add rule for whitespace
+        rules.add(
+                new WhitespaceRule(
+                        new IWhitespaceDetector() {
+                            public boolean isWhitespace(char whitespace) {
+                                return Character.isWhitespace(whitespace);
+                            }
+                        }));
 
-		// Add word rule for keywords, types, and constants.
-		SQLKeyWordRule wordRule = new SQLKeyWordRule(
-				new QueryWordDetector(), defaultToken);
+        // Add word rule for keywords, types, and constants.
+        SQLKeyWordRule wordRule = new SQLKeyWordRule(new QueryWordDetector(), defaultToken);
 
-		String[] keyWords = QuerySyntax.KEYWORDS;
-		for (int i = 0; i < keyWords.length; i++) {
-			wordRule.addWord(keyWords[i], keywordToken);
-		}
-		rules.add(wordRule);
+        String[] keyWords = QuerySyntax.KEYWORDS;
+        for (int i = 0; i < keyWords.length; i++) {
+            wordRule.addWord(keyWords[i], keywordToken);
+        }
+        rules.add(wordRule);
 
-		IRule[] result = new IRule[rules.size()];
-		rules.toArray(result);
-		setRules(result);
-	}
+        IRule[] result = new IRule[rules.size()];
+        rules.toArray(result);
+        setRules(result);
+    }
 }

@@ -27,6 +27,10 @@
  */
 package com.cubrid.common.ui.common.preference;
 
+import com.cubrid.common.core.util.ApplicationType;
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.perspective.PerspectiveManager;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -36,215 +40,199 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import com.cubrid.common.core.util.ApplicationType;
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.perspective.PerspectiveManager;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
- * 
  * General perference page composite
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-12-23 created by pangqiren
  */
-public class GeneralPreferenceComposite extends
-		Composite {
+public class GeneralPreferenceComposite extends Composite {
 
-	private Button maximizeWindowBtn = null;
-//	private Button checkNewInfoBtn = null;
-	private Button isAlwaysExitBtn = null;
-	private Button isAutoCheckUpdateBtn = null;
-	private Button autoCompleteKeywordBtn = null;
-	private Button autoCompleteTablesOrColumnsBtn = null;
-	private Button autoShowSchemaMiniInfoBtn = null;
-	private Button dashboardHostBtn = null;
-	private Button dashboardDatabaseBtn = null;
-	/*
-	private Button confirmRunModQueryAutoCommitBtn = null;
-	*/
+    private Button maximizeWindowBtn = null;
+    //	private Button checkNewInfoBtn = null;
+    private Button isAlwaysExitBtn = null;
+    private Button isAutoCheckUpdateBtn = null;
+    private Button autoCompleteKeywordBtn = null;
+    private Button autoCompleteTablesOrColumnsBtn = null;
+    private Button autoShowSchemaMiniInfoBtn = null;
+    private Button dashboardHostBtn = null;
+    private Button dashboardDatabaseBtn = null;
+    /*
+    private Button confirmRunModQueryAutoCommitBtn = null;
+    */
 
-	/**
-	 * The constructor
-	 *
-	 * @param parent
-	 */
-	public GeneralPreferenceComposite(Composite parent) {
-		super(parent, SWT.NONE);
+    /**
+     * The constructor
+     *
+     * @param parent
+     */
+    public GeneralPreferenceComposite(Composite parent) {
+        super(parent, SWT.NONE);
 
-		createContent();
-	}
+        createContent();
+    }
 
-	/**
-	 * Create the page content
-	 */
-	private void createContent() {
+    /** Create the page content */
+    private void createContent() {
 
-		setLayout(new GridLayout());
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        setLayout(new GridLayout());
+        setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		isAlwaysExitBtn = new Button(this, SWT.CHECK);
-		final GridData isAlwaysExitGd = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		isAlwaysExitBtn.setLayoutData(isAlwaysExitGd);
-		isAlwaysExitBtn.setText(Messages.msgToggleExitConfirm);
+        isAlwaysExitBtn = new Button(this, SWT.CHECK);
+        final GridData isAlwaysExitGd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        isAlwaysExitBtn.setLayoutData(isAlwaysExitGd);
+        isAlwaysExitBtn.setText(Messages.msgToggleExitConfirm);
 
-//		checkNewInfoBtn = new Button(this, SWT.CHECK);
-//		final GridData checkNewInfoPageGd = new GridData(SWT.FILL, SWT.CENTER,
-//				true, false);
-//		checkNewInfoBtn.setLayoutData(checkNewInfoPageGd);
-//		checkNewInfoBtn.setText(Messages.btnCheckNewInfo);
+        //		checkNewInfoBtn = new Button(this, SWT.CHECK);
+        //		final GridData checkNewInfoPageGd = new GridData(SWT.FILL, SWT.CENTER,
+        //				true, false);
+        //		checkNewInfoBtn.setLayoutData(checkNewInfoPageGd);
+        //		checkNewInfoBtn.setText(Messages.btnCheckNewInfo);
 
-		isAutoCheckUpdateBtn = new Button(this, SWT.CHECK);
-		final GridData autoCheckUpdateBtnGd = new GridData(SWT.FILL,
-				SWT.CENTER, true, false);
-		isAutoCheckUpdateBtn.setLayoutData(autoCheckUpdateBtnGd);
-		isAutoCheckUpdateBtn.setText(Messages.auoCheckUpdate);
+        isAutoCheckUpdateBtn = new Button(this, SWT.CHECK);
+        final GridData autoCheckUpdateBtnGd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        isAutoCheckUpdateBtn.setLayoutData(autoCheckUpdateBtnGd);
+        isAutoCheckUpdateBtn.setText(Messages.auoCheckUpdate);
 
-		
-		final Group layoutGroup = new Group(this, SWT.NONE);
-		layoutGroup.setText(Messages.grpLayoutApplication);
-		layoutGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false));
-		layoutGroup.setLayout(new GridLayout(2, false));
-		
-		maximizeWindowBtn = new Button(layoutGroup, SWT.CHECK);
-		final GridData maximizeWindowBtnGd = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		maximizeWindowBtn.setLayoutData(maximizeWindowBtnGd);
-		maximizeWindowBtn.setText(Messages.maximizeWindowOnStartUp);
-		
-		autoShowSchemaMiniInfoBtn = new Button(layoutGroup, SWT.CHECK);
-		final GridData autoShowSchemaMiniInfoGd = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		autoShowSchemaMiniInfoBtn.setLayoutData(autoShowSchemaMiniInfoGd);
-		autoShowSchemaMiniInfoBtn.setText(Messages.autoShowSchemaMiniInfo);
-		autoShowSchemaMiniInfoBtn.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				CommonUITool.openWarningBox(Messages.warnAutoShowSchemaMiniInfo);
-			}
+        final Group layoutGroup = new Group(this, SWT.NONE);
+        layoutGroup.setText(Messages.grpLayoutApplication);
+        layoutGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        layoutGroup.setLayout(new GridLayout(2, false));
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
+        maximizeWindowBtn = new Button(layoutGroup, SWT.CHECK);
+        final GridData maximizeWindowBtnGd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        maximizeWindowBtn.setLayoutData(maximizeWindowBtnGd);
+        maximizeWindowBtn.setText(Messages.maximizeWindowOnStartUp);
 
-		final Group autoCompleteGroup = new Group(this, SWT.NONE);
-		autoCompleteGroup.setText(Messages.grpIsAutoCompleteOnQueryeditor);
-		autoCompleteGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		autoCompleteGroup.setLayout(new GridLayout(2, false));
-		
-		autoCompleteKeywordBtn = new Button(autoCompleteGroup, SWT.CHECK);
-		autoCompleteKeywordBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		autoCompleteKeywordBtn.setText(Messages.btnIsAutoCompleteKeyword);
-		
-		autoCompleteTablesOrColumnsBtn = new Button(autoCompleteGroup, SWT.CHECK);
-		autoCompleteTablesOrColumnsBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		autoCompleteTablesOrColumnsBtn.setText(Messages.btnIsAutoCompleteTablesOrColumns);
+        autoShowSchemaMiniInfoBtn = new Button(layoutGroup, SWT.CHECK);
+        final GridData autoShowSchemaMiniInfoGd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        autoShowSchemaMiniInfoBtn.setLayoutData(autoShowSchemaMiniInfoGd);
+        autoShowSchemaMiniInfoBtn.setText(Messages.autoShowSchemaMiniInfo);
+        autoShowSchemaMiniInfoBtn.addSelectionListener(
+                new SelectionListener() {
+                    public void widgetSelected(SelectionEvent e) {
+                        CommonUITool.openWarningBox(Messages.warnAutoShowSchemaMiniInfo);
+                    }
 
-		// safe mode settings
-		/*
-		final Group safeModeGroup = new Group(this, SWT.NONE);
-		safeModeGroup.setText(Messages.grpSafeMode);
-		safeModeGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		safeModeGroup.setLayout(new GridLayout(1, false));
-		confirmRunModQueryAutoCommitBtn = new Button(safeModeGroup, SWT.CHECK);
-		confirmRunModQueryAutoCommitBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		confirmRunModQueryAutoCommitBtn.setText(Messages.btnConfirmRunModQueryAutoCommit);
-		*/
+                    public void widgetDefaultSelected(SelectionEvent e) {}
+                });
 
-		if (ApplicationType.CUBRID_MANAGER.equals(PerspectiveManager.getInstance().getCurrentMode())) {
-			final Group openDashboardGrp = new Group(this, SWT.NONE);
-			final GridData openDashboardGrpGd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-			openDashboardGrp.setLayoutData(openDashboardGrpGd);
-			openDashboardGrp.setLayout(new GridLayout(2, false));
-			openDashboardGrp.setText(Messages.grpUseDashboard);
+        final Group autoCompleteGroup = new Group(this, SWT.NONE);
+        autoCompleteGroup.setText(Messages.grpIsAutoCompleteOnQueryeditor);
+        autoCompleteGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        autoCompleteGroup.setLayout(new GridLayout(2, false));
 
-			dashboardHostBtn = new Button(openDashboardGrp, SWT.CHECK);
-			dashboardHostBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-			dashboardHostBtn.setText(Messages.btnUseDashboardHost);
+        autoCompleteKeywordBtn = new Button(autoCompleteGroup, SWT.CHECK);
+        autoCompleteKeywordBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+        autoCompleteKeywordBtn.setText(Messages.btnIsAutoCompleteKeyword);
 
-			dashboardDatabaseBtn = new Button(openDashboardGrp, SWT.CHECK);
-			dashboardDatabaseBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-			dashboardDatabaseBtn.setText(Messages.btnUseDashboardDatabase);
-		}
-	}
+        autoCompleteTablesOrColumnsBtn = new Button(autoCompleteGroup, SWT.CHECK);
+        autoCompleteTablesOrColumnsBtn.setLayoutData(
+                new GridData(SWT.FILL, SWT.CENTER, false, false));
+        autoCompleteTablesOrColumnsBtn.setText(Messages.btnIsAutoCompleteTablesOrColumns);
 
-	/**
-	 * load query option from preference store
-	 */
-	public void loadPreference() {
-		boolean isMax = GeneralPreference.isMaximizeWindowOnStartUp();
-		maximizeWindowBtn.setSelection(isMax);
+        // safe mode settings
+        /*
+        final Group safeModeGroup = new Group(this, SWT.NONE);
+        safeModeGroup.setText(Messages.grpSafeMode);
+        safeModeGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        safeModeGroup.setLayout(new GridLayout(1, false));
+        confirmRunModQueryAutoCommitBtn = new Button(safeModeGroup, SWT.CHECK);
+        confirmRunModQueryAutoCommitBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+        confirmRunModQueryAutoCommitBtn.setText(Messages.btnConfirmRunModQueryAutoCommit);
+        */
 
-		boolean isAlwaysExit = GeneralPreference.isAlwaysExit();
-		isAlwaysExitBtn.setSelection(isAlwaysExit);
+        if (ApplicationType.CUBRID_MANAGER.equals(
+                PerspectiveManager.getInstance().getCurrentMode())) {
+            final Group openDashboardGrp = new Group(this, SWT.NONE);
+            final GridData openDashboardGrpGd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            openDashboardGrp.setLayoutData(openDashboardGrpGd);
+            openDashboardGrp.setLayout(new GridLayout(2, false));
+            openDashboardGrp.setText(Messages.grpUseDashboard);
 
-//		boolean isShowWelcomePage = GeneralPreference.isCheckNewInfoOnStartUp();
-//		checkNewInfoBtn.setSelection(isShowWelcomePage);
+            dashboardHostBtn = new Button(openDashboardGrp, SWT.CHECK);
+            dashboardHostBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+            dashboardHostBtn.setText(Messages.btnUseDashboardHost);
 
-		boolean isAutoCheckUpdate = GeneralPreference.isAutoCheckUpdate();
-		isAutoCheckUpdateBtn.setSelection(isAutoCheckUpdate);
+            dashboardDatabaseBtn = new Button(openDashboardGrp, SWT.CHECK);
+            dashboardDatabaseBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+            dashboardDatabaseBtn.setText(Messages.btnUseDashboardDatabase);
+        }
+    }
 
-		boolean isAutoCompleteKeyword = GeneralPreference.isAutoCompleteKeyword();
-		autoCompleteKeywordBtn.setSelection(isAutoCompleteKeyword);
-		
-		boolean isAutoCompleteTablesOrColumns = GeneralPreference.isAutoCompleteTablesOrColumns();
-		autoCompleteTablesOrColumnsBtn.setSelection(isAutoCompleteTablesOrColumns);
-		
-		boolean isAutoShowSchemaInfo = GeneralPreference.isAutoShowSchemaInfo();
-		autoShowSchemaMiniInfoBtn.setSelection(isAutoShowSchemaInfo);
+    /** load query option from preference store */
+    public void loadPreference() {
+        boolean isMax = GeneralPreference.isMaximizeWindowOnStartUp();
+        maximizeWindowBtn.setSelection(isMax);
 
-		/*
-		boolean isConfirmModifyingQuery = GeneralPreference.isShowAlertModifiedQueryOnAutoCommit();
-		confirmRunModQueryAutoCommitBtn.setSelection(isConfirmModifyingQuery);
-		*/
+        boolean isAlwaysExit = GeneralPreference.isAlwaysExit();
+        isAlwaysExitBtn.setSelection(isAlwaysExit);
 
-		if (ApplicationType.CUBRID_MANAGER.equals(PerspectiveManager.getInstance().getCurrentMode())) {
-			boolean isUseHostDashboard = GeneralPreference.isUseHostDashboard();
-			dashboardHostBtn.setSelection(isUseHostDashboard);
+        //		boolean isShowWelcomePage = GeneralPreference.isCheckNewInfoOnStartUp();
+        //		checkNewInfoBtn.setSelection(isShowWelcomePage);
 
-			boolean isUseDatabaseDashboard = GeneralPreference.isUseDatabaseDashboard();
-			dashboardDatabaseBtn.setSelection(isUseDatabaseDashboard);
-		}
-	}
+        boolean isAutoCheckUpdate = GeneralPreference.isAutoCheckUpdate();
+        isAutoCheckUpdateBtn.setSelection(isAutoCheckUpdate);
 
-	/**
-	 * 
-	 * Save options
-	 */
-	public void save() {
-		boolean isMax = maximizeWindowBtn.getSelection();
-		GeneralPreference.setMaximizeWindowOnStartUp(isMax);
+        boolean isAutoCompleteKeyword = GeneralPreference.isAutoCompleteKeyword();
+        autoCompleteKeywordBtn.setSelection(isAutoCompleteKeyword);
 
-		boolean isAlwaysExit = isAlwaysExitBtn.getSelection();
-		GeneralPreference.setAlwaysExit(isAlwaysExit);
+        boolean isAutoCompleteTablesOrColumns = GeneralPreference.isAutoCompleteTablesOrColumns();
+        autoCompleteTablesOrColumnsBtn.setSelection(isAutoCompleteTablesOrColumns);
 
-//		boolean isShowWelcomePage = checkNewInfoBtn.getSelection();
-//		GeneralPreference.setCheckNewInfoOnStartUp(isShowWelcomePage);
+        boolean isAutoShowSchemaInfo = GeneralPreference.isAutoShowSchemaInfo();
+        autoShowSchemaMiniInfoBtn.setSelection(isAutoShowSchemaInfo);
 
-		boolean isAutoCheckUpdate = isAutoCheckUpdateBtn.getSelection();
-		GeneralPreference.setAutoCheckUpdate(isAutoCheckUpdate);
+        /*
+        boolean isConfirmModifyingQuery = GeneralPreference.isShowAlertModifiedQueryOnAutoCommit();
+        confirmRunModQueryAutoCommitBtn.setSelection(isConfirmModifyingQuery);
+        */
 
-		boolean isAutoCompleteKeyword = autoCompleteKeywordBtn.getSelection();
-		GeneralPreference.setAutoCompleteKeyword(isAutoCompleteKeyword);
+        if (ApplicationType.CUBRID_MANAGER.equals(
+                PerspectiveManager.getInstance().getCurrentMode())) {
+            boolean isUseHostDashboard = GeneralPreference.isUseHostDashboard();
+            dashboardHostBtn.setSelection(isUseHostDashboard);
 
-		boolean isAutoCompleteTablesOrColumns = autoCompleteTablesOrColumnsBtn.getSelection();
-		GeneralPreference.setAutoCompleteTablesOrColumns(isAutoCompleteTablesOrColumns);
+            boolean isUseDatabaseDashboard = GeneralPreference.isUseDatabaseDashboard();
+            dashboardDatabaseBtn.setSelection(isUseDatabaseDashboard);
+        }
+    }
 
-		boolean isAutoShowSchemaInfo = autoShowSchemaMiniInfoBtn.getSelection();
-		GeneralPreference.setAutoShowSchemaInfo(isAutoShowSchemaInfo);
+    /** Save options */
+    public void save() {
+        boolean isMax = maximizeWindowBtn.getSelection();
+        GeneralPreference.setMaximizeWindowOnStartUp(isMax);
 
-		/*
-		boolean isConfirmModifyingQuery = confirmRunModQueryAutoCommitBtn.getSelection();
-		GeneralPreference.setShowAlertModifiedQueryOnAutoCommit(isConfirmModifyingQuery);
-		*/
+        boolean isAlwaysExit = isAlwaysExitBtn.getSelection();
+        GeneralPreference.setAlwaysExit(isAlwaysExit);
 
-		if (ApplicationType.CUBRID_MANAGER.equals(PerspectiveManager.getInstance().getCurrentMode())) {
-			boolean isUseHostDashboard = dashboardHostBtn.getSelection();
-			GeneralPreference.setUseHostDashboard(isUseHostDashboard);
+        //		boolean isShowWelcomePage = checkNewInfoBtn.getSelection();
+        //		GeneralPreference.setCheckNewInfoOnStartUp(isShowWelcomePage);
 
-			boolean isUseDatabaseDashboard = dashboardDatabaseBtn.getSelection();
-			GeneralPreference.setUseDatabaseDashboard(isUseDatabaseDashboard);
-		}
-	}
+        boolean isAutoCheckUpdate = isAutoCheckUpdateBtn.getSelection();
+        GeneralPreference.setAutoCheckUpdate(isAutoCheckUpdate);
+
+        boolean isAutoCompleteKeyword = autoCompleteKeywordBtn.getSelection();
+        GeneralPreference.setAutoCompleteKeyword(isAutoCompleteKeyword);
+
+        boolean isAutoCompleteTablesOrColumns = autoCompleteTablesOrColumnsBtn.getSelection();
+        GeneralPreference.setAutoCompleteTablesOrColumns(isAutoCompleteTablesOrColumns);
+
+        boolean isAutoShowSchemaInfo = autoShowSchemaMiniInfoBtn.getSelection();
+        GeneralPreference.setAutoShowSchemaInfo(isAutoShowSchemaInfo);
+
+        /*
+        boolean isConfirmModifyingQuery = confirmRunModQueryAutoCommitBtn.getSelection();
+        GeneralPreference.setShowAlertModifiedQueryOnAutoCommit(isConfirmModifyingQuery);
+        */
+
+        if (ApplicationType.CUBRID_MANAGER.equals(
+                PerspectiveManager.getInstance().getCurrentMode())) {
+            boolean isUseHostDashboard = dashboardHostBtn.getSelection();
+            GeneralPreference.setUseHostDashboard(isUseHostDashboard);
+
+            boolean isUseDatabaseDashboard = dashboardDatabaseBtn.getSelection();
+            GeneralPreference.setUseDatabaseDashboard(isUseDatabaseDashboard);
+        }
+    }
 }

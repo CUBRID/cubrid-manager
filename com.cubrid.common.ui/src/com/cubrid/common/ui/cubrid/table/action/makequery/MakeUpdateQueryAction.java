@@ -27,15 +27,14 @@
  */
 package com.cubrid.common.ui.cubrid.table.action.makequery;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-
 import com.cubrid.common.ui.cubrid.table.action.CopyToClipboardAction;
 import com.cubrid.common.ui.query.format.SqlFormattingStrategy;
 import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
 import com.cubrid.common.ui.spi.util.SQLGenerateUtils;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 
 /**
  * Copy update statement SQL to clipboard
@@ -43,63 +42,66 @@ import com.cubrid.common.ui.spi.util.SQLGenerateUtils;
  * @author Kevin Cao
  * @version 1.0 - 2011-2-25 created by Kevin Cao
  */
-public class MakeUpdateQueryAction extends
-		CopyToClipboardAction {
-	public static final String ID = MakeUpdateQueryAction.class.getName();
+public class MakeUpdateQueryAction extends CopyToClipboardAction {
+    public static final String ID = MakeUpdateQueryAction.class.getName();
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public MakeUpdateQueryAction(String id, Shell shell,
-			String text, ImageDescriptor icon) {
-		this(id, shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public MakeUpdateQueryAction(String id, Shell shell, String text, ImageDescriptor icon) {
+        this(id, shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public MakeUpdateQueryAction(String id, Shell shell,
-			ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		setId(id);
-		setCopyToEditor(true);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public MakeUpdateQueryAction(
+            String id,
+            Shell shell,
+            ISelectionProvider provider,
+            String text,
+            ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        setId(id);
+        setCopyToEditor(true);
+    }
 
-	/**
-	 * Sets this action support to update multi-object
-	 *
-	 * @see org.eclipse.jface.action.IAction.ISelectionAction
-	 * @return boolean
-	 */
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    /**
+     * Sets this action support to update multi-object
+     *
+     * @see org.eclipse.jface.action.IAction.ISelectionAction
+     * @return boolean
+     */
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	/**
-	 * Create update statement SQL
-	 *
-	 * @param schemaNode DefaultSchemaNode
-	 * @return String
-	 */
-	protected String getStmtSQL(DefaultSchemaNode schemaNode, IEditorPart editorPart) { // FIXME move this logic to core module
-		String sql = SQLGenerateUtils.getUpdateSQL(schemaNode);
+    /**
+     * Create update statement SQL
+     *
+     * @param schemaNode DefaultSchemaNode
+     * @return String
+     */
+    protected String getStmtSQL(
+            DefaultSchemaNode schemaNode,
+            IEditorPart editorPart) { // FIXME move this logic to core module
+        String sql = SQLGenerateUtils.getUpdateSQL(schemaNode);
 
-		try {
-			sql = wrapShardSQL(schemaNode, editorPart, sql);
-			sql = new SqlFormattingStrategy().format(sql).trim();
-		} catch (Exception ignored) {
-		}
+        try {
+            sql = wrapShardSQL(schemaNode, editorPart, sql);
+            sql = new SqlFormattingStrategy().format(sql).trim();
+        } catch (Exception ignored) {
+        }
 
-		return sql;
-	}
-
+        return sql;
+    }
 }

@@ -27,17 +27,15 @@
  */
 package com.nhn.dbtool.query.parser.sqlmap.model;
 
-
 /**
- * A definition of selectKey tag.
- * <selectKey keyProperty="" resultClass="" type="pre"></selectKey>
+ * A definition of selectKey tag. <selectKey keyProperty="" resultClass="" type="pre"></selectKey>
  *
  * @author Bumsik, Jang
  */
 public class SelectKeyTag extends SqlMapCondition {
-	private static final long serialVersionUID = -8864879671406971193L;
+    private static final long serialVersionUID = -8864879671406971193L;
 
-	public SelectKeyTag() {
-		this.setType("selectKey");
-	}
+    public SelectKeyTag() {
+        this.setType("selectKey");
+    }
 }

@@ -30,60 +30,50 @@ package com.cubrid.cubridmanager.ui.host.editor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-3-4 created by fulei
  */
+public class UnifyHostCubridConfTableContentProvider implements IStructuredContentProvider {
+    /**
+     * Returns the elements to display in the viewer when its input is set to the given element.
+     *
+     * @param inputElement the input element
+     * @return the array of elements to display in the viewer
+     */
+    @SuppressWarnings("unchecked")
+    public Object[] getElements(Object inputElement) {
+        if (!(inputElement instanceof List)) {
+            return new Object[] {};
+        }
+        List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
+        // do not display the uniform cubrid property
+        for (Map<String, String> valueMap : (ArrayList<Map<String, String>>) inputElement) {
+            newList.add(valueMap);
+        }
 
-public class UnifyHostCubridConfTableContentProvider implements
-		IStructuredContentProvider {
-	/**
-	 * Returns the elements to display in the viewer when its input is set to
-	 * the given element.
-	 *
-	 * @param inputElement the input element
-	 * @return the array of elements to display in the viewer
-	 */
-	@SuppressWarnings("unchecked")
-	public Object[] getElements(Object inputElement) {
-		if (!(inputElement instanceof List)) {
-			return new Object[] {};
-		}
-		List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
-		//do not display the uniform cubrid property
-		for (Map<String, String> valueMap : (ArrayList<Map<String, String>>) inputElement) {
-			newList.add(valueMap);
-		}
+        return newList.toArray();
+    }
 
-		return newList.toArray();
+    /**
+     * Notifies this content provider that the given viewer's input has been switched to a different
+     * element.
+     *
+     * @param viewer the viewer
+     * @param oldInput the old input element, or <code>null</code> if the viewer did not previously
+     *     have an input
+     * @param newInput the new input element, or <code>null</code> if the viewer does not have an
+     *     input
+     */
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        // empty
+    }
 
-	}
-
-	/**
-	 * Notifies this content provider that the given viewer's input has been
-	 * switched to a different element.
-	 *
-	 * @param viewer the viewer
-	 * @param oldInput the old input element, or <code>null</code> if the viewer
-	 *        did not previously have an input
-	 * @param newInput the new input element, or <code>null</code> if the viewer
-	 *        does not have an input
-	 */
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		//empty
-	}
-
-	/**
-	 * Disposes of this content provider. This is called by the viewer when it
-	 * is disposed.
-	 */
-	public void dispose() {
-		//empty
-	}
-
+    /** Disposes of this content provider. This is called by the viewer when it is disposed. */
+    public void dispose() {
+        // empty
+    }
 }

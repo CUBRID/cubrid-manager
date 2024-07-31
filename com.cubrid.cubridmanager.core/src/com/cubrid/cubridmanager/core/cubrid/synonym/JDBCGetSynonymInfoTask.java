@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2013 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,76 +23,75 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.cubrid.synonym;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import org.slf4j.Logger;
 
 import com.cubrid.common.core.common.model.Synonym;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.cubridmanager.core.Messages;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import org.slf4j.Logger;
 
 public class JDBCGetSynonymInfoTask extends JDBCTask {
-	private static final Logger LOGGER = LogUtil.getLogger(JDBCGetSynonymInfoTask.class);
+    private static final Logger LOGGER = LogUtil.getLogger(JDBCGetSynonymInfoTask.class);
 
-	/**
-	 * The constructor
-	 * 
-	 * @param dbInfo
-	 */
-	public JDBCGetSynonymInfoTask(DatabaseInfo dbInfo) {
-		super("GetSynonymInfo", dbInfo);
-	}
+    /**
+     * The constructor
+     *
+     * @param dbInfo
+     */
+    public JDBCGetSynonymInfoTask(DatabaseInfo dbInfo) {
+        super("GetSynonymInfo", dbInfo);
+    }
 
-	/**
-	 * Get Synonym information by Synonym Unique name
-	 * 
-	 * @param synonymUniqueName String The given synonym Unique name
-	 * @return Synonym The instance of Synonym
-	 */
-	public Synonym getSynonymInfo(String synonymUniqueName) {
-		Synonym synonym = null;
-		try {
-			if (errorMsg != null && errorMsg.trim().length() > 0) {
-				return null;
-			}
+    /**
+     * Get Synonym information by Synonym Unique name
+     *
+     * @param synonymUniqueName String The given synonym Unique name
+     * @return Synonym The instance of Synonym
+     */
+    public Synonym getSynonymInfo(String synonymUniqueName) {
+        Synonym synonym = null;
+        try {
+            if (errorMsg != null && errorMsg.trim().length() > 0) {
+                return null;
+            }
 
-			if (connection == null || connection.isClosed()) {
-				errorMsg = Messages.error_getConnection;
-				return null;
-			}
+            if (connection == null || connection.isClosed()) {
+                errorMsg = Messages.error_getConnection;
+                return null;
+            }
 
-			String sql = "SELECT *"
-					+ " FROM db_synonym"
-					+ " WHERE CONCAT(synonym_owner_name , '.' , synonym_name)=?";
+            String sql =
+                    "SELECT *"
+                            + " FROM db_synonym"
+                            + " WHERE CONCAT(synonym_owner_name , '.' , synonym_name)=?";
 
-			// [TOOLS-2425]Support shard broker
-			sql = DatabaseInfo.wrapShardQuery(databaseInfo, sql);
+            // [TOOLS-2425]Support shard broker
+            sql = DatabaseInfo.wrapShardQuery(databaseInfo, sql);
 
-			stmt = connection.prepareStatement(sql);
-			((PreparedStatement) stmt).setString(1, synonymUniqueName);
-			rs = ((PreparedStatement) stmt).executeQuery();
-			while (rs.next()) {
-				synonym = new Synonym();
-				synonym.setName(rs.getString("synonym_name"));
-				synonym.setOwner(rs.getString("synonym_owner_name"));
-				synonym.setTargetName(rs.getString("target_name"));
-				synonym.setTargetOwner(rs.getString("target_owner_name"));
-				synonym.setComment(rs.getString("comment"));
-			}
-		} catch (SQLException e) {
-			errorMsg = e.getMessage();
-			LOGGER.error(e.getMessage(), e);
-		} finally {
-			finish();
-		}
+            stmt = connection.prepareStatement(sql);
+            ((PreparedStatement) stmt).setString(1, synonymUniqueName);
+            rs = ((PreparedStatement) stmt).executeQuery();
+            while (rs.next()) {
+                synonym = new Synonym();
+                synonym.setName(rs.getString("synonym_name"));
+                synonym.setOwner(rs.getString("synonym_owner_name"));
+                synonym.setTargetName(rs.getString("target_name"));
+                synonym.setTargetOwner(rs.getString("target_owner_name"));
+                synonym.setComment(rs.getString("comment"));
+            }
+        } catch (SQLException e) {
+            errorMsg = e.getMessage();
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            finish();
+        }
 
-		return synonym;
-	}
+        return synonym;
+    }
 }

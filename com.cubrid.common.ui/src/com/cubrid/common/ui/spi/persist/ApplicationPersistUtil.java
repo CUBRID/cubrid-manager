@@ -29,6 +29,16 @@
  */
 package com.cubrid.common.ui.spi.persist;
 
+import com.cubrid.common.core.queryplan.StructQueryPlan;
+import com.cubrid.common.core.util.DateUtil;
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.tuner.QueryRecord;
+import com.cubrid.common.ui.query.tuner.QueryRecordProject;
+import com.cubrid.common.ui.spi.model.RestorableQueryEditorInfo;
+import com.cubrid.cubridmanager.core.common.xml.IXMLMemento;
+import com.cubrid.cubridmanager.core.common.xml.XMLMemento;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -40,22 +50,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.eclipse.core.runtime.Platform;
 import org.slf4j.Logger;
-
-import com.cubrid.common.core.queryplan.StructQueryPlan;
-import com.cubrid.common.core.util.ApplicationType;
-import com.cubrid.common.core.util.DateUtil;
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.perspective.PerspectiveManager;
-import com.cubrid.common.ui.query.tuner.QueryRecord;
-import com.cubrid.common.ui.query.tuner.QueryRecordProject;
-import com.cubrid.common.ui.spi.model.RestorableQueryEditorInfo;
-import com.cubrid.cubridmanager.core.common.xml.IXMLMemento;
-import com.cubrid.cubridmanager.core.common.xml.XMLMemento;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 
 /**
  * Application Persist Util
@@ -64,468 +60,473 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
  * @version 1.0 - Jun 4, 2012 created by Kevin.Wang
  */
 public class ApplicationPersistUtil {
-	private static final Logger LOGGER = LogUtil.getLogger(ApplicationPersistUtil.class);
-	private static final String fileName = "application.xml";
+    private static final Logger LOGGER = LogUtil.getLogger(ApplicationPersistUtil.class);
+    private static final String fileName = "application.xml";
 
-	private static final String DATE_PATTERN = "yyyy-MM-dd a hh:mm:ss";
-	private final String path;
-	private XMLMemento root;
+    private static final String DATE_PATTERN = "yyyy-MM-dd a hh:mm:ss";
+    private final String path;
+    private XMLMemento root;
 
-	private final List<ArrayList<RestorableQueryEditorInfo>> editorStatusList = new ArrayList<ArrayList<RestorableQueryEditorInfo>>();
-	private final List<ArrayList<RestorableQueryEditorInfo>> editorStatusListAtLastSession = new ArrayList<ArrayList<RestorableQueryEditorInfo>>();
-	private final Map<String, List<QueryRecordProject>> queryRecordMap = new LinkedHashMap<String, List<QueryRecordProject>>();
+    private final List<ArrayList<RestorableQueryEditorInfo>> editorStatusList =
+            new ArrayList<ArrayList<RestorableQueryEditorInfo>>();
+    private final List<ArrayList<RestorableQueryEditorInfo>> editorStatusListAtLastSession =
+            new ArrayList<ArrayList<RestorableQueryEditorInfo>>();
+    private final Map<String, List<QueryRecordProject>> queryRecordMap =
+            new LinkedHashMap<String, List<QueryRecordProject>>();
 
-	private static ApplicationPersistUtil instance;
+    private static ApplicationPersistUtil instance;
 
-	public static ApplicationPersistUtil getInstance() {
-		synchronized (ApplicationPersistUtil.class) {
-			if (instance == null) {
-				instance = new ApplicationPersistUtil();
-			}
-		}
-		return instance;
-	}
+    public static ApplicationPersistUtil getInstance() {
+        synchronized (ApplicationPersistUtil.class) {
+            if (instance == null) {
+                instance = new ApplicationPersistUtil();
+            }
+        }
+        return instance;
+    }
 
-	private ApplicationPersistUtil() {
-		this.path = Platform.getInstanceLocation().getURL().getPath() + File.separator + fileName;
-		File file = new File(path);
-		if (!file.exists()) {
-			createTemplateFile(file);
-		}
+    private ApplicationPersistUtil() {
+        this.path = Platform.getInstanceLocation().getURL().getPath() + File.separator + fileName;
+        File file = new File(path);
+        if (!file.exists()) {
+            createTemplateFile(file);
+        }
 
-		load();
-	}
+        load();
+    }
 
-	private void createTemplateFile(File file) {
-		try {
-			file.createNewFile();
-		} catch (IOException e) {
-			LOGGER.error(getClass().getName(), e);
-		}
-		root = XMLMemento.createWriteRoot("application_data");
-		save();
-	}
+    private void createTemplateFile(File file) {
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            LOGGER.error(getClass().getName(), e);
+        }
+        root = XMLMemento.createWriteRoot("application_data");
+        save();
+    }
 
-	private void load() {
-		editorStatusList.clear();
-		editorStatusListAtLastSession.clear();
-		queryRecordMap.clear();
+    private void load() {
+        editorStatusList.clear();
+        editorStatusListAtLastSession.clear();
+        queryRecordMap.clear();
 
-		try {
-			root = (XMLMemento) XMLMemento.loadMemento(path);
-		} catch (IOException e) {
-			LOGGER.error(getClass().getName(), e);
-		}
+        try {
+            root = (XMLMemento) XMLMemento.loadMemento(path);
+        } catch (IOException e) {
+            LOGGER.error(getClass().getName(), e);
+        }
 
-		IXMLMemento[] children = root == null ? null : root.getChildren("editor_status");
-		for (int i = 0; children != null && i < children.length; i++) {
-			IXMLMemento child = children[i];
-			editorStatusListAtLastSession.add(loadSQLTabItem(child));
-		}
+        IXMLMemento[] children = root == null ? null : root.getChildren("editor_status");
+        for (int i = 0; children != null && i < children.length; i++) {
+            IXMLMemento child = children[i];
+            editorStatusListAtLastSession.add(loadSQLTabItem(child));
+        }
 
-		IXMLMemento[] queryRecordChildren = root == null ? null
-				: root.getChildren("query_record_list_data");
-		for (int i = 0; queryRecordChildren != null && i < queryRecordChildren.length; i++) {
-			IXMLMemento child = queryRecordChildren[i];
-			loadQueryRecordList(child);
-		}
-	}
+        IXMLMemento[] queryRecordChildren =
+                root == null ? null : root.getChildren("query_record_list_data");
+        for (int i = 0; queryRecordChildren != null && i < queryRecordChildren.length; i++) {
+            IXMLMemento child = queryRecordChildren[i];
+            loadQueryRecordList(child);
+        }
+    }
 
-	/**
-	 * loadSQLTabItem if has sql_tabItem node ,is new version old version not
-	 * have this node
-	 *
-	 * @param element
-	 * @return
-	 */
-	private ArrayList<RestorableQueryEditorInfo> loadSQLTabItem(IXMLMemento element) {
-		IXMLMemento[] sql_tabItemArray = element.getChildren("sql_tabItem");
-		ArrayList<RestorableQueryEditorInfo> sql_tabItemList = new ArrayList<RestorableQueryEditorInfo>();
-		if (sql_tabItemArray != null && sql_tabItemArray.length > 0) {
-			for (int i = 0; sql_tabItemArray != null && i < sql_tabItemArray.length; i++) {
-				IXMLMemento child = sql_tabItemArray[i];
-				sql_tabItemList.add(loadRestorableQueryEditorInfo(child));
-			}
-		} else {
-			if (element.getString("database") != null) {
-				sql_tabItemList.add(loadRestorableQueryEditorInfo(element));
-			}
-		}
-		return sql_tabItemList;
-	}
+    /**
+     * loadSQLTabItem if has sql_tabItem node ,is new version old version not have this node
+     *
+     * @param element
+     * @return
+     */
+    private ArrayList<RestorableQueryEditorInfo> loadSQLTabItem(IXMLMemento element) {
+        IXMLMemento[] sql_tabItemArray = element.getChildren("sql_tabItem");
+        ArrayList<RestorableQueryEditorInfo> sql_tabItemList =
+                new ArrayList<RestorableQueryEditorInfo>();
+        if (sql_tabItemArray != null && sql_tabItemArray.length > 0) {
+            for (int i = 0; sql_tabItemArray != null && i < sql_tabItemArray.length; i++) {
+                IXMLMemento child = sql_tabItemArray[i];
+                sql_tabItemList.add(loadRestorableQueryEditorInfo(child));
+            }
+        } else {
+            if (element.getString("database") != null) {
+                sql_tabItemList.add(loadRestorableQueryEditorInfo(element));
+            }
+        }
+        return sql_tabItemList;
+    }
 
-	/**
-	 * Load query record list
-	 *
-	 * @param element
-	 */
-	private void loadQueryRecordList(IXMLMemento element) {
-		DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
-		IXMLMemento[] dataArray = element.getChildren("query_redord_list");
-		if (dataArray != null && dataArray.length > 0) {
-			for (int i = 0; i < dataArray.length; i++) {
-				IXMLMemento child = dataArray[i];
-				String key = child.getString("database_key");
-				String dateStr = child.getString("create_date");
-				String name = child.getString("name");
+    /**
+     * Load query record list
+     *
+     * @param element
+     */
+    private void loadQueryRecordList(IXMLMemento element) {
+        DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
+        IXMLMemento[] dataArray = element.getChildren("query_redord_list");
+        if (dataArray != null && dataArray.length > 0) {
+            for (int i = 0; i < dataArray.length; i++) {
+                IXMLMemento child = dataArray[i];
+                String key = child.getString("database_key");
+                String dateStr = child.getString("create_date");
+                String name = child.getString("name");
 
-				QueryRecordProject recordList = new QueryRecordProject();
-				recordList.setDatabaseKey(key);
-				recordList.setName(name);
-				try {
-					recordList.setCreateDate(formater.parse(dateStr));
-				} catch (ParseException e) {
-					recordList.setCreateDate(new Date());
-				}
+                QueryRecordProject recordList = new QueryRecordProject();
+                recordList.setDatabaseKey(key);
+                recordList.setName(name);
+                try {
+                    recordList.setCreateDate(formater.parse(dateStr));
+                } catch (ParseException e) {
+                    recordList.setCreateDate(new Date());
+                }
 
-				IXMLMemento[] queryRecordArray = child.getChildren("query_record");
-				if (queryRecordArray != null && queryRecordArray.length > 0) {
-					for (int j = 0; j < queryRecordArray.length; j++) {
-						IXMLMemento memen = queryRecordArray[j];
-						QueryRecord queryRecord = loadQueryRecord(memen);
+                IXMLMemento[] queryRecordArray = child.getChildren("query_record");
+                if (queryRecordArray != null && queryRecordArray.length > 0) {
+                    for (int j = 0; j < queryRecordArray.length; j++) {
+                        IXMLMemento memen = queryRecordArray[j];
+                        QueryRecord queryRecord = loadQueryRecord(memen);
 
-						recordList.addQueryRecord(queryRecord);
-					}
-				}
-				List<QueryRecordProject> list = queryRecordMap.get(key);
-				if (list == null) {
-					list = new ArrayList<QueryRecordProject>();
-					queryRecordMap.put(key, list);
+                        recordList.addQueryRecord(queryRecord);
+                    }
+                }
+                List<QueryRecordProject> list = queryRecordMap.get(key);
+                if (list == null) {
+                    list = new ArrayList<QueryRecordProject>();
+                    queryRecordMap.put(key, list);
+                }
+                list.add(recordList);
+            }
+        }
+    }
 
-				}
-				list.add(recordList);
-			}
-		}
-	}
+    /**
+     * Load query record
+     *
+     * @param element
+     * @return
+     */
+    private QueryRecord loadQueryRecord(IXMLMemento element) {
+        DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
+        QueryRecord queryRecord = null;
+        String name = element.getString("name");
+        String dateStr = element.getString("create_date");
+        long startTime = StringUtil.intValue(element.getString("start_time"), -1);
+        long stopTime = StringUtil.intValue(element.getString("stop_time"), -1);
+        String query = element.getString("query");
 
-	/**
-	 * Load query record
-	 *
-	 * @param element
-	 * @return
-	 */
-	private QueryRecord loadQueryRecord(IXMLMemento element) {
-		DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
-		QueryRecord queryRecord = null;
-		String name = element.getString("name");
-		String dateStr = element.getString("create_date");
-		long startTime = StringUtil.intValue(element.getString("start_time"), -1);
-		long stopTime = StringUtil.intValue(element.getString("stop_time"), -1);
-		String query = element.getString("query");
+        StructQueryPlan queryPlan = null;
+        IXMLMemento[] planArray = element.getChildren("query_plan");
+        if (planArray != null && planArray.length > 0) {
+            queryPlan = loadQueryPlan(planArray[0]);
+        }
+        LinkedHashMap<String, String> statistics = null;
+        IXMLMemento[] statisticsArray = element.getChildren("statistics");
+        if (statisticsArray != null && statisticsArray.length > 0) {
+            statistics = loadPlanStatistics(statisticsArray[0]);
+        }
 
-		StructQueryPlan queryPlan = null;
-		IXMLMemento[] planArray = element.getChildren("query_plan");
-		if (planArray != null && planArray.length > 0) {
-			queryPlan = loadQueryPlan(planArray[0]);
-		}
-		LinkedHashMap<String, String> statistics = null;
-		IXMLMemento[] statisticsArray = element.getChildren("statistics");
-		if (statisticsArray != null && statisticsArray.length > 0) {
-			statistics = loadPlanStatistics(statisticsArray[0]);
+        Date createDate = null;
+        try {
+            createDate = formater.parse(dateStr);
+        } catch (ParseException e) {
+            createDate = new Date();
+        }
 
-		}
+        queryRecord = new QueryRecord(query, startTime, stopTime, createDate);
+        queryRecord.setName(name);
+        queryRecord.setQueryPlan(queryPlan);
+        queryRecord.setStatistics(statistics);
 
-		Date createDate = null;
-		try {
-			createDate = formater.parse(dateStr);
-		} catch (ParseException e) {
-			createDate = new Date();
-		}
+        return queryRecord;
+    }
 
-		queryRecord = new QueryRecord(query, startTime, stopTime, createDate);
-		queryRecord.setName(name);
-		queryRecord.setQueryPlan(queryPlan);
-		queryRecord.setStatistics(statistics);
+    /**
+     * Load query plan
+     *
+     * @param element
+     * @return
+     */
+    private StructQueryPlan loadQueryPlan(IXMLMemento element) {
+        DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
+        String query = element.getString("query");
+        String dateStr = element.getString("create_date");
+        String plan = element.getString("plan");
+        Date date = null;
+        try {
+            date = formater.parse(dateStr);
+        } catch (ParseException e) {
+            LOGGER.error(e.getMessage());
+            date = new Date();
+        }
 
-		return queryRecord;
-	}
+        return new StructQueryPlan(query, plan, date);
+    }
 
-	/**
-	 * Load query plan
-	 *
-	 * @param element
-	 * @return
-	 */
-	private StructQueryPlan loadQueryPlan(IXMLMemento element) {
-		DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
-		String query = element.getString("query");
-		String dateStr = element.getString("create_date");
-		String plan = element.getString("plan");
-		Date date = null;
-		try {
-			date = formater.parse(dateStr);
-		} catch (ParseException e) {
-			LOGGER.error(e.getMessage());
-			date = new Date();
-		}
+    /**
+     * Load plan statistics
+     *
+     * @param element
+     * @return
+     */
+    private LinkedHashMap<String, String> loadPlanStatistics(IXMLMemento element) {
+        LinkedHashMap<String, String> statistics = null;
 
-		return new StructQueryPlan(query, plan, date);
-	}
+        if (element != null) {
+            statistics = new LinkedHashMap<String, String>();
+            List<String> keyList = element.getAttributeNames();
+            if (keyList != null && keyList.size() > 0) {
+                for (String key : keyList) {
+                    String value = element.getString(key);
 
-	/**
-	 * Load plan statistics
-	 *
-	 * @param element
-	 * @return
-	 */
-	private LinkedHashMap<String, String> loadPlanStatistics(IXMLMemento element) {
-		LinkedHashMap<String, String> statistics = null;
+                    statistics.put(key, value);
+                }
+            }
+        }
 
-		if (element != null) {
-			statistics = new LinkedHashMap<String, String>();
-			List<String> keyList = element.getAttributeNames();
-			if (keyList != null && keyList.size() > 0) {
-				for (String key : keyList) {
-					String value = element.getString(key);
+        return statistics;
+    }
 
-					statistics.put(key, value);
-				}
-			}
-		}
+    /**
+     * load RestorableQueryEditorInfo from IXMLMemento
+     *
+     * @param element
+     * @return
+     */
+    public RestorableQueryEditorInfo loadRestorableQueryEditorInfo(IXMLMemento element) {
+        DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
+        RestorableQueryEditorInfo status = new RestorableQueryEditorInfo();
+        status.setServerName(element.getString("server"));
+        status.setDatabaseName(element.getString("database"));
+        try {
+            status.setCreatedTime(formater.parse(element.getString("create_time")));
+        } catch (Exception e) {
+            LOGGER.error("Parse the create time failed:" + e.getMessage(), e);
+        }
+        status.setQueryContents(element.getString("content"));
+        return status;
+    }
 
-		return statistics;
-	}
+    public void save() {
+        root = XMLMemento.createWriteRoot("application_data");
+        saveToXmlFile(root);
 
-	/**
-	 * load RestorableQueryEditorInfo from IXMLMemento
-	 *
-	 * @param element
-	 * @return
-	 */
-	public RestorableQueryEditorInfo loadRestorableQueryEditorInfo(IXMLMemento element) {
-		DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
-		RestorableQueryEditorInfo status = new RestorableQueryEditorInfo();
-		status.setServerName(element.getString("server"));
-		status.setDatabaseName(element.getString("database"));
-		try {
-			status.setCreatedTime(formater.parse(element.getString("create_time")));
-		} catch (Exception e) {
-			LOGGER.error("Parse the create time failed:" + e.getMessage(), e);
-		}
-		status.setQueryContents(element.getString("content"));
-		return status;
-	}
+        try {
+            root.saveToFile(path);
+        } catch (IOException e) {
+            LOGGER.error(getClass().getName(), e);
+        }
+    }
 
-	public void save() {
-		root = XMLMemento.createWriteRoot("application_data");
-		saveToXmlFile(root);
+    public List<QueryRecordProject> getQueryRecordProject(DatabaseInfo databaseInfo) {
+        List<QueryRecordProject> list = queryRecordMap.get(getDBMapKey(databaseInfo));
+        if (list == null) {
+            list = new ArrayList<QueryRecordProject>();
+            queryRecordMap.put(getDBMapKey(databaseInfo), list);
+        }
 
-		try {
-			root.saveToFile(path);
-		} catch (IOException e) {
-			LOGGER.error(getClass().getName(), e);
-		}
-	}
+        List<QueryRecordProject> result = new ArrayList<QueryRecordProject>();
+        for (QueryRecordProject project : list) {
+            result.add(project.clone());
+        }
 
-	public List<QueryRecordProject> getQueryRecordProject(DatabaseInfo databaseInfo) {
-		List<QueryRecordProject> list = queryRecordMap.get(getDBMapKey(databaseInfo));
-		if (list == null) {
-			list = new ArrayList<QueryRecordProject>();
-			queryRecordMap.put(getDBMapKey(databaseInfo), list);
-		}
+        return result;
+    }
 
-		List<QueryRecordProject> result = new ArrayList<QueryRecordProject>();
-		for (QueryRecordProject project : list) {
-			result.add(project.clone());
-		}
+    public void addQueryRecordProject(
+            DatabaseInfo databaseInfo, QueryRecordProject queryRecordProject) {
+        String key = getDBMapKey(databaseInfo);
+        List<QueryRecordProject> list = queryRecordMap.get(key);
+        if (list == null) {
+            list = new ArrayList<QueryRecordProject>();
+            queryRecordMap.put(key, list);
+        }
 
-		return result;
-	}
+        list.add(queryRecordProject.clone());
+    }
 
-	public void addQueryRecordProject(DatabaseInfo databaseInfo,
-			QueryRecordProject queryRecordProject) {
-		String key = getDBMapKey(databaseInfo);
-		List<QueryRecordProject> list = queryRecordMap.get(key);
-		if (list == null) {
-			list = new ArrayList<QueryRecordProject>();
-			queryRecordMap.put(key, list);
-		}
+    public void removeQueryRecordProject(DatabaseInfo databaseInfo, String projectName) {
+        int index = -1;
+        List<QueryRecordProject> list = queryRecordMap.get(getDBMapKey(databaseInfo));
 
-		list.add(queryRecordProject.clone());
-	}
+        for (int i = 0; i < list.size(); i++) {
+            QueryRecordProject queryRecordProject = list.get(i);
+            if (StringUtil.isEqual(projectName, queryRecordProject.getName())) {
+                index = i;
+                break;
+            }
+        }
+        if (index >= 0) {
+            list.remove(index);
+        }
+    }
 
-	public void removeQueryRecordProject(DatabaseInfo databaseInfo, String projectName) {
-		int index = -1;
-		List<QueryRecordProject> list = queryRecordMap.get(getDBMapKey(databaseInfo));
+    /**
+     * Find query record project by name
+     *
+     * @param projectName
+     * @return
+     */
+    public QueryRecordProject findQueryRecordProject(
+            DatabaseInfo databaseInfo, String projectName) {
+        List<QueryRecordProject> list = getQueryRecordProject(databaseInfo);
 
-		for (int i = 0; i < list.size(); i++) {
-			QueryRecordProject queryRecordProject = list.get(i);
-			if (StringUtil.isEqual(projectName, queryRecordProject.getName())) {
-				index = i;
-				break;
-			}
-		}
-		if (index >= 0) {
-			list.remove(index);
-		}
-	}
+        if (list != null && list.size() > 0) {
+            for (QueryRecordProject temp : list) {
+                if (StringUtil.isEqual(projectName, temp.getName())) {
+                    return temp;
+                }
+            }
+        }
 
-	/**
-	 * Find query record project by name
-	 *
-	 * @param projectName
-	 * @return
-	 */
-	public QueryRecordProject findQueryRecordProject(DatabaseInfo databaseInfo, String projectName) {
-		List<QueryRecordProject> list = getQueryRecordProject(databaseInfo);
+        return null;
+    }
 
-		if (list != null && list.size() > 0) {
-			for (QueryRecordProject temp : list) {
-				if (StringUtil.isEqual(projectName, temp.getName())) {
-					return temp;
-				}
-			}
-		}
+    private void saveToXmlFile(IXMLMemento parent) {
+        if (editorStatusList == null) {
+            return;
+        }
+        DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
+        for (List<RestorableQueryEditorInfo> statusList : editorStatusList) {
+            IXMLMemento memento = parent.createChild("editor_status");
+            for (RestorableQueryEditorInfo status : statusList) {
+                IXMLMemento tabItem = memento.createChild("sql_tabItem");
+                tabItem.putString("content", status.getQueryContents());
+                tabItem.putString("create_time", formater.format(status.getCreatedTime()));
+                tabItem.putString(
+                        "database",
+                        status.getDatabaseName() == null ? "" : status.getDatabaseName());
+                tabItem.putString(
+                        "server", status.getServerName() == null ? "" : status.getServerName());
+            }
+        }
 
-		return null;
-	}
+        IXMLMemento queryListDataMemento = parent.createChild("query_record_list_data");
+        for (Entry<String, List<QueryRecordProject>> entry : queryRecordMap.entrySet()) {
+            String key = entry.getKey();
+            List<QueryRecordProject> list = entry.getValue();
+            for (QueryRecordProject queryRecordList : list) {
+                IXMLMemento queryListMemento =
+                        queryListDataMemento.createChild("query_redord_list");
+                String createDate = formater.format(queryRecordList.getCreateDate());
 
-	private void saveToXmlFile(IXMLMemento parent) {
-		if (editorStatusList == null) {
-			return;
-		}
-		DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
-		for (List<RestorableQueryEditorInfo> statusList : editorStatusList) {
-			IXMLMemento memento = parent.createChild("editor_status");
-			for (RestorableQueryEditorInfo status : statusList) {
-				IXMLMemento tabItem = memento.createChild("sql_tabItem");
-				tabItem.putString("content", status.getQueryContents());
-				tabItem.putString("create_time", formater.format(status.getCreatedTime()));
-				tabItem.putString("database",
-						status.getDatabaseName() == null ? "" : status.getDatabaseName());
-				tabItem.putString("server",
-						status.getServerName() == null ? "" : status.getServerName());
-			}
-		}
+                queryListMemento.putString("database_key", key);
+                queryListMemento.putString("create_date", createDate);
+                queryListMemento.putString("name", queryRecordList.getName());
 
-		IXMLMemento queryListDataMemento = parent.createChild("query_record_list_data");
-		for (Entry<String, List<QueryRecordProject>> entry : queryRecordMap.entrySet()) {
-			String key = entry.getKey();
-			List<QueryRecordProject> list = entry.getValue();
-			for (QueryRecordProject queryRecordList : list) {
-				IXMLMemento queryListMemento = queryListDataMemento.createChild("query_redord_list");
-				String createDate = formater.format(queryRecordList.getCreateDate());
+                for (QueryRecord queryRecord : queryRecordList.getQueryRecordList()) {
+                    IXMLMemento queryRecordMemento = queryListMemento.createChild("query_record");
+                    queryRecordMemento.putString("name", queryRecord.getName());
+                    queryRecordMemento.putString(
+                            "create_date", formater.format(queryRecord.getCreateDate()));
+                    queryRecordMemento.putString(
+                            "start_time", String.valueOf(queryRecord.getStartTime()));
+                    queryRecordMemento.putString(
+                            "stop_time", String.valueOf(queryRecord.getStopTime()));
+                    queryRecordMemento.putString("query", queryRecord.getQuery());
 
-				queryListMemento.putString("database_key", key);
-				queryListMemento.putString("create_date", createDate);
-				queryListMemento.putString("name", queryRecordList.getName());
+                    if (queryRecord.getQueryPlan() != null) {
+                        StructQueryPlan queryPlan = queryRecord.getQueryPlan();
+                        IXMLMemento queryPlanMemento = queryRecordMemento.createChild("query_plan");
+                        queryPlanMemento.putString("query", queryPlan.getSql());
+                        queryPlanMemento.putString("plan", queryPlan.getPlanRaw());
+                        queryPlanMemento.putString(
+                                "create_date", formater.format(queryPlan.getCreated()));
+                    }
 
-				for (QueryRecord queryRecord : queryRecordList.getQueryRecordList()) {
-					IXMLMemento queryRecordMemento = queryListMemento.createChild("query_record");
-					queryRecordMemento.putString("name", queryRecord.getName());
-					queryRecordMemento.putString("create_date",
-							formater.format(queryRecord.getCreateDate()));
-					queryRecordMemento.putString("start_time",
-							String.valueOf(queryRecord.getStartTime()));
-					queryRecordMemento.putString("stop_time",
-							String.valueOf(queryRecord.getStopTime()));
-					queryRecordMemento.putString("query", queryRecord.getQuery());
+                    if (queryRecord.getStatistics() != null) {
+                        IXMLMemento statisticsMemento =
+                                queryRecordMemento.createChild("statistics");
+                        for (Entry<String, String> prop : queryRecord.getStatistics().entrySet()) {
+                            statisticsMemento.putString(prop.getKey(), prop.getValue());
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-					if (queryRecord.getQueryPlan() != null) {
-						StructQueryPlan queryPlan = queryRecord.getQueryPlan();
-						IXMLMemento queryPlanMemento = queryRecordMemento.createChild("query_plan");
-						queryPlanMemento.putString("query", queryPlan.getSql());
-						queryPlanMemento.putString("plan", queryPlan.getPlanRaw());
-						queryPlanMemento.putString("create_date",
-								formater.format(queryPlan.getCreated()));
-					}
+    public List<ArrayList<RestorableQueryEditorInfo>> getEditorStatusList() {
+        return editorStatusList;
+    }
 
-					if (queryRecord.getStatistics() != null) {
-						IXMLMemento statisticsMemento = queryRecordMemento.createChild("statistics");
-						for (Entry<String, String> prop : queryRecord.getStatistics().entrySet()) {
-							statisticsMemento.putString(prop.getKey(), prop.getValue());
-						}
-					}
-				}
-			}
-		}
-	}
+    public void addEditorStatus(ArrayList<RestorableQueryEditorInfo> editorStatusList) {
+        getEditorStatusList().add(editorStatusList);
+    }
 
-	public List<ArrayList<RestorableQueryEditorInfo>> getEditorStatusList() {
-		return editorStatusList;
-	}
+    public void clearAllEditorStatus() {
+        editorStatusList.clear();
+    }
 
-	public void addEditorStatus(ArrayList<RestorableQueryEditorInfo> editorStatusList) {
-		getEditorStatusList().add(editorStatusList);
-	}
+    public void clearRestorableQueryEditors() {
+        editorStatusListAtLastSession.clear();
+    }
 
-	public void clearAllEditorStatus() {
-		editorStatusList.clear();
-	}
+    public int countOfRestorableQueryEditorsAtLastSession() {
+        return editorStatusListAtLastSession.size();
+    }
 
-	public void clearRestorableQueryEditors() {
-		editorStatusListAtLastSession.clear();
-	}
+    public List<ArrayList<RestorableQueryEditorInfo>> getEditorStatusListAtLastSession() {
+        return editorStatusListAtLastSession;
+    }
 
-	public int countOfRestorableQueryEditorsAtLastSession() {
-		return editorStatusListAtLastSession.size();
-	}
+    /**
+     * Get the map key for the database
+     *
+     * @param database - CubridDatabase
+     * @return String
+     */
+    private String getDBMapKey(DatabaseInfo databaseInfo) {
+        String dbUser = "";
+        String dbName = "";
+        String address = "";
+        String port = "";
+        String serverName = "";
 
-	public List<ArrayList<RestorableQueryEditorInfo>> getEditorStatusListAtLastSession() {
-		return editorStatusListAtLastSession;
-	}
+        if (databaseInfo.getAuthLoginedDbUserInfo() != null) {
+            dbUser = databaseInfo.getAuthLoginedDbUserInfo().getName();
+        }
 
-	/**
-	 * Get the map key for the database
-	 *
-	 * @param database - CubridDatabase
-	 * @return String
-	 */
-	private String getDBMapKey(DatabaseInfo databaseInfo) {
-		String dbUser = "";
-		String dbName = "";
-		String address = "";
-		String port = "";
-		String serverName = "";
+        if (databaseInfo.getDbName() != null) {
+            dbName = databaseInfo.getDbName();
+        }
 
-		if (databaseInfo.getAuthLoginedDbUserInfo() != null) {
-			dbUser = databaseInfo.getAuthLoginedDbUserInfo().getName();
-		}
+        if (databaseInfo.getBrokerIP() != null) {
+            address = databaseInfo.getBrokerIP();
+        }
+        if (databaseInfo.getBrokerIP() != null) {
+            port = databaseInfo.getBrokerIP();
+        }
 
-		if (databaseInfo.getDbName() != null) {
-			dbName = databaseInfo.getDbName();
-		}
+        if (databaseInfo.getServerInfo() != null
+                && databaseInfo.getServerInfo().getServerName() != null) {
+            serverName = databaseInfo.getServerInfo().getServerName();
+        }
 
-		if (databaseInfo.getBrokerIP() != null) {
-			address = databaseInfo.getBrokerIP();
-		}
-		if (databaseInfo.getBrokerIP() != null) {
-			port = databaseInfo.getBrokerIP();
-		}
+        return getDBMapKey(dbUser, dbName, address, port, serverName);
+    }
 
-		if (databaseInfo.getServerInfo() != null
-				&& databaseInfo.getServerInfo().getServerName() != null) {
-			serverName = databaseInfo.getServerInfo().getServerName();
-		}
+    /**
+     * Get the map key for the database
+     *
+     * @param dbUser - String
+     * @param dbName - String
+     * @param address - String
+     * @param port - String
+     * @param serverName - String
+     * @return String
+     */
+    private String getDBMapKey(
+            String dbUser, String dbName, String address, String port, String serverName) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(dbUser);
+        sb.append("@");
+        sb.append(dbName);
+        sb.append("@");
+        sb.append(address);
+        sb.append("@");
+        sb.append(port);
+        if (serverName != null) {
+            sb.append("@");
+            sb.append(serverName);
+        }
 
-		return getDBMapKey(dbUser, dbName, address, port, serverName);
-	}
-
-	/**
-	 * Get the map key for the database
-	 *
-	 * @param dbUser - String
-	 * @param dbName - String
-	 * @param address - String
-	 * @param port - String
-	 * @param serverName - String
-	 * @return String
-	 */
-	private String getDBMapKey(String dbUser, String dbName, String address, String port,
-			String serverName) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(dbUser);
-		sb.append("@");
-		sb.append(dbName);
-		sb.append("@");
-		sb.append(address);
-		sb.append("@");
-		sb.append(port);
-		if (serverName != null) {
-			sb.append("@");
-			sb.append(serverName);
-		}
-
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }

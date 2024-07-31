@@ -37,6 +37,7 @@ import static org.eclipse.swt.layout.GridData.FILL_BOTH;
 import static org.eclipse.swt.layout.GridData.FILL_HORIZONTAL;
 import static org.eclipse.swt.layout.GridData.HORIZONTAL_ALIGN_END;
 
+import com.cubrid.common.ui.common.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -59,164 +60,167 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-import com.cubrid.common.ui.common.Messages;
-
 /**
- * <p>
  * This is web browser editor part
- * </p>
  *
  * @author Kevin.Wang
  * @version 1.0 - Apr 23, 2012 created by Kevin.Wang
  */
-public class BrowserEditorPart extends
-		EditorPart {
-	public static final String ID = "com.cubrid.common.ui.common.control.BrowserEditorPart";
-	private Browser browser;
-	private Text location;
-	private ToolItem goItem;
-	private ToolItem refreshItem;
-	private ToolItem stopItem;
-	private ToolItem backItem;
-	private ToolItem forwardItem;
+public class BrowserEditorPart extends EditorPart {
+    public static final String ID = "com.cubrid.common.ui.common.control.BrowserEditorPart";
+    private Browser browser;
+    private Text location;
+    private ToolItem goItem;
+    private ToolItem refreshItem;
+    private ToolItem stopItem;
+    private ToolItem backItem;
+    private ToolItem forwardItem;
 
-	public void createPartControl(Composite parent) {
-		parent.setLayout(createGridLayout(3, 0, 0, 0, 0));
-		initUrlBar(parent);
-		initToolbar(parent);
-		initBrowser(parent);
-	}
+    public void createPartControl(Composite parent) {
+        parent.setLayout(createGridLayout(3, 0, 0, 0, 0));
+        initUrlBar(parent);
+        initToolbar(parent);
+        initBrowser(parent);
+    }
 
-	private void initUrlBar(Composite parent) {
-		Label urlLabel = new Label(parent, SWT.None);
-		urlLabel.setLayoutData(createGridData(1, 1, -1, -1));
-		urlLabel.setText(Messages.lblLocation);
+    private void initUrlBar(Composite parent) {
+        Label urlLabel = new Label(parent, SWT.None);
+        urlLabel.setLayoutData(createGridData(1, 1, -1, -1));
+        urlLabel.setText(Messages.lblLocation);
 
-		location = new Text(parent, SWT.BORDER);
-		location.setLayoutData(createGridData(FILL_HORIZONTAL, 1, 1, -1, -1));
-		location.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
-				if (e.character == SWT.LF || e.character == SWT.CR) {
-					e.doit = false;
-					go(location.getText());
-				}
-			}
-		});
-	}
+        location = new Text(parent, SWT.BORDER);
+        location.setLayoutData(createGridData(FILL_HORIZONTAL, 1, 1, -1, -1));
+        location.addKeyListener(
+                new KeyAdapter() {
+                    public void keyPressed(KeyEvent e) {
+                        if (e.character == SWT.LF || e.character == SWT.CR) {
+                            e.doit = false;
+                            go(location.getText());
+                        }
+                    }
+                });
+    }
 
-	private void initBrowser(Composite parent) {
-		browser = new Browser(parent, SWT.None);
-		browser.setLayoutData(createGridData(FILL_BOTH, 3, 1, -1, -1));
+    private void initBrowser(Composite parent) {
+        browser = new Browser(parent, SWT.None);
+        browser.setLayoutData(createGridData(FILL_BOTH, 3, 1, -1, -1));
 
-		// Add location change listener
-		browser.addLocationListener(new LocationListener() {
-			public void changing(LocationEvent e) {
-				location.setText(e.location);
-			}
+        // Add location change listener
+        browser.addLocationListener(
+                new LocationListener() {
+                    public void changing(LocationEvent e) {
+                        location.setText(e.location);
+                    }
 
-			public void changed(LocationEvent e) {
-				noOp();
-			}
-		});
+                    public void changed(LocationEvent e) {
+                        noOp();
+                    }
+                });
 
-		// Add loading listener
-		browser.addProgressListener(new ProgressListener() {
-			// Set stopItem and progress bar status
-			public void changed(ProgressEvent e) {
-				if (!stopItem.isEnabled() && e.total != e.current) {
-					stopItem.setEnabled(true);
-				}
-			}
+        // Add loading listener
+        browser.addProgressListener(
+                new ProgressListener() {
+                    // Set stopItem and progress bar status
+                    public void changed(ProgressEvent e) {
+                        if (!stopItem.isEnabled() && e.total != e.current) {
+                            stopItem.setEnabled(true);
+                        }
+                    }
 
-			// Set stopItem,backItem,forwardItem and progress bar status
-			public void completed(ProgressEvent e) {
-				stopItem.setEnabled(false);
-				backItem.setEnabled(browser.isBackEnabled());
-				forwardItem.setEnabled(browser.isForwardEnabled());
-			}
-		});
-	}
+                    // Set stopItem,backItem,forwardItem and progress bar status
+                    public void completed(ProgressEvent e) {
+                        stopItem.setEnabled(false);
+                        backItem.setEnabled(browser.isBackEnabled());
+                        forwardItem.setEnabled(browser.isForwardEnabled());
+                    }
+                });
+    }
 
-	private void initToolbar(Composite parent) {
-		Composite toolbarCom = new Composite(parent, SWT.None);
-		toolbarCom.setLayoutData(createGridData(HORIZONTAL_ALIGN_END, 1, 1, -1, -1));
-		toolbarCom.setLayout(new FillLayout());
+    private void initToolbar(Composite parent) {
+        Composite toolbarCom = new Composite(parent, SWT.None);
+        toolbarCom.setLayoutData(createGridData(HORIZONTAL_ALIGN_END, 1, 1, -1, -1));
+        toolbarCom.setLayout(new FillLayout());
 
-		ToolBar toolBar = new ToolBar(toolbarCom, SWT.FLAT);
+        ToolBar toolBar = new ToolBar(toolbarCom, SWT.FLAT);
 
-		goItem = new ToolItem(toolBar, SWT.CHECK);
-		goItem.setImage(getImage("icons/browsereditor/go.gif"));
-		goItem.setToolTipText(Messages.tooltipGo);
-		goItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				go(location.getText());
-			}
-		});
+        goItem = new ToolItem(toolBar, SWT.CHECK);
+        goItem.setImage(getImage("icons/browsereditor/go.gif"));
+        goItem.setToolTipText(Messages.tooltipGo);
+        goItem.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        go(location.getText());
+                    }
+                });
 
-		refreshItem = new ToolItem(toolBar, SWT.CHECK);
-		refreshItem.setImage(getImage("icons/browsereditor/refresh.gif"));
-		refreshItem.setToolTipText(Messages.tooltipRefresh);
-		refreshItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				browser.refresh();
-			}
-		});
+        refreshItem = new ToolItem(toolBar, SWT.CHECK);
+        refreshItem.setImage(getImage("icons/browsereditor/refresh.gif"));
+        refreshItem.setToolTipText(Messages.tooltipRefresh);
+        refreshItem.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        browser.refresh();
+                    }
+                });
 
-		stopItem = new ToolItem(toolBar, SWT.CHECK);
-		stopItem.setImage(getImage("icons/browsereditor/stop.gif"));
-		stopItem.setToolTipText(Messages.tooltipStop);
-		stopItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				browser.stop();
-			}
-		});
+        stopItem = new ToolItem(toolBar, SWT.CHECK);
+        stopItem.setImage(getImage("icons/browsereditor/stop.gif"));
+        stopItem.setToolTipText(Messages.tooltipStop);
+        stopItem.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        browser.stop();
+                    }
+                });
 
-		backItem = new ToolItem(toolBar, SWT.CHECK);
-		backItem.setImage(getImage("icons/browsereditor/back.gif"));
-		backItem.setToolTipText(Messages.tooltipBack);
-		backItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				browser.back();
-			}
-		});
+        backItem = new ToolItem(toolBar, SWT.CHECK);
+        backItem.setImage(getImage("icons/browsereditor/back.gif"));
+        backItem.setToolTipText(Messages.tooltipBack);
+        backItem.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        browser.back();
+                    }
+                });
 
-		forwardItem = new ToolItem(toolBar, SWT.CHECK);
-		forwardItem.setImage(getImage("icons/browsereditor/forward.gif"));
-		forwardItem.setToolTipText(Messages.tooltipForward);
-		forwardItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				browser.forward();
-			}
-		});
-	}
+        forwardItem = new ToolItem(toolBar, SWT.CHECK);
+        forwardItem.setImage(getImage("icons/browsereditor/forward.gif"));
+        forwardItem.setToolTipText(Messages.tooltipForward);
+        forwardItem.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        browser.forward();
+                    }
+                });
+    }
 
-	public void go(String url) {
-		browser.setUrl(url);
-	}
+    public void go(String url) {
+        browser.setUrl(url);
+    }
 
-	public void setFocus() {
-		noOp();
-	}
+    public void setFocus() {
+        noOp();
+    }
 
-	public void doSave(IProgressMonitor monitor) {
-		noOp();
-	}
+    public void doSave(IProgressMonitor monitor) {
+        noOp();
+    }
 
-	public void doSaveAs() {
-		noOp();
-	}
+    public void doSaveAs() {
+        noOp();
+    }
 
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		setSite(site);
-		setInput(input);
-		setTitleToolTip(input.getToolTipText());
-	}
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        setSite(site);
+        setInput(input);
+        setTitleToolTip(input.getToolTipText());
+    }
 
-	public boolean isDirty() {
-		return false;
-	}
+    public boolean isDirty() {
+        return false;
+    }
 
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
+    public boolean isSaveAsAllowed() {
+        return false;
+    }
 }

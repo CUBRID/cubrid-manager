@@ -33,11 +33,10 @@ import java.util.Set;
  * IInformationWindowNotifier
  *
  * @author Kevin.Wang
- *
- *         Create at 2014-4-8
+ *     <p>Create at 2014-4-8
  */
 public interface IInformationWindowNotifier {
-	public String getMessages();
+    public String getMessages();
 
-	public Set<String> getDecoratorWords();
+    public Set<String> getDecoratorWords();
 }

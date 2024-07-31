@@ -30,13 +30,13 @@ package com.navercorp.dbtools.sqlmap.parser;
 import java.util.List;
 
 public interface MapperFile {
-	public String generateQuery(String queryId);
+    public String generateQuery(String queryId);
 
-	public String generateQuery(String queryId, List<String> parameters);
+    public String generateQuery(String queryId, List<String> parameters);
 
-	public String generateRawQuery(String queryId);
+    public String generateRawQuery(String queryId);
 
-	public List<QueryCondition> getConditionList(String queryId);
+    public List<QueryCondition> getConditionList(String queryId);
 
-	public List<String> getQueryIdList();
+    public List<String> getQueryIdList();
 }

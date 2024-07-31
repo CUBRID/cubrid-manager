@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.logs.task;
 
@@ -35,154 +35,162 @@ import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 import com.cubrid.cubridmanager.core.logs.model.GetExecuteCasRunnerResultInfo;
 
 /**
- * 
  * A task that defined the task of "executecasrunner"
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2009-4-3 created by wuyingshi
  */
+public class GetExecuteCasRunnerContentResultTask extends SocketTask {
 
-public class GetExecuteCasRunnerContentResultTask extends
-		SocketTask {
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {
+                "task",
+                "token",
+                "dbname",
+                "brokername",
+                "username",
+                CIPHER_CHARACTER + "username",
+                "passwd",
+                CIPHER_CHARACTER + "passwd",
+                "num_thread",
+                "repeat_count",
+                "executelogfile",
+                "open",
+                "logstring",
+                "close",
+                "show_queryresult",
+                "show_queryplan"
+            };
 
-	private static final String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dbname", "brokername", "username",
-			CIPHER_CHARACTER + "username", "passwd",
-			CIPHER_CHARACTER + "passwd", "num_thread", "repeat_count",
-			"executelogfile", "open", "logstring", "close", "show_queryresult",
-			"show_queryplan" };
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public GetExecuteCasRunnerContentResultTask(ServerInfo serverInfo) {
+        super("executecasrunner", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * The constructor
-	 * 
-	 * @param serverInfo
-	 */
-	public GetExecuteCasRunnerContentResultTask(ServerInfo serverInfo) {
-		super("executecasrunner", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * set the database name.
+     *
+     * @param dbName String
+     */
+    public void setDbName(String dbName) {
+        super.setMsgItem("dbname", dbName);
+    }
 
-	/**
-	 * set the database name.
-	 * 
-	 * @param dbName String
-	 */
-	public void setDbName(String dbName) {
-		super.setMsgItem("dbname", dbName);
-	}
+    /**
+     * set the broker name.
+     *
+     * @param param String
+     */
+    public void setBrokerName(String param) {
+        super.setMsgItem("brokername", param);
+    }
 
-	/**
-	 * set the broker name.
-	 * 
-	 * @param param String
-	 */
-	public void setBrokerName(String param) {
-		super.setMsgItem("brokername", param);
-	}
+    /**
+     * set the user name.
+     *
+     * @param param String
+     */
+    public void setUserName(String param) {
+        if (CompatibleUtil.isSupportCipher(serverInfo.getServerVersionKey())) {
+            this.setMsgItem(CIPHER_CHARACTER + "username", CipherUtils.encrypt(param));
+        } else {
+            this.setMsgItem("username", param);
+        }
+    }
 
-	/**
-	 * set the user name.
-	 * 
-	 * @param param String
-	 */
-	public void setUserName(String param) {
-		if (CompatibleUtil.isSupportCipher(serverInfo.getServerVersionKey())) {
-			this.setMsgItem(CIPHER_CHARACTER + "username",
-					CipherUtils.encrypt(param));
-		} else {
-			this.setMsgItem("username", param);
-		}
-	}
+    /**
+     * set the password.
+     *
+     * @param param String
+     */
+    public void setPasswd(String param) {
+        if (CompatibleUtil.isSupportCipher(serverInfo.getServerVersionKey())) {
+            this.setMsgItem(CIPHER_CHARACTER + "passwd", CipherUtils.encrypt(param));
+        } else {
+            this.setMsgItem("passwd", param);
+        }
+    }
 
-	/**
-	 * set the password.
-	 * 
-	 * @param param String
-	 */
-	public void setPasswd(String param) {
-		if (CompatibleUtil.isSupportCipher(serverInfo.getServerVersionKey())) {
-			this.setMsgItem(CIPHER_CHARACTER + "passwd",
-					CipherUtils.encrypt(param));
-		} else {
-			this.setMsgItem("passwd", param);
-		}
-	}
+    /**
+     * set the num_thread.
+     *
+     * @param param String
+     */
+    public void setNumThread(String param) {
+        super.setMsgItem("num_thread", param);
+    }
 
-	/**
-	 * set the num_thread.
-	 * 
-	 * @param param String
-	 */
-	public void setNumThread(String param) {
-		super.setMsgItem("num_thread", param);
-	}
+    /**
+     * set the repeat_count.
+     *
+     * @param param String
+     */
+    public void setRepeatCount(String param) {
+        super.setMsgItem("repeat_count", param);
+    }
 
-	/**
-	 * set the repeat_count.
-	 * 
-	 * @param param String
-	 */
-	public void setRepeatCount(String param) {
-		super.setMsgItem("repeat_count", param);
-	}
+    /**
+     * set the executelogfile value.
+     *
+     * @param param String
+     */
+    public void setExecuteLogFile(String param) {
+        super.setMsgItem("executelogfile", param);
+    }
 
-	/**
-	 * set the executelogfile value.
-	 * 
-	 * @param param String
-	 */
-	public void setExecuteLogFile(String param) {
-		super.setMsgItem("executelogfile", param);
-	}
+    /**
+     * set the logstring values.
+     *
+     * @param param String[]
+     */
+    public void setLogstring(String[] param) {
+        super.setMsgItem("open", "logstring");
+        super.setMsgItem("logstring", param);
+        super.setMsgItem("close", "logstring");
+    }
 
-	/**
-	 * set the logstring values.
-	 * 
-	 * @param param String[]
-	 */
-	public void setLogstring(String[] param) {
-		super.setMsgItem("open", "logstring");
-		super.setMsgItem("logstring", param);
-		super.setMsgItem("close", "logstring");
-	}
+    /**
+     * set the show_queryresult value.
+     *
+     * @param param String
+     */
+    public void setShowQueryResult(String param) {
+        super.setMsgItem("show_queryresult", param);
+    }
 
-	/**
-	 * set the show_queryresult value.
-	 * 
-	 * @param param String
-	 */
-	public void setShowQueryResult(String param) {
-		super.setMsgItem("show_queryresult", param);
-	}
+    /**
+     * get result from the response.
+     *
+     * @return GetExecuteCasRunnerResultInfo
+     */
+    public GetExecuteCasRunnerResultInfo getContent() {
+        TreeNode response = getResponse();
+        if (response == null || (this.getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
+            return null;
+        }
+        GetExecuteCasRunnerResultInfo getExecuteCasRunnerResultInfo =
+                new GetExecuteCasRunnerResultInfo();
+        String queryResultFile = response.getValue("query_result_file");
+        String queryResultFileNum = response.getValue("query_result_file_num");
 
-	/**
-	 * get result from the response.
-	 * 
-	 * @return GetExecuteCasRunnerResultInfo
-	 */
-	public GetExecuteCasRunnerResultInfo getContent() {
-		TreeNode response = getResponse();
-		if (response == null
-				|| (this.getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
-			return null;
-		}
-		GetExecuteCasRunnerResultInfo getExecuteCasRunnerResultInfo = new GetExecuteCasRunnerResultInfo();
-		String queryResultFile = response.getValue("query_result_file");
-		String queryResultFileNum = response.getValue("query_result_file_num");
+        getExecuteCasRunnerResultInfo.setQueryResultFile(queryResultFile);
+        getExecuteCasRunnerResultInfo.setQueryResultFileNum(queryResultFileNum);
 
-		getExecuteCasRunnerResultInfo.setQueryResultFile(queryResultFile);
-		getExecuteCasRunnerResultInfo.setQueryResultFileNum(queryResultFileNum);
-
-		if (response != null && response.getValue("result_list") != null
-				&& response.getValue("result_list").equals("start")) {
-			String[] results = response.getValues("result");
-			for (int j = 0; j < results.length; j++) {
-				String str = results[j];
-				if (str != null && str.trim().length() > 0) {
-					getExecuteCasRunnerResultInfo.addResult(str);
-				}
-			}
-		}
-		return getExecuteCasRunnerResultInfo;
-	}
-
+        if (response != null
+                && response.getValue("result_list") != null
+                && response.getValue("result_list").equals("start")) {
+            String[] results = response.getValues("result");
+            for (int j = 0; j < results.length; j++) {
+                String str = results[j];
+                if (str != null && str.trim().length() > 0) {
+                    getExecuteCasRunnerResultInfo.addResult(str);
+                }
+            }
+        }
+        return getExecuteCasRunnerResultInfo;
+    }
 }

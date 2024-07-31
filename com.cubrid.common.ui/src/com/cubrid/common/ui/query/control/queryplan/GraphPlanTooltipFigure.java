@@ -27,9 +27,9 @@
  */
 package com.cubrid.common.ui.query.control.queryplan;
 
+import com.cubrid.common.ui.spi.ResourceManager;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayout;
@@ -47,147 +47,149 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
-import com.cubrid.common.ui.spi.ResourceManager;
-
 public class GraphPlanTooltipFigure extends Figure {
-	public static final int STYLE_SINGLE_LINE = 1;
-	public static final int STYLE_MULTI_LINE = 2;
+    public static final int STYLE_SINGLE_LINE = 1;
+    public static final int STYLE_MULTI_LINE = 2;
 
-	private Figure keyValueFigure;
-	private CompartmentFigure textFigure = new CompartmentFigure();
-	private final Map<String, IFigure[]> keyValueFigures = new HashMap<String, IFigure[]>();
-	private final Map<String, IFigure[]> textFigures = new HashMap<String, IFigure[]>();
-	private final static int FONT_SIZE = 9;
-	public static final Font bolderFont = ResourceManager.getFont(
-			Display.getCurrent().getSystemFont().toString(), FONT_SIZE, SWT.BOLD);
-	public static final Font italicFont = ResourceManager.getFont(
-			Display.getCurrent().getSystemFont().toString(), FONT_SIZE, SWT.ITALIC);
-	public static final Font normalFont = ResourceManager.getFont(
-			Display.getCurrent().getSystemFont().toString(), FONT_SIZE, SWT.NONE);
-	private Label title;
-	private FreeformLayout layout;
+    private Figure keyValueFigure;
+    private CompartmentFigure textFigure = new CompartmentFigure();
+    private final Map<String, IFigure[]> keyValueFigures = new HashMap<String, IFigure[]>();
+    private final Map<String, IFigure[]> textFigures = new HashMap<String, IFigure[]>();
+    private static final int FONT_SIZE = 9;
+    public static final Font bolderFont =
+            ResourceManager.getFont(
+                    Display.getCurrent().getSystemFont().toString(), FONT_SIZE, SWT.BOLD);
+    public static final Font italicFont =
+            ResourceManager.getFont(
+                    Display.getCurrent().getSystemFont().toString(), FONT_SIZE, SWT.ITALIC);
+    public static final Font normalFont =
+            ResourceManager.getFont(
+                    Display.getCurrent().getSystemFont().toString(), FONT_SIZE, SWT.NONE);
+    private Label title;
+    private FreeformLayout layout;
 
-	public GraphPlanTooltipFigure() {
-		ToolbarLayout layout = new ToolbarLayout();
-		layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
-		layout.setStretchMinorAxis(false);
-		layout.setSpacing(2);
-		setLayoutManager(layout);
-		setOpaque(true);
-		initTitle();
-		add(getKeyValueCompartment());
-		add(textFigure);
-	}
+    public GraphPlanTooltipFigure() {
+        ToolbarLayout layout = new ToolbarLayout();
+        layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
+        layout.setStretchMinorAxis(false);
+        layout.setSpacing(2);
+        setLayoutManager(layout);
+        setOpaque(true);
+        initTitle();
+        add(getKeyValueCompartment());
+        add(textFigure);
+    }
 
-	private Figure getKeyValueCompartment() {
-		if (keyValueFigure == null) {
-			keyValueFigure = new Panel();
-			keyValueFigure.setBorder(new CompartmentFigureBorder());
-			GridLayout layout = new GridLayout(2, true);
-			layout.verticalSpacing = 0;
-			keyValueFigure.setLayoutManager(layout);
-		}
+    private Figure getKeyValueCompartment() {
+        if (keyValueFigure == null) {
+            keyValueFigure = new Panel();
+            keyValueFigure.setBorder(new CompartmentFigureBorder());
+            GridLayout layout = new GridLayout(2, true);
+            layout.verticalSpacing = 0;
+            keyValueFigure.setLayoutManager(layout);
+        }
 
-		return keyValueFigure;
-	}
+        return keyValueFigure;
+    }
 
-	private CompartmentFigure getTextCompartment() {
-		return textFigure;
-	}
+    private CompartmentFigure getTextCompartment() {
+        return textFigure;
+    }
 
-	public void setTitle(String title) {
-		this.title.setText(title);
-	}
+    public void setTitle(String title) {
+        this.title.setText(title);
+    }
 
-	public class CompartmentFigure extends Figure {
-		public CompartmentFigure() {
-			ToolbarLayout layout = new ToolbarLayout();
-			layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
-			layout.setStretchMinorAxis(false);
-			layout.setSpacing(0);
-			setLayoutManager(layout);
-			setBorder(new CompartmentFigureBorder());
-		}
-	}
+    public class CompartmentFigure extends Figure {
+        public CompartmentFigure() {
+            ToolbarLayout layout = new ToolbarLayout();
+            layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
+            layout.setStretchMinorAxis(false);
+            layout.setSpacing(0);
+            setLayoutManager(layout);
+            setBorder(new CompartmentFigureBorder());
+        }
+    }
 
-	public class CompartmentFigureBorder extends AbstractBorder {
-		public Insets getInsets(IFigure figure) {
-			return new Insets(1, 0, 0, 0);
-		}
+    public class CompartmentFigureBorder extends AbstractBorder {
+        public Insets getInsets(IFigure figure) {
+            return new Insets(1, 0, 0, 0);
+        }
 
-		public void paint(IFigure figure, Graphics graphics, Insets insets) {
-			graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft(), tempRect.getTopRight());
-		}
-	}
+        public void paint(IFigure figure, Graphics graphics, Insets insets) {
+            graphics.drawLine(
+                    getPaintRectangle(figure, insets).getTopLeft(), tempRect.getTopRight());
+        }
+    }
 
-	private void initTitle() {
-		title = new Label();
-		title.setLabelAlignment(PositionConstants.CENTER);
-		title.setTextAlignment(PositionConstants.CENTER);
-		title.setFont(bolderFont);
+    private void initTitle() {
+        title = new Label();
+        title.setLabelAlignment(PositionConstants.CENTER);
+        title.setTextAlignment(PositionConstants.CENTER);
+        title.setFont(bolderFont);
 
-		add(title);
-	}
+        add(title);
+    }
 
-	public LayoutManager getLayoutManager() {
-		if (layout == null) {
-			layout = new FreeformLayout();
-		}
+    public LayoutManager getLayoutManager() {
+        if (layout == null) {
+            layout = new FreeformLayout();
+        }
 
-		return super.getLayoutManager();
-	}
+        return super.getLayoutManager();
+    }
 
-	public void addKeyValueItem(String key, String value) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.horizontalSpacing = 5;
-		layout.verticalSpacing = 0;
-		layout.makeColumnsEqualWidth = true;
+    public void addKeyValueItem(String key, String value) {
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        layout.horizontalSpacing = 5;
+        layout.verticalSpacing = 0;
+        layout.makeColumnsEqualWidth = true;
 
-		Label namelbl = new Label();
-		namelbl.setFont(bolderFont);
-		namelbl.setTextAlignment(PositionConstants.LEFT);
-		namelbl.setText(key);
+        Label namelbl = new Label();
+        namelbl.setFont(bolderFont);
+        namelbl.setTextAlignment(PositionConstants.LEFT);
+        namelbl.setText(key);
 
-		GridData nameData = new GridData(SWT.NONE);
-		nameData.grabExcessHorizontalSpace = true;
-		nameData.horizontalSpan = 0;
-		getKeyValueCompartment().add(namelbl, nameData);
+        GridData nameData = new GridData(SWT.NONE);
+        nameData.grabExcessHorizontalSpace = true;
+        nameData.horizontalSpan = 0;
+        getKeyValueCompartment().add(namelbl, nameData);
 
-		Label valueLbl = new Label();
-		valueLbl.setFont(normalFont);
-		valueLbl.setTextAlignment(PositionConstants.RIGHT);
-		valueLbl.setText(value);
+        Label valueLbl = new Label();
+        valueLbl.setFont(normalFont);
+        valueLbl.setTextAlignment(PositionConstants.RIGHT);
+        valueLbl.setText(value);
 
-		GridData valueData = new GridData(SWT.NONE);
-		valueData.grabExcessHorizontalSpace = true;
-		valueData.horizontalSpan = 0;
-		getKeyValueCompartment().add(valueLbl, valueData);
+        GridData valueData = new GridData(SWT.NONE);
+        valueData.grabExcessHorizontalSpace = true;
+        valueData.horizontalSpan = 0;
+        getKeyValueCompartment().add(valueLbl, valueData);
 
-		updateMap(key + value, keyValueFigures, namelbl, valueLbl);
-	}
+        updateMap(key + value, keyValueFigures, namelbl, valueLbl);
+    }
 
-	private void updateMap(String key, Map<String, IFigure[]> maps, IFigure... values) {
-		maps.put(key, values);
-	}
+    private void updateMap(String key, Map<String, IFigure[]> maps, IFigure... values) {
+        maps.put(key, values);
+    }
 
-	public void addTextItem(String name, String value) {
-		ToolbarLayout layout = new ToolbarLayout(false);
-		Panel panel = new Panel();
-		panel.setLayoutManager(layout);
-		getTextCompartment().add(panel);
+    public void addTextItem(String name, String value) {
+        ToolbarLayout layout = new ToolbarLayout(false);
+        Panel panel = new Panel();
+        panel.setLayoutManager(layout);
+        getTextCompartment().add(panel);
 
-		Label namelbl = new Label();
-		namelbl.setFont(bolderFont);
-		namelbl.setTextAlignment(PositionConstants.LEFT);
-		namelbl.setText(name);
+        Label namelbl = new Label();
+        namelbl.setFont(bolderFont);
+        namelbl.setTextAlignment(PositionConstants.LEFT);
+        namelbl.setText(name);
 
-		panel.add(namelbl);
-		Label outputLbl = new Label();
-		outputLbl.setText(value);
-		outputLbl.setFont(normalFont);
-		panel.add(outputLbl);
+        panel.add(namelbl);
+        Label outputLbl = new Label();
+        outputLbl.setText(value);
+        outputLbl.setFont(normalFont);
+        panel.add(outputLbl);
 
-		updateMap(name, textFigures, namelbl, outputLbl);
-	}
+        updateMap(name, textFigures, namelbl, outputLbl);
+    }
 }

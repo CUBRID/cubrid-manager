@@ -10,37 +10,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "Drawing_Object_Entity")
 public class DrawingObjectEntity {
 
-	@XmlAttribute(name = "id")
-	protected String id;
-	@XmlAttribute(name = "Name")
-	protected String name;
+    @XmlAttribute(name = "id")
+    protected String id;
 
-	@XmlElement(name = "Drawing_Object_EntityProps")
-	protected DrawingObjectEntityProps drawingObjectEntityProps;
+    @XmlAttribute(name = "Name")
+    protected String name;
 
-	public String getId() {
-		return id;
-	}
+    @XmlElement(name = "Drawing_Object_EntityProps")
+    protected DrawingObjectEntityProps drawingObjectEntityProps;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public DrawingObjectEntityProps getDrawingObjectEntityProps() {
-		return drawingObjectEntityProps;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDrawingObjectEntityProps(
-			DrawingObjectEntityProps drawingObjectEntityProps) {
-		this.drawingObjectEntityProps = drawingObjectEntityProps;
-	}
+    public DrawingObjectEntityProps getDrawingObjectEntityProps() {
+        return drawingObjectEntityProps;
+    }
 
+    public void setDrawingObjectEntityProps(DrawingObjectEntityProps drawingObjectEntityProps) {
+        this.drawingObjectEntityProps = drawingObjectEntityProps;
+    }
 }

@@ -1,7 +1,5 @@
 package com.cubrid.cubridmanager.core.cubrid.database.task;
 
-import java.util.List;
-
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.SetupEnvTestCase;
 import com.cubrid.cubridmanager.core.SystemParameter;
@@ -10,168 +8,158 @@ import com.cubrid.cubridmanager.core.common.socket.MessageUtil;
 import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DbBackupHistoryInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DbBackupInfo;
+import java.util.List;
 
-public class GetDbBackupInfoTaskTest extends
-		SetupEnvTestCase {
+public class GetDbBackupInfoTaskTest extends SetupEnvTestCase {
 
-	public void testSend() throws Exception {
+    public void testSend() throws Exception {
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "y"))
-			return;
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "y")) return;
 
-		String filepath = this.getFilePathInPlugin("/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_send");
-		String msg = Tool.getFileContent(filepath);
+        String filepath =
+                this.getFilePathInPlugin(
+                        "/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_send");
+        String msg = Tool.getFileContent(filepath);
 
-		//replace "token" field with the latest value
-		msg = msg.replaceFirst("token:.*\n", "token:" + token + "\n");
-		//composite message
-		GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
-		task.setDbName("demodb");
-		//compare 
-		assertEquals(msg, task.getRequest());
-	}
+        // replace "token" field with the latest value
+        msg = msg.replaceFirst("token:.*\n", "token:" + token + "\n");
+        // composite message
+        GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
+        task.setDbName("demodb");
+        // compare
+        assertEquals(msg, task.getRequest());
+    }
 
-	public void testReceive() throws Exception {
+    public void testReceive() throws Exception {
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "y"))
-			return;
-		//case 1
-		String filepath = this.getFilePathInPlugin("/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_receive");
-		String msg = Tool.getFileContent(filepath);
-		TreeNode node = MessageUtil.parseResponse(msg);
-		GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
-		task.setResponse(node);
-		DbBackupInfo dbBackupInfo = task.getDbBackupInfo();
-		assertEquals(dbBackupInfo.getDbDir(),
-				"/home/biaozhang/cubrid/databases/distdb_pang/backup");
-		assertEquals(dbBackupInfo.getFreeSpace(), "814952");
-		assertTrue(dbBackupInfo.getBackupHistoryList().size() == 1);
-		assertEquals(dbBackupInfo.getBackupHistoryList().get(0).getDate(),
-				"2010.01.08.15.11");
-		assertEquals(dbBackupInfo.getBackupHistoryList().get(0).getSize(),
-				"3159040");
-		assertEquals(dbBackupInfo.getBackupHistoryList().get(0).getLevel(),
-				"level0");
-		assertEquals(dbBackupInfo.getBackupHistoryList().get(0).getPath(),
-				"/home/biaozhang/cubrid/databases/distdb_pang/backup/distdb_pang_backup_lv0");
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "y")) return;
+        // case 1
+        String filepath =
+                this.getFilePathInPlugin(
+                        "/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_receive");
+        String msg = Tool.getFileContent(filepath);
+        TreeNode node = MessageUtil.parseResponse(msg);
+        GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
+        task.setResponse(node);
+        DbBackupInfo dbBackupInfo = task.getDbBackupInfo();
+        assertEquals(
+                dbBackupInfo.getDbDir(), "/home/biaozhang/cubrid/databases/distdb_pang/backup");
+        assertEquals(dbBackupInfo.getFreeSpace(), "814952");
+        assertTrue(dbBackupInfo.getBackupHistoryList().size() == 1);
+        assertEquals(dbBackupInfo.getBackupHistoryList().get(0).getDate(), "2010.01.08.15.11");
+        assertEquals(dbBackupInfo.getBackupHistoryList().get(0).getSize(), "3159040");
+        assertEquals(dbBackupInfo.getBackupHistoryList().get(0).getLevel(), "level0");
+        assertEquals(
+                dbBackupInfo.getBackupHistoryList().get(0).getPath(),
+                "/home/biaozhang/cubrid/databases/distdb_pang/backup/distdb_pang_backup_lv0");
 
-		//exception case1
-		task.setResponse(null);
-		assertTrue(task.getDbBackupInfo() == null);
-		//exception case2
-		task.setResponse(node);
-		task.setErrorMsg("has error");
-		assertTrue(task.getDbBackupInfo() == null);
-		//case 2
-		filepath = this.getFilePathInPlugin("/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_receive2");
-		msg = Tool.getFileContent(filepath);
-		node = MessageUtil.parseResponse(msg);
-		GetDbBackupInfoTask task2= new GetDbBackupInfoTask(serverInfo);
-		task2.setResponse(node);
-	    task2.getDbBackupInfo();	
-	    
-		//case 3
-		filepath = this.getFilePathInPlugin("/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_receive3");
-		msg = Tool.getFileContent(filepath);
-		node = MessageUtil.parseResponse(msg);
-		GetDbBackupInfoTask task3= new GetDbBackupInfoTask(serverInfo);
-		task3.setResponse(node);
-	    task3.getDbBackupInfo();	
-	    
-		//case 4
-		filepath = this.getFilePathInPlugin("/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_receive4");
-		msg = Tool.getFileContent(filepath);
-		node = MessageUtil.parseResponse(msg);
-		GetDbBackupInfoTask task4= new GetDbBackupInfoTask(serverInfo);
-		task4.setResponse(node);
-	    task4.getDbBackupInfo();	
-	}
+        // exception case1
+        task.setResponse(null);
+        assertTrue(task.getDbBackupInfo() == null);
+        // exception case2
+        task.setResponse(node);
+        task.setErrorMsg("has error");
+        assertTrue(task.getDbBackupInfo() == null);
+        // case 2
+        filepath =
+                this.getFilePathInPlugin(
+                        "/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_receive2");
+        msg = Tool.getFileContent(filepath);
+        node = MessageUtil.parseResponse(msg);
+        GetDbBackupInfoTask task2 = new GetDbBackupInfoTask(serverInfo);
+        task2.setResponse(node);
+        task2.getDbBackupInfo();
 
-	public void testBackupExist() {
+        // case 3
+        filepath =
+                this.getFilePathInPlugin(
+                        "/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_receive3");
+        msg = Tool.getFileContent(filepath);
+        node = MessageUtil.parseResponse(msg);
+        GetDbBackupInfoTask task3 = new GetDbBackupInfoTask(serverInfo);
+        task3.setResponse(node);
+        task3.getDbBackupInfo();
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        // case 4
+        filepath =
+                this.getFilePathInPlugin(
+                        "/com/cubrid/cubridmanager/core/cubrid/database/task/test.message/getdbbackupinfo_receive4");
+        msg = Tool.getFileContent(filepath);
+        node = MessageUtil.parseResponse(msg);
+        GetDbBackupInfoTask task4 = new GetDbBackupInfoTask(serverInfo);
+        task4.setResponse(node);
+        task4.getDbBackupInfo();
+    }
 
-		System.out.println("<database.backupdbinfo.001.req.txt>");
+    public void testBackupExist() {
 
-		GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
-		task.setDbName("demodb");
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		task.execute();
+        System.out.println("<database.backupdbinfo.001.req.txt>");
 
-		assertTrue(task.isSuccess());
-		assertNull(task.getErrorMsg());
+        GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
+        task.setDbName("demodb");
 
-		DbBackupInfo info = task.getDbBackupInfo();
-		assertNotNull(info);
-		assertEquals("/opt/frameworks/cubrid2/databases/demodb/backup",
-				info.getDbDir());
-		assertEquals("15216", info.getFreeSpace());
+        task.execute();
 
-		List<DbBackupHistoryInfo> list = info.getBackupHistoryList();
-		assertNotNull(list);
-		assertEquals(1, list.size());
+        assertTrue(task.isSuccess());
+        assertNull(task.getErrorMsg());
 
-		DbBackupHistoryInfo his = list.get(0);
-		assertEquals("level0", his.getLevel());
-		assertEquals(
-				"/opt/frameworks/cubrid2/databases/demodb/backup/demodb_backup_lv0",
-				his.getPath());
-		assertEquals("5256192", his.getSize());
-		assertEquals("2009.06.26.22.37", his.getDate());
+        DbBackupInfo info = task.getDbBackupInfo();
+        assertNotNull(info);
+        assertEquals("/opt/frameworks/cubrid2/databases/demodb/backup", info.getDbDir());
+        assertEquals("15216", info.getFreeSpace());
 
-	}
+        List<DbBackupHistoryInfo> list = info.getBackupHistoryList();
+        assertNotNull(list);
+        assertEquals(1, list.size());
 
-	public void testNoBackup() {
+        DbBackupHistoryInfo his = list.get(0);
+        assertEquals("level0", his.getLevel());
+        assertEquals(
+                "/opt/frameworks/cubrid2/databases/demodb/backup/demodb_backup_lv0", his.getPath());
+        assertEquals("5256192", his.getSize());
+        assertEquals("2009.06.26.22.37", his.getDate());
+    }
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+    public void testNoBackup() {
 
-		System.out.println("<database.backupdbinfo.002.req.txt>");
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
-		task.setDbName("nobackupdb");
+        System.out.println("<database.backupdbinfo.002.req.txt>");
 
-		task.execute();
+        GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
+        task.setDbName("nobackupdb");
 
-		assertTrue(task.isSuccess());
-		assertNull(task.getErrorMsg());
+        task.execute();
 
-		DbBackupInfo info = task.getDbBackupInfo();
-		assertNotNull(info);
-		assertEquals("/opt/frameworks/cubrid2/databases/nobackupdb/backup",
-				info.getDbDir());
-		assertEquals("15216", info.getFreeSpace());
+        assertTrue(task.isSuccess());
+        assertNull(task.getErrorMsg());
 
-		List<DbBackupHistoryInfo> list = info.getBackupHistoryList();
-		assertNotNull(list);
-		assertEquals(0, list.size());
+        DbBackupInfo info = task.getDbBackupInfo();
+        assertNotNull(info);
+        assertEquals("/opt/frameworks/cubrid2/databases/nobackupdb/backup", info.getDbDir());
+        assertEquals("15216", info.getFreeSpace());
 
-	}
+        List<DbBackupHistoryInfo> list = info.getBackupHistoryList();
+        assertNotNull(list);
+        assertEquals(0, list.size());
+    }
 
-	public void testNotExistDb() {
+    public void testNotExistDb() {
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		System.out.println("<database.backupdbinfo.003.req.txt>");
+        System.out.println("<database.backupdbinfo.003.req.txt>");
 
-		GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
-		task.setDbName("notexistdb");
+        GetDbBackupInfoTask task = new GetDbBackupInfoTask(serverInfo);
+        task.setDbName("notexistdb");
 
-		task.execute();
+        task.execute();
 
-		assertFalse(task.isSuccess());
-		assertNotNull(task.getErrorMsg());
-		assertEquals(
-				"Can not find the directory database(notexistdb) is located",
-				task.getErrorMsg());
-
-	}
-
+        assertFalse(task.isSuccess());
+        assertNotNull(task.getErrorMsg());
+        assertEquals(
+                "Can not find the directory database(notexistdb) is located", task.getErrorMsg());
+    }
 }

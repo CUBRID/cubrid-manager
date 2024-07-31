@@ -30,31 +30,28 @@ package com.cubrid.common.ui.query.editor;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- *
  * SQL partitions interface
  *
  * @author pangqiren
  * @version 1.0 - 2011-4-21 created by pangqiren
  */
-public interface ISQLPartitions { //NOPMD
+public interface ISQLPartitions { // NOPMD
 
-	String SQL_PARTITIONING = "_sql_partitioning";
+    String SQL_PARTITIONING = "_sql_partitioning";
 
-	/**
-	 * SQL content type
-	 */
-	String SQL_STRING = "_sql_string";
-	String SQL_SINGLE_LINE_COMMENT = "_sql_singleline_comment";
-	String SQL_MULTI_LINE_COMMENT = "_sql_multiline_comment";
-	String SQL_KEYWORD = "_sql_keyword";
+    /** SQL content type */
+    String SQL_STRING = "_sql_string";
 
-	/**
-	 * SQL content type color
-	 */
-	RGB COLOR_BACKGROUND = new RGB(255, 255, 255);
-	RGB COLOR_COMMENT = new RGB(0, 128, 0);
-	RGB COLOR_DEFAULT = new RGB(0, 0, 0);
-	RGB COLOR_KEYWORD = new RGB(0, 128, 128);
-	RGB COLOR_NUMBER = new RGB(255, 0, 255);
-	RGB COLOR_STRING = new RGB(255, 0, 0);
+    String SQL_SINGLE_LINE_COMMENT = "_sql_singleline_comment";
+    String SQL_MULTI_LINE_COMMENT = "_sql_multiline_comment";
+    String SQL_KEYWORD = "_sql_keyword";
+
+    /** SQL content type color */
+    RGB COLOR_BACKGROUND = new RGB(255, 255, 255);
+
+    RGB COLOR_COMMENT = new RGB(0, 128, 0);
+    RGB COLOR_DEFAULT = new RGB(0, 0, 0);
+    RGB COLOR_KEYWORD = new RGB(0, 128, 128);
+    RGB COLOR_NUMBER = new RGB(255, 0, 255);
+    RGB COLOR_STRING = new RGB(255, 0, 0);
 }

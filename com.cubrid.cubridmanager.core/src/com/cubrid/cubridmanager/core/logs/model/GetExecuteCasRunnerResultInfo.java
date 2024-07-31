@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,94 +24,90 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.logs.model;
 
+import com.cubrid.cubridmanager.core.common.model.IModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cubrid.cubridmanager.core.common.model.IModel;
-
 /**
- * 
  * This class is responsible to store GetExecuteCasRunnerResult information
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2009-4-3 created by wuyingshi
  */
-public class GetExecuteCasRunnerResultInfo implements
-		IModel {
+public class GetExecuteCasRunnerResultInfo implements IModel {
 
-	private String queryResultFile;
-	private String queryResultFileNum;
-	private List<String> resultList;
+    private String queryResultFile;
+    private String queryResultFileNum;
+    private List<String> resultList;
 
-	/**
-	 * get task name.
-	 * 
-	 * @return String
-	 */
-	public String getTaskName() {
-		return "executecasrunner";
-	}
+    /**
+     * get task name.
+     *
+     * @return String
+     */
+    public String getTaskName() {
+        return "executecasrunner";
+    }
 
-	/**
-	 * get the resultList.
-	 * 
-	 * @return List<String>
-	 */
-	public List<String> getResult() {
-		return resultList;
-	}
+    /**
+     * get the resultList.
+     *
+     * @return List<String>
+     */
+    public List<String> getResult() {
+        return resultList;
+    }
 
-	/**
-	 * add str to resultList.
-	 * 
-	 * @param str String
-	 */
-	public void addResult(String str) {
-		if (this.resultList == null) {
-			resultList = new ArrayList<String>();
-		}
-		resultList.add(str);
-	}
+    /**
+     * add str to resultList.
+     *
+     * @param str String
+     */
+    public void addResult(String str) {
+        if (this.resultList == null) {
+            resultList = new ArrayList<String>();
+        }
+        resultList.add(str);
+    }
 
-	/**
-	 * get the queryResultFile.
-	 * 
-	 * @return String
-	 */
-	public String getQueryResultFile() {
-		return queryResultFile;
-	}
+    /**
+     * get the queryResultFile.
+     *
+     * @return String
+     */
+    public String getQueryResultFile() {
+        return queryResultFile;
+    }
 
-	/**
-	 * set the queryResultFile.
-	 * 
-	 * @param queryResultFile String
-	 */
-	public void setQueryResultFile(String queryResultFile) {
-		this.queryResultFile = queryResultFile;
-	}
+    /**
+     * set the queryResultFile.
+     *
+     * @param queryResultFile String
+     */
+    public void setQueryResultFile(String queryResultFile) {
+        this.queryResultFile = queryResultFile;
+    }
 
-	/**
-	 * get the queryResultFileNum.
-	 * 
-	 * @return String
-	 */
-	public String getQueryResultFileNum() {
-		return queryResultFileNum;
-	}
+    /**
+     * get the queryResultFileNum.
+     *
+     * @return String
+     */
+    public String getQueryResultFileNum() {
+        return queryResultFileNum;
+    }
 
-	/**
-	 * set the queryResultFileNum.
-	 * 
-	 * @param queryResultFileNum String
-	 */
-	public void setQueryResultFileNum(String queryResultFileNum) {
-		this.queryResultFileNum = queryResultFileNum;
-	}
-
+    /**
+     * set the queryResultFileNum.
+     *
+     * @param queryResultFileNum String
+     */
+    public void setQueryResultFileNum(String queryResultFileNum) {
+        this.queryResultFileNum = queryResultFileNum;
+    }
 }

@@ -36,15 +36,17 @@ package com.cubrid.common.ui.query.control.queryplan;
  * @version 1.0 - 2013-5-16 created by Kevin.Wang
  */
 public enum PLAN_DISPLAY_MODE { // rename as java standard
-	TEXT(0), TREE(1), GRAPH(2);
+    TEXT(0),
+    TREE(1),
+    GRAPH(2);
 
-	private int value;
+    private int value;
 
-	PLAN_DISPLAY_MODE(int i) {
-		value = i;
-	}
+    PLAN_DISPLAY_MODE(int i) {
+        value = i;
+    }
 
-	public int getInt() {
-		return value;
-	}
+    public int getInt() {
+        return value;
+    }
 };

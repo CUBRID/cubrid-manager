@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridquery.ui.common.navigator;
 
@@ -32,37 +32,36 @@ import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.NodeType;
 
 /**
- * 
  * CQBNavigatorViewSorter
- * 
+ *
  * @author fulei
  * @version 1.0 - 2012-09-10 created by fulei
  */
 public class CQBNavigatorViewSorter extends NavigatorViewSorter {
-	
-	protected int category(ICubridNode node) {
-		String type = node.getType();
-		if (NodeType.USER_FOLDER.equals(type)
-				|| NodeType.TABLE_FOLDER.equals(type)
-				|| NodeType.VIEW_FOLDER.equals(type)
-				|| NodeType.SERIAL_FOLDER.equals(type)
-				|| NodeType.TRIGGER_FOLDER.equals(type)
-				|| NodeType.SYNONYM_FOLDER.equals(type)
-				|| NodeType.STORED_PROCEDURE_FOLDER.equals(type)) {
-			return 1;
-		}
-		if (NodeType.STORED_PROCEDURE_FUNCTION_FOLDER.equals(type)
-				|| NodeType.STORED_PROCEDURE_PROCEDURE_FOLDER.equals(type)) {
-			return 2;
-		}
-		if (NodeType.TABLE_COLUMN_FOLDER.equals(type)
-				|| NodeType.TABLE_INDEX_FOLDER.equals(type)
-				|| NodeType.USER_PARTITIONED_TABLE.equals(type)) {
-			return 3;
-		}
-		if (NodeType.TABLE_COLUMN.equals(type)) {
-			return 4;
-		}
-		return -1;
-	}
+
+    protected int category(ICubridNode node) {
+        String type = node.getType();
+        if (NodeType.USER_FOLDER.equals(type)
+                || NodeType.TABLE_FOLDER.equals(type)
+                || NodeType.VIEW_FOLDER.equals(type)
+                || NodeType.SERIAL_FOLDER.equals(type)
+                || NodeType.TRIGGER_FOLDER.equals(type)
+                || NodeType.SYNONYM_FOLDER.equals(type)
+                || NodeType.STORED_PROCEDURE_FOLDER.equals(type)) {
+            return 1;
+        }
+        if (NodeType.STORED_PROCEDURE_FUNCTION_FOLDER.equals(type)
+                || NodeType.STORED_PROCEDURE_PROCEDURE_FOLDER.equals(type)) {
+            return 2;
+        }
+        if (NodeType.TABLE_COLUMN_FOLDER.equals(type)
+                || NodeType.TABLE_INDEX_FOLDER.equals(type)
+                || NodeType.USER_PARTITIONED_TABLE.equals(type)) {
+            return 3;
+        }
+        if (NodeType.TABLE_COLUMN.equals(type)) {
+            return 4;
+        }
+        return -1;
+    }
 }

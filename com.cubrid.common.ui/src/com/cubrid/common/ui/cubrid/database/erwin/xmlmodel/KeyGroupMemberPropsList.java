@@ -8,580 +8,379 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Key_Group_MemberPropsList", propOrder = {
-
-})
+@XmlType(
+        name = "Key_Group_MemberPropsList",
+        propOrder = {})
 public class KeyGroupMemberPropsList {
 
-	@XmlElement(name = "Name")
-	protected KeyGroupMemberPropsList.Name name;
-	@XmlElement(name = "Expression")
-	protected KeyGroupMemberPropsList.Expression expression;
-	@XmlElement(name = "Key_Group_Member_Column")
-	protected KeyGroupMemberPropsList.KeyGroupMemberColumn keyGroupMemberColumn;
-	@XmlElement(name = "Key_Group_Position")
-	protected KeyGroupMemberPropsList.KeyGroupPosition keyGroupPosition;
-	@XmlElement(name = "Key_Group_Sort_Order")
-	protected KeyGroupMemberPropsList.KeyGroupSortOrder keyGroupSortOrder;
-	@XmlElement(name = "Physical_Name")
-	protected KeyGroupMemberPropsList.PhysicalName physicalName;
+    @XmlElement(name = "Name")
+    protected KeyGroupMemberPropsList.Name name;
 
-	/**
-	 * 
-	 * 
-	 * @return possible object is {@link KeyGroupMemberPropsList.Name }
-	 * 
-	 */
-	public KeyGroupMemberPropsList.Name getName() {
-		return name;
-	}
+    @XmlElement(name = "Expression")
+    protected KeyGroupMemberPropsList.Expression expression;
 
-	/**
-	 * 
-	 * 
-	 * @param value allowed object is {@link KeyGroupMemberPropsList.Name }
-	 * 
-	 */
-	public void setName(KeyGroupMemberPropsList.Name value) {
-		this.name = value;
-	}
+    @XmlElement(name = "Key_Group_Member_Column")
+    protected KeyGroupMemberPropsList.KeyGroupMemberColumn keyGroupMemberColumn;
 
-	/**
-	 * 
-	 * 
-	 * @return possible object is {@link KeyGroupMemberPropsList.Expression }
-	 * 
-	 */
-	public KeyGroupMemberPropsList.Expression getExpression() {
-		return expression;
-	}
+    @XmlElement(name = "Key_Group_Position")
+    protected KeyGroupMemberPropsList.KeyGroupPosition keyGroupPosition;
 
-	/**
-	 * 
-	 * 
-	 * @param value allowed object is {@link KeyGroupMemberPropsList.Expression }
-	 * 
-	 */
-	public void setExpression(KeyGroupMemberPropsList.Expression value) {
-		this.expression = value;
-	}
+    @XmlElement(name = "Key_Group_Sort_Order")
+    protected KeyGroupMemberPropsList.KeyGroupSortOrder keyGroupSortOrder;
 
-	/**
-	 * 
-	 * 
-	 * @return possible object is
-	 *         {@link KeyGroupMemberPropsList.KeyGroupPosition }
-	 * 
-	 */
-	public KeyGroupMemberPropsList.KeyGroupPosition getKeyGroupPosition() {
-		return keyGroupPosition;
-	}
+    @XmlElement(name = "Physical_Name")
+    protected KeyGroupMemberPropsList.PhysicalName physicalName;
 
-	/**
-	 * 
-	 * 
-	 * @param value allowed object is
-	 *        {@link KeyGroupMemberPropsList.KeyGroupPosition }
-	 * 
-	 */
-	public void setKeyGroupPosition(
-			KeyGroupMemberPropsList.KeyGroupPosition value) {
-		this.keyGroupPosition = value;
-	}
+    /** @return possible object is {@link KeyGroupMemberPropsList.Name } */
+    public KeyGroupMemberPropsList.Name getName() {
+        return name;
+    }
 
-	/**
-	 * 
-	 * 
-	 * @return possible object is
-	 *         {@link KeyGroupMemberPropsList.KeyGroupSortOrder }
-	 * 
-	 */
-	public KeyGroupMemberPropsList.KeyGroupSortOrder getKeyGroupSortOrder() {
-		return keyGroupSortOrder;
-	}
+    /** @param value allowed object is {@link KeyGroupMemberPropsList.Name } */
+    public void setName(KeyGroupMemberPropsList.Name value) {
+        this.name = value;
+    }
 
-	/**
-	 * 
-	 * 
-	 * @param value allowed object is
-	 *        {@link KeyGroupMemberPropsList.KeyGroupSortOrder }
-	 * 
-	 */
-	public void setKeyGroupSortOrder(
-			KeyGroupMemberPropsList.KeyGroupSortOrder value) {
-		this.keyGroupSortOrder = value;
-	}
+    /** @return possible object is {@link KeyGroupMemberPropsList.Expression } */
+    public KeyGroupMemberPropsList.Expression getExpression() {
+        return expression;
+    }
 
-	/**
-	 * 
-	 * 
-	 * @return possible object is {@link KeyGroupMemberPropsList.PhysicalName }
-	 * 
-	 */
-	public KeyGroupMemberPropsList.PhysicalName getPhysicalName() {
-		return physicalName;
-	}
+    /** @param value allowed object is {@link KeyGroupMemberPropsList.Expression } */
+    public void setExpression(KeyGroupMemberPropsList.Expression value) {
+        this.expression = value;
+    }
 
-	/**
-	 * 
-	 * 
-	 * @param value allowed object is
-	 *        {@link KeyGroupMemberPropsList.PhysicalName }
-	 * 
-	 */
-	public void setPhysicalName(KeyGroupMemberPropsList.PhysicalName value) {
-		this.physicalName = value;
-	}
+    /** @return possible object is {@link KeyGroupMemberPropsList.KeyGroupPosition } */
+    public KeyGroupMemberPropsList.KeyGroupPosition getKeyGroupPosition() {
+        return keyGroupPosition;
+    }
 
-	/**
-	 * <p>
-	 * 
-	 * <p>
-	 * 
-	 * <pre>
-	 * &lt;complexType>
-	 *   &lt;simpleContent>
-	 *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
-	 *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFlags"/>
-	 *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFacetGroup"/>
-	 *     &lt;/extension>
-	 *   &lt;/simpleContent>
-	 * &lt;/complexType>
-	 * </pre>
-	 * 
-	 * 
-	 */
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class Expression {
+    /** @param value allowed object is {@link KeyGroupMemberPropsList.KeyGroupPosition } */
+    public void setKeyGroupPosition(KeyGroupMemberPropsList.KeyGroupPosition value) {
+        this.keyGroupPosition = value;
+    }
 
-		@XmlValue
-		protected String value;
-		@XmlAttribute(name = "Tool")
-		protected String tool;
-		@XmlAttribute(name = "ReadOnly")
-		protected String readOnly;
-		@XmlAttribute(name = "Derived")
-		protected String derived;
-		@XmlAttribute(name = "Optional")
-		protected String optional;
-		@XmlAttribute(name = "NullValue")
-		protected String nullValue;
-		@XmlAttribute(name = "HandleNonPrintableChar")
-		protected String handleNonPrintableChar;
-		@XmlAttribute(name = "Hardened")
-		protected String hardened;
-		@XmlAttribute(name = "AutoCalculated")
-		protected String autoCalculated;
+    /** @return possible object is {@link KeyGroupMemberPropsList.KeyGroupSortOrder } */
+    public KeyGroupMemberPropsList.KeyGroupSortOrder getKeyGroupSortOrder() {
+        return keyGroupSortOrder;
+    }
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+    /** @param value allowed object is {@link KeyGroupMemberPropsList.KeyGroupSortOrder } */
+    public void setKeyGroupSortOrder(KeyGroupMemberPropsList.KeyGroupSortOrder value) {
+        this.keyGroupSortOrder = value;
+    }
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+    /** @return possible object is {@link KeyGroupMemberPropsList.PhysicalName } */
+    public KeyGroupMemberPropsList.PhysicalName getPhysicalName() {
+        return physicalName;
+    }
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getTool() {
-			if (tool == null) {
-				return "Y";
-			} else {
-				return tool;
-			}
-		}
+    /** @param value allowed object is {@link KeyGroupMemberPropsList.PhysicalName } */
+    public void setPhysicalName(KeyGroupMemberPropsList.PhysicalName value) {
+        this.physicalName = value;
+    }
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setTool(String value) {
-			this.tool = value;
-		}
+    /**
+     *
+     *
+     * <pre>
+     * &lt;complexType>
+     *   &lt;simpleContent>
+     *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
+     *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFlags"/>
+     *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFacetGroup"/>
+     *     &lt;/extension>
+     *   &lt;/simpleContent>
+     * &lt;/complexType>
+     * </pre>
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class Expression {
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getReadOnly() {
-			if (readOnly == null) {
-				return "Y";
-			} else {
-				return readOnly;
-			}
-		}
+        @XmlValue protected String value;
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setReadOnly(String value) {
-			this.readOnly = value;
-		}
+        @XmlAttribute(name = "Tool")
+        protected String tool;
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getDerived() {
-			if (derived == null) {
-				return "Y";
-			} else {
-				return derived;
-			}
-		}
+        @XmlAttribute(name = "ReadOnly")
+        protected String readOnly;
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setDerived(String value) {
-			this.derived = value;
-		}
+        @XmlAttribute(name = "Derived")
+        protected String derived;
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getOptional() {
-			if (optional == null) {
-				return "Y";
-			} else {
-				return optional;
-			}
-		}
+        @XmlAttribute(name = "Optional")
+        protected String optional;
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setOptional(String value) {
-			this.optional = value;
-		}
+        @XmlAttribute(name = "NullValue")
+        protected String nullValue;
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getNullValue() {
-			if (nullValue == null) {
-				return "Y";
-			} else {
-				return nullValue;
-			}
-		}
+        @XmlAttribute(name = "HandleNonPrintableChar")
+        protected String handleNonPrintableChar;
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setNullValue(String value) {
-			this.nullValue = value;
-		}
+        @XmlAttribute(name = "Hardened")
+        protected String hardened;
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getHandleNonPrintableChar() {
-			return handleNonPrintableChar;
-		}
+        @XmlAttribute(name = "AutoCalculated")
+        protected String autoCalculated;
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setHandleNonPrintableChar(String value) {
-			this.handleNonPrintableChar = value;
-		}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getHardened() {
-			return hardened;
-		}
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setHardened(String value) {
-			this.hardened = value;
-		}
+        /** @return possible object is {@link String } */
+        public String getTool() {
+            if (tool == null) {
+                return "Y";
+            } else {
+                return tool;
+            }
+        }
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getAutoCalculated() {
-			return autoCalculated;
-		}
+        /** @param value allowed object is {@link String } */
+        public void setTool(String value) {
+            this.tool = value;
+        }
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setAutoCalculated(String value) {
-			this.autoCalculated = value;
-		}
+        /** @return possible object is {@link String } */
+        public String getReadOnly() {
+            if (readOnly == null) {
+                return "Y";
+            } else {
+                return readOnly;
+            }
+        }
 
-	}
+        /** @param value allowed object is {@link String } */
+        public void setReadOnly(String value) {
+            this.readOnly = value;
+        }
 
-	public KeyGroupMemberPropsList.KeyGroupMemberColumn getKeyGroupMemberColumn() {
-		return keyGroupMemberColumn;
-	}
+        /** @return possible object is {@link String } */
+        public String getDerived() {
+            if (derived == null) {
+                return "Y";
+            } else {
+                return derived;
+            }
+        }
 
-	public void setKeyGroupMemberColumn(
-			KeyGroupMemberPropsList.KeyGroupMemberColumn keyGroupMemberColumn) {
-		this.keyGroupMemberColumn = keyGroupMemberColumn;
-	}
+        /** @param value allowed object is {@link String } */
+        public void setDerived(String value) {
+            this.derived = value;
+        }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class KeyGroupMemberColumn {
+        /** @return possible object is {@link String } */
+        public String getOptional() {
+            if (optional == null) {
+                return "Y";
+            } else {
+                return optional;
+            }
+        }
 
-		@XmlValue
-		protected String value;
+        /** @param value allowed object is {@link String } */
+        public void setOptional(String value) {
+            this.optional = value;
+        }
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        /** @return possible object is {@link String } */
+        public String getNullValue() {
+            if (nullValue == null) {
+                return "Y";
+            } else {
+                return nullValue;
+            }
+        }
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /** @param value allowed object is {@link String } */
+        public void setNullValue(String value) {
+            this.nullValue = value;
+        }
 
-	}
+        /** @return possible object is {@link String } */
+        public String getHandleNonPrintableChar() {
+            return handleNonPrintableChar;
+        }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class KeyGroupPosition {
+        /** @param value allowed object is {@link String } */
+        public void setHandleNonPrintableChar(String value) {
+            this.handleNonPrintableChar = value;
+        }
 
-		@XmlValue
-		protected String value;
+        /** @return possible object is {@link String } */
+        public String getHardened() {
+            return hardened;
+        }
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        /** @param value allowed object is {@link String } */
+        public void setHardened(String value) {
+            this.hardened = value;
+        }
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /** @return possible object is {@link String } */
+        public String getAutoCalculated() {
+            return autoCalculated;
+        }
 
-	}
+        /** @param value allowed object is {@link String } */
+        public void setAutoCalculated(String value) {
+            this.autoCalculated = value;
+        }
+    }
 
-	/**
-	 * <p>
-	 * 
-	 * <p>
-	 * 
-	 * <pre>
-	 * &lt;complexType>
-	 *   &lt;simpleContent>
-	 *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
-	 *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFacetGroup"/>
-	 *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFlags"/>
-	 *     &lt;/extension>
-	 *   &lt;/simpleContent>
-	 * &lt;/complexType>
-	 * </pre>
-	 * 
-	 * 
-	 */
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class KeyGroupSortOrder {
+    public KeyGroupMemberPropsList.KeyGroupMemberColumn getKeyGroupMemberColumn() {
+        return keyGroupMemberColumn;
+    }
 
-		@XmlValue
-		protected String value;
+    public void setKeyGroupMemberColumn(
+            KeyGroupMemberPropsList.KeyGroupMemberColumn keyGroupMemberColumn) {
+        this.keyGroupMemberColumn = keyGroupMemberColumn;
+    }
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class KeyGroupMemberColumn {
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        @XmlValue protected String value;
 
-	}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-	/**
-	 * <p>
-	 * 
-	 * <p>
-	 * 
-	 * <pre>
-	 * &lt;complexType>
-	 *   &lt;simpleContent>
-	 *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
-	 *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFlags"/>
-	 *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFacetGroup"/>
-	 *     &lt;/extension>
-	 *   &lt;/simpleContent>
-	 * &lt;/complexType>
-	 * </pre>
-	 * 
-	 * 
-	 */
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class Name {
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-		@XmlValue
-		protected String value;
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class KeyGroupPosition {
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        @XmlValue protected String value;
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-	}
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-	/**
-	 * <p>
-	 * 
-	 * <p>
-	 * 
-	 * <pre>
-	 * &lt;complexType>
-	 *   &lt;simpleContent>
-	 *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
-	 *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFlags"/>
-	 *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFacetGroup"/>
-	 *     &lt;/extension>
-	 *   &lt;/simpleContent>
-	 * &lt;/complexType>
-	 * </pre>
-	 * 
-	 * 
-	 */
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class PhysicalName {
+    /**
+     *
+     *
+     * <pre>
+     * &lt;complexType>
+     *   &lt;simpleContent>
+     *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
+     *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFacetGroup"/>
+     *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFlags"/>
+     *     &lt;/extension>
+     *   &lt;/simpleContent>
+     * &lt;/complexType>
+     * </pre>
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class KeyGroupSortOrder {
 
-		@XmlValue
-		protected String value;
+        @XmlValue protected String value;
 
-		/**
-		 * 
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-		/**
-		 * 
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-	}
+    /**
+     *
+     *
+     * <pre>
+     * &lt;complexType>
+     *   &lt;simpleContent>
+     *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
+     *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFlags"/>
+     *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFacetGroup"/>
+     *     &lt;/extension>
+     *   &lt;/simpleContent>
+     * &lt;/complexType>
+     * </pre>
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class Name {
 
+        @XmlValue protected String value;
+
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
+
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    /**
+     *
+     *
+     * <pre>
+     * &lt;complexType>
+     *   &lt;simpleContent>
+     *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
+     *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFlags"/>
+     *       &lt;attGroup ref="{http://www.ca.com/erwin/data}PropertyFacetGroup"/>
+     *     &lt;/extension>
+     *   &lt;/simpleContent>
+     * &lt;/complexType>
+     * </pre>
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class PhysicalName {
+
+        @XmlValue protected String value;
+
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
+
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 }

@@ -28,5 +28,5 @@
 package com.cubrid.cubridquery.ui.connection.action;
 
 public interface ActionExecutor {
-	public int execute();
+    public int execute();
 }

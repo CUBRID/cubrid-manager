@@ -31,13 +31,11 @@ import junit.framework.TestCase;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-25 created by fulei
  */
-
 public class ThreadUtilTest extends TestCase {
 
-	public void testThreadUtil () {
-		ThreadUtil.sleep(100);
-	}
+    public void testThreadUtil() {
+        ThreadUtil.sleep(100);
+    }
 }

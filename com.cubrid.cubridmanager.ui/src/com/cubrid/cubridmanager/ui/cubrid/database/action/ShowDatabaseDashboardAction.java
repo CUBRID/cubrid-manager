@@ -27,88 +27,75 @@
  */
 package com.cubrid.cubridmanager.ui.cubrid.database.action;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.spi.LayoutManager;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.ISchemaNode;
 import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- * show database dashboard 
- * @author fulei
+ * show database dashboard
  *
+ * @author fulei
  * @version 1.0 - 2012-10-12 created by fulei
  */
+public class ShowDatabaseDashboardAction extends SelectionAction {
+    public static final String ID = ShowDatabaseDashboardAction.class.getName();
 
-public class ShowDatabaseDashboardAction  extends SelectionAction {
-	public static final String ID = ShowDatabaseDashboardAction.class.getName();
-	
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param text
-	 */
-	public ShowDatabaseDashboardAction(Shell shell, String text,
-			ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     */
+    public ShowDatabaseDashboardAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 */
-	public ShowDatabaseDashboardAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
-	
-	/**
-	 * 
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
-	
+    /**
+     * @param shell
+     * @param provider
+     * @param text
+     */
+    public ShowDatabaseDashboardAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * 
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj the object
-	 * @return <code>true</code> if support this object;<code>false</code>
-	 *         otherwise
-	 */
-	public boolean isSupported(Object obj) {
-		if (obj instanceof ISchemaNode) {
-			ISchemaNode node = (ISchemaNode) obj;
-			CubridDatabase database = node.getDatabase();
-			if (CubridNodeType.DATABASE.equals(node.getType()) 
-					&& database.isLogined()) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 * Open the log editor and show log conent
-	 */
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		ICubridNode node = (ICubridNode) obj[0];
-		LayoutManager.getInstance().getWorkbenchContrItem().openEditorOrView(
-				node);
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj the object
+     * @return <code>true</code> if support this object;<code>false</code> otherwise
+     */
+    public boolean isSupported(Object obj) {
+        if (obj instanceof ISchemaNode) {
+            ISchemaNode node = (ISchemaNode) obj;
+            CubridDatabase database = node.getDatabase();
+            if (CubridNodeType.DATABASE.equals(node.getType()) && database.isLogined()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Open the log editor and show log conent */
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        ICubridNode node = (ICubridNode) obj[0];
+        LayoutManager.getInstance().getWorkbenchContrItem().openEditorOrView(node);
+    }
 }

@@ -30,35 +30,32 @@
 package com.cubrid.common.ui.cubrid.table.dialog;
 
 /**
- *
  * Data format exception
  *
  * @author pangqiren
  * @version 1.0 - 2010-8-4 created by pangqiren
  */
-public class DataFormatException extends
-		Exception { // FIXME move this logic to core module
+public class DataFormatException extends Exception { // FIXME move this logic to core module
 
-	private static final long serialVersionUID = -3574340646508482658L;
-	private final String rootCause;
+    private static final long serialVersionUID = -3574340646508482658L;
+    private final String rootCause;
 
-	public DataFormatException(String msg) {
-		super(msg);
-		rootCause = msg;
-	}
+    public DataFormatException(String msg) {
+        super(msg);
+        rootCause = msg;
+    }
 
-	public DataFormatException(Exception ex, String msg) {
-		super(msg);
-		rootCause = ex.getMessage();
-	}
+    public DataFormatException(Exception ex, String msg) {
+        super(msg);
+        rootCause = ex.getMessage();
+    }
 
-	/**
-	 * Get the root cause
-	 *
-	 * @return the rootCause
-	 */
-	public String getRootCause() {
-		return rootCause;
-	}
-
+    /**
+     * Get the root cause
+     *
+     * @return the rootCause
+     */
+    public String getRootCause() {
+        return rootCause;
+    }
 }

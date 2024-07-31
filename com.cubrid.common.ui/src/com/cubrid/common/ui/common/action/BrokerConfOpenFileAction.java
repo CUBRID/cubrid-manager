@@ -27,32 +27,32 @@
  */
 package com.cubrid.common.ui.common.action;
 
+import com.cubrid.common.ui.common.dialog.BrokerConfOpenFileDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import com.cubrid.common.ui.common.dialog.BrokerConfOpenFileDialog;
-
 /**
  * open cubrid broker conf action
+ *
  * @author fulei
  * @version 1.0 - 2012-10-29 created by fulei
  */
 public class BrokerConfOpenFileAction extends Action {
-	
-	public static final String ID = BrokerConfOpenFileAction.class.getName();
-	
-	public BrokerConfOpenFileAction(String text) {
-		super(text);
-		this.setId(ID);
-	}
 
-	public void run() {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
+    public static final String ID = BrokerConfOpenFileAction.class.getName();
 
-		new BrokerConfOpenFileDialog(window.getShell()).open();
-	}
+    public BrokerConfOpenFileAction(String text) {
+        super(text);
+        this.setId(ID);
+    }
+
+    public void run() {
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (window == null) {
+            return;
+        }
+
+        new BrokerConfOpenFileDialog(window.getShell()).open();
+    }
 }

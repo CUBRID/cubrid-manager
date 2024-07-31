@@ -30,35 +30,37 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of isEqual tag.
- * <isEqual property="" prepend="" open="" close="" removeFirstPrepend="true" compareProperty="" compareValue=""></isEqual>
+ * A definition of isEqual tag. <isEqual property="" prepend="" open="" close=""
+ * removeFirstPrepend="true" compareProperty="" compareValue=""></isEqual>
  *
  * @author Bumsik, Jang
  */
 public class IsEqualTag extends SqlMapCondition {
-	private static final long serialVersionUID = -868828264629472299L;
+    private static final long serialVersionUID = -868828264629472299L;
 
-	public IsEqualTag() {
-		this.setType("isEqual");
-	}
+    public IsEqualTag() {
+        this.setType("isEqual");
+    }
 
-	@Override
-	public String getExpectedCompareValue() {
-		return compareValue != null ? compareValue
-				: (compareProperty != null ? "#" + compareProperty + "#" : null);
-	}
+    @Override
+    public String getExpectedCompareValue() {
+        return compareValue != null
+                ? compareValue
+                : (compareProperty != null ? "#" + compareProperty + "#" : null);
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		for (String parameter : parameterList) {
-			if (parameter.startsWith(getProperty())) {
-				String[] value = parameter.split(":");
-				if (value.length == 1 || (value.length == 2 && value[1].equals(this.getExpectedCompareValue()))) {
-					return true;
-				}
-			}
-		}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        for (String parameter : parameterList) {
+            if (parameter.startsWith(getProperty())) {
+                String[] value = parameter.split(":");
+                if (value.length == 1
+                        || (value.length == 2 && value[1].equals(this.getExpectedCompareValue()))) {
+                    return true;
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

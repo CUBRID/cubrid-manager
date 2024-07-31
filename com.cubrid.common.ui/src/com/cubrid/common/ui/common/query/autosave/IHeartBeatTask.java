@@ -34,6 +34,7 @@ package com.cubrid.common.ui.common.query.autosave;
  * @version 1.0 - Jun 4, 2012 created by Kevin.Wang
  */
 public interface IHeartBeatTask { // FIXME logic code move to core module
-	public void beat();
-	public void stop();
+    public void beat();
+
+    public void stop();
 }

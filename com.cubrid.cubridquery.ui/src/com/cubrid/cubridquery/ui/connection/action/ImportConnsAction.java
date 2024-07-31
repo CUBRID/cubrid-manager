@@ -27,8 +27,14 @@
  */
 package com.cubrid.cubridquery.ui.connection.action;
 
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
+import com.cubrid.cubridmanager.ui.spi.persist.CQBGroupNodePersistManager;
+import com.cubrid.cubridquery.ui.common.navigator.CubridQueryNavigatorView;
+import com.cubrid.cubridquery.ui.connection.Messages;
 import java.io.File;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -38,81 +44,81 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
-import com.cubrid.cubridmanager.ui.spi.persist.CQBGroupNodePersistManager;
-import com.cubrid.cubridquery.ui.common.navigator.CubridQueryNavigatorView;
-import com.cubrid.cubridquery.ui.connection.Messages;
-
 /**
- * 
  * Import the connections action
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2011-8-22 created by pangqiren
  */
-public class ImportConnsAction extends
-		Action {
+public class ImportConnsAction extends Action {
 
-	public static final String ID = ImportConnsAction.class.getName();
+    public static final String ID = ImportConnsAction.class.getName();
 
-	/**
-	 * The constructor
-	 * 
-	 * @param text String
-	 * @param image ImageDescriptor
-	 */
-	public ImportConnsAction(String text, ImageDescriptor image) {
-		super(text);
-		this.setId(ID);
-		setImageDescriptor(image);
-	}
+    /**
+     * The constructor
+     *
+     * @param text String
+     * @param image ImageDescriptor
+     */
+    public ImportConnsAction(String text, ImageDescriptor image) {
+        super(text);
+        this.setId(ID);
+        setImageDescriptor(image);
+    }
 
-	/**
-	 * Import hosts and groups
-	 */
-	public void run() {
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN
-				| SWT.APPLICATION_MODAL);
-		String filePath = CommonUIPlugin.getSettingValue("IMPORT_HOSTS_WORKSPACE_KEY");
-		if (null != filePath) {
-			dialog.setFilterPath(filePath);
-		}
-		dialog.setMessage(Messages.msgSelectWorkspace);
-		filePath = dialog.open();
-		if (filePath == null) {
-			return;
-		}
-		final String workspacePath = filePath;
-		filePath = filePath + File.separator + ".metadata" + File.separator
-				+ ".plugins" + File.separator + "org.eclipse.core.runtime"
-				+ File.separator + ".settings" + File.separator
-				+ "com.cubrid.cubridquery.ui.prefs";
-		File file = new File(filePath);
-		if (file == null || !file.exists()) {
-			CommonUITool.openErrorBox(Messages.errInvalidWorkspace);
-			return;
-		} else {
-			CommonUIPlugin.putSettingValue("IMPORT_HOSTS_WORKSPACE_KEY",
-					workspacePath);
-		}
-		BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
-			public void run() {
-				CQBGroupNodePersistManager groupNodePersistManager = CQBGroupNodePersistManager.getInstance();
-				boolean isImportDb = CQBDBNodePersistManager.getInstance().loadDatabases(
-						workspacePath);
-				boolean isImportGroup = groupNodePersistManager.loadGroupNode(workspacePath);
-				if (isImportDb || isImportGroup) {
-					CubridQueryNavigatorView view = (CubridQueryNavigatorView) CubridNavigatorView.getNavigatorView(CubridQueryNavigatorView.ID);
-					if (view != null && view.getViewer() != null) {
-						view.getViewer().refresh(true);
-					}
-				}
-			}
-		});
-
-	}
+    /** Import hosts and groups */
+    public void run() {
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN | SWT.APPLICATION_MODAL);
+        String filePath = CommonUIPlugin.getSettingValue("IMPORT_HOSTS_WORKSPACE_KEY");
+        if (null != filePath) {
+            dialog.setFilterPath(filePath);
+        }
+        dialog.setMessage(Messages.msgSelectWorkspace);
+        filePath = dialog.open();
+        if (filePath == null) {
+            return;
+        }
+        final String workspacePath = filePath;
+        filePath =
+                filePath
+                        + File.separator
+                        + ".metadata"
+                        + File.separator
+                        + ".plugins"
+                        + File.separator
+                        + "org.eclipse.core.runtime"
+                        + File.separator
+                        + ".settings"
+                        + File.separator
+                        + "com.cubrid.cubridquery.ui.prefs";
+        File file = new File(filePath);
+        if (file == null || !file.exists()) {
+            CommonUITool.openErrorBox(Messages.errInvalidWorkspace);
+            return;
+        } else {
+            CommonUIPlugin.putSettingValue("IMPORT_HOSTS_WORKSPACE_KEY", workspacePath);
+        }
+        BusyIndicator.showWhile(
+                Display.getDefault(),
+                new Runnable() {
+                    public void run() {
+                        CQBGroupNodePersistManager groupNodePersistManager =
+                                CQBGroupNodePersistManager.getInstance();
+                        boolean isImportDb =
+                                CQBDBNodePersistManager.getInstance().loadDatabases(workspacePath);
+                        boolean isImportGroup =
+                                groupNodePersistManager.loadGroupNode(workspacePath);
+                        if (isImportDb || isImportGroup) {
+                            CubridQueryNavigatorView view =
+                                    (CubridQueryNavigatorView)
+                                            CubridNavigatorView.getNavigatorView(
+                                                    CubridQueryNavigatorView.ID);
+                            if (view != null && view.getViewer() != null) {
+                                view.getViewer().refresh(true);
+                            }
+                        }
+                    }
+                });
+    }
 }

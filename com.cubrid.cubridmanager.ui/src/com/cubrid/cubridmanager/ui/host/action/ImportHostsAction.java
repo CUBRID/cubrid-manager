@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,20 +23,9 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.host.action;
-
-import java.io.File;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
 import com.cubrid.common.ui.CommonUIPlugin;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
@@ -46,76 +35,93 @@ import com.cubrid.cubridmanager.ui.host.Messages;
 import com.cubrid.cubridmanager.ui.spi.persist.CMDBNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.CMGroupNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
+import java.io.File;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**
- * 
  * Import hosts action
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2011-8-22 created by pangqiren
  */
-public class ImportHostsAction extends
-		Action {
+public class ImportHostsAction extends Action {
 
-	public static final String ID = ImportHostsAction.class.getName();
+    public static final String ID = ImportHostsAction.class.getName();
 
-	/**
-	 * The constructor
-	 * 
-	 * @param text String
-	 * @param image ImageDescriptor
-	 */
-	public ImportHostsAction(String text, ImageDescriptor image) {
-		super(text);
-		this.setId(ID);
-		setImageDescriptor(image);
-	}
+    /**
+     * The constructor
+     *
+     * @param text String
+     * @param image ImageDescriptor
+     */
+    public ImportHostsAction(String text, ImageDescriptor image) {
+        super(text);
+        this.setId(ID);
+        setImageDescriptor(image);
+    }
 
-	/**
-	 * Import hosts and groups
-	 */
-	public void run() {
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN
-				| SWT.APPLICATION_MODAL);
-		String filePath = CommonUIPlugin.getSettingValue("IMPORT_HOSTS_WORKSPACE_KEY");
-		if (null != filePath) {
-			dialog.setFilterPath(filePath);
-		}
-		dialog.setMessage(Messages.msgSelectWorkspace);
-		filePath = dialog.open();
-		if (filePath == null) {
-			return;
-		}
-		final String workspacePath = filePath;
-		filePath = filePath + File.separator + ".metadata" + File.separator
-				+ ".plugins" + File.separator + "org.eclipse.core.runtime"
-				+ File.separator + ".settings" + File.separator
-				+ "com.cubrid.cubridmanager.ui.prefs";
-		File file = new File(filePath);
-		if (file == null || !file.exists()) {
-			CommonUITool.openErrorBox(Messages.errInvalidWorkspace);
-			return;
-		} else {
-			CommonUIPlugin.putSettingValue("IMPORT_HOSTS_WORKSPACE_KEY",
-					workspacePath);
-		}
-		BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
-			public void run() {
-				CMGroupNodePersistManager groupNodePersistManager = CMGroupNodePersistManager.getInstance();
-				boolean isImportHost = CMHostNodePersistManager.getInstance().loadSevers(
-						workspacePath);
-				boolean isImportGroup = groupNodePersistManager.loadGroupNode(workspacePath);
-				boolean isImportDb = CMDBNodePersistManager.getInstance().loadDatabases(
-						workspacePath);
-				if (isImportHost || isImportGroup || isImportDb) {
-					CubridHostNavigatorView view = (CubridHostNavigatorView) CubridNavigatorView.getNavigatorView(CubridHostNavigatorView.ID);
-					if (view != null && view.getViewer() != null) {
-						view.getViewer().refresh(true);
-					}
-				}
-			}
-		});
-
-	}
+    /** Import hosts and groups */
+    public void run() {
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN | SWT.APPLICATION_MODAL);
+        String filePath = CommonUIPlugin.getSettingValue("IMPORT_HOSTS_WORKSPACE_KEY");
+        if (null != filePath) {
+            dialog.setFilterPath(filePath);
+        }
+        dialog.setMessage(Messages.msgSelectWorkspace);
+        filePath = dialog.open();
+        if (filePath == null) {
+            return;
+        }
+        final String workspacePath = filePath;
+        filePath =
+                filePath
+                        + File.separator
+                        + ".metadata"
+                        + File.separator
+                        + ".plugins"
+                        + File.separator
+                        + "org.eclipse.core.runtime"
+                        + File.separator
+                        + ".settings"
+                        + File.separator
+                        + "com.cubrid.cubridmanager.ui.prefs";
+        File file = new File(filePath);
+        if (file == null || !file.exists()) {
+            CommonUITool.openErrorBox(Messages.errInvalidWorkspace);
+            return;
+        } else {
+            CommonUIPlugin.putSettingValue("IMPORT_HOSTS_WORKSPACE_KEY", workspacePath);
+        }
+        BusyIndicator.showWhile(
+                Display.getDefault(),
+                new Runnable() {
+                    public void run() {
+                        CMGroupNodePersistManager groupNodePersistManager =
+                                CMGroupNodePersistManager.getInstance();
+                        boolean isImportHost =
+                                CMHostNodePersistManager.getInstance().loadSevers(workspacePath);
+                        boolean isImportGroup =
+                                groupNodePersistManager.loadGroupNode(workspacePath);
+                        boolean isImportDb =
+                                CMDBNodePersistManager.getInstance().loadDatabases(workspacePath);
+                        if (isImportHost || isImportGroup || isImportDb) {
+                            CubridHostNavigatorView view =
+                                    (CubridHostNavigatorView)
+                                            CubridNavigatorView.getNavigatorView(
+                                                    CubridHostNavigatorView.ID);
+                            if (view != null && view.getViewer() != null) {
+                                view.getViewer().refresh(true);
+                            }
+                        }
+                    }
+                });
+    }
 }

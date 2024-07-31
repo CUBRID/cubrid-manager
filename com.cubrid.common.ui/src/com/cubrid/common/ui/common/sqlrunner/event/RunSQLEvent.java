@@ -33,7 +33,7 @@ package com.cubrid.common.ui.common.sqlrunner.event;
  * @author fulei
  */
 public class RunSQLEvent {
-	public long getEventTime() {
-		return System.currentTimeMillis();
-	}
+    public long getEventTime() {
+        return System.currentTimeMillis();
+    }
 }

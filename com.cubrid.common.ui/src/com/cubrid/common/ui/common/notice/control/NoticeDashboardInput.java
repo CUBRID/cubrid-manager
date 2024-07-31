@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2013 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,60 +23,59 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.common.notice.control;
 
+import com.cubrid.common.core.util.ApplicationType;
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.common.Messages;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.cubrid.common.core.util.ApplicationType;
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.common.Messages;
-
 /**
  * Notice Dashboard Input
- * 
+ *
  * @author Tobi
  * @version 1.0
  * @date 2013-1-28
  */
 public class NoticeDashboardInput implements IEditorInput {
 
-	private String client = ApplicationType.CUBRID_MANAGER.getRssName();
+    private String client = ApplicationType.CUBRID_MANAGER.getRssName();
 
-	public NoticeDashboardInput(String client) {
-		this.client = client;
-	}
+    public NoticeDashboardInput(String client) {
+        this.client = client;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
-	public boolean exists() {
-		return false;
-	}
+    public boolean exists() {
+        return false;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return CommonUIPlugin.getImageDescriptor("icons/new_info.png");
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return CommonUIPlugin.getImageDescriptor("icons/new_info.png");
+    }
 
-	public String getName() {
-		return Messages.titleNoticeDashboard;
-	}
+    public String getName() {
+        return Messages.titleNoticeDashboard;
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public String getToolTipText() {
-		return Messages.titleNoticeDashboard;
-	}
+    public String getToolTipText() {
+        return Messages.titleNoticeDashboard;
+    }
 
-	public String getClient() {
-		return client;
-	}
+    public String getClient() {
+        return client;
+    }
 }

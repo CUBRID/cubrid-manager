@@ -36,7 +36,7 @@ package com.cubrid.common.ui.spi.table;
  * @version 1.0 - 2013-6-27 created by Kevin.Wang
  */
 public interface IShowMoreOperator {
-	public void handleButtonEvent(int rowIndex, int columnIndex);
+    public void handleButtonEvent(int rowIndex, int columnIndex);
 
-	public boolean isShowButton(int rowIndex, int columnIndex);
+    public boolean isShowButton(int rowIndex, int columnIndex);
 }

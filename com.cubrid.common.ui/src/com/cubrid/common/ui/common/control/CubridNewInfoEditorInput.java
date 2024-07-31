@@ -27,13 +27,12 @@
  */
 package com.cubrid.common.ui.common.control;
 
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.common.Messages;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
-
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.common.Messages;
 
 /**
  * CUBRID new information editor input
@@ -41,50 +40,48 @@ import com.cubrid.common.ui.common.Messages;
  * @author pangqiren
  * @version 1.0 - 2009-6-23 created by pangqiren
  */
-public class CubridNewInfoEditorInput implements
-		IEditorInput {
-	private final String label = Messages.cubridNewInfoEditorName;
+public class CubridNewInfoEditorInput implements IEditorInput {
+    private final String label = Messages.cubridNewInfoEditorName;
 
-	/**
-	 * Returns whether the editor input exists.
-	 *
-	 * @return <code>true</code> if the editor input exists; <code>false</code>
-	 *         otherwise
-	 */
-	public boolean exists() {
-		return false;
-	}
+    /**
+     * Returns whether the editor input exists.
+     *
+     * @return <code>true</code> if the editor input exists; <code>false</code> otherwise
+     */
+    public boolean exists() {
+        return false;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return CommonUIPlugin.getImageDescriptor("icons/new_info.png");
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return CommonUIPlugin.getImageDescriptor("icons/new_info.png");
+    }
 
-	public String getName() {
-		return getLabel();
-	}
+    public String getName() {
+        return getLabel();
+    }
 
-	private String getLabel() {
-		return this.label;
-	}
+    private String getLabel() {
+        return this.label;
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public String getToolTipText() {
-		return getLabel();
-	}
+    public String getToolTipText() {
+        return getLabel();
+    }
 
-	/**
-	 * Returns an object which is an instance of the given class associated with
-	 * this object. Returns <code>null</code> if no such object can be found.
-	 *
-	 * @param adapter the adapter class to look up
-	 * @return a object castable to the given class, or <code>null</code> if
-	 *         this object does not have an adapter for the given class
-	 */
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    /**
+     * Returns an object which is an instance of the given class associated with this object.
+     * Returns <code>null</code> if no such object can be found.
+     *
+     * @param adapter the adapter class to look up
+     * @return a object castable to the given class, or <code>null</code> if this object does not
+     *     have an adapter for the given class
+     */
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 }

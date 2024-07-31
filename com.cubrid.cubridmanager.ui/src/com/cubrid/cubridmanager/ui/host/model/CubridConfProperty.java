@@ -31,61 +31,57 @@ import java.util.ArrayList;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-2-19 created by fulei
  */
-
 public class CubridConfProperty {
 
-	private String CubridConfPropKey;
-	private String CubridConfPropValue;
-	private String CubridConfPropAnnotation;
-	private boolean isCubridConf = false;
-	private ArrayList<CubridConfProperty> propertyList = new ArrayList<CubridConfProperty>();
-	
-	public String getCubridConfPropKey() {
-		return CubridConfPropKey;
-	}
+    private String CubridConfPropKey;
+    private String CubridConfPropValue;
+    private String CubridConfPropAnnotation;
+    private boolean isCubridConf = false;
+    private ArrayList<CubridConfProperty> propertyList = new ArrayList<CubridConfProperty>();
 
-	public void setCubridConfPropKey(String cubridConfPropKey) {
-		CubridConfPropKey = cubridConfPropKey;
-	}
+    public String getCubridConfPropKey() {
+        return CubridConfPropKey;
+    }
 
-	public String getCubridConfPropValue() {
-		return CubridConfPropValue;
-	}
+    public void setCubridConfPropKey(String cubridConfPropKey) {
+        CubridConfPropKey = cubridConfPropKey;
+    }
 
-	public void setCubridConfPropValue(String cubridConfPropValue) {
-		CubridConfPropValue = cubridConfPropValue;
-	}
+    public String getCubridConfPropValue() {
+        return CubridConfPropValue;
+    }
 
-	public String getCubridConfPropAnnotation() {
-		return CubridConfPropAnnotation;
-	}
+    public void setCubridConfPropValue(String cubridConfPropValue) {
+        CubridConfPropValue = cubridConfPropValue;
+    }
 
-	public void setCubridConfPropAnnotation(String cubridConfPropAnnotation) {
-		CubridConfPropAnnotation = cubridConfPropAnnotation;
-	}
+    public String getCubridConfPropAnnotation() {
+        return CubridConfPropAnnotation;
+    }
 
+    public void setCubridConfPropAnnotation(String cubridConfPropAnnotation) {
+        CubridConfPropAnnotation = cubridConfPropAnnotation;
+    }
 
-	public boolean isCubridConf() {
-		return isCubridConf;
-	}
+    public boolean isCubridConf() {
+        return isCubridConf;
+    }
 
-	public void setCubridConf(boolean isCubridConf) {
-		this.isCubridConf = isCubridConf;
-	}
+    public void setCubridConf(boolean isCubridConf) {
+        this.isCubridConf = isCubridConf;
+    }
 
-	public ArrayList<CubridConfProperty> getPropertyList() {
-		return propertyList;
-	}
+    public ArrayList<CubridConfProperty> getPropertyList() {
+        return propertyList;
+    }
 
+    public void setPropertyList(ArrayList<CubridConfProperty> propertyList) {
+        this.propertyList = propertyList;
+    }
 
-	public void setPropertyList(ArrayList<CubridConfProperty> propertyList) {
-		this.propertyList = propertyList;
-	}
-
-	public void addCubridConfProperty (CubridConfProperty property) {
-		getPropertyList().add(property);
-	}
+    public void addCubridConfProperty(CubridConfProperty property) {
+        getPropertyList().add(property);
+    }
 }

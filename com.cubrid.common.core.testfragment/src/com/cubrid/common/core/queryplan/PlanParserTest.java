@@ -27,39 +27,36 @@
  */
 package com.cubrid.common.core.queryplan;
 
-import java.util.Date;
-
 import com.cubrid.common.core.queryplan.model.PlanResult;
 import com.cubrid.cubridmanager.core.SetupEnvTestCase;
-import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
 import com.cubrid.cubridmanager.core.Tool;
+import java.util.Date;
 
 /**
  * Query plan Parser Test
- * 
+ *
  * @author isaiah
  * @version 1.0 - 2012-12-25 created by isaiah
  */
-
 public class PlanParserTest extends SetupEnvTestCase {
-	private Date date = new Date();
-	
-	public void testPlan1() throws Exception {
-		String filepath = this.getFilePathInPlugin("/com/cubrid/common/core/queryplan/plan1.txt");
-		String rawPlan = Tool.getFileContent(filepath);
-		
-		StructQueryPlan plan1 = new StructQueryPlan("select * from db_auth", rawPlan, date);
-		for (int i = 0; i < plan1.countSubPlan(); i++) {
-			PlanResult planResult = plan1.getSubPlan(i);
-			System.err.println(planResult.getParsedRaw());
-			System.err.println(planResult.getPlanNode());
-		}
-		
-		assertEquals(plan1.countSubPlan(), 4);
-	}
-	
-	@Override
-	protected boolean isSetupDatabase() {
-		return false;
-	}
+    private Date date = new Date();
+
+    public void testPlan1() throws Exception {
+        String filepath = this.getFilePathInPlugin("/com/cubrid/common/core/queryplan/plan1.txt");
+        String rawPlan = Tool.getFileContent(filepath);
+
+        StructQueryPlan plan1 = new StructQueryPlan("select * from db_auth", rawPlan, date);
+        for (int i = 0; i < plan1.countSubPlan(); i++) {
+            PlanResult planResult = plan1.getSubPlan(i);
+            System.err.println(planResult.getParsedRaw());
+            System.err.println(planResult.getPlanNode());
+        }
+
+        assertEquals(plan1.countSubPlan(), 4);
+    }
+
+    @Override
+    protected boolean isSetupDatabase() {
+        return false;
+    }
 }

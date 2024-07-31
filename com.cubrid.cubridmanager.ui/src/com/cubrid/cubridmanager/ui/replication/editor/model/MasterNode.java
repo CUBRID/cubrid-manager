@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.replication.editor.model;
 
@@ -31,84 +31,82 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * The master database model object,it store master database information
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-8-26 created by pangqiren
  */
-public class MasterNode extends
-		LeafNode {
+public class MasterNode extends LeafNode {
 
-	private String dbName;
-	private String dbaPassword;
-	private String replServerPort;
-	private String dbPath;
-	private List<String> replicatedClassList = new ArrayList<String>();
-	private boolean isReplicateAll = false;
+    private String dbName;
+    private String dbaPassword;
+    private String replServerPort;
+    private String dbPath;
+    private List<String> replicatedClassList = new ArrayList<String>();
+    private boolean isReplicateAll = false;
 
-	public String getDbName() {
-		return dbName;
-	}
+    public String getDbName() {
+        return dbName;
+    }
 
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-	}
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
 
-	public String getDbaPassword() {
-		return dbaPassword;
-	}
+    public String getDbaPassword() {
+        return dbaPassword;
+    }
 
-	public void setDbaPassword(String dbaPassword) {
-		this.dbaPassword = dbaPassword;
-	}
+    public void setDbaPassword(String dbaPassword) {
+        this.dbaPassword = dbaPassword;
+    }
 
-	public String getReplServerPort() {
-		return replServerPort;
-	}
+    public String getReplServerPort() {
+        return replServerPort;
+    }
 
-	public void setReplServerPort(String replServerPort) {
-		this.replServerPort = replServerPort;
-	}
+    public void setReplServerPort(String replServerPort) {
+        this.replServerPort = replServerPort;
+    }
 
-	public List<String> getReplicatedClassList() {
-		return replicatedClassList;
-	}
+    public List<String> getReplicatedClassList() {
+        return replicatedClassList;
+    }
 
-	public void setReplicatedClassList(List<String> replicatedClassList) {
-		this.replicatedClassList = replicatedClassList;
-	}
+    public void setReplicatedClassList(List<String> replicatedClassList) {
+        this.replicatedClassList = replicatedClassList;
+    }
 
-	public boolean isReplicateAll() {
-		return isReplicateAll;
-	}
+    public boolean isReplicateAll() {
+        return isReplicateAll;
+    }
 
-	public void setReplicateAll(boolean isReplicateAll) {
-		this.isReplicateAll = isReplicateAll;
-	}
+    public void setReplicateAll(boolean isReplicateAll) {
+        this.isReplicateAll = isReplicateAll;
+    }
 
-	public String getDbPath() {
-		return dbPath;
-	}
+    public String getDbPath() {
+        return dbPath;
+    }
 
-	public void setDbPath(String dbPath) {
-		this.dbPath = dbPath;
-	}
+    public void setDbPath(String dbPath) {
+        this.dbPath = dbPath;
+    }
 
-	/**
-	 * @see com.cubrid.cubridmanager.ui.replication.editor.model.Node#isValid()
-	 * @return boolean
-	 */
-	public boolean isValid() {
-		if (dbName == null || dbName.trim().length() == 0) {
-			return false;
-		}
-		if (dbaPassword == null || dbaPassword.trim().length() == 0) {
-			return false;
-		}
-		if (replServerPort == null || replServerPort.trim().length() == 0) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * @see com.cubrid.cubridmanager.ui.replication.editor.model.Node#isValid()
+     * @return boolean
+     */
+    public boolean isValid() {
+        if (dbName == null || dbName.trim().length() == 0) {
+            return false;
+        }
+        if (dbaPassword == null || dbaPassword.trim().length() == 0) {
+            return false;
+        }
+        if (replServerPort == null || replServerPort.trim().length() == 0) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -1,79 +1,80 @@
 package com.cubrid.cubridmanager.core.mock;
 
-import java.io.File;
-
 import com.cubrid.cubridmanager.core.common.ServerManager;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.ClientSocket;
 import com.cubrid.cubridmanager.core.common.task.MonitoringTask;
+import java.io.File;
 
 public class TestRawScript {
 
-	public static final String CLIENT_VERSION = "8.2.0";
-	public static final String SERVER_IP = "localhost";
-	public static final int SERVER_AUTH_PORT = 8001;
-	public static final int SERVER_TASK_PORT = 8002;
-	public static final String MAN_USERID = "admin";
-	public static final String MAN_PASSWD = "1111";
+    public static final String CLIENT_VERSION = "8.2.0";
+    public static final String SERVER_IP = "localhost";
+    public static final int SERVER_AUTH_PORT = 8001;
+    public static final int SERVER_TASK_PORT = 8002;
+    public static final String MAN_USERID = "admin";
+    public static final String MAN_PASSWD = "1111";
 
-	private static ServerInfo serverInfo = null;
+    private static ServerInfo serverInfo = null;
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		connect();
+        connect();
 
-		execute("database/backupdb/001.req.txt");
+        execute("database/backupdb/001.req.txt");
+    }
 
-	}
+    public static void connect() {
 
-	public static void connect() {
+        serverInfo = new ServerInfo();
+        serverInfo.setHostAddress(SERVER_IP);
+        serverInfo.setHostMonPort(SERVER_AUTH_PORT);
+        serverInfo.setHostJSPort(SERVER_TASK_PORT);
+        serverInfo.setUserName(MAN_USERID);
+        serverInfo.setUserPassword(MAN_PASSWD);
 
-		serverInfo = new ServerInfo();
-		serverInfo.setHostAddress(SERVER_IP);
-		serverInfo.setHostMonPort(SERVER_AUTH_PORT);
-		serverInfo.setHostJSPort(SERVER_TASK_PORT);
-		serverInfo.setUserName(MAN_USERID);
-		serverInfo.setUserPassword(MAN_PASSWD);
+        MonitoringTask monTask = new MonitoringTask(serverInfo);
+        serverInfo = monTask.connectServer(CLIENT_VERSION, 1000);
 
-		MonitoringTask monTask = new MonitoringTask(serverInfo);
-		serverInfo = monTask.connectServer(CLIENT_VERSION, 1000);
+        if (monTask.getErrorMsg() != null) {
+            System.exit(-1);
+        }
 
-		if (monTask.getErrorMsg() != null) {
-			System.exit(-1);
-		}
+        ServerManager.getInstance()
+                .addServer(
+                        serverInfo.getHostAddress(),
+                        serverInfo.getHostMonPort(),
+                        serverInfo.getUserName(),
+                        serverInfo);
+        ServerManager.getInstance()
+                .setConnected(
+                        serverInfo.getHostAddress(),
+                        serverInfo.getHostMonPort(),
+                        serverInfo.getUserName(),
+                        true);
+    }
 
-		ServerManager.getInstance().addServer(
-				serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
-				serverInfo.getUserName(), serverInfo);
-		ServerManager.getInstance().setConnected(serverInfo.getHostAddress(),
-				serverInfo.getHostMonPort(), serverInfo.getUserName(), true);
+    public static void execute(String aFilename) {
 
-	}
+        String basepath = TestRawScript.class.getResource(".").getPath() + "scripts/";
+        String filename = basepath + aFilename;
 
-	public static void execute(String aFilename) {
+        String message = MockTaskServer.getFileText(new File(filename));
 
-		String basepath = TestRawScript.class.getResource(".").getPath()
-				+ "scripts/";
-		String filename = basepath + aFilename;
+        ClientSocket clientSocket =
+                new ClientSocket(
+                        serverInfo.getHostAddress(),
+                        serverInfo.getHostJSPort(),
+                        serverInfo.getUserName());
 
-		String message = MockTaskServer.getFileText(new File(filename));
+        clientSocket.setUsingSpecialDelimiter(false);
+        clientSocket.sendRequest(message);
+        clientSocket.tearDownConnection();
 
-		ClientSocket clientSocket = new ClientSocket(
-				serverInfo.getHostAddress(), serverInfo.getHostJSPort(),
-				serverInfo.getUserName());
+        String errorMsg = clientSocket.getErrorMsg();
+        if (errorMsg != null) System.out.println("ERROR MSG:" + errorMsg);
 
-		clientSocket.setUsingSpecialDelimiter(false);
-		clientSocket.sendRequest(message);
-		clientSocket.tearDownConnection();
-
-		String errorMsg = clientSocket.getErrorMsg();
-		if (errorMsg != null)
-			System.out.println("ERROR MSG:" + errorMsg);
-
-		String warningMsg = clientSocket.getWarningMsg();
-		if (warningMsg != null)
-			System.out.println("WARN MSG:" + warningMsg);
-
-	}
-
+        String warningMsg = clientSocket.getWarningMsg();
+        if (warningMsg != null) System.out.println("WARN MSG:" + warningMsg);
+    }
 }

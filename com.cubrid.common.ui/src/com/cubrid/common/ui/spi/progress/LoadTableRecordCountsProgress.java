@@ -28,63 +28,65 @@
 
 package com.cubrid.common.ui.spi.progress;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
 import com.cubrid.common.core.common.model.TableDetailInfo;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.ui.query.control.QueryExecuter;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 public class LoadTableRecordCountsProgress extends LoadTableProgress {
 
-	public LoadTableRecordCountsProgress(CubridDatabase database,
-			List<TableDetailInfo> tableList, String taskName, String subTaskName) {
-		super(database, tableList, taskName, subTaskName);
-	}
+    public LoadTableRecordCountsProgress(
+            CubridDatabase database,
+            List<TableDetailInfo> tableList,
+            String taskName,
+            String subTaskName) {
+        super(database, tableList, taskName, subTaskName);
+    }
 
-	@Override
-	protected Object count(Connection conn, String tableName) {
-		int recordsCount = 0;
-		try {
-			if (conn == null || conn.isClosed()) {
-				return recordsCount;
-			}
-		} catch (SQLException e) {
-			LOGGER.error("", e);
-		}
+    @Override
+    protected Object count(Connection conn, String tableName) {
+        int recordsCount = 0;
+        try {
+            if (conn == null || conn.isClosed()) {
+                return recordsCount;
+            }
+        } catch (SQLException e) {
+            LOGGER.error("", e);
+        }
 
-		String sql = "SELECT COUNT(*) FROM " + QuerySyntax.escapeKeyword(tableName);
+        String sql = "SELECT COUNT(*) FROM " + QuerySyntax.escapeKeyword(tableName);
 
-		// [TOOLS-2425]Support shard broker
-		if (CubridDatabase.hasValidDatabaseInfo(database)) {
-			sql = database.getDatabaseInfo().wrapShardQuery(sql);
-		}
+        // [TOOLS-2425]Support shard broker
+        if (CubridDatabase.hasValidDatabaseInfo(database)) {
+            sql = database.getDatabaseInfo().wrapShardQuery(sql);
+        }
 
-		CUBRIDPreparedStatementProxy stmt = null;
-		ResultSet rs = null;
-		try {
-			stmt = QueryExecuter.getStatement(conn, sql, false, false);
-			rs = stmt.executeQuery();
-			if (rs.next()) {
-				recordsCount = rs.getInt(1);
-			}
-		} catch (SQLException e) {
-			LOGGER.error("", e);
-			e.printStackTrace();
-		} finally {
-			QueryUtil.freeQuery(stmt, rs);
-		}
+        CUBRIDPreparedStatementProxy stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = QueryExecuter.getStatement(conn, sql, false, false);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                recordsCount = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("", e);
+            e.printStackTrace();
+        } finally {
+            QueryUtil.freeQuery(stmt, rs);
+        }
 
-		return recordsCount;
-	}
+        return recordsCount;
+    }
 
-	@Override
-	protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
-		tablesDetailInfo.setRecordsCount(Integer.parseInt(count.toString()));
-	}
+    @Override
+    protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
+        tablesDetailInfo.setRecordsCount(Integer.parseInt(count.toString()));
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,10 +23,13 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.cubrid.database.dialog;
 
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -37,89 +40,85 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
-
 /**
- * 
  * Load database will use this dialog to display the result information
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-public class LoadDatabaseResultDialog extends
-		CMTitleAreaDialog {
-	private String resultInfoStr = null;
+public class LoadDatabaseResultDialog extends CMTitleAreaDialog {
+    private String resultInfoStr = null;
 
-	/**
-	 * The constructor
-	 * 
-	 * @param parentShell
-	 */
-	public LoadDatabaseResultDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     */
+    public LoadDatabaseResultDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	/**
-	 * Create dialog area content
-	 * 
-	 * @param parent the parent composite
-	 * @return the control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
+    /**
+     * Create dialog area content
+     *
+     * @param parent the parent composite
+     * @return the control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        composite.setLayout(layout);
 
-		Label userNameLabel = new Label(composite, SWT.LEFT);
-		userNameLabel.setText(Messages.msgLoadDbResultDialog);
-		userNameLabel.setLayoutData(CommonUITool.createGridData(
-				GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-		StyledText resultInfoText = new StyledText(composite, SWT.LEFT
-				| SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL);
-		CommonUITool.registerContextMenu(resultInfoText, false);
-		resultInfoText.setLayoutData(CommonUITool.createGridData(
-				GridData.FILL_BOTH, 1, 1, 100, 300));
-		resultInfoText.setText(resultInfoStr);
-		resultInfoText.setEditable(false);
-		setTitle(Messages.titleLoadDbResultDialog);
-		setMessage(Messages.msgLoadDbResultDialog);
-		return parentComp;
-	}
+        Label userNameLabel = new Label(composite, SWT.LEFT);
+        userNameLabel.setText(Messages.msgLoadDbResultDialog);
+        userNameLabel.setLayoutData(
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+        StyledText resultInfoText =
+                new StyledText(
+                        composite, SWT.LEFT | SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL);
+        CommonUITool.registerContextMenu(resultInfoText, false);
+        resultInfoText.setLayoutData(
+                CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, 100, 300));
+        resultInfoText.setText(resultInfoStr);
+        resultInfoText.setEditable(false);
+        setTitle(Messages.titleLoadDbResultDialog);
+        setMessage(Messages.msgLoadDbResultDialog);
+        return parentComp;
+    }
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.titleLoadDbResultDialog);
-	}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.titleLoadDbResultDialog);
+    }
 
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID,
-				com.cubrid.cubridmanager.ui.common.Messages.btnOK, true);
-	}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(
+                parent,
+                IDialogConstants.OK_ID,
+                com.cubrid.cubridmanager.ui.common.Messages.btnOK,
+                true);
+    }
 
-	/**
-	 * 
-	 * Set backup db result information
-	 * 
-	 * @param str the result information
-	 */
-	public void setResultInfoStr(String str) {
-		this.resultInfoStr = str;
-	}
+    /**
+     * Set backup db result information
+     *
+     * @param str the result information
+     */
+    public void setResultInfoStr(String str) {
+        this.resultInfoStr = str;
+    }
 }

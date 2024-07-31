@@ -36,15 +36,23 @@ import com.cubrid.common.ui.common.persist.IPersisteManager;
  * @version 1.0 - 2013-7-8 created by Kevin.Wang
  */
 public class CMPersistManager implements IPersisteManager {
-	public void updateDBPassword(String serverName, String address,
-			String monPort, String dbName, String userName, String password, boolean isSavePassword) {
-		CMDBNodePersistManager.getInstance().updateDbPassword(address, monPort,
-				dbName, userName, password, isSavePassword);
-	}
-	public void savaAllServers() {
-		CMHostNodePersistManager.getInstance().saveServers();
-	}
-	public void saveAllGroupNodes() {
-		CMGroupNodePersistManager.getInstance().saveAllGroupNode();
-	}
+    public void updateDBPassword(
+            String serverName,
+            String address,
+            String monPort,
+            String dbName,
+            String userName,
+            String password,
+            boolean isSavePassword) {
+        CMDBNodePersistManager.getInstance()
+                .updateDbPassword(address, monPort, dbName, userName, password, isSavePassword);
+    }
+
+    public void savaAllServers() {
+        CMHostNodePersistManager.getInstance().saveServers();
+    }
+
+    public void saveAllGroupNodes() {
+        CMGroupNodePersistManager.getInstance().saveAllGroupNode();
+    }
 }

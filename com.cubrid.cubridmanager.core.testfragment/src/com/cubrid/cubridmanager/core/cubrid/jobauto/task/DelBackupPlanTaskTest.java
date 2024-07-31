@@ -4,99 +4,83 @@ import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.SetupEnvTestCase;
 import com.cubrid.cubridmanager.core.SystemParameter;
 
-public class DelBackupPlanTaskTest extends
-		SetupEnvTestCase {
+public class DelBackupPlanTaskTest extends SetupEnvTestCase {
 
-	/*
-	 * Test delete backupplan
-	 *  @throws Exception
-	 */
-	public void testDelBackupPlanSend() throws Exception {
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "y"))
-			return;
-		String id = "ddd";
-		if (addBackupPlan(id)) {
-			DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
-			task.setDbname(testDbName);
-			task.setBackupid(id);
-			task.execute();
-			//compare 
-			assertTrue(task.isSuccess());
-		}
-	}
+    /*
+     * Test delete backupplan
+     *  @throws Exception
+     */
+    public void testDelBackupPlanSend() throws Exception {
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "y")) return;
+        String id = "ddd";
+        if (addBackupPlan(id)) {
+            DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
+            task.setDbname(testDbName);
+            task.setBackupid(id);
+            task.execute();
+            // compare
+            assertTrue(task.isSuccess());
+        }
+    }
 
-	public void testDelBackupPlanNotExistBackupId() {
+    public void testDelBackupPlanNotExistBackupId() {
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		System.out.println("<jobauto.delbackupplan.001.req.txt>");
+        System.out.println("<jobauto.delbackupplan.001.req.txt>");
 
-		DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
-		task.setDbname("demodb");
-		task.setBackupid("notexistbackupid");
-		task.execute();
+        DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
+        task.setDbname("demodb");
+        task.setBackupid("notexistbackupid");
+        task.execute();
 
-		assertTrue(task.isSuccess());
-		assertNull(task.getErrorMsg());
+        assertTrue(task.isSuccess());
+        assertNull(task.getErrorMsg());
+    }
 
-	}
+    public void testDelBackupPlanNotExistDb() {
 
-	public void testDelBackupPlanNotExistDb() {
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        System.out.println("<jobauto.delbackupplan.002.req.txt>");
 
-		System.out.println("<jobauto.delbackupplan.002.req.txt>");
+        DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
+        task.setDbname("notexistdb");
+        task.setBackupid("bak_daily");
+        task.execute();
 
-		DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
-		task.setDbname("notexistdb");
-		task.setBackupid("bak_daily");
-		task.execute();
+        assertTrue(task.isSuccess());
+        assertNull(task.getErrorMsg());
+    }
 
-		assertTrue(task.isSuccess());
-		assertNull(task.getErrorMsg());
+    public void testDelBackupPlanNullDb() {
 
-	}
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-	public void testDelBackupPlanNullDb() {
+        System.out.println("<jobauto.delbackupplan.003.req.txt>");
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
+        task.setDbname(null);
+        task.setBackupid("bak_daily");
+        task.execute();
 
-		System.out.println("<jobauto.delbackupplan.003.req.txt>");
+        assertFalse(task.isSuccess());
+        assertNotNull(task.getErrorMsg());
+        assertEquals("Parameter(database name) missing in the request", task.getErrorMsg());
+    }
 
-		DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
-		task.setDbname(null);
-		task.setBackupid("bak_daily");
-		task.execute();
+    public void testDelBackupPlan() {
 
-		assertFalse(task.isSuccess());
-		assertNotNull(task.getErrorMsg());
-		assertEquals("Parameter(database name) missing in the request",
-				task.getErrorMsg());
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-	}
+        System.out.println("<jobauto.delbackupplan.004.req.txt>");
 
-	public void testDelBackupPlan() {
+        DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
+        task.setDbname("demodb");
+        task.setBackupid("bak_daily");
+        task.execute();
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
-
-		System.out.println("<jobauto.delbackupplan.004.req.txt>");
-
-		DelBackupPlanTask task = new DelBackupPlanTask(serverInfo);
-		task.setDbname("demodb");
-		task.setBackupid("bak_daily");
-		task.execute();
-
-		assertTrue(task.isSuccess());
-		assertNull(task.getErrorMsg());
-
-	}
+        assertTrue(task.isSuccess());
+        assertNull(task.getErrorMsg());
+    }
 }

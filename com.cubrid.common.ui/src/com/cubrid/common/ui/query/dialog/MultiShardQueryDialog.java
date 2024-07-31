@@ -27,6 +27,11 @@
  */
 package com.cubrid.common.ui.query.dialog;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.Messages;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.common.ui.spi.util.ValidateUtil;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -37,142 +42,132 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.common.ui.spi.util.ValidateUtil;
-
 /**
  * MultiShardQueryDialog
- * 
+ *
  * @author Isaiah Choe 2012-05-18
  */
-public class MultiShardQueryDialog extends
-		CMTitleAreaDialog {
-	private static int max = 0;
-	private static int min = 0;
-	private Label lblShard;
-	private Text txtShard;
-	private Text txtMaxShard;
-	private int minShardId;
-	private int maxShardId;
+public class MultiShardQueryDialog extends CMTitleAreaDialog {
+    private static int max = 0;
+    private static int min = 0;
+    private Label lblShard;
+    private Text txtShard;
+    private Text txtMaxShard;
+    private int minShardId;
+    private int maxShardId;
 
-	/**
-	 * 
-	 * @param parentShell
-	 */
-	public MultiShardQueryDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    /** @param parentShell */
+    public MultiShardQueryDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	/**
-	 * Create dialog area content
-	 * 
-	 * @param parent the parent composite
-	 * @return the control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
+    /**
+     * Create dialog area content
+     *
+     * @param parent the parent composite
+     * @return the control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
 
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		layout.numColumns = 4;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        layout.numColumns = 4;
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		setTitle(Messages.shardMultiQueryTitle);
-		setMessage(Messages.shardMultiQueryMessage);
-		
-		lblShard = new Label(composite, SWT.NONE);
-		lblShard.setText(Messages.shardMultiQueryStartLabel);
-		txtShard = new Text(composite, SWT.BORDER);
-		{
-			GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-			txtShard.setLayoutData(gd);
-		}
-		Label lbl = null;
-		{
-			lbl = new Label(composite, SWT.NONE);
-			lbl.setText(Messages.shardMultiQueryEndLabel);
-		}
-		txtMaxShard = new Text(composite, SWT.BORDER);
-		{
-			GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-			txtMaxShard.setLayoutData(gd);
-		}
-		
-		txtShard.setText(String.valueOf(min));
-		txtMaxShard.setText(String.valueOf(max));
-		return parentComp;
-	}
+        setTitle(Messages.shardMultiQueryTitle);
+        setMessage(Messages.shardMultiQueryMessage);
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		getShell().setSize(430, 210);
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.shardMultiQueryDialogTitle);
-	}
+        lblShard = new Label(composite, SWT.NONE);
+        lblShard.setText(Messages.shardMultiQueryStartLabel);
+        txtShard = new Text(composite, SWT.BORDER);
+        {
+            GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            txtShard.setLayoutData(gd);
+        }
+        Label lbl = null;
+        {
+            lbl = new Label(composite, SWT.NONE);
+            lbl.setText(Messages.shardMultiQueryEndLabel);
+        }
+        txtMaxShard = new Text(composite, SWT.BORDER);
+        {
+            GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            txtMaxShard.setLayoutData(gd);
+        }
 
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, Messages.shardMultiQueryRunButton, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, Messages.shardMultiQueryCloseButton, false);
-	}
+        txtShard.setText(String.valueOf(min));
+        txtMaxShard.setText(String.valueOf(max));
+        return parentComp;
+    }
 
-	/**
-	 * Call this method when the button in button bar is pressed
-	 * 
-	 * @param buttonId the button id
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == IDialogConstants.OK_ID) {
-			if (!ValidateUtil.isNumber(txtShard.getText())) {
-				CommonUITool.openErrorBox(Messages.shardMultiQueryStartShardIdInputErrorMsg);
-				return;
-			}
-			int minShardId = StringUtil.intValue(txtShard.getText());
-			if (minShardId < 0) {
-				CommonUITool.openErrorBox(Messages.shardMultiQueryStartShardIdInputErrorMsg);
-				return;
-			}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        getShell().setSize(430, 210);
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.shardMultiQueryDialogTitle);
+    }
 
-			if (!ValidateUtil.isNumber(txtMaxShard.getText())) {
-				CommonUITool.openErrorBox(Messages.shardMultiQueryEndShardIdInputErrorMsg);
-				return;
-			}
-			int maxShardId = StringUtil.intValue(txtMaxShard.getText());
-			if (maxShardId < 0) {
-				CommonUITool.openErrorBox(Messages.shardMultiQueryEndShardIdInputErrorMsg);
-				return;
-			}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, IDialogConstants.OK_ID, Messages.shardMultiQueryRunButton, true);
+        createButton(
+                parent, IDialogConstants.CANCEL_ID, Messages.shardMultiQueryCloseButton, false);
+    }
 
-			this.minShardId = minShardId;
-			this.maxShardId = maxShardId;
+    /**
+     * Call this method when the button in button bar is pressed
+     *
+     * @param buttonId the button id
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+            if (!ValidateUtil.isNumber(txtShard.getText())) {
+                CommonUITool.openErrorBox(Messages.shardMultiQueryStartShardIdInputErrorMsg);
+                return;
+            }
+            int minShardId = StringUtil.intValue(txtShard.getText());
+            if (minShardId < 0) {
+                CommonUITool.openErrorBox(Messages.shardMultiQueryStartShardIdInputErrorMsg);
+                return;
+            }
 
-			max = maxShardId;
-			min = minShardId;
-		}
+            if (!ValidateUtil.isNumber(txtMaxShard.getText())) {
+                CommonUITool.openErrorBox(Messages.shardMultiQueryEndShardIdInputErrorMsg);
+                return;
+            }
+            int maxShardId = StringUtil.intValue(txtMaxShard.getText());
+            if (maxShardId < 0) {
+                CommonUITool.openErrorBox(Messages.shardMultiQueryEndShardIdInputErrorMsg);
+                return;
+            }
 
-		super.buttonPressed(buttonId);
-	}
+            this.minShardId = minShardId;
+            this.maxShardId = maxShardId;
 
-	public int getMinShardId() {
-		return minShardId;
-	}
+            max = maxShardId;
+            min = minShardId;
+        }
 
-	public int getMaxShardId() {
-		return maxShardId;
-	}
+        super.buttonPressed(buttonId);
+    }
+
+    public int getMinShardId() {
+        return minShardId;
+    }
+
+    public int getMaxShardId() {
+        return maxShardId;
+    }
 }

@@ -27,29 +27,27 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.service.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cubrid.cubridmanager.core.broker.model.BrokerInfoList;
 import com.cubrid.cubridmanager.core.mondashboard.model.HAHostStatusInfo;
-
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.TestCase;
 
 public class HaNodeTest extends TestCase {
-	
-	public void testHaNode() {
-		HaNode node = new HaNode(NodeType.MASTER);
-		BrokerInfoList brokerInfoList = new BrokerInfoList();
-		
-		node.setBrokerInfoList(brokerInfoList);
-		assertEquals(node.getBrokerInfoList(), brokerInfoList);
-		assertNotNull(node.getBrokerInfo());
-		
-		List<HAHostStatusInfo> hostStatusInfoList = new ArrayList<HAHostStatusInfo>();
-		node.setHostStatusInfoList(hostStatusInfoList);
-		assertEquals(node.getHostStatusInfoList(), hostStatusInfoList);
-		
-		node.buildStatus("ON");
-		assertNotNull(node.getStatus());
-	}
+
+    public void testHaNode() {
+        HaNode node = new HaNode(NodeType.MASTER);
+        BrokerInfoList brokerInfoList = new BrokerInfoList();
+
+        node.setBrokerInfoList(brokerInfoList);
+        assertEquals(node.getBrokerInfoList(), brokerInfoList);
+        assertNotNull(node.getBrokerInfo());
+
+        List<HAHostStatusInfo> hostStatusInfoList = new ArrayList<HAHostStatusInfo>();
+        node.setHostStatusInfoList(hostStatusInfoList);
+        assertEquals(node.getHostStatusInfoList(), hostStatusInfoList);
+
+        node.buildStatus("ON");
+        assertNotNull(node.getStatus());
+    }
 }

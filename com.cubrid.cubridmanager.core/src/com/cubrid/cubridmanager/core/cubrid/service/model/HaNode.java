@@ -27,88 +27,86 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.service.model;
 
-import java.util.List;
-
 import com.cubrid.cubridmanager.core.broker.model.BrokerInfo;
 import com.cubrid.cubridmanager.core.broker.model.BrokerInfoList;
 import com.cubrid.cubridmanager.core.mondashboard.model.HAHostStatusInfo;
+import java.util.List;
 
-public class HaNode extends
-		NodeInfo { // FIXME description
-	private List<HAHostStatusInfo> hostStatusInfoList;
-	private BrokerInfoList brokerInfoList;
+public class HaNode extends NodeInfo { // FIXME description
+    private List<HAHostStatusInfo> hostStatusInfoList;
+    private BrokerInfoList brokerInfoList;
 
-	public HaNode(NodeType type) {
-		super(type);
-	}
+    public HaNode(NodeType type) {
+        super(type);
+    }
 
-	public void setHostStatusInfoList(List<HAHostStatusInfo> hostStatusInfoList) {
-		this.hostStatusInfoList = hostStatusInfoList;
-	}
+    public void setHostStatusInfoList(List<HAHostStatusInfo> hostStatusInfoList) {
+        this.hostStatusInfoList = hostStatusInfoList;
+    }
 
-	public List<HAHostStatusInfo> getHostStatusInfoList() {
-		return hostStatusInfoList;
-	}
+    public List<HAHostStatusInfo> getHostStatusInfoList() {
+        return hostStatusInfoList;
+    }
 
-	public BrokerInfoList getBrokerInfoList() {
-		return brokerInfoList;
-	}
+    public BrokerInfoList getBrokerInfoList() {
+        return brokerInfoList;
+    }
 
-	public void setBrokerInfoList(BrokerInfoList brokerInfoList) {
-		this.brokerInfoList = brokerInfoList;
-	}
+    public void setBrokerInfoList(BrokerInfoList brokerInfoList) {
+        this.brokerInfoList = brokerInfoList;
+    }
 
-	public String getBrokerInfo() {
-		String result = super.getBrokerInfo();
-		if (result == null) {
-			genBrokerInfo();
-			result = super.getBrokerInfo();
-		}
-		return result;
-	}
+    public String getBrokerInfo() {
+        String result = super.getBrokerInfo();
+        if (result == null) {
+            genBrokerInfo();
+            result = super.getBrokerInfo();
+        }
+        return result;
+    }
 
-	public void genBrokerInfo() {
-		StringBuilder sb = new StringBuilder();
-		if (brokerInfoList != null) {
-			int count = 0;
-			for (BrokerInfo brokerInfo : brokerInfoList.getBrokerInfoList()) {
-				if (brokerInfo != null) {
-					sb.append(brokerInfo.getPort()).append(":");
-					sb.append(brokerInfo.getState()).append(", ");
-					count++;
-				}
-			}
-			if (count > 0) {
-				sb.delete(sb.length() - 2, sb.length());
-			}
-		}
-		super.setBrokerInfo(sb.toString());
-	}
+    public void genBrokerInfo() {
+        StringBuilder sb = new StringBuilder();
+        if (brokerInfoList != null) {
+            int count = 0;
+            for (BrokerInfo brokerInfo : brokerInfoList.getBrokerInfoList()) {
+                if (brokerInfo != null) {
+                    sb.append(brokerInfo.getPort()).append(":");
+                    sb.append(brokerInfo.getState()).append(", ");
+                    count++;
+                }
+            }
+            if (count > 0) {
+                sb.delete(sb.length() - 2, sb.length());
+            }
+        }
+        super.setBrokerInfo(sb.toString());
+    }
 
-	public void buildStatus(String serviceStatus) {
-		switch (getType()) {
-		case MASTER:
-			setStatus("HA Master (active)");
-			break;
-		case SLAVE:
-			if ("ON".equalsIgnoreCase(serviceStatus)) {
-				setStatus("HA Slave (standby)");
-			} else {
-				setStatus("HA Slave (standby)(OFF)");
-			}
-			break;
-		case REPLICA:
-			if ("ON".equalsIgnoreCase(serviceStatus)) {
-				setStatus("HA Replica (stop)");
-			} else {
-				setStatus("HA Replica (stop)(OFF)");
-			}
-			break;
-		}
-	}
+    public void buildStatus(String serviceStatus) {
+        switch (getType()) {
+            case MASTER:
+                setStatus("HA Master (active)");
+                break;
+            case SLAVE:
+                if ("ON".equalsIgnoreCase(serviceStatus)) {
+                    setStatus("HA Slave (standby)");
+                } else {
+                    setStatus("HA Slave (standby)(OFF)");
+                }
+                break;
+            case REPLICA:
+                if ("ON".equalsIgnoreCase(serviceStatus)) {
+                    setStatus("HA Replica (stop)");
+                } else {
+                    setStatus("HA Replica (stop)(OFF)");
+                }
+                break;
+        }
+    }
 
-	public String toString() {
-		genBrokerInfo();
-		return super.toString();
-	}
+    public String toString() {
+        genBrokerInfo();
+        return super.toString();
+    }
 }

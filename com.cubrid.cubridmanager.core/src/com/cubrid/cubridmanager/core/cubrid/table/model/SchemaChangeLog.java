@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,93 +23,96 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.cubrid.table.model;
 
 /**
  * Store attribute changes in modifying a schema table
- * 
+ *
  * @author moulinwang
  * @version 1.0 - 2009-6-4 created by moulinwang
  */
 public class SchemaChangeLog {
-	private String oldValue;
-	private String newValue;
-	private SchemeInnerType type;
+    private String oldValue;
+    private String newValue;
+    private SchemeInnerType type;
 
-	/**
-	 * This enum indicates the four Scheme types
-	 * 
-	 * @author sq
-	 * @version 1.0 - 2009-12-29 created by sq
-	 */
-	public enum SchemeInnerType {
-		TYPE_SCHEMA("schema"), TYPE_ATTRIBUTE("attribute"), TYPE_CLASSATTRIBUTE(
-				"classattribute"), TYPE_POSITION("position_change"), TYPE_FK(
-				"fk"), TYPE_INDEX("index"), // including index,reverse
-											// index,unique, reverse unique
-											// index
-		TYPE_TABLE_NAME("tablename"), TYPE_OWNER("owner"), TYPE_SUPER_TABLE(
-				"supertablename"), TYPE_PARTITION("partition");
+    /**
+     * This enum indicates the four Scheme types
+     *
+     * @author sq
+     * @version 1.0 - 2009-12-29 created by sq
+     */
+    public enum SchemeInnerType {
+        TYPE_SCHEMA("schema"),
+        TYPE_ATTRIBUTE("attribute"),
+        TYPE_CLASSATTRIBUTE("classattribute"),
+        TYPE_POSITION("position_change"),
+        TYPE_FK("fk"),
+        TYPE_INDEX("index"), // including index,reverse
+        // index,unique, reverse unique
+        // index
+        TYPE_TABLE_NAME("tablename"),
+        TYPE_OWNER("owner"),
+        TYPE_SUPER_TABLE("supertablename"),
+        TYPE_PARTITION("partition");
 
-		String text = null;
+        String text = null;
 
-		SchemeInnerType(String text) {
-			this.text = text;
-		}
+        SchemeInnerType(String text) {
+            this.text = text;
+        }
 
-		public String getText() {
-			return text;
-		}
+        public String getText() {
+            return text;
+        }
 
-		/**
-		 * Get the exist Scheme type
-		 * 
-		 * @param text String the given type indicates a kind of Scheme type
-		 * @return SchemeInnerType the instance of SchemeInnerType
-		 */
-		public static SchemeInnerType eval(String text) {
-			SchemeInnerType[] array = SchemeInnerType.values();
-			for (SchemeInnerType a : array) {
-				if (a.getText().equals(text)) {
-					return a;
-				}
-			}
-			return null;
-		}
-	};
+        /**
+         * Get the exist Scheme type
+         *
+         * @param text String the given type indicates a kind of Scheme type
+         * @return SchemeInnerType the instance of SchemeInnerType
+         */
+        public static SchemeInnerType eval(String text) {
+            SchemeInnerType[] array = SchemeInnerType.values();
+            for (SchemeInnerType a : array) {
+                if (a.getText().equals(text)) {
+                    return a;
+                }
+            }
+            return null;
+        }
+    };
 
-	public SchemaChangeLog(String oldValue, String newValue,
-			SchemeInnerType type) {
-		super();
-		this.oldValue = oldValue;
-		this.newValue = newValue;
-		this.type = type;
-	}
+    public SchemaChangeLog(String oldValue, String newValue, SchemeInnerType type) {
+        super();
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+        this.type = type;
+    }
 
-	public String getOldValue() {
-		return oldValue;
-	}
+    public String getOldValue() {
+        return oldValue;
+    }
 
-	public void setOldValue(String oldValue) {
-		this.oldValue = oldValue;
-	}
+    public void setOldValue(String oldValue) {
+        this.oldValue = oldValue;
+    }
 
-	public String getNewValue() {
-		return newValue;
-	}
+    public String getNewValue() {
+        return newValue;
+    }
 
-	public void setNewValue(String newValue) {
-		this.newValue = newValue;
-	}
+    public void setNewValue(String newValue) {
+        this.newValue = newValue;
+    }
 
-	public SchemeInnerType getType() {
-		return type;
-	}
+    public SchemeInnerType getType() {
+        return type;
+    }
 
-	public void setType(SchemeInnerType type) {
-		this.type = type;
-	}
-
+    public void setType(SchemeInnerType type) {
+        this.type = type;
+    }
 }

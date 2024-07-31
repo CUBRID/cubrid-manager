@@ -27,53 +27,50 @@
  */
 package com.cubrid.cubridmanager.ui.replication.editor.model;
 
+import com.cubrid.cubridmanager.core.common.model.PropertyChangeProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cubrid.cubridmanager.core.common.model.PropertyChangeProvider;
-
 /**
- *
  * The top model object with the other container node
  *
  * @author pangqiren
  * @version 1.0 - 2009-8-26 created by pangqiren
  */
-public class Diagram extends
-		PropertyChangeProvider {
+public class Diagram extends PropertyChangeProvider {
 
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 3257847701181051954L;
-	public final static String PROP_STRUCTURE = "PROP_STRUCTURE";
-	protected List<ContainerNode> childNodeList = new ArrayList<ContainerNode>();
+    @SuppressWarnings("unused")
+    private static final long serialVersionUID = 3257847701181051954L;
 
-	/**
-	 * add the node
-	 *
-	 * @param node ContainerNode
-	 */
-	public void addNode(ContainerNode node) {
-		node.setParent(this);
-		childNodeList.add(node);
-		fireStructureChange(PROP_STRUCTURE, childNodeList);
-	}
+    public static final String PROP_STRUCTURE = "PROP_STRUCTURE";
+    protected List<ContainerNode> childNodeList = new ArrayList<ContainerNode>();
 
-	/**
-	 * remove the node
-	 *
-	 * @param node ContainerNode
-	 */
-	public void removeNode(ContainerNode node) {
-		childNodeList.remove(node);
-		fireStructureChange(PROP_STRUCTURE, childNodeList);
-	}
+    /**
+     * add the node
+     *
+     * @param node ContainerNode
+     */
+    public void addNode(ContainerNode node) {
+        node.setParent(this);
+        childNodeList.add(node);
+        fireStructureChange(PROP_STRUCTURE, childNodeList);
+    }
 
-	public List<ContainerNode> getChildNodeList() {
-		return childNodeList;
-	}
+    /**
+     * remove the node
+     *
+     * @param node ContainerNode
+     */
+    public void removeNode(ContainerNode node) {
+        childNodeList.remove(node);
+        fireStructureChange(PROP_STRUCTURE, childNodeList);
+    }
 
-	public void setChildNodeList(List<ContainerNode> childNodeList) {
-		this.childNodeList = childNodeList;
-	}
+    public List<ContainerNode> getChildNodeList() {
+        return childNodeList;
+    }
 
+    public void setChildNodeList(List<ContainerNode> childNodeList) {
+        this.childNodeList = childNodeList;
+    }
 }

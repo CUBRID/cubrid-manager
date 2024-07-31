@@ -27,53 +27,50 @@
  */
 package com.cubrid.common.core.queryplan;
 
+import com.cubrid.common.core.queryplan.model.PlanResult;
+import com.cubrid.cubridmanager.core.query.plan.PlanParserTest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.cubrid.common.core.queryplan.model.PlanResult;
-import com.cubrid.cubridmanager.core.query.plan.PlanParserTest;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-25 created by fulei
  */
-
 public class StructQueryPlanTest extends PlanParserTest {
-	private Date date = new Date();
-	public void testStructQueryPlan () {
-		StructQueryPlan plan1 = new StructQueryPlan("select * from test_a1", "plan1" , date);
-		StructQueryPlan plan2 = new StructQueryPlan("select * from test_a2", "plan2" , date);
-		List<StructQueryPlan> planList = new ArrayList<StructQueryPlan>();
-		planList.add(plan1);
-		planList.add(plan2);
-		
-		plan1.countSubPlan();
-		assertEquals(plan1.getCreated(), date);
-		plan1.getCreatedDateString();
-		plan1.getPlanRaw();
-		assertEquals(plan1.getSql(), "select * from test_a1");
-		plan1.getSubPlan(1);
-		plan1.setPlanRaw("xx");
-		plan1.setSql("select * from test_a1");
-		plan1.toString();
-		plan1.toXML();
-		String xml = StructQueryPlan.serialize(planList);
-		assertEquals(StructQueryPlan.unserialize(xml).size(), planList.size());
-		
-		
-		assertNotNull(plan2.clone());
-		
-		String planString = loadPlanExmaple("plan02.txt");
+    private Date date = new Date();
 
-		PlanParser parser = new PlanParser();
-		boolean bool = parser.doParse(planString);
-		assertTrue(bool);
-		parser.getPlanTree(1);
-		PlanResult planRoot = parser.getPlanTree(0);
-		plan2.setPlanRaw(planRoot.getParsedRaw());
-		
-		assertTrue(plan2.calCost() >= 0);
-	}
+    public void testStructQueryPlan() {
+        StructQueryPlan plan1 = new StructQueryPlan("select * from test_a1", "plan1", date);
+        StructQueryPlan plan2 = new StructQueryPlan("select * from test_a2", "plan2", date);
+        List<StructQueryPlan> planList = new ArrayList<StructQueryPlan>();
+        planList.add(plan1);
+        planList.add(plan2);
+
+        plan1.countSubPlan();
+        assertEquals(plan1.getCreated(), date);
+        plan1.getCreatedDateString();
+        plan1.getPlanRaw();
+        assertEquals(plan1.getSql(), "select * from test_a1");
+        plan1.getSubPlan(1);
+        plan1.setPlanRaw("xx");
+        plan1.setSql("select * from test_a1");
+        plan1.toString();
+        plan1.toXML();
+        String xml = StructQueryPlan.serialize(planList);
+        assertEquals(StructQueryPlan.unserialize(xml).size(), planList.size());
+
+        assertNotNull(plan2.clone());
+
+        String planString = loadPlanExmaple("plan02.txt");
+
+        PlanParser parser = new PlanParser();
+        boolean bool = parser.doParse(planString);
+        assertTrue(bool);
+        parser.getPlanTree(1);
+        PlanResult planRoot = parser.getPlanTree(0);
+        plan2.setPlanRaw(planRoot.getParsedRaw());
+
+        assertTrue(plan2.calCost() >= 0);
+    }
 }

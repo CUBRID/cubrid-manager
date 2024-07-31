@@ -29,10 +29,6 @@
  */
 package com.cubrid.cubridmanager.ui.monitoring.action;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.spi.LayoutManager;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.DefaultCubridNode;
@@ -42,100 +38,95 @@ import com.cubrid.cubridmanager.core.common.model.StatusMonitorAuthType;
 import com.cubrid.cubridmanager.ui.monitoring.Messages;
 import com.cubrid.cubridmanager.ui.monitoring.editor.DbStatusHistoryViewPart;
 import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- *
  * This class is an action in order to control how to add a monitor template
  *
  * @author lizhiqiang
  * @version 1.0 - 2010-5-17 created by lizhiqiang
  */
-public class ShowDatabaseMonitorHistoryAction extends
-		SelectionAction {
+public class ShowDatabaseMonitorHistoryAction extends SelectionAction {
 
-	public static final String ID = ShowDatabaseMonitorHistoryAction.class.getName();
-	public static final String NODE_SEPARATOR = "/";
-	public static final String DB_HISTORY_ID = "databaseHistoryId";
+    public static final String ID = ShowDatabaseMonitorHistoryAction.class.getName();
+    public static final String NODE_SEPARATOR = "/";
+    public static final String DB_HISTORY_ID = "databaseHistoryId";
 
-	/**
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public ShowDatabaseMonitorHistoryAction(Shell shell,
-			ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public ShowDatabaseMonitorHistoryAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * The Constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public ShowDatabaseMonitorHistoryAction(Shell shell, String text,
-			ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The Constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public ShowDatabaseMonitorHistoryAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * Override the run method in order to complete adding a monitor template
-	 *
-	 */
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		ICubridNode parent = (ICubridNode) obj[0];
+    /** Override the run method in order to complete adding a monitor template */
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        ICubridNode parent = (ICubridNode) obj[0];
 
-		String dbHistoryId = parent.getId() + NODE_SEPARATOR + DB_HISTORY_ID;
-		ICubridNode databaseHistoryNode = new DefaultCubridNode(dbHistoryId,
-				Messages.msgDbHistoryStatusName,
-				"icons/navigator/status_item.png");
-		databaseHistoryNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
-		databaseHistoryNode.setViewId(DbStatusHistoryViewPart.ID);
-		databaseHistoryNode.setContainer(false);
-		LayoutManager.getInstance().getWorkbenchContrItem().openEditorOrView(
-				databaseHistoryNode);
-	}
+        String dbHistoryId = parent.getId() + NODE_SEPARATOR + DB_HISTORY_ID;
+        ICubridNode databaseHistoryNode =
+                new DefaultCubridNode(
+                        dbHistoryId,
+                        Messages.msgDbHistoryStatusName,
+                        "icons/navigator/status_item.png");
+        databaseHistoryNode.setType(CubridNodeType.STATUS_MONITOR_TEMPLATE);
+        databaseHistoryNode.setViewId(DbStatusHistoryViewPart.ID);
+        databaseHistoryNode.setContainer(false);
+        LayoutManager.getInstance().getWorkbenchContrItem().openEditorOrView(databaseHistoryNode);
+    }
 
-	/**
-	 * Return whether this action support this object,if not support,this action
-	 * will be disabled
-	 *
-	 * @param obj Object
-	 * @return boolean true if supported , false otherwise
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 */
-	public boolean isSupported(Object obj) {
-		if (obj instanceof ICubridNode) {
-			ICubridNode node = (ICubridNode) obj;
-			if (!CubridNodeType.MONITOR_FOLDER.equals(node.getType())) {
-				return false;
-			}
-			ServerUserInfo userInfo = node.getServer().getServerInfo().getLoginedUserInfo();
-			if (userInfo == null
-					|| (StatusMonitorAuthType.AUTH_ADMIN != userInfo.getStatusMonitorAuth() && StatusMonitorAuthType.AUTH_MONITOR != userInfo.getStatusMonitorAuth())) {
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Return whether this action support this object,if not support,this action will be disabled
+     *
+     * @param obj Object
+     * @return boolean true if supported , false otherwise
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     */
+    public boolean isSupported(Object obj) {
+        if (obj instanceof ICubridNode) {
+            ICubridNode node = (ICubridNode) obj;
+            if (!CubridNodeType.MONITOR_FOLDER.equals(node.getType())) {
+                return false;
+            }
+            ServerUserInfo userInfo = node.getServer().getServerInfo().getLoginedUserInfo();
+            if (userInfo == null
+                    || (StatusMonitorAuthType.AUTH_ADMIN != userInfo.getStatusMonitorAuth()
+                            && StatusMonitorAuthType.AUTH_MONITOR
+                                    != userInfo.getStatusMonitorAuth())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
 
-	/**
-	 * Makes this action not support to select multiple object
-	 *
-	 * @return boolean true if allowed ,false otherwise
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
-
+    /**
+     * Makes this action not support to select multiple object
+     *
+     * @return boolean true if allowed ,false otherwise
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 }

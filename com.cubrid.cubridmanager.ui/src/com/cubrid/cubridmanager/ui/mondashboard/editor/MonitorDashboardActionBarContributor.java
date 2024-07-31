@@ -37,20 +37,15 @@ import org.eclipse.gef.ui.actions.ActionBarContributor;
  * @author SC13425
  * @version 1.0 - 2010-6-12 created by SC13425
  */
-public class MonitorDashboardActionBarContributor extends
-		ActionBarContributor {
+public class MonitorDashboardActionBarContributor extends ActionBarContributor {
 
-	/**
-	 * buid actions
-	 */
-	protected void buildActions() {
-		//addRetargetAction(new DeleteRetargetAction());
-	}
+    /** buid actions */
+    protected void buildActions() {
+        // addRetargetAction(new DeleteRetargetAction());
+    }
 
-	/**
-	 * declare global action keys
-	 */
-	protected void declareGlobalActionKeys() {
-		//to declare global action keys.
-	}
+    /** declare global action keys */
+    protected void declareGlobalActionKeys() {
+        // to declare global action keys.
+    }
 }

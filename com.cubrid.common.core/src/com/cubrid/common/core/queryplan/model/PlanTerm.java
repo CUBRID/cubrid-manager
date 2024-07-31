@@ -35,146 +35,148 @@ import java.util.List;
 /**
  * Plan Term model class
  *
- * PlanTerm Description
+ * <p>PlanTerm Description
  *
  * @author pcraft
  * @version 1.0 - 2009. 06. 06 created by pcraft
  */
 public class PlanTerm {
-	/**
-	 * The plan tem type
-	 *
-	 * @author pcraft
-	 * @version 1.0 - 2009-12-29 created by pangqiren
-	 */
-	public enum PlanTermType {
-		SARGS, EDGE, INDEX, FILTER
-	}
+    /**
+     * The plan tem type
+     *
+     * @author pcraft
+     * @version 1.0 - 2009-12-29 created by pangqiren
+     */
+    public enum PlanTermType {
+        SARGS,
+        EDGE,
+        INDEX,
+        FILTER
+    }
 
-	private PlanTermType type = null;
-	private String name = null;
-	private final List<PlanTermItem> termItem = new ArrayList<PlanTermItem>();
+    private PlanTermType type = null;
+    private String name = null;
+    private final List<PlanTermItem> termItem = new ArrayList<PlanTermItem>();
 
-	public String toString() { // FIXME use ToStringBuilder
-		StringBuilder out = new StringBuilder();
-		out.append("PlanTerm[");
-		out.append("\n\tname=").append(name);
-		out.append(", \n\ttype=").append(type);
-		out.append(", \n\titems=").append(termItem);
-		out.append("\n]\n");
-		return out.toString();
-	}
+    public String toString() { // FIXME use ToStringBuilder
+        StringBuilder out = new StringBuilder();
+        out.append("PlanTerm[");
+        out.append("\n\tname=").append(name);
+        out.append(", \n\ttype=").append(type);
+        out.append(", \n\titems=").append(termItem);
+        out.append("\n]\n");
+        return out.toString();
+    }
 
-	/**
-	 * For debugging to display for more pretty
-	 */
-	public static String toString(PlanTerm planTerm, int depth) {
-		if (planTerm == null) {
-			return null;
-		}
-		StringBuilder tabs = new StringBuilder();
-		for (int i = 0; i < depth; i++) {
-			tabs.append("\t");
-		}
-		StringBuilder out = new StringBuilder();
-		out.append("PlanTerm[");
-		out.append("\n\t").append(tabs).append("name=").append(planTerm.getName());
-		out.append(", \n\t").append(tabs).append("type=").append(planTerm.getTypeString());
-		out.append(", \n\t").append(tabs).append("items=").append(PlanTermItem.toString(planTerm.getTermItems(), depth + 1));
-		out.append("\n").append(tabs).append("]");
+    /** For debugging to display for more pretty */
+    public static String toString(PlanTerm planTerm, int depth) {
+        if (planTerm == null) {
+            return null;
+        }
+        StringBuilder tabs = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            tabs.append("\t");
+        }
+        StringBuilder out = new StringBuilder();
+        out.append("PlanTerm[");
+        out.append("\n\t").append(tabs).append("name=").append(planTerm.getName());
+        out.append(", \n\t").append(tabs).append("type=").append(planTerm.getTypeString());
+        out.append(", \n\t")
+                .append(tabs)
+                .append("items=")
+                .append(PlanTermItem.toString(planTerm.getTermItems(), depth + 1));
+        out.append("\n").append(tabs).append("]");
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 
-	/**
-	 * Get term string
-	 *
-	 * @return the string
-	 */
-	public String getTermString() {
-		int len = termItem.size();
-		if (len == 0) {
-			return null;
-		}
+    /**
+     * Get term string
+     *
+     * @return the string
+     */
+    public String getTermString() {
+        int len = termItem.size();
+        if (len == 0) {
+            return null;
+        }
 
-		StringBuilder out = new StringBuilder();
+        StringBuilder out = new StringBuilder();
 
-		for (PlanTermItem item : termItem) {
-			if (out.length() > 0) {
-				out.append("\n");
-			}
-			out.append(item.getCondition());
-		}
+        for (PlanTermItem item : termItem) {
+            if (out.length() > 0) {
+                out.append("\n");
+            }
+            out.append(item.getCondition());
+        }
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public PlanTermType getType() {
-		return type;
-	}
+    public PlanTermType getType() {
+        return type;
+    }
 
-	/**
-	 * Get type string
-	 *
-	 * @return the string
-	 */
-	public String getTypeString() {
-		if (getType() == null) {
-			return "";
-		}
+    /**
+     * Get type string
+     *
+     * @return the string
+     */
+    public String getTypeString() {
+        if (getType() == null) {
+            return "";
+        }
 
-		switch (getType()) {
-		case EDGE:
-			return "edge";
-		case FILTER:
-			return "filter";
-		case INDEX:
-			return "index";
-		case SARGS:
-			return "sargs";
-		default:
-			return "";
-		}
-	}
+        switch (getType()) {
+            case EDGE:
+                return "edge";
+            case FILTER:
+                return "filter";
+            case INDEX:
+                return "index";
+            case SARGS:
+                return "sargs";
+            default:
+                return "";
+        }
+    }
 
-	public void setType(PlanTermType type) {
-		this.type = type;
-	}
+    public void setType(PlanTermType type) {
+        this.type = type;
+    }
 
-	/**
-	 * Get term items
-	 *
-	 * @return the PlanTermItem array
-	 */
-	public PlanTermItem[] getTermItems() {
-		if (termItem.isEmpty()) {
-			return null;
-		}
-		PlanTermItem[] arr = new PlanTermItem[termItem.size()];
-		return termItem.toArray(arr);
-	}
+    /**
+     * Get term items
+     *
+     * @return the PlanTermItem array
+     */
+    public PlanTermItem[] getTermItems() {
+        if (termItem.isEmpty()) {
+            return null;
+        }
+        PlanTermItem[] arr = new PlanTermItem[termItem.size()];
+        return termItem.toArray(arr);
+    }
 
-	/**
-	 * Add plan term item
-	 *
-	 * @param item the PlanTermItem
-	 */
-	public void addTermItem(PlanTermItem item) {
-		this.termItem.add(item);
-	}
+    /**
+     * Add plan term item
+     *
+     * @param item the PlanTermItem
+     */
+    public void addTermItem(PlanTermItem item) {
+        this.termItem.add(item);
+    }
 
-	/**
-	 * Has a single term?
-	 */
-	public boolean hasSingleTerm() {
-		return getTermItems() != null && getTermItems().length == 1;
-	}
+    /** Has a single term? */
+    public boolean hasSingleTerm() {
+        return getTermItems() != null && getTermItems().length == 1;
+    }
 }

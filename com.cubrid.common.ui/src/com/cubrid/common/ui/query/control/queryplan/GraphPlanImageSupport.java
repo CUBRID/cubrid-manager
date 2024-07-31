@@ -27,43 +27,42 @@
  */
 package com.cubrid.common.ui.query.control.queryplan;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
-
 import com.cubrid.common.core.queryplan.model.PlanNode;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.CommonUIPlugin;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 
 public class GraphPlanImageSupport {
-	public static Image getImage(PlanNode planNode) {
-		String method = planNode.getMethod();
-		if (method == null) {
-			return CommonUIPlugin.getImage("icons/queryplan/default.png");
-		}
-		method = method.toLowerCase();
-		method = method.replaceAll(" ", "_");
-		method = method.replaceAll("\\-", "_");
-		method = method.replaceAll("\\(", "");
-		method = method.replaceAll("\\)", "");
+    public static Image getImage(PlanNode planNode) {
+        String method = planNode.getMethod();
+        if (method == null) {
+            return CommonUIPlugin.getImage("icons/queryplan/default.png");
+        }
+        method = method.toLowerCase();
+        method = method.replaceAll(" ", "_");
+        method = method.replaceAll("\\-", "_");
+        method = method.replaceAll("\\(", "");
+        method = method.replaceAll("\\)", "");
 
-		if (method.equals("temp") && StringUtil.isNotEmpty(planNode.getOrder())) {
-			method = "temp_order";
-		} else if (method.equals("tempgroup_by")) {
-			method = "temp_group_by";
-		} else if (method.equals("temporder_by")) {
-			method = "temp_order";
-		}
+        if (method.equals("temp") && StringUtil.isNotEmpty(planNode.getOrder())) {
+            method = "temp_order";
+        } else if (method.equals("tempgroup_by")) {
+            method = "temp_group_by";
+        } else if (method.equals("temporder_by")) {
+            method = "temp_order";
+        }
 
-		String imagePath = "icons/queryplan/" + method + ".png";
-		ImageDescriptor imageDescript = CommonUIPlugin.getImageDescriptor(imagePath);
-		if (imageDescript == null) {
-			return CommonUIPlugin.getImage("icons/queryplan/default.png");
-		}
+        String imagePath = "icons/queryplan/" + method + ".png";
+        ImageDescriptor imageDescript = CommonUIPlugin.getImageDescriptor(imagePath);
+        if (imageDescript == null) {
+            return CommonUIPlugin.getImage("icons/queryplan/default.png");
+        }
 
-		return CommonUIPlugin.getImage(imagePath);
-	}
+        return CommonUIPlugin.getImage(imagePath);
+    }
 
-	public static Image getDefaultImage() {
-		return CommonUIPlugin.getImage("icons/queryplan/default.png");
-	}
+    public static Image getDefaultImage() {
+        return CommonUIPlugin.getImage("icons/queryplan/default.png");
+    }
 }

@@ -35,23 +35,23 @@ import java.io.Serializable;
  * @author Bumsik, Jang
  */
 public class SqlMapParameter implements Serializable {
-	private static final long serialVersionUID = -7405936472538106359L;
-	private boolean dynamic;
-	private String name;
+    private static final long serialVersionUID = -7405936472538106359L;
+    private boolean dynamic;
+    private String name;
 
-	public boolean isDynamic() {
-		return dynamic;
-	}
+    public boolean isDynamic() {
+        return dynamic;
+    }
 
-	public void setDynamic(boolean dynamic) {
-		this.dynamic = dynamic;
-	}
+    public void setDynamic(boolean dynamic) {
+        this.dynamic = dynamic;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 }

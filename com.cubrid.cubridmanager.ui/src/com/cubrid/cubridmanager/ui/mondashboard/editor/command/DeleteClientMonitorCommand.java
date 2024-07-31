@@ -29,10 +29,9 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.command;
 
-import org.eclipse.gef.commands.Command;
-
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.ClientNode;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.Dashboard;
+import org.eclipse.gef.commands.Command;
 
 /**
  * Command to delete broker monitor figure from dashboard.
@@ -40,49 +39,44 @@ import com.cubrid.cubridmanager.ui.mondashboard.editor.model.Dashboard;
  * @author cyl
  * @version 1.0 - 2010-8-19 created by cyl
  */
-public class DeleteClientMonitorCommand extends
-		Command {
+public class DeleteClientMonitorCommand extends Command {
 
-	private ClientNode nodeToDelete;
-	private Dashboard dashboard;
+    private ClientNode nodeToDelete;
+    private Dashboard dashboard;
 
-	public DeleteClientMonitorCommand() {
-		//default constructor
-	}
+    public DeleteClientMonitorCommand() {
+        // default constructor
+    }
 
-	/**
-	 * get the node to be deleted.
-	 *
-	 * @return the nodeToDelete
-	 */
-	public ClientNode getNodeToDelete() {
-		return nodeToDelete;
-	}
+    /**
+     * get the node to be deleted.
+     *
+     * @return the nodeToDelete
+     */
+    public ClientNode getNodeToDelete() {
+        return nodeToDelete;
+    }
 
-	/**
-	 * @param nodeToDelete the nodeToDelete to set
-	 */
-	public void setNodeToDelete(ClientNode nodeToDelete) {
-		this.nodeToDelete = nodeToDelete;
-	}
+    /** @param nodeToDelete the nodeToDelete to set */
+    public void setNodeToDelete(ClientNode nodeToDelete) {
+        this.nodeToDelete = nodeToDelete;
+    }
 
-	/**
-	 * remove current broker node from dashboard
-	 */
-	public void execute() {
-		if (null == nodeToDelete || null == dashboard) {
-			return;
-		}
-		nodeToDelete.setVisible(false);
-		dashboard.refresh();
-	}
+    /** remove current broker node from dashboard */
+    public void execute() {
+        if (null == nodeToDelete || null == dashboard) {
+            return;
+        }
+        nodeToDelete.setVisible(false);
+        dashboard.refresh();
+    }
 
-	/**
-	 * Set dashboard
-	 *
-	 * @param dashboard the dashboard to set
-	 */
-	public void setDashboard(Dashboard dashboard) {
-		this.dashboard = dashboard;
-	}
+    /**
+     * Set dashboard
+     *
+     * @param dashboard the dashboard to set
+     */
+    public void setDashboard(Dashboard dashboard) {
+        this.dashboard = dashboard;
+    }
 }

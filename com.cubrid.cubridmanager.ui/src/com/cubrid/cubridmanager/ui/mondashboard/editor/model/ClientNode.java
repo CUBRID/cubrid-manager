@@ -27,122 +27,116 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.draw2d.geometry.Point;
-
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.broker.model.ApplyServerInfo;
 import com.cubrid.cubridmanager.core.broker.model.BrokerStatusInfos;
 import com.cubrid.cubridmanager.ui.mondashboard.Messages;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.draw2d.geometry.Point;
 
 /**
- *
  * Broker node mode class
  *
  * @author pangqiren
  * @version 1.0 - 2010-8-17 created by pangqiren
  */
-public class ClientNode extends
-		HANode implements
-		PropertyChangeListener {
+public class ClientNode extends HANode implements PropertyChangeListener {
 
-	public final static String PROP_CLIENT_LIST = "PROP_CLIENT_LIST";
+    public static final String PROP_CLIENT_LIST = "PROP_CLIENT_LIST";
 
-	private List<String> clientList = new ArrayList<String>();
+    private List<String> clientList = new ArrayList<String>();
 
-	private BrokerNode brokerNode;
+    private BrokerNode brokerNode;
 
-	private boolean visible = true;
+    private boolean visible = true;
 
-	public ClientNode() {
-		size.height = 98;
-		size.width = 125;
-		setName(Messages.brokerClientList);
-	}
+    public ClientNode() {
+        size.height = 98;
+        size.width = 125;
+        setName(Messages.brokerClientList);
+    }
 
-	/**
-	 * Get the client ip list.
-	 *
-	 * @return the clientList
-	 */
-	public List<String> getClientList() {
-		return clientList;
-	}
+    /**
+     * Get the client ip list.
+     *
+     * @return the clientList
+     */
+    public List<String> getClientList() {
+        return clientList;
+    }
 
-	/**
-	 * Set the client ip list.
-	 *
-	 * @param clientList the clientList to set
-	 */
-	public void setClientList(List<String> clientList) {
-		this.clientList = clientList;
-		fireStructureChange(PROP_CLIENT_LIST, clientList);
-	}
+    /**
+     * Set the client ip list.
+     *
+     * @param clientList the clientList to set
+     */
+    public void setClientList(List<String> clientList) {
+        this.clientList = clientList;
+        fireStructureChange(PROP_CLIENT_LIST, clientList);
+    }
 
-	/**
-	 * Get the broker node to connect
-	 *
-	 * @return the brokerNode
-	 */
-	public BrokerNode getBrokerNode() {
-		return brokerNode;
-	}
+    /**
+     * Get the broker node to connect
+     *
+     * @return the brokerNode
+     */
+    public BrokerNode getBrokerNode() {
+        return brokerNode;
+    }
 
-	/**
-	 * Set the broker node to connect
-	 *
-	 * @param brokerNode the brokerNode to set
-	 */
-	public void setBrokerNode(BrokerNode brokerNode) {
-		this.brokerNode = brokerNode;
-		setLocation(brokerNode.getClientsLocation());
-		brokerNode.addPropertyChangeListener(this);
-	}
+    /**
+     * Set the broker node to connect
+     *
+     * @param brokerNode the brokerNode to set
+     */
+    public void setBrokerNode(BrokerNode brokerNode) {
+        this.brokerNode = brokerNode;
+        setLocation(brokerNode.getClientsLocation());
+        brokerNode.addPropertyChangeListener(this);
+    }
 
-	/**
-	 * Litsen the broker's status changing.
-	 *
-	 * @param evt PropertyChangeEvent
-	 */
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (BrokerNode.PROP_BROKER_STATUS.equals(evt.getPropertyName())) {
-			BrokerStatusInfos bsi = brokerNode.getBrokerStatusInfos();
-			clientList.clear();
-			if (bsi == null || bsi.getAsinfo() == null
-					|| bsi.getAsinfo().isEmpty()) {
-				fireStructureChange(PROP_CLIENT_LIST, clientList);
-				return;
-			}
-			for (ApplyServerInfo asi : bsi.getAsinfo()) {
-				if (StringUtil.isEmpty(asi.getAs_client_ip())
-						|| clientList.contains(asi.getAs_client_ip())) {
-					continue;
-				}
-				clientList.add(asi.getAs_client_ip());
-			}
-			fireStructureChange(PROP_CLIENT_LIST, clientList);
-		}
-	}
+    /**
+     * Litsen the broker's status changing.
+     *
+     * @param evt PropertyChangeEvent
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (BrokerNode.PROP_BROKER_STATUS.equals(evt.getPropertyName())) {
+            BrokerStatusInfos bsi = brokerNode.getBrokerStatusInfos();
+            clientList.clear();
+            if (bsi == null || bsi.getAsinfo() == null || bsi.getAsinfo().isEmpty()) {
+                fireStructureChange(PROP_CLIENT_LIST, clientList);
+                return;
+            }
+            for (ApplyServerInfo asi : bsi.getAsinfo()) {
+                if (StringUtil.isEmpty(asi.getAs_client_ip())
+                        || clientList.contains(asi.getAs_client_ip())) {
+                    continue;
+                }
+                clientList.add(asi.getAs_client_ip());
+            }
+            fireStructureChange(PROP_CLIENT_LIST, clientList);
+        }
+    }
 
-	/**
-	 * Set node location.
-	 *
-	 * @param point new location
-	 */
-	public void setLocation(Point point) {
-		super.setLocation(point);
-		brokerNode.setClientsLocation(point);
-	}
+    /**
+     * Set node location.
+     *
+     * @param point new location
+     */
+    public void setLocation(Point point) {
+        super.setLocation(point);
+        brokerNode.setClientsLocation(point);
+    }
 
-	public boolean isVisible() {
-		return visible;
-	}
+    public boolean isVisible() {
+        return visible;
+    }
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 }
