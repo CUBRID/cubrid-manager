@@ -150,7 +150,7 @@ public class ObjectInfoComposite extends Composite implements ISubTabSelection {
         Composite toolBarComposite = new Composite(this, SWT.NONE);
         RowLayout rowLayout = new RowLayout();
         toolBarComposite.setLayout(rowLayout);
-        toolBarComposite.setLayoutData(CommonUITool.createGridData(-1, -1, -1, 25));
+        toolBarComposite.setLayoutData(CommonUITool.createGridData(-1, -1, -1, -1));
 
         dataTabButton = new Button(toolBarComposite, SWT.None);
         dataTabButton.setText(Messages.tabTitleData);
