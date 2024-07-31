@@ -25,139 +25,135 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- package com.cubrid.common.ui.compare.data.model;
+package com.cubrid.common.ui.compare.data.model;
 
 import com.cubrid.common.core.common.model.SchemaInfo;
 
 public class DataCompare {
-	private String tableName;
-	private boolean existsTarget;
-	private long recordsSource;
-	private long recordsTarget;
-	private long matches;
-	private long notExists;
-	private long notMatches;
-	private long progressPosition;
-	private SchemaInfo schemaInfo;
-	private boolean use;
-	private boolean refreshed;
-	private boolean sameSchema;
+    private String tableName;
+    private boolean existsTarget;
+    private long recordsSource;
+    private long recordsTarget;
+    private long matches;
+    private long notExists;
+    private long notMatches;
+    private long progressPosition;
+    private SchemaInfo schemaInfo;
+    private boolean use;
+    private boolean refreshed;
+    private boolean sameSchema;
 
-	public boolean isRefreshed() {
-		return refreshed;
-	}
+    public boolean isRefreshed() {
+        return refreshed;
+    }
 
-	public void setRefreshed(boolean refreshed) {
-		this.refreshed = refreshed;
-	}
+    public void setRefreshed(boolean refreshed) {
+        this.refreshed = refreshed;
+    }
 
-	public void increaseMatches() {
-		matches++;
-	}
+    public void increaseMatches() {
+        matches++;
+    }
 
-	public void increaseNotMatches() {
-		notMatches++;
-	}
+    public void increaseNotMatches() {
+        notMatches++;
+    }
 
-	public void increaseNotExists() {
-		notExists++;
-	}
+    public void increaseNotExists() {
+        notExists++;
+    }
 
-	public void increaseProgress() {
-		progressPosition++;
-	}
+    public void increaseProgress() {
+        progressPosition++;
+    }
 
-	public boolean isUse() {
-		return use;
-	}
+    public boolean isUse() {
+        return use;
+    }
 
-	public void setUse(boolean use) {
-		this.use = use;
-	}
+    public void setUse(boolean use) {
+        this.use = use;
+    }
 
-	public String getTableName() {
-		return tableName;
-	}
+    public String getTableName() {
+        return tableName;
+    }
 
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
-	public boolean isExistsTarget() {
-		return existsTarget;
-	}
+    public boolean isExistsTarget() {
+        return existsTarget;
+    }
 
-	public void setExistsTarget(boolean existsTarget) {
-		this.existsTarget = existsTarget;
-	}
+    public void setExistsTarget(boolean existsTarget) {
+        this.existsTarget = existsTarget;
+    }
 
-	public long getRecordsSource() {
-		return recordsSource;
-	}
+    public long getRecordsSource() {
+        return recordsSource;
+    }
 
-	public void setRecordsSource(long recordsSource) {
-		this.recordsSource = recordsSource;
-	}
+    public void setRecordsSource(long recordsSource) {
+        this.recordsSource = recordsSource;
+    }
 
-	public long getRecordsTarget() {
-		return recordsTarget;
-	}
+    public long getRecordsTarget() {
+        return recordsTarget;
+    }
 
-	public void setRecordsTarget(long recordsTarget) {
-		this.recordsTarget = recordsTarget;
-	}
+    public void setRecordsTarget(long recordsTarget) {
+        this.recordsTarget = recordsTarget;
+    }
 
-	public long getMatches() {
-		return matches;
-	}
+    public long getMatches() {
+        return matches;
+    }
 
-	public void setMatches(long matches) {
-		this.matches = matches;
-	}
+    public void setMatches(long matches) {
+        this.matches = matches;
+    }
 
-	public long getNotExists() {
-		return notExists;
-	}
+    public long getNotExists() {
+        return notExists;
+    }
 
-	public void setNotExists(long notExists) {
-		this.notExists = notExists;
-	}
+    public void setNotExists(long notExists) {
+        this.notExists = notExists;
+    }
 
-	public long getNotMatches() {
-		return notMatches;
-	}
+    public long getNotMatches() {
+        return notMatches;
+    }
 
-	public void setNotMatches(long notMatches) {
-		this.notMatches = notMatches;
-	}
+    public void setNotMatches(long notMatches) {
+        this.notMatches = notMatches;
+    }
 
-	public long getProgressPosition() {
-		return progressPosition;
-	}
+    public long getProgressPosition() {
+        return progressPosition;
+    }
 
-	public void setProgressPosition(long progressPosition) {
-		this.progressPosition = progressPosition;
-	}
+    public void setProgressPosition(long progressPosition) {
+        this.progressPosition = progressPosition;
+    }
 
-	public SchemaInfo getSchemaInfo() {
-		return schemaInfo;
-	}
+    public SchemaInfo getSchemaInfo() {
+        return schemaInfo;
+    }
 
-	public void setSchemaInfo(SchemaInfo schemaInfo) {
-		this.schemaInfo = schemaInfo;
-	}
+    public void setSchemaInfo(SchemaInfo schemaInfo) {
+        this.schemaInfo = schemaInfo;
+    }
 
-	/**
-	 * @return the isSameSchema
-	 */
-	public boolean isSameSchema() {
-		return sameSchema;
-	}
+    /** @return the isSameSchema */
+    public boolean isSameSchema() {
+        return sameSchema;
+    }
 
-	/**
-	 * @param isSameSchema the isSameSchema to set
-	 */
-	public void setSameSchema(boolean isSameSchema) {
-		this.sameSchema = isSameSchema;
-	}
+    /** @param isSameSchema the isSameSchema to set */
+    public void setSameSchema(boolean isSameSchema) {
+        this.sameSchema = isSameSchema;
+    }
 }

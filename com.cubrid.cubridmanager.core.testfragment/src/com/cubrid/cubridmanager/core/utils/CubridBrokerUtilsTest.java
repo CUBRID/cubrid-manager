@@ -27,24 +27,21 @@
  */
 package com.cubrid.cubridmanager.core.utils;
 
+import com.cubrid.cubridmanager.core.SetupEnvTestCase;
+import com.cubrid.cubridmanager.core.common.model.ConfConstants;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.cubrid.cubridmanager.core.SetupEnvTestCase;
-import com.cubrid.cubridmanager.core.common.model.ConfConstants;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-25 created by fulei
  */
-
 public class CubridBrokerUtilsTest extends SetupEnvTestCase {
-	
-	public void testCubridBrokerUtils () {
-		Map<String, String> brokerMap = new HashMap<String, String>();
-		brokerMap.put(ConfConstants.BROKER_PORT, "10000");
-		
-		assertNull(CubridBrokerUtils.getBrokerPort(databaseInfo.getServerInfo(), brokerMap));
-	}
+
+    public void testCubridBrokerUtils() {
+        Map<String, String> brokerMap = new HashMap<String, String>();
+        brokerMap.put(ConfConstants.BROKER_PORT, "10000");
+
+        assertNull(CubridBrokerUtils.getBrokerPort(databaseInfo.getServerInfo(), brokerMap));
+    }
 }

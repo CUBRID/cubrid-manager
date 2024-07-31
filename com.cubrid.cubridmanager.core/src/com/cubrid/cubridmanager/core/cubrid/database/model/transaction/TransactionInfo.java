@@ -37,25 +37,25 @@ import java.util.List;
  * @version 1.0 - 2009-12-28 created by sq
  */
 public class TransactionInfo {
-	private List<Transaction> transactionList;
+    private List<Transaction> transactionList;
 
-	public List<Transaction> getTransactionList() {
-		return transactionList;
-	}
+    public List<Transaction> getTransactionList() {
+        return transactionList;
+    }
 
-	public void setTransactionList(List<Transaction> transactionList) {
-		this.transactionList = transactionList;
-	}
+    public void setTransactionList(List<Transaction> transactionList) {
+        this.transactionList = transactionList;
+    }
 
-	/**
-	 * add the model to list by reflect method
-	 *
-	 * @param bean Transaction an instance of Transaction
-	 */
-	public void addTransaction(Transaction bean) {
-		if (transactionList == null) {
-			transactionList = new ArrayList<Transaction>();
-		}
-		this.transactionList.add(bean);
-	}
+    /**
+     * add the model to list by reflect method
+     *
+     * @param bean Transaction an instance of Transaction
+     */
+    public void addTransaction(Transaction bean) {
+        if (transactionList == null) {
+            transactionList = new ArrayList<Transaction>();
+        }
+        this.transactionList.add(bean);
+    }
 }

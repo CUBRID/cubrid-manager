@@ -29,117 +29,113 @@
  */
 package com.cubrid.common.ui.query.editor;
 
+import com.cubrid.common.ui.spi.model.DatabaseEditorConfig;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.swt.graphics.RGB;
 
-import com.cubrid.common.ui.spi.model.DatabaseEditorConfig;
-
 /**
- *
  * The EditorConstance class
  *
  * @author Kevin.Wang
  * @version 1.0 - 2012-3-20 created by Kevin.Wang
  */
 public final class EditorConstance {
-	private static List<RGB> BACKGROUND_COLORS = new ArrayList<RGB>();
-	private static List<RGB> BACKGROUND_COLORS_DEEP = new ArrayList<RGB>();
-	static {
-		BACKGROUND_COLORS.add(new RGB(255, 255, 255));
-		BACKGROUND_COLORS.add(new RGB(255, 255, 215));
-		BACKGROUND_COLORS.add(new RGB(255, 245, 245));
-		BACKGROUND_COLORS.add(new RGB(240, 255, 240));
-		BACKGROUND_COLORS.add(new RGB(235, 235, 255));
-		BACKGROUND_COLORS.add(new RGB(240, 240, 240));
+    private static List<RGB> BACKGROUND_COLORS = new ArrayList<RGB>();
+    private static List<RGB> BACKGROUND_COLORS_DEEP = new ArrayList<RGB>();
 
-		BACKGROUND_COLORS_DEEP.add(new RGB(255, 255, 255));
-		BACKGROUND_COLORS_DEEP.add(new RGB(255, 255, 0));
-		BACKGROUND_COLORS_DEEP.add(new RGB(255, 150, 150));
-		BACKGROUND_COLORS_DEEP.add(new RGB(0, 255, 0));
-		BACKGROUND_COLORS_DEEP.add(new RGB(128, 128, 255));
-		BACKGROUND_COLORS_DEEP.add(new RGB(150, 150, 150));
-	}
+    static {
+        BACKGROUND_COLORS.add(new RGB(255, 255, 255));
+        BACKGROUND_COLORS.add(new RGB(255, 255, 215));
+        BACKGROUND_COLORS.add(new RGB(255, 245, 245));
+        BACKGROUND_COLORS.add(new RGB(240, 255, 240));
+        BACKGROUND_COLORS.add(new RGB(235, 235, 255));
+        BACKGROUND_COLORS.add(new RGB(240, 240, 240));
 
-	public static RGB convertDeepBackground(RGB rgb) {
-		for (int i = 0, len = BACKGROUND_COLORS.size(); i < len; i++) {
-			RGB item = BACKGROUND_COLORS.get(i);
-			if (rgb.red == item.red && rgb.green == item.green && rgb.blue == item.blue) {
-				return BACKGROUND_COLORS_DEEP.get(i);
-			}
-		}
+        BACKGROUND_COLORS_DEEP.add(new RGB(255, 255, 255));
+        BACKGROUND_COLORS_DEEP.add(new RGB(255, 255, 0));
+        BACKGROUND_COLORS_DEEP.add(new RGB(255, 150, 150));
+        BACKGROUND_COLORS_DEEP.add(new RGB(0, 255, 0));
+        BACKGROUND_COLORS_DEEP.add(new RGB(128, 128, 255));
+        BACKGROUND_COLORS_DEEP.add(new RGB(150, 150, 150));
+    }
 
-		return BACKGROUND_COLORS_DEEP.get(0);
-	}
+    public static RGB convertDeepBackground(RGB rgb) {
+        for (int i = 0, len = BACKGROUND_COLORS.size(); i < len; i++) {
+            RGB item = BACKGROUND_COLORS.get(i);
+            if (rgb.red == item.red && rgb.green == item.green && rgb.blue == item.blue) {
+                return BACKGROUND_COLORS_DEEP.get(i);
+            }
+        }
 
-	public static List<RGB> getAvaliableBackground() {
-		return BACKGROUND_COLORS;
-	}
+        return BACKGROUND_COLORS_DEEP.get(0);
+    }
 
-	public static RGB getDefaultBackground() {
-		return BACKGROUND_COLORS.get(0);
-	}
+    public static List<RGB> getAvaliableBackground() {
+        return BACKGROUND_COLORS;
+    }
 
-	/**
-	 * Get the rgb's position which is in BACKGROUND_COLORS.If rgb is not in the
-	 * BACKGROUND_COLORS, return -1
-	 *
-	 * @param rgb
-	 * @return the rgb's position which is in BACKGROUND_COLORS. e.g.
-	 *         RGB(255,255,255),return 1.
-	 */
-	public static int getBGPos(RGB rgb) {
-		if (rgb != null) {
-			for (int i = 0; i < BACKGROUND_COLORS.size(); i++) {
-				if (rgb.equals(BACKGROUND_COLORS.get(i))) {
-					return i + 1;
-				}
-			}
-		}
-		return -1;
-	}
+    public static RGB getDefaultBackground() {
+        return BACKGROUND_COLORS.get(0);
+    }
 
-	/**
-	 * Get the available background color.If the pos is err,return null;
-	 *
-	 * @param pos
-	 * @return Get the available background color .If the pos is err,return
-	 *         null;
-	 */
-	public static RGB getRGBByPos(int pos) {
-		int index = pos - 1;
-		if (index >= 0 && index < BACKGROUND_COLORS.size()) {
-			return BACKGROUND_COLORS.get(index);
-		}
-		return null;
-	}
+    /**
+     * Get the rgb's position which is in BACKGROUND_COLORS.If rgb is not in the BACKGROUND_COLORS,
+     * return -1
+     *
+     * @param rgb
+     * @return the rgb's position which is in BACKGROUND_COLORS. e.g. RGB(255,255,255),return 1.
+     */
+    public static int getBGPos(RGB rgb) {
+        if (rgb != null) {
+            for (int i = 0; i < BACKGROUND_COLORS.size(); i++) {
+                if (rgb.equals(BACKGROUND_COLORS.get(i))) {
+                    return i + 1;
+                }
+            }
+        }
+        return -1;
+    }
 
-	/**
-	 * Define is need to set the editor background
-	 *
-	 * @param editorConfig
-	 * @return true,if need to set editor background. otherwise false.
-	 */
-	public static boolean isNeedSetBackground(DatabaseEditorConfig editorConfig) {
-		if (editorConfig == null) {
-			return true;
-		}
+    /**
+     * Get the available background color.If the pos is err,return null;
+     *
+     * @param pos
+     * @return Get the available background color .If the pos is err,return null;
+     */
+    public static RGB getRGBByPos(int pos) {
+        int index = pos - 1;
+        if (index >= 0 && index < BACKGROUND_COLORS.size()) {
+            return BACKGROUND_COLORS.get(index);
+        }
+        return null;
+    }
 
-		return isNeedSetBackground(editorConfig.getBackGround());
-	}
+    /**
+     * Define is need to set the editor background
+     *
+     * @param editorConfig
+     * @return true,if need to set editor background. otherwise false.
+     */
+    public static boolean isNeedSetBackground(DatabaseEditorConfig editorConfig) {
+        if (editorConfig == null) {
+            return true;
+        }
 
-	/**
-	 * Define is need to set the editor background
-	 *
-	 * @param background
-	 * @return true,if need to set editor background. otherwise false.
-	 */
-	public static boolean isNeedSetBackground(RGB background) {
-		if (background == null) {
-			return true;
-		}
+        return isNeedSetBackground(editorConfig.getBackGround());
+    }
 
-		return false;
-	}
+    /**
+     * Define is need to set the editor background
+     *
+     * @param background
+     * @return true,if need to set editor background. otherwise false.
+     */
+    public static boolean isNeedSetBackground(RGB background) {
+        if (background == null) {
+            return true;
+        }
+
+        return false;
+    }
 }

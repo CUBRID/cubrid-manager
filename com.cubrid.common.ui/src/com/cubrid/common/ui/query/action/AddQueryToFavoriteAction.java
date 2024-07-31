@@ -27,78 +27,74 @@
  */
 package com.cubrid.common.ui.query.action;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.common.navigator.FavoriteQueryNavigatorView;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.spi.action.FocusAction;
 import com.cubrid.common.ui.spi.persist.FavoriteQueryPersistUtil;
 import com.cubrid.common.ui.spi.util.CommonUITool;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- *
  * This action is responsible to add selected query into the favorite query in query editor.
  *
  * @author Isaiah Choe 2013-07-10
  */
 public class AddQueryToFavoriteAction extends FocusAction {
-	public static final String ID = AddQueryToFavoriteAction.class.getName();
+    public static final String ID = AddQueryToFavoriteAction.class.getName();
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param focusProvider
-	 * @param text
-	 * @param icon
-	 */
-	public AddQueryToFavoriteAction(Shell shell, Control focusProvider, String text,
-			ImageDescriptor icon) {
-		super(shell, focusProvider, text, icon);
-		this.setId(ID);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param focusProvider
+     * @param text
+     * @param icon
+     */
+    public AddQueryToFavoriteAction(
+            Shell shell, Control focusProvider, String text, ImageDescriptor icon) {
+        super(shell, focusProvider, text, icon);
+        this.setId(ID);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public AddQueryToFavoriteAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public AddQueryToFavoriteAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	public void run() {
-		Control control = getFocusProvider();
-		if (!(control instanceof StyledText)) {
-			showNoSelectionQueryError();
-			return;
-		}
-		StyledText stext = (StyledText) control;
-		String query = stext.getSelectionText();
-		if (StringUtil.isEmpty(query)) {
-			if (!CommonUITool.openConfirmBox(Messages.msgDoYouWantToAddAllQueryInEditor)) {
-				return;
-			}
-			query = stext.getText();
-		}
-		FavoriteQueryNavigatorView view = FavoriteQueryNavigatorView.getInstance();
-		if (view == null) {
-			FavoriteQueryPersistUtil.getInstance().addFavoriteQuery(query);
-		} else {
-			FavoriteQueryNavigatorView.getInstance().addFavoriteQuery(query);
-		}
-	}
+    /** @see org.eclipse.jface.action.Action#run() */
+    public void run() {
+        Control control = getFocusProvider();
+        if (!(control instanceof StyledText)) {
+            showNoSelectionQueryError();
+            return;
+        }
+        StyledText stext = (StyledText) control;
+        String query = stext.getSelectionText();
+        if (StringUtil.isEmpty(query)) {
+            if (!CommonUITool.openConfirmBox(Messages.msgDoYouWantToAddAllQueryInEditor)) {
+                return;
+            }
+            query = stext.getText();
+        }
+        FavoriteQueryNavigatorView view = FavoriteQueryNavigatorView.getInstance();
+        if (view == null) {
+            FavoriteQueryPersistUtil.getInstance().addFavoriteQuery(query);
+        } else {
+            FavoriteQueryNavigatorView.getInstance().addFavoriteQuery(query);
+        }
+    }
 
-	private void showNoSelectionQueryError() {
-		CommonUITool.openErrorBox(Messages.errDidNotSelectedQuery);
-	}
+    private void showNoSelectionQueryError() {
+        CommonUITool.openErrorBox(Messages.errDidNotSelectedQuery);
+    }
 }

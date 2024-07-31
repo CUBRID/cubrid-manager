@@ -27,17 +27,15 @@
  */
 package com.cubrid.common.ui.common.sqlrunner.event;
 
-/**
- * @author fulei
- */
+/** @author fulei */
 public class FinishOneFileEvent extends RunSQLEvent {
-	private String fileName;
-	
-	public FinishOneFileEvent(String fileName) {
-		this.fileName = fileName;
-	}
+    private String fileName;
 
-	public String getFileName() {
-		return this.fileName;
-	}
+    public FinishOneFileEvent(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
 }

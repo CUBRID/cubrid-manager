@@ -32,29 +32,25 @@ import org.eclipse.swt.custom.CTabItem;
 
 /**
  * QueryTableTabItem
- * @author Kevin.Wang
  *
- * Create at 2014-4-8
+ * @author Kevin.Wang
+ *     <p>Create at 2014-4-8
  */
-public class QueryTableTabItem extends CTabItem{
+public class QueryTableTabItem extends CTabItem {
 
-	private QueryResultTableCalcInfo queryResultTableCalcInfo;
-	
-	public QueryTableTabItem(CTabFolder parent, int style) {
-		super(parent, style);
-	}
+    private QueryResultTableCalcInfo queryResultTableCalcInfo;
 
-	/**
-	 * @return the queryResultTableCalcInfo
-	 */
-	public QueryResultTableCalcInfo getQueryResultTableCalcInfo() {
-		return queryResultTableCalcInfo;
-	}
+    public QueryTableTabItem(CTabFolder parent, int style) {
+        super(parent, style);
+    }
 
-	/**
-	 * @param queryResultTableCalcInfo the queryResultTableCalcInfo to set
-	 */
-	public void setQueryResultTableCalcInfo(QueryResultTableCalcInfo queryResultTableCalcInfo) {
-		this.queryResultTableCalcInfo = queryResultTableCalcInfo;
-	}
+    /** @return the queryResultTableCalcInfo */
+    public QueryResultTableCalcInfo getQueryResultTableCalcInfo() {
+        return queryResultTableCalcInfo;
+    }
+
+    /** @param queryResultTableCalcInfo the queryResultTableCalcInfo to set */
+    public void setQueryResultTableCalcInfo(QueryResultTableCalcInfo queryResultTableCalcInfo) {
+        this.queryResultTableCalcInfo = queryResultTableCalcInfo;
+    }
 }

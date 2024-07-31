@@ -31,32 +31,32 @@ import java.util.ArrayList;
 
 /**
  * cubrid broker config model
+ *
  * @author fulei
  * @version 1.0 - 2012-10-29 created by fulei
- *
  */
 public class BrokerConfig {
-	
-	private String confAnnotation;
-	private ArrayList<CubridBrokerProperty> propertyList = new ArrayList<CubridBrokerProperty>();
-	
-	public String getConfAnnotation() {
-		return confAnnotation;
-	}
-	
-	public void setConfAnnotation(String confAnnotation) {
-		this.confAnnotation = confAnnotation;
-	}
-	
-	public ArrayList<CubridBrokerProperty> getPropertyList() {
-		return propertyList;
-	}
-	
-	public void setPropertyList(ArrayList<CubridBrokerProperty> propertyList) {
-		this.propertyList = propertyList;
-	}
-	
-	public void addCubridBrokerProperty (CubridBrokerProperty property) {
-		getPropertyList().add(property);
-	}
+
+    private String confAnnotation;
+    private ArrayList<CubridBrokerProperty> propertyList = new ArrayList<CubridBrokerProperty>();
+
+    public String getConfAnnotation() {
+        return confAnnotation;
+    }
+
+    public void setConfAnnotation(String confAnnotation) {
+        this.confAnnotation = confAnnotation;
+    }
+
+    public ArrayList<CubridBrokerProperty> getPropertyList() {
+        return propertyList;
+    }
+
+    public void setPropertyList(ArrayList<CubridBrokerProperty> propertyList) {
+        this.propertyList = propertyList;
+    }
+
+    public void addCubridBrokerProperty(CubridBrokerProperty property) {
+        getPropertyList().add(property);
+    }
 }

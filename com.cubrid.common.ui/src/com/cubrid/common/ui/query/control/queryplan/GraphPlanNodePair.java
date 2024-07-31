@@ -28,22 +28,22 @@
 package com.cubrid.common.ui.query.control.queryplan;
 
 public class GraphPlanNodePair {
-	private Object source;
-	private Object dest;
+    private Object source;
+    private Object dest;
 
-	public Object getSource() {
-		return source;
-	}
+    public Object getSource() {
+        return source;
+    }
 
-	public void setSource(Object source) {
-		this.source = source;
-	}
+    public void setSource(Object source) {
+        this.source = source;
+    }
 
-	public Object getDest() {
-		return dest;
-	}
+    public Object getDest() {
+        return dest;
+    }
 
-	public void setDest(Object dest) {
-		this.dest = dest;
-	}
+    public void setDest(Object dest) {
+        this.dest = dest;
+    }
 }

@@ -41,51 +41,47 @@ import java.util.Map;
  * @version 1.0 - 2013-7-2 created by Kevin.Wang
  */
 public class UserDetailInfo {
-	private String userName;
-	private Map<String, DBAuth> classAuthMap = new HashMap<String, DBAuth>();
+    private String userName;
+    private Map<String, DBAuth> classAuthMap = new HashMap<String, DBAuth>();
 
-	/**
-	 * Get the user name
-	 *
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return userName;
-	}
+    /**
+     * Get the user name
+     *
+     * @return the userName
+     */
+    public String getUserName() {
+        return userName;
+    }
 
-	/**
-	 * @param userName the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    /** @param userName the userName to set */
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public void addAuth(String className, AuthType authType) {
-		DBAuth dbAuth = classAuthMap.get(className);
-		if (dbAuth == null) {
-			dbAuth = new DBAuth(className, authType);
-			classAuthMap.put(className, dbAuth);
-		} else {
-			dbAuth.setAuthType(AuthType.mergeAuth(dbAuth.getAuthType(), authType));
-		}
-	}
+    public void addAuth(String className, AuthType authType) {
+        DBAuth dbAuth = classAuthMap.get(className);
+        if (dbAuth == null) {
+            dbAuth = new DBAuth(className, authType);
+            classAuthMap.put(className, dbAuth);
+        } else {
+            dbAuth.setAuthType(AuthType.mergeAuth(dbAuth.getAuthType(), authType));
+        }
+    }
 
-	public void addAuth(DBAuth dbAuth) {
-		if (dbAuth == null) {
-			return;
-		}
-		classAuthMap.put(dbAuth.getClassName(), dbAuth);
+    public void addAuth(DBAuth dbAuth) {
+        if (dbAuth == null) {
+            return;
+        }
+        classAuthMap.put(dbAuth.getClassName(), dbAuth);
+    }
 
-	}
+    public DBAuth getAuth(String className) {
+        return classAuthMap.get(className);
+    }
 
-	public DBAuth getAuth(String className) {
-		return classAuthMap.get(className);
-	}
-
-	public List<DBAuth> getAllDBAuth() {
-		List<DBAuth> list = new ArrayList<DBAuth>();
-		list.addAll(classAuthMap.values());
-		return list;
-	}
-
+    public List<DBAuth> getAllDBAuth() {
+        List<DBAuth> list = new ArrayList<DBAuth>();
+        list.addAll(classAuthMap.values());
+        return list;
+    }
 }

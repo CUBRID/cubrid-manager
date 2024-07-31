@@ -35,14 +35,14 @@ import java.util.List;
  * @author CHOE JUNGYEON
  */
 public class OtherwiseTag extends SqlMapCondition {
-	private static final long serialVersionUID = 5071864812217053951L;
+    private static final long serialVersionUID = 5071864812217053951L;
 
-	public OtherwiseTag() {
-		this.setType("otherwise");
-	}
+    public OtherwiseTag() {
+        this.setType("otherwise");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return true;
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return true;
+    }
 }

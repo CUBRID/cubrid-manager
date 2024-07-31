@@ -38,7 +38,7 @@ import org.eclipse.ui.actions.ActionFactory;
  * @version 1.0 - 2011-2-10 created by Kevin Cao
  */
 public class ActionConstants {
-	public static final String ACTION_REDO = ActionFactory.REDO.getId();
-	public static final String ACTION_UNDO = ActionFactory.UNDO.getId();
-	public static final String ACTION_FORMAT = "format";
+    public static final String ACTION_REDO = ActionFactory.REDO.getId();
+    public static final String ACTION_UNDO = ActionFactory.UNDO.getId();
+    public static final String ACTION_FORMAT = "format";
 }

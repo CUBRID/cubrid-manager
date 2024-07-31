@@ -41,44 +41,39 @@ import org.eclipse.zest.core.viewers.ISelfStyleProvider;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
 
-public class GraphPlanLabelProviderAdapter extends LabelProvider implements IFigureProvider,
-		ISelfStyleProvider, IBaseLabelProvider {
-	public Font getFont(Object element) {
-		return Display.getCurrent().getSystemFont();
-	}
+public class GraphPlanLabelProviderAdapter extends LabelProvider
+        implements IFigureProvider, ISelfStyleProvider, IBaseLabelProvider {
+    public Font getFont(Object element) {
+        return Display.getCurrent().getSystemFont();
+    }
 
-	public Color getForeground(Object element) {
-		return Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND);
-	}
+    public Color getForeground(Object element) {
+        return Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND);
+    }
 
-	public String getText(Object element) {
-		return null;
-	}
+    public String getText(Object element) {
+        return null;
+    }
 
-	public Image getImage(Object element) {
-		return null;
-	}
+    public Image getImage(Object element) {
+        return null;
+    }
 
-	public void addListener(ILabelProviderListener listener) {
-	}
+    public void addListener(ILabelProviderListener listener) {}
 
-	public void dispose() {
-	}
+    public void dispose() {}
 
-	public boolean isLabelProperty(Object element, String property) {
-		return false;
-	}
+    public boolean isLabelProperty(Object element, String property) {
+        return false;
+    }
 
-	public void removeListener(ILabelProviderListener listener) {
-	}
+    public void removeListener(ILabelProviderListener listener) {}
 
-	public void selfStyleConnection(Object element, GraphConnection connection) {
-	}
+    public void selfStyleConnection(Object element, GraphConnection connection) {}
 
-	public void selfStyleNode(Object element, GraphNode node) {
-	}
+    public void selfStyleNode(Object element, GraphNode node) {}
 
-	public IFigure getFigure(Object element) {
-		return null;
-	}
+    public IFigure getFigure(Object element) {
+        return null;
+    }
 }

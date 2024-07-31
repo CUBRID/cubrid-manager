@@ -32,99 +32,100 @@ import java.util.List;
 
 /**
  * run SQL table display vo
+ *
  * @author fulei
  */
 public class SqlRunnerProgress {
-	private String fileName;
-	private long sqlcount;
-	private long successCount;
-	private long failCount;
-	private List<SqlRunnerFailed> failList = new ArrayList<SqlRunnerFailed>();
-	private boolean isError;
-	private long beginTime;
-	private long elapsedTime = 0;;
-	private int status = 0;//0 waiting 1 running 2 finished 3 stoped
-	
-	public SqlRunnerProgress(String fileName) {
-		this.fileName = fileName;
-		this.sqlcount = 0;
-		this.successCount = 0;
-		this.failCount = 0;
-	}
+    private String fileName;
+    private long sqlcount;
+    private long successCount;
+    private long failCount;
+    private List<SqlRunnerFailed> failList = new ArrayList<SqlRunnerFailed>();
+    private boolean isError;
+    private long beginTime;
+    private long elapsedTime = 0;;
+    private int status = 0; // 0 waiting 1 running 2 finished 3 stoped
 
-	public int getStatus() {
-		return status;
-	}
+    public SqlRunnerProgress(String fileName) {
+        this.fileName = fileName;
+        this.sqlcount = 0;
+        this.successCount = 0;
+        this.failCount = 0;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public boolean isError() {
-		return isError;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public void setError(boolean isError) {
-		this.isError = isError;
-	}
+    public boolean isError() {
+        return isError;
+    }
 
-	public String getFileName() {
-		return fileName;
-	}
+    public void setError(boolean isError) {
+        this.isError = isError;
+    }
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public long getSqlcount() {
-		return sqlcount;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	public void setSqlcount(long sqlcount) {
-		this.sqlcount = sqlcount;
-	}
+    public long getSqlcount() {
+        return sqlcount;
+    }
 
-	public long getSuccessCount() {
-		return successCount;
-	}
+    public void setSqlcount(long sqlcount) {
+        this.sqlcount = sqlcount;
+    }
 
-	public void setSuccessCount(long successCount) {
-		this.successCount = successCount;
-	}
+    public long getSuccessCount() {
+        return successCount;
+    }
 
-	public long getFailCount() {
-		return failCount;
-	}
+    public void setSuccessCount(long successCount) {
+        this.successCount = successCount;
+    }
 
-	public void setFailCount(long failCount) {
-		this.failCount = failCount;
-	}
+    public long getFailCount() {
+        return failCount;
+    }
 
-	public List<SqlRunnerFailed> getFailList() {
-		return failList;
-	}
+    public void setFailCount(long failCount) {
+        this.failCount = failCount;
+    }
 
-	public void setFailList(List<SqlRunnerFailed> failList) {
-		this.failList = failList;
-	}
+    public List<SqlRunnerFailed> getFailList() {
+        return failList;
+    }
 
-	public void addFailToList(SqlRunnerFailed po) {
-		this.failList.add(po);
-	}
+    public void setFailList(List<SqlRunnerFailed> failList) {
+        this.failList = failList;
+    }
 
-	public long getElapsedTime() {
-		return elapsedTime;
-	}
+    public void addFailToList(SqlRunnerFailed po) {
+        this.failList.add(po);
+    }
 
-	public void setElapsedTime(long elapsedTime) {
-		this.elapsedTime = elapsedTime;
-	}
+    public long getElapsedTime() {
+        return elapsedTime;
+    }
 
-	public long getBeginTime() {
-		return beginTime;
-	}
+    public void setElapsedTime(long elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
 
-	public void setBeginTime(long beginTime) {
-		this.beginTime = beginTime;
-	}
+    public long getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(long beginTime) {
+        this.beginTime = beginTime;
+    }
 }

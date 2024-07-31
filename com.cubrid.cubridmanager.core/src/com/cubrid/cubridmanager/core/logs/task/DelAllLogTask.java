@@ -32,42 +32,39 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 
 /**
- *
  * A task that defined the task of "removelog"
  *
  * @author wuyingshi
  * @version 1.0 - 2009-4-3 created by wuyingshi
  */
-public class DelAllLogTask extends
-		SocketTask {
+public class DelAllLogTask extends SocketTask {
 
-	private static final String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "open", "path", "close" };
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {"task", "token", "open", "path", "close"};
 
-	/**
-	 * The Constructor
-	 *
-	 * @param serverInfo
-	 */
-	public DelAllLogTask(ServerInfo serverInfo) {
-		super("removelog", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * The Constructor
+     *
+     * @param serverInfo
+     */
+    public DelAllLogTask(ServerInfo serverInfo) {
+        super("removelog", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * Set path to delete logs.
-	 *
-	 * @param param String[]
-	 */
-	public void setPath(String[] param) {
-		setMsgItem("open", "files");
+    /**
+     * Set path to delete logs.
+     *
+     * @param param String[]
+     */
+    public void setPath(String[] param) {
+        setMsgItem("open", "files");
 
-		int index = 1;
-		// Different value needs different key
-		for (String path : param) {
-			setMsgItem("path" + (index++), path);
-		}
+        int index = 1;
+        // Different value needs different key
+        for (String path : param) {
+            setMsgItem("path" + (index++), path);
+        }
 
-		setMsgItem("close", "files");
-	}
-
+        setMsgItem("close", "files");
+    }
 }

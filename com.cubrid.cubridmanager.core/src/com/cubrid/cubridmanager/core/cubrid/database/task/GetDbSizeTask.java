@@ -32,47 +32,43 @@ import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 
 /**
- *
  * This task is responsible to get database size
  *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-public class GetDbSizeTask extends
-		SocketTask {
-	private static final String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dbname" };
+public class GetDbSizeTask extends SocketTask {
+    private static final String[] SEND_MSG_ITEMS = new String[] {"task", "token", "dbname"};
 
-	/**
-	 * The constructor
-	 *
-	 * @param serverInfo
-	 */
-	public GetDbSizeTask(ServerInfo serverInfo) {
-		super("getdbsize", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public GetDbSizeTask(ServerInfo serverInfo) {
+        super("getdbsize", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * set dbname into msg
-	 *
-	 * @param dbName String database name
-	 */
-	public void setDbName(String dbName) {
-		super.setMsgItem("dbname", dbName);
-	}
+    /**
+     * set dbname into msg
+     *
+     * @param dbName String database name
+     */
+    public void setDbName(String dbName) {
+        super.setMsgItem("dbname", dbName);
+    }
 
-	/**
-	 * get the result of dbSize
-	 *
-	 * @return int the database size
-	 */
-	public int getDbSize() {
-		TreeNode node = (TreeNode) getResponse();
-		if (this.isSuccess()) {
-			return Integer.parseInt(node.getValue("dbsize"));
-		} else {
-			return -1;
-		}
-	}
-
+    /**
+     * get the result of dbSize
+     *
+     * @return int the database size
+     */
+    public int getDbSize() {
+        TreeNode node = (TreeNode) getResponse();
+        if (this.isSuccess()) {
+            return Integer.parseInt(node.getValue("dbsize"));
+        } else {
+            return -1;
+        }
+    }
 }

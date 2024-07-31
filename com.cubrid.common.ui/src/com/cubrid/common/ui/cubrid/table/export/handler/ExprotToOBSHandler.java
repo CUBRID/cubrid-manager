@@ -29,15 +29,6 @@
  */
 package com.cubrid.common.ui.cubrid.table.export.handler;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.FileUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
@@ -53,6 +44,13 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetMetaDataProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
+import org.slf4j.Logger;
 
 /**
  * ExprotToOBSHandler Description
@@ -60,201 +58,218 @@ import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
  * @author Kevin.Wang
  * @version 1.0 - 2013-5-24 created by Kevin.Wang
  */
-public class ExprotToOBSHandler extends
-		AbsExportDataHandler {
+public class ExprotToOBSHandler extends AbsExportDataHandler {
 
-	private static final Logger LOGGER = LogUtil.getLogger(ExprotToOBSHandler.class);
+    private static final Logger LOGGER = LogUtil.getLogger(ExprotToOBSHandler.class);
 
-	public ExprotToOBSHandler(DatabaseInfo dbInfo, ExportConfig exportConfig,
-			IExportDataEventHandler exportDataEventHandler) {
-		super(dbInfo, exportConfig, exportDataEventHandler);
-	}
+    public ExprotToOBSHandler(
+            DatabaseInfo dbInfo,
+            ExportConfig exportConfig,
+            IExportDataEventHandler exportDataEventHandler) {
+        super(dbInfo, exportConfig, exportDataEventHandler);
+    }
 
-	public void handle(String tableName) throws IOException, SQLException { // FIXME move this logic to core module
+    public void handle(String tableName)
+            throws IOException, SQLException { // FIXME move this logic to core module
 
-		String schemaFile = exportConfig.getSchemaFilePath();
-		String indexFile = exportConfig.getIndexFilePath();
-		String triggerFile = exportConfig.getTriggerFilePath();
-		Set<String> tableSet = new HashSet<String>();
-		tableSet.addAll(exportConfig.getTableNameList());
+        String schemaFile = exportConfig.getSchemaFilePath();
+        String indexFile = exportConfig.getIndexFilePath();
+        String triggerFile = exportConfig.getTriggerFilePath();
+        Set<String> tableSet = new HashSet<String>();
+        tableSet.addAll(exportConfig.getTableNameList());
 
-		try {
-			try {
-				if (exportConfig.isExportSchema()) {
-					exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(schemaFile));
-				}
+        try {
+            try {
+                if (exportConfig.isExportSchema()) {
+                    exportDataEventHandler.handleEvent(
+                            new ExportDataBeginOneTableEvent(schemaFile));
+                }
 
-				if (exportConfig.isExportIndex()) {
-					exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(indexFile));
-				}
+                if (exportConfig.isExportIndex()) {
+                    exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(indexFile));
+                }
 
-				if (exportConfig.isExportTrigger()) {
-					exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(triggerFile));
-				}
+                if (exportConfig.isExportTrigger()) {
+                    exportDataEventHandler.handleEvent(
+                            new ExportDataBeginOneTableEvent(triggerFile));
+                }
 
-				exportSchemaToOBSFile(dbInfo, exportDataEventHandler, tableSet, schemaFile,
-						indexFile, triggerFile, exportConfig.getFileCharset(),
-						exportConfig.isExportSerialStartValue(), false);
+                exportSchemaToOBSFile(
+                        dbInfo,
+                        exportDataEventHandler,
+                        tableSet,
+                        schemaFile,
+                        indexFile,
+                        triggerFile,
+                        exportConfig.getFileCharset(),
+                        exportConfig.isExportSerialStartValue(),
+                        false);
 
-				if (exportConfig.isExportSchema()) {
-					exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(schemaFile));
-					exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(schemaFile));
-				}
-				if (exportConfig.isExportIndex()) {
-					exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(indexFile));
-					exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(indexFile));
-				}
-				if (exportConfig.isExportTrigger()) {
-					exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(triggerFile));
-					exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(triggerFile));
-				}
+                if (exportConfig.isExportSchema()) {
+                    exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(schemaFile));
+                    exportDataEventHandler.handleEvent(
+                            new ExportDataFinishOneTableEvent(schemaFile));
+                }
+                if (exportConfig.isExportIndex()) {
+                    exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(indexFile));
+                    exportDataEventHandler.handleEvent(
+                            new ExportDataFinishOneTableEvent(indexFile));
+                }
+                if (exportConfig.isExportTrigger()) {
+                    exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(triggerFile));
+                    exportDataEventHandler.handleEvent(
+                            new ExportDataFinishOneTableEvent(triggerFile));
+                }
 
-				if (exportConfig.isExportData()) { //data
-					long totalRecord = exportConfig.getTotalCount(tableName);
-					if (totalRecord == 0) {
-						return;
-					}
-					String path = exportConfig.getDataFilePath(tableName);
-					BufferedWriter fs = null;
-					Connection conn = null;
+                if (exportConfig.isExportData()) { // data
+                    long totalRecord = exportConfig.getTotalCount(tableName);
+                    if (totalRecord == 0) {
+                        return;
+                    }
+                    String path = exportConfig.getDataFilePath(tableName);
+                    BufferedWriter fs = null;
+                    Connection conn = null;
 
-					try {
-						fs = FileUtil.getBufferedWriter(path, exportConfig.getFileCharset());
-						conn = getConnection();
+                    try {
+                        fs = FileUtil.getBufferedWriter(path, exportConfig.getFileCharset());
+                        conn = getConnection();
 
-						if (exportConfig.isExportData()) {
+                        if (exportConfig.isExportData()) {
 
-							exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(
-									path));
+                            exportDataEventHandler.handleEvent(
+                                    new ExportDataBeginOneTableEvent(path));
 
-							String sql = getSelectSQL(conn, tableName, dbInfo.isSupportUserSchema());
+                            String sql =
+                                    getSelectSQL(conn, tableName, dbInfo.isSupportUserSchema());
 
-							// [TOOLS-2425]Support shard broker
-							sql = DatabaseInfo.wrapShardQuery(dbInfo, sql);
+                            // [TOOLS-2425]Support shard broker
+                            sql = DatabaseInfo.wrapShardQuery(dbInfo, sql);
 
-							exportLoad(conn, tableName, fs, path, sql);
+                            exportLoad(conn, tableName, fs, path, sql);
 
-							exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(
-									path));
-						}
-					} finally {
-						QueryUtil.freeQuery(conn);
-						try {
-							if (fs != null) {
-								fs.close();
-							}
-						} catch (IOException e) {
-							LOGGER.error("", e);
-						}
-					}
-				}
+                            exportDataEventHandler.handleEvent(
+                                    new ExportDataFinishOneTableEvent(path));
+                        }
+                    } finally {
+                        QueryUtil.freeQuery(conn);
+                        try {
+                            if (fs != null) {
+                                fs.close();
+                            }
+                        } catch (IOException e) {
+                            LOGGER.error("", e);
+                        }
+                    }
+                }
 
-			} catch (Exception e) {
-				LOGGER.error("create schema index error : ", e);
-				exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(tableName));
-			}
-		} catch (Exception e) {
-			LOGGER.error("", e);
-		}
+            } catch (Exception e) {
+                LOGGER.error("create schema index error : ", e);
+                exportDataEventHandler.handleEvent(new ExportDataFailedOneTableEvent(tableName));
+            }
+        } catch (Exception e) {
+            LOGGER.error("", e);
+        }
+    }
 
-	}
+    /**
+     * Export data as CUBRID load format
+     *
+     * @param stmt Statement
+     * @param tableName String
+     * @param monitor IProgressMonitor
+     * @param fs String
+     * @param fileName BufferedWriter
+     * @throws SQLException The exception
+     * @throws IOException The exception
+     */
+    private void exportLoad(
+            Connection conn, String tableName, BufferedWriter fs, String fileName, String sql)
+            throws SQLException, IOException { // FIXME move this logic to core module
+        CUBRIDPreparedStatementProxy pStmt = null;
+        CUBRIDResultSetProxy rs = null;
 
-	/**
-	 * Export data as CUBRID load format
-	 *
-	 * @param stmt Statement
-	 * @param tableName String
-	 * @param monitor IProgressMonitor
-	 * @param fs String
-	 * @param fileName BufferedWriter
-	 * @throws SQLException The exception
-	 * @throws IOException The exception
-	 */
-	private void exportLoad(Connection conn, String tableName, BufferedWriter fs, String fileName,
-			String sql) throws SQLException, IOException { // FIXME move this logic to core module
-		CUBRIDPreparedStatementProxy pStmt = null;
-		CUBRIDResultSetProxy rs = null;
+        boolean hasNextPage = true;
+        long beginIndex = 1;
+        int exportedCount = 0;
+        long totalRecord = exportConfig.getTotalCount(tableName);
+        String whereCondition = exportConfig.getWhereCondition(tableName);
+        isPaginating = isPagination(tableName, sql, whereCondition);
+        boolean isNeedWriteHeader = true;
+        while (hasNextPage) {
+            try {
+                String executeSQL = null;
+                if (isPaginating) {
+                    long endIndex = beginIndex + RSPAGESIZE;
+                    executeSQL = getExecuteSQL(sql, beginIndex, endIndex, whereCondition);
+                    executeSQL = dbInfo.wrapShardQuery(executeSQL);
+                    beginIndex = endIndex + 1;
+                } else {
+                    executeSQL = getExecuteSQL(sql, whereCondition);
+                    executeSQL = dbInfo.wrapShardQuery(sql);
+                    beginIndex = totalRecord + 1;
+                }
 
-		boolean hasNextPage = true;
-		long beginIndex = 1;
-		int exportedCount = 0;
-		long totalRecord = exportConfig.getTotalCount(tableName);
-		String whereCondition = exportConfig.getWhereCondition(tableName);
-		isPaginating = isPagination(tableName, sql, whereCondition);
-		boolean isNeedWriteHeader = true;
-		while (hasNextPage) {
-			try {
-				String executeSQL = null;
-				if (isPaginating) {
-					long endIndex = beginIndex + RSPAGESIZE;
-					executeSQL = getExecuteSQL(sql, beginIndex, endIndex, whereCondition);
-					executeSQL = dbInfo.wrapShardQuery(executeSQL);
-					beginIndex = endIndex + 1;
-				} else {
-					executeSQL = getExecuteSQL(sql, whereCondition);
-					executeSQL = dbInfo.wrapShardQuery(sql);
-					beginIndex = totalRecord + 1;
-				}
+                pStmt = getStatement(conn, executeSQL, tableName);
+                rs = (CUBRIDResultSetProxy) pStmt.executeQuery();
+                CUBRIDResultSetMetaDataProxy rsmt = (CUBRIDResultSetMetaDataProxy) rs.getMetaData();
 
-				pStmt = getStatement(conn, executeSQL, tableName);
-				rs = (CUBRIDResultSetProxy) pStmt.executeQuery();
-				CUBRIDResultSetMetaDataProxy rsmt = (CUBRIDResultSetMetaDataProxy) rs.getMetaData();
+                if (isNeedWriteHeader) {
+                    StringBuffer header = new StringBuffer("%class ");
+                    header.append(QuerySyntax.escapeKeyword(tableName));
+                    header.append(" (");
+                    for (int i = 1; i < rsmt.getColumnCount() + 1; i++) {
+                        if (i > 1) {
+                            header.append(" ");
+                        }
+                        header.append(QuerySyntax.escapeKeyword(rsmt.getColumnName(i)));
+                    }
+                    header.append(")\n");
+                    fs.write(header.toString());
+                    isNeedWriteHeader = false;
+                }
 
-				if (isNeedWriteHeader) {
-					StringBuffer header = new StringBuffer("%class ");
-					header.append(QuerySyntax.escapeKeyword(tableName));
-					header.append(" (");
-					for (int i = 1; i < rsmt.getColumnCount() + 1; i++) {
-						if (i > 1) {
-							header.append(" ");
-						}
-						header.append(QuerySyntax.escapeKeyword(rsmt.getColumnName(i)));
-					}
-					header.append(")\n");
-					fs.write(header.toString());
-					isNeedWriteHeader = false;
-				}
+                while (rs.next()) {
+                    StringBuffer values = new StringBuffer();
+                    for (int j = 1; j < rsmt.getColumnCount() + 1; j++) {
+                        String columnType = rsmt.getColumnTypeName(j);
+                        int precision = rsmt.getPrecision(j);
+                        columnType = FieldHandlerUtils.amendDataTypeByResult(rs, j, columnType);
+                        setIsHasBigValue(columnType, precision);
+                        values.append(
+                                FieldHandlerUtils.getRsValueForExportOBS(columnType, rs, j)
+                                        .toString());
+                    }
+                    values.append("\n");
 
-				while (rs.next()) {
-					StringBuffer values = new StringBuffer();
-					for (int j = 1; j < rsmt.getColumnCount() + 1; j++) {
-						String columnType = rsmt.getColumnTypeName(j);
-						int precision = rsmt.getPrecision(j);
-						columnType = FieldHandlerUtils.amendDataTypeByResult(rs, j, columnType);
-						setIsHasBigValue(columnType, precision);
-						values.append(FieldHandlerUtils.getRsValueForExportOBS(columnType, rs, j).toString());
-					}
-					values.append("\n");
+                    fs.write(values.toString());
+                    exportedCount++;
+                    if (exportedCount >= COMMIT_LINES) {
+                        fs.flush();
+                        exportDataEventHandler.handleEvent(
+                                new ExportDataSuccessEvent(tableName, exportedCount));
+                        exportedCount = 0;
+                    }
+                    if (stop) {
+                        break;
+                    }
+                }
+                exportDataEventHandler.handleEvent(
+                        new ExportDataSuccessEvent(tableName, exportedCount));
+                exportedCount = 0;
+            } catch (Exception e) {
+                LOGGER.error("export date write load db error : ", e);
+            } finally {
+                fs.flush();
+                QueryUtil.freeQuery(pStmt, rs);
+            }
 
-					fs.write(values.toString());
-					exportedCount++;
-					if (exportedCount >= COMMIT_LINES) {
-						fs.flush();
-						exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(tableName,
-								exportedCount));
-						exportedCount = 0;
-					}
-					if (stop) {
-						break;
-					}
-				}
-				exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(tableName,
-						exportedCount));
-				exportedCount = 0;
-			} catch (Exception e) {
-				LOGGER.error("export date write load db error : ", e);
-			} finally {
-				fs.flush();
-				QueryUtil.freeQuery(pStmt, rs);
-			}
+            if (hasNextPage(beginIndex, totalRecord)) {
+                hasNextPage = true;
+            } else {
+                hasNextPage = false;
+            }
 
-			if (hasNextPage(beginIndex, totalRecord)) {
-				hasNextPage = true;
-			} else {
-				hasNextPage = false;
-			}
-
-			System.gc();
-		}
-	}
+            System.gc();
+        }
+    }
 }

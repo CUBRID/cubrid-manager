@@ -33,120 +33,124 @@ import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.utils.ModelUtil.YesNoType;
 
 /**
- *
  * the task of copy database
  *
  * @author robin 2009-3-25
  */
-public class CopyDbTask extends
-		SocketTask {
+public class CopyDbTask extends SocketTask {
 
-	private static final String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "srcdbname", "destdbname", "destdbpath", "exvolpath",
-			"logpath", "overwrite", "move", "advanced", "open", "close"
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {
+                "task",
+                "token",
+                "srcdbname",
+                "destdbname",
+                "destdbpath",
+                "exvolpath",
+                "logpath",
+                "overwrite",
+                "move",
+                "advanced",
+                "open",
+                "close"
+            };
 
-	};
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public CopyDbTask(ServerInfo serverInfo) {
+        super("copydb", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param serverInfo
-	 */
-	public CopyDbTask(ServerInfo serverInfo) {
-		super("copydb", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * Set the source database name
+     *
+     * @param srcdbname String the source database name
+     */
+    public void setSrcdbname(String srcdbname) {
+        super.setMsgItem("srcdbname", srcdbname);
+    }
 
-	/**
-	 * Set the source database name
-	 *
-	 * @param srcdbname String the source database name
-	 */
-	public void setSrcdbname(String srcdbname) {
-		super.setMsgItem("srcdbname", srcdbname);
-	}
+    /**
+     * Set the destination database name
+     *
+     * @param destdbname String the destination database name
+     */
+    public void setDestdbname(String destdbname) {
+        super.setMsgItem("destdbname", destdbname);
+    }
 
-	/**
-	 * Set the destination database name
-	 *
-	 * @param destdbname String the destination database name
-	 */
+    /**
+     * Set the destination database path
+     *
+     * @param destdbpath String the destination database path
+     */
+    public void setDestdbpath(String destdbpath) {
+        super.setMsgItem("destdbpath", destdbpath);
+    }
 
-	public void setDestdbname(String destdbname) {
-		super.setMsgItem("destdbname", destdbname);
-	}
+    /**
+     * Set the extra volume path
+     *
+     * @param exvolpath String the extra volume path
+     */
+    public void setExvolpath(String exvolpath) {
+        super.setMsgItem("exvolpath", exvolpath);
+    }
 
-	/**
-	 *
-	 * Set the destination database path
-	 *
-	 * @param destdbpath String the destination database path
-	 */
-	public void setDestdbpath(String destdbpath) {
-		super.setMsgItem("destdbpath", destdbpath);
-	}
+    /**
+     * Set the log path
+     *
+     * @param logpath String the log path
+     */
+    public void setLogpath(String logpath) {
+        super.setMsgItem("logpath", logpath);
+    }
 
-	/**
-	 * Set the extra volume path
-	 *
-	 * @param exvolpath String the extra volume path
-	 */
-	public void setExvolpath(String exvolpath) {
-		super.setMsgItem("exvolpath", exvolpath);
-	}
+    /**
+     * Set the over writer
+     *
+     * @param overwrite YesNoType Whether is allowed that be over written
+     */
+    public void setOverwrite(YesNoType overwrite) {
+        super.setMsgItem("overwrite", overwrite.getText().toLowerCase());
+    }
 
-	/**
-	 * Set the log path
-	 *
-	 * @param logpath String the log path
-	 */
+    /**
+     * Set whether is allowed that be moved
+     *
+     * @param move YesNoType Whether is allowed that be moved
+     */
+    public void setMove(YesNoType move) {
+        super.setMsgItem("move", move.getText().toLowerCase());
+    }
 
-	public void setLogpath(String logpath) {
-		super.setMsgItem("logpath", logpath);
-	}
+    /**
+     * Set whether start advance
+     *
+     * @param advanced OnOffType Whether start advance
+     */
+    public void setAdvanced(OnOffType advanced) {
+        super.setMsgItem("advanced", advanced.getText().toLowerCase());
+    }
 
-	/**
-	 * Set the over writer
-	 *
-	 * @param overwrite YesNoType Whether is allowed that be over written
-	 */
-	public void setOverwrite(YesNoType overwrite) {
-		super.setMsgItem("overwrite", overwrite.getText().toLowerCase());
-	}
+    /**
+     * Set the open parameter
+     *
+     * @param open String the open parameter
+     */
+    public void setOpen(String open) {
+        super.setMsgItem("open", open);
+    }
 
-	/**
-	 * Set whether is allowed that be moved
-	 *
-	 * @param move YesNoType Whether is allowed that be moved
-	 */
-	public void setMove(YesNoType move) {
-		super.setMsgItem("move", move.getText().toLowerCase());
-	}
-
-	/**
-	 * Set whether start advance
-	 *
-	 * @param advanced OnOffType Whether start advance
-	 */
-	public void setAdvanced(OnOffType advanced) {
-		super.setMsgItem("advanced", advanced.getText().toLowerCase());
-	}
-
-	/**
-	 * Set the open parameter
-	 *
-	 * @param open String the open parameter
-	 */
-	public void setOpen(String open) {
-		super.setMsgItem("open", open);
-	}
-
-	/**
-	 * Set the close parameter
-	 *
-	 * @param close String the close parameter
-	 */
-	public void setClose(String close) {
-		super.setMsgItem("close", close);
-	}
-
+    /**
+     * Set the close parameter
+     *
+     * @param close String the close parameter
+     */
+    public void setClose(String close) {
+        super.setMsgItem("close", close);
+    }
 }

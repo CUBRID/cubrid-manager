@@ -27,9 +27,11 @@
  */
 package com.cubrid.common.ui.cubrid.table.dialog.imp;
 
+import com.cubrid.common.ui.cubrid.table.Messages;
+import com.cubrid.common.ui.spi.ResourceManager;
+import com.cubrid.common.ui.spi.dialog.CMWizardPage;
 import java.io.File;
 import java.util.Map;
-
 import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -37,115 +39,110 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.common.ui.cubrid.table.Messages;
-import com.cubrid.common.ui.spi.ResourceManager;
-import com.cubrid.common.ui.spi.dialog.CMWizardPage;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-8-16 created by fulei
  */
+public class ImportDataConfirmPage extends CMWizardPage {
+    public static final String PAGE_NAME = ImportDataConfirmPage.class.getName();
+    public static final String NEW_LINE = System.getProperty("line.separator");
+    public static final String TAB_SPACE = "        ";
 
-public class ImportDataConfirmPage extends
-		CMWizardPage {
-	public final static String PAGE_NAME = ImportDataConfirmPage.class.getName();
-	public static final String NEW_LINE = System.getProperty("line.separator");
-	public static final String TAB_SPACE = "        ";
+    private Text infoTest;
 
-	private Text infoTest;
+    /**
+     * @param pageName
+     * @param title
+     * @param titleImage
+     */
+    protected ImportDataConfirmPage() {
+        super(PAGE_NAME, Messages.importShellTitle, null);
+        setTitle(Messages.titleImportStep3);
+        setDescription(Messages.importWizardComfimrDescription);
+    }
 
-	/**
-	 * @param pageName
-	 * @param title
-	 * @param titleImage
-	 */
-	protected ImportDataConfirmPage() {
-		super(PAGE_NAME, Messages.importShellTitle, null);
-		setTitle(Messages.titleImportStep3);
-		setDescription(Messages.importWizardComfimrDescription);
-	}
+    @Override
+    public void createControl(Composite parent) {
+        Composite container = new Composite(parent, SWT.NONE);
+        final GridLayout gridLayoutRoot = new GridLayout();
+        container.setLayout(gridLayoutRoot);
+        setControl(container);
 
-	@Override
-	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
-		final GridLayout gridLayoutRoot = new GridLayout();
-		container.setLayout(gridLayoutRoot);
-		setControl(container);
+        Composite container2 = new Composite(container, SWT.BORDER);
+        final GridData gdContainer2 = new GridData(SWT.FILL, SWT.FILL, true, true);
+        container2.setLayoutData(gdContainer2);
+        container2.setLayout(new GridLayout());
 
-		Composite container2 = new Composite(container, SWT.BORDER);
-		final GridData gdContainer2 = new GridData(SWT.FILL, SWT.FILL, true,
-				true);
-		container2.setLayoutData(gdContainer2);
-		container2.setLayout(new GridLayout());
+        infoTest =
+                new Text(
+                        container2,
+                        SWT.LEFT | SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+        infoTest.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        infoTest.setEditable(false);
+        infoTest.setBackground(ResourceManager.getColor(SWT.COLOR_INFO_BACKGROUND));
+    }
 
-		infoTest = new Text(container2, SWT.LEFT | SWT.BORDER | SWT.READ_ONLY
-				| SWT.WRAP | SWT.V_SCROLL);
-		infoTest.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		infoTest.setEditable(false);
-		infoTest.setBackground(ResourceManager.getColor(SWT.COLOR_INFO_BACKGROUND));
+    /**
+     * When displayed current page.
+     *
+     * @param event PageChangedEvent
+     */
+    protected void afterShowCurrentPage(PageChangedEvent event) {
+        ImportConfig importConfig = getImportDataWizard().getImportConfig();
 
-	}
+        String confirmInfo = "";
+        if (ImportConfig.IMPORT_FROM_EXCEL == importConfig.getImportType()) {
+            confirmInfo = makeExcelConfirmInfoText();
+        } else if (ImportConfig.IMPORT_FROM_SQL == importConfig.getImportType()) {
+            confirmInfo = makeSQLConfirmInfoText();
+        } else if (ImportConfig.IMPORT_FROM_TXT == importConfig.getImportType()) {
+            confirmInfo = makeTxtConfirmInfoText();
+        }
 
-	/**
-	 * When displayed current page.
-	 *
-	 * @param event PageChangedEvent
-	 */
+        infoTest.setText(confirmInfo == null ? "" : confirmInfo);
+    }
 
-	protected void afterShowCurrentPage(PageChangedEvent event) {
-		ImportConfig importConfig = getImportDataWizard().getImportConfig();
+    private String makeExcelConfirmInfoText() {
+        return makeConfirmInfoText("Excel file");
+    }
 
-		String confirmInfo = "";
-		if (ImportConfig.IMPORT_FROM_EXCEL == importConfig.getImportType()) {
-			confirmInfo = makeExcelConfirmInfoText();
-		} else if (ImportConfig.IMPORT_FROM_SQL == importConfig.getImportType()) {
-			confirmInfo = makeSQLConfirmInfoText();
-		} else if (ImportConfig.IMPORT_FROM_TXT == importConfig.getImportType()) {
-			confirmInfo = makeTxtConfirmInfoText();
-		}
+    private String makeTxtConfirmInfoText() {
+        return makeConfirmInfoText("TXT file");
+    }
 
-		infoTest.setText(confirmInfo == null ? "" : confirmInfo);
-	}
+    private String makeSQLConfirmInfoText() {
+        return makeConfirmInfoText("SQL file");
+    }
 
-	private String makeExcelConfirmInfoText() {
-		return makeConfirmInfoText("Excel file");
-	}
+    private String makeConfirmInfoText(
+            String importTypeI18Name) { // FIXME move this logic to core module
+        ImportConfig importConfig = getImportDataWizard().getImportConfig();
 
-	private String makeTxtConfirmInfoText() {
-		return makeConfirmInfoText("TXT file");
-	}
+        StringBuilder sb = new StringBuilder();
+        sb.append(Messages.lblImportConfirmImportType).append(NEW_LINE);
+        sb.append(TAB_SPACE).append(importTypeI18Name).append(NEW_LINE);
+        sb.append(NEW_LINE);
 
-	private String makeSQLConfirmInfoText() {
-		return makeConfirmInfoText("SQL file");
-	}
+        sb.append(Messages.lblImportConfirmCommitCount).append(NEW_LINE);
+        sb.append(TAB_SPACE).append(importConfig.getCommitLine()).append(NEW_LINE);
+        sb.append(NEW_LINE);
 
-	private String makeConfirmInfoText(String importTypeI18Name) { // FIXME move this logic to core module
-		ImportConfig importConfig = getImportDataWizard().getImportConfig();
+        sb.append(Messages.lblImportConfirmThreads).append(NEW_LINE);
+        sb.append(TAB_SPACE).append(importConfig.getThreadCount()).append(NEW_LINE);
+        sb.append(NEW_LINE);
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(Messages.lblImportConfirmImportType).append(NEW_LINE);
-		sb.append(TAB_SPACE).append(importTypeI18Name).append(NEW_LINE);
-		sb.append(NEW_LINE);
+        sb.append(Messages.lblImportConfirmFileList).append(NEW_LINE);
+        Map<String, TableConfig> selectedMap = importConfig.getSelectedMap();
+        for (TableConfig config : selectedMap.values()) {
+            sb.append(TAB_SPACE)
+                    .append(new File(config.getFilePath()).getAbsolutePath())
+                    .append(NEW_LINE);
+        }
 
-		sb.append(Messages.lblImportConfirmCommitCount).append(NEW_LINE);
-		sb.append(TAB_SPACE).append(importConfig.getCommitLine()).append(NEW_LINE);
-		sb.append(NEW_LINE);
+        return sb.toString().trim();
+    }
 
-		sb.append(Messages.lblImportConfirmThreads).append(NEW_LINE);
-		sb.append(TAB_SPACE).append(importConfig.getThreadCount()).append(NEW_LINE);
-		sb.append(NEW_LINE);
-
-		sb.append(Messages.lblImportConfirmFileList).append(NEW_LINE);
-		Map<String, TableConfig> selectedMap = importConfig.getSelectedMap();
-		for (TableConfig config : selectedMap.values()) {
-			sb.append(TAB_SPACE).append(new File(config.getFilePath()).getAbsolutePath()).append(NEW_LINE);
-		}
-
-		return sb.toString().trim();
-	}
-
-	private ImportDataWizard getImportDataWizard() {
-		return (ImportDataWizard) getWizard();
-	}
+    private ImportDataWizard getImportDataWizard() {
+        return (ImportDataWizard) getWizard();
+    }
 }

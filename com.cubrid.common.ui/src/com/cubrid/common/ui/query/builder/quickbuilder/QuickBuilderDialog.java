@@ -28,11 +28,23 @@
 
 package com.cubrid.common.ui.query.builder.quickbuilder;
 
+import com.cubrid.common.core.common.model.SchemaInfo;
+import com.cubrid.common.core.util.CompatibleUtil;
+import com.cubrid.common.core.util.QuerySyntax;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.Messages;
+import com.cubrid.common.ui.query.control.SQLEditorComposite;
+import com.cubrid.common.ui.query.editor.ColumnProposal;
+import com.cubrid.common.ui.query.editor.ColumnProposalAdvisor;
+import com.cubrid.common.ui.query.editor.ColumnProposalDetailInfo;
+import com.cubrid.common.ui.spi.ResourceManager;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -57,424 +69,444 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.common.core.common.model.SchemaInfo;
-import com.cubrid.common.core.util.CompatibleUtil;
-import com.cubrid.common.core.util.QuerySyntax;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.query.control.SQLEditorComposite;
-import com.cubrid.common.ui.query.editor.ColumnProposal;
-import com.cubrid.common.ui.query.editor.ColumnProposalDetailInfo;
-import com.cubrid.common.ui.query.editor.ColumnProposalAdvisor;
-import com.cubrid.common.ui.spi.ResourceManager;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-
 /**
  * SQL Quick Builder Dialog
  *
  * @author Isaiah Choe 2012-10-18
  */
 public final class QuickBuilderDialog extends Dialog {
-	private Text inputText;
-	private TableViewer searchView;
-	private Shell shell;
-	private SQLEditorComposite sqlComp;
-	private ColumnProposal proposal;
-	private boolean isSupportLimit = false;
-	private Timer proposalUpdateTimer;
-	private DatabaseInfo databaseInfo;
-	private Label updateNoticeBanner;
+    private Text inputText;
+    private TableViewer searchView;
+    private Shell shell;
+    private SQLEditorComposite sqlComp;
+    private ColumnProposal proposal;
+    private boolean isSupportLimit = false;
+    private Timer proposalUpdateTimer;
+    private DatabaseInfo databaseInfo;
+    private Label updateNoticeBanner;
 
-	public QuickBuilderDialog(Shell parent, int style) {
-		super(parent, style);
-	}
+    public QuickBuilderDialog(Shell parent, int style) {
+        super(parent, style);
+    }
 
-	public void open() {
-		createContents();
-		CommonUITool.centerShell(shell);
-		shell.open();
-		shell.layout();
-		Display display = getParent().getDisplay();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
+    public void open() {
+        createContents();
+        CommonUITool.centerShell(shell);
+        shell.open();
+        shell.layout();
+        Display display = getParent().getDisplay();
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
 
-		if (proposalUpdateTimer != null) {
-			proposalUpdateTimer.cancel();
-		}
-	}
+        if (proposalUpdateTimer != null) {
+            proposalUpdateTimer.cancel();
+        }
+    }
 
-	private void startTimerForUpdateProposal() {
-		TimerTask proposalUpdateNotifyTask = new TimerTask() {
-			public void run() {
-				ColumnProposal proposalTemp = ColumnProposalAdvisor.getInstance().findProposal(
-						databaseInfo);
-				if (proposalTemp == null) {
-					return;
-				}
+    private void startTimerForUpdateProposal() {
+        TimerTask proposalUpdateNotifyTask =
+                new TimerTask() {
+                    public void run() {
+                        ColumnProposal proposalTemp =
+                                ColumnProposalAdvisor.getInstance().findProposal(databaseInfo);
+                        if (proposalTemp == null) {
+                            return;
+                        }
 
-				if (proposalUpdateTimer != null) {
-					proposalUpdateTimer.cancel();
-					proposalUpdateTimer = null;
-				}
+                        if (proposalUpdateTimer != null) {
+                            proposalUpdateTimer.cancel();
+                            proposalUpdateTimer = null;
+                        }
 
-				proposal = proposalTemp;
-				Display.getDefault().syncExec(new Runnable() {
-					public void run() {
-						if (updateNoticeBanner != null) {
-							updateNoticeBanner.dispose();
-							updateNoticeBanner = null;
-						}
-						if (searchView != null) {
-							searchView.setInput(proposal);
-						}
-						shell.layout(true, true);
-					}
-				});
-			}
-		};
+                        proposal = proposalTemp;
+                        Display.getDefault()
+                                .syncExec(
+                                        new Runnable() {
+                                            public void run() {
+                                                if (updateNoticeBanner != null) {
+                                                    updateNoticeBanner.dispose();
+                                                    updateNoticeBanner = null;
+                                                }
+                                                if (searchView != null) {
+                                                    searchView.setInput(proposal);
+                                                }
+                                                shell.layout(true, true);
+                                            }
+                                        });
+                    }
+                };
 
-		proposalUpdateTimer = new Timer(true);
-		proposalUpdateTimer.schedule(proposalUpdateNotifyTask, 500);
-	}
+        proposalUpdateTimer = new Timer(true);
+        proposalUpdateTimer.schedule(proposalUpdateNotifyTask, 500);
+    }
 
-	protected void createContents() {
-		sqlComp = CommonUITool.getActiveSQLEditorComposite();
-		if (sqlComp == null) {
-			closeThisDialog();
-			return;
-		}
+    protected void createContents() {
+        sqlComp = CommonUITool.getActiveSQLEditorComposite();
+        if (sqlComp == null) {
+            closeThisDialog();
+            return;
+        }
 
-		CubridDatabase cubridDatabase = sqlComp.getQueryEditorPart().getSelectedDatabase();
-		if (CubridDatabase.hasValidDatabaseInfo(cubridDatabase)) {
-			databaseInfo = cubridDatabase.getDatabaseInfo();
-		}
+        CubridDatabase cubridDatabase = sqlComp.getQueryEditorPart().getSelectedDatabase();
+        if (CubridDatabase.hasValidDatabaseInfo(cubridDatabase)) {
+            databaseInfo = cubridDatabase.getDatabaseInfo();
+        }
 
-		boolean loadedProposal = true;
-		proposal = ColumnProposalAdvisor.getInstance().findProposal(databaseInfo);
-		if (proposal == null) {
-			proposal = new ColumnProposal();
+        boolean loadedProposal = true;
+        proposal = ColumnProposalAdvisor.getInstance().findProposal(databaseInfo);
+        if (proposal == null) {
+            proposal = new ColumnProposal();
 
-			if (databaseInfo != null) {
-				startTimerForUpdateProposal();
-			}
+            if (databaseInfo != null) {
+                startTimerForUpdateProposal();
+            }
 
-			loadedProposal = false;
-		}
+            loadedProposal = false;
+        }
 
-		isSupportLimit = CompatibleUtil.isSupportLimit(
-				cubridDatabase.getDatabaseInfo());
+        isSupportLimit = CompatibleUtil.isSupportLimit(cubridDatabase.getDatabaseInfo());
 
-		shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		{
-			GridLayout gl = new GridLayout();
-			gl.numColumns = 1;
-			shell.setLayout(gl);
-		}
-		shell.setSize(450, 300);
-		shell.setText(Messages.quickQueryBuilderTitle);
+        shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        {
+            GridLayout gl = new GridLayout();
+            gl.numColumns = 1;
+            shell.setLayout(gl);
+        }
+        shell.setSize(450, 300);
+        shell.setText(Messages.quickQueryBuilderTitle);
 
-		final Composite composite = new Composite(shell, SWT.NONE);
-		{
-			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-			composite.setLayoutData(gd);
-			GridLayout gl = new GridLayout();
-			composite.setLayout(gl);
-		}
+        final Composite composite = new Composite(shell, SWT.NONE);
+        {
+            GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+            composite.setLayoutData(gd);
+            GridLayout gl = new GridLayout();
+            composite.setLayout(gl);
+        }
 
-		final Label findWhatLabel = new Label(composite, SWT.NONE);
-		findWhatLabel.setText(Messages.quickQueryBuilderLabel);
+        final Label findWhatLabel = new Label(composite, SWT.NONE);
+        findWhatLabel.setText(Messages.quickQueryBuilderLabel);
 
-		inputText = new Text(composite, SWT.BORDER);
-		{
-			GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
-			inputText.setLayoutData(gd);
-		}
-		inputText.setEditable(true);
-		inputText.addKeyListener(inputTextKeyListener);
+        inputText = new Text(composite, SWT.BORDER);
+        {
+            GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+            inputText.setLayoutData(gd);
+        }
+        inputText.setEditable(true);
+        inputText.addKeyListener(inputTextKeyListener);
 
-		searchView = new TableViewer(composite, SWT.BORDER);
-		{
-			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-			searchView.getTable().setLayoutData(gd);
-		}
-		searchView.setContentProvider(searchViewContentProvider);
-		searchView.setLabelProvider(searchViewLabelProvider);
-		searchView.setInput(proposal);
-		searchView.getTable().addKeyListener(new KeyListener() {
-			public void keyReleased(KeyEvent e) {
-			}
+        searchView = new TableViewer(composite, SWT.BORDER);
+        {
+            GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+            searchView.getTable().setLayoutData(gd);
+        }
+        searchView.setContentProvider(searchViewContentProvider);
+        searchView.setLabelProvider(searchViewLabelProvider);
+        searchView.setInput(proposal);
+        searchView
+                .getTable()
+                .addKeyListener(
+                        new KeyListener() {
+                            public void keyReleased(KeyEvent e) {}
 
-			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.CR) {
-					makeQueryAndClose(0);
-				}
-			}
-		});
+                            public void keyPressed(KeyEvent e) {
+                                if (e.keyCode == SWT.CR) {
+                                    makeQueryAndClose(0);
+                                }
+                            }
+                        });
 
-		TableColumn col1 = new TableColumn(searchView.getTable(), SWT.NONE);
-		col1.setWidth(200);
-		TableColumn col2 = new TableColumn(searchView.getTable(), SWT.NONE);
-		col2.setWidth(200);
+        TableColumn col1 = new TableColumn(searchView.getTable(), SWT.NONE);
+        col1.setWidth(200);
+        TableColumn col2 = new TableColumn(searchView.getTable(), SWT.NONE);
+        col2.setWidth(200);
 
-		if (!loadedProposal) {
-			updateNoticeBanner = new Label(composite, SWT.BORDER);
-			{
-				GridData gd = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
-				updateNoticeBanner.setLayoutData(gd);
-			}
-			updateNoticeBanner.setText(Messages.quickQueryBuilderLoading);
-			updateNoticeBanner.setBackground(ResourceManager.getColor(255, 255, 255));
-		}
+        if (!loadedProposal) {
+            updateNoticeBanner = new Label(composite, SWT.BORDER);
+            {
+                GridData gd = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
+                updateNoticeBanner.setLayoutData(gd);
+            }
+            updateNoticeBanner.setText(Messages.quickQueryBuilderLoading);
+            updateNoticeBanner.setBackground(ResourceManager.getColor(255, 255, 255));
+        }
 
-		Composite bottomPanel = new Composite(composite, SWT.NONE);
-		{
-			GridLayout gl = new GridLayout();
-			gl.numColumns = 4;
-			bottomPanel.setLayout(gl);
-			GridData gd = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
-			bottomPanel.setLayoutData(gd);
-		}
+        Composite bottomPanel = new Composite(composite, SWT.NONE);
+        {
+            GridLayout gl = new GridLayout();
+            gl.numColumns = 4;
+            bottomPanel.setLayout(gl);
+            GridData gd = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
+            bottomPanel.setLayoutData(gd);
+        }
 
-		createButtons(bottomPanel);
-	}
+        createButtons(bottomPanel);
+    }
 
-	private void createButtons(Composite bottomPanel) {
-		Button btnSelectSql = new Button(bottomPanel, SWT.PUSH);
-		btnSelectSql.setText(Messages.quickQueryBuilderBtnSelect1);
-		btnSelectSql.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				makeQueryAndClose(0);
-			}
+    private void createButtons(Composite bottomPanel) {
+        Button btnSelectSql = new Button(bottomPanel, SWT.PUSH);
+        btnSelectSql.setText(Messages.quickQueryBuilderBtnSelect1);
+        btnSelectSql.addSelectionListener(
+                new SelectionListener() {
+                    public void widgetSelected(SelectionEvent e) {
+                        makeQueryAndClose(0);
+                    }
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
+                    public void widgetDefaultSelected(SelectionEvent e) {}
+                });
 
-		Button btnSelectSql2 = new Button(bottomPanel, SWT.PUSH);
-		btnSelectSql2.setText(Messages.quickQueryBuilderBtnSelect2);
-		btnSelectSql2.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				makeQueryAndClose(1);
-			}
+        Button btnSelectSql2 = new Button(bottomPanel, SWT.PUSH);
+        btnSelectSql2.setText(Messages.quickQueryBuilderBtnSelect2);
+        btnSelectSql2.addSelectionListener(
+                new SelectionListener() {
+                    public void widgetSelected(SelectionEvent e) {
+                        makeQueryAndClose(1);
+                    }
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
+                    public void widgetDefaultSelected(SelectionEvent e) {}
+                });
 
-		Button btnInsertSql = new Button(bottomPanel, SWT.PUSH);
-		btnInsertSql.setText(Messages.quickQueryBuilderBtnInsert);
-		btnInsertSql.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				makeQueryAndClose(2);
-			}
+        Button btnInsertSql = new Button(bottomPanel, SWT.PUSH);
+        btnInsertSql.setText(Messages.quickQueryBuilderBtnInsert);
+        btnInsertSql.addSelectionListener(
+                new SelectionListener() {
+                    public void widgetSelected(SelectionEvent e) {
+                        makeQueryAndClose(2);
+                    }
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
+                    public void widgetDefaultSelected(SelectionEvent e) {}
+                });
 
-		Button btnUpdateSql = new Button(bottomPanel, SWT.PUSH);
-		btnUpdateSql.setText(Messages.quickQueryBuilderBtnUpdate);
-		btnUpdateSql.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				makeQueryAndClose(3);
-			}
+        Button btnUpdateSql = new Button(bottomPanel, SWT.PUSH);
+        btnUpdateSql.setText(Messages.quickQueryBuilderBtnUpdate);
+        btnUpdateSql.addSelectionListener(
+                new SelectionListener() {
+                    public void widgetSelected(SelectionEvent e) {
+                        makeQueryAndClose(3);
+                    }
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
-	}
+                    public void widgetDefaultSelected(SelectionEvent e) {}
+                });
+    }
 
-	private IStructuredContentProvider searchViewContentProvider = new IStructuredContentProvider() {
-		public void dispose() {
-		}
+    private IStructuredContentProvider searchViewContentProvider =
+            new IStructuredContentProvider() {
+                public void dispose() {}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
+                public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
-		public Object[] getElements(Object inputElement) {
-			ColumnProposal columnProposal = (ColumnProposal) inputElement;
-			if (columnProposal.getTableNames() == null) {
-				return new Object[0];
-			}
+                public Object[] getElements(Object inputElement) {
+                    ColumnProposal columnProposal = (ColumnProposal) inputElement;
+                    if (columnProposal.getTableNames() == null) {
+                        return new Object[0];
+                    }
 
-			String keyword = inputText.getText().trim().toLowerCase();
-			if (keyword.length() == 0) {
-				return columnProposal.getTableNames().toArray(new String[0]);
-			}
+                    String keyword = inputText.getText().trim().toLowerCase();
+                    if (keyword.length() == 0) {
+                        return columnProposal.getTableNames().toArray(new String[0]);
+                    }
 
-			List<String> searchedTableNames = new ArrayList<String>();
-			List<String> tableNames = columnProposal.getTableNames();
-			for (String tableName : tableNames) {
-				String tableNameLower = tableName.toLowerCase();
-				if (tableNameLower.startsWith(keyword)) {
-					searchedTableNames.add(tableName);
-				}
-			}
+                    List<String> searchedTableNames = new ArrayList<String>();
+                    List<String> tableNames = columnProposal.getTableNames();
+                    for (String tableName : tableNames) {
+                        String tableNameLower = tableName.toLowerCase();
+                        if (tableNameLower.startsWith(keyword)) {
+                            searchedTableNames.add(tableName);
+                        }
+                    }
 
-			return searchedTableNames.toArray(new String[0]);
-		}
-	};
+                    return searchedTableNames.toArray(new String[0]);
+                }
+            };
 
-	private ITableLabelProvider searchViewLabelProvider = new ITableLabelProvider() {
-		public void removeListener(ILabelProviderListener listener) {
-		}
+    private ITableLabelProvider searchViewLabelProvider =
+            new ITableLabelProvider() {
+                public void removeListener(ILabelProviderListener listener) {}
 
-		public boolean isLabelProperty(Object element, String property) {
-			return false;
-		}
+                public boolean isLabelProperty(Object element, String property) {
+                    return false;
+                }
 
-		public void dispose() {
-		}
+                public void dispose() {}
 
-		public void addListener(ILabelProviderListener listener) {
-		}
+                public void addListener(ILabelProviderListener listener) {}
 
-		public String getColumnText(Object element, int columnIndex) {
-			String tableName = (String) element;
-			if (columnIndex == 0) {
-				return tableName;
-			} else {
-				SchemaInfo info = proposal.getSchemaInfos(tableName);
-				if (info == null) {
-					return "1";
-				}
+                public String getColumnText(Object element, int columnIndex) {
+                    String tableName = (String) element;
+                    if (columnIndex == 0) {
+                        return tableName;
+                    } else {
+                        SchemaInfo info = proposal.getSchemaInfos(tableName);
+                        if (info == null) {
+                            return "1";
+                        }
 
-				return info.getDescription();
-			}
-		}
+                        return info.getDescription();
+                    }
+                }
 
-		public Image getColumnImage(Object element, int columnIndex) {
-			return null;
-		}
-	};
+                public Image getColumnImage(Object element, int columnIndex) {
+                    return null;
+                }
+            };
 
-	private KeyListener inputTextKeyListener = new KeyListener() {
-		public void keyReleased(KeyEvent e) {
-			searchView.setInput(proposal);
-			searchView.getTable().select(0);
-		}
+    private KeyListener inputTextKeyListener =
+            new KeyListener() {
+                public void keyReleased(KeyEvent e) {
+                    searchView.setInput(proposal);
+                    searchView.getTable().select(0);
+                }
 
-		public void keyPressed(KeyEvent e) {
-			if ((e.stateMask & SWT.CTRL) != 0 && (e.stateMask & SWT.SHIFT) == 0
-					&& (e.stateMask & SWT.ALT) == 0 && e.keyCode == ',') {
-				closeThisDialog();
-			} else if (e.keyCode == SWT.TAB || e.keyCode == SWT.ESC) {
-				closeThisDialog();
-			} else if (/*e.keyCode == ' ' || */e.keyCode == SWT.CR) {
-				makeQueryAndClose(0);
-			} else if (e.keyCode == SWT.ARROW_DOWN) {
-				searchView.getTable().setFocus();
-			}
-		}
-	};
+                public void keyPressed(KeyEvent e) {
+                    if ((e.stateMask & SWT.CTRL) != 0
+                            && (e.stateMask & SWT.SHIFT) == 0
+                            && (e.stateMask & SWT.ALT) == 0
+                            && e.keyCode == ',') {
+                        closeThisDialog();
+                    } else if (e.keyCode == SWT.TAB || e.keyCode == SWT.ESC) {
+                        closeThisDialog();
+                    } else if (
+                    /*e.keyCode == ' ' || */ e.keyCode == SWT.CR) {
+                        makeQueryAndClose(0);
+                    } else if (e.keyCode == SWT.ARROW_DOWN) {
+                        searchView.getTable().setFocus();
+                    }
+                }
+            };
 
-	private String getSelectedTable() {
-		TableItem[] tableItems = searchView.getTable().getSelection();
-		if (tableItems == null || tableItems.length == 0) {
-			return null;
-		}
+    private String getSelectedTable() {
+        TableItem[] tableItems = searchView.getTable().getSelection();
+        if (tableItems == null || tableItems.length == 0) {
+            return null;
+        }
 
-		return tableItems[0].getText();
-	}
+        return tableItems[0].getText();
+    }
 
     private void makeQueryAndClose(int type) { // FIXME move this logic to core module
-    	String tableName = getSelectedTable().trim();
-    	List<ColumnProposalDetailInfo> columns = null;
-    	String query = null;
+        String tableName = getSelectedTable().trim();
+        List<ColumnProposalDetailInfo> columns = null;
+        String query = null;
 
-		ColumnProposal proposal = ColumnProposalAdvisor.getInstance().findProposal(
-				sqlComp.getQueryEditorPart().getSelectedDatabase().getDatabaseInfo());
-    	if (proposal != null) {
-    		columns = proposal.getColumns().get(tableName);
-    	}
-		if (columns == null) {
-			columns = new ArrayList<ColumnProposalDetailInfo>();
-		}
+        ColumnProposal proposal =
+                ColumnProposalAdvisor.getInstance()
+                        .findProposal(
+                                sqlComp.getQueryEditorPart()
+                                        .getSelectedDatabase()
+                                        .getDatabaseInfo());
+        if (proposal != null) {
+            columns = proposal.getColumns().get(tableName);
+        }
+        if (columns == null) {
+            columns = new ArrayList<ColumnProposalDetailInfo>();
+        }
 
-		int cursorPosition = 0;
+        int cursorPosition = 0;
 
-    	if (type == 0) {
-	    	query = "SELECT * FROM " + QuerySyntax.escapeKeyword(tableName) + " " + appendLimit() + ";" + StringUtil.NEWLINE;
-	    	cursorPosition = query.length() - 1;
-    	} else if (type == 1) {
-			StringBuilder col = new StringBuilder();
-			if (columns != null) {
-				for (ColumnProposalDetailInfo info : columns) {
-					String column = info.getColumnName();
-					if (col.length() > 0) {
-						col.append(", ");
-					}
-					col.append(QuerySyntax.escapeKeyword(column));
-				}
-			}
-	    	query = "SELECT " + col.toString() + " FROM " + QuerySyntax.escapeKeyword(tableName) + " " + appendLimit() + ";" + StringUtil.NEWLINE;
-	    	cursorPosition = query.length() - 1;
-		} else if (type == 2) {
-			StringBuilder col = new StringBuilder();
-			StringBuilder col2 = new StringBuilder();
-			if (columns != null) {
-				for (ColumnProposalDetailInfo info : columns) {
-					String column = info.getColumnName();
-					if (col.length() > 0) {
-						col.append(", ");
-						col2.append(", ");
-					}
-					col.append(QuerySyntax.escapeKeyword(column));
-					col2.append(column);
-				}
-			}
-	    	query = "INSERT INTO " + QuerySyntax.escapeKeyword(tableName) + " (" + col.toString()
-	    			+ ") VALUES ("+col2.toString()+");\n";
-	    	cursorPosition = 14 + tableName.length() + col.length() + 10;
-		} else if (type == 3) {
-			StringBuilder col = new StringBuilder();
-			if (columns != null) {
-				for (ColumnProposalDetailInfo info : columns) {
-					String column = info.getColumnName();
-					if (col.length() > 0) {
-						col.append(", ");
-					}
-					col.append(QuerySyntax.escapeKeyword(column)).append("=");
-				}
-			}
-	    	query = "UPDATE " + QuerySyntax.escapeKeyword(tableName) + " SET " + col.toString()
-	    			+ " WHERE ;" + StringUtil.NEWLINE;
-	    	cursorPosition = 12 + tableName.length();
-		}
+        if (type == 0) {
+            query =
+                    "SELECT * FROM "
+                            + QuerySyntax.escapeKeyword(tableName)
+                            + " "
+                            + appendLimit()
+                            + ";"
+                            + StringUtil.NEWLINE;
+            cursorPosition = query.length() - 1;
+        } else if (type == 1) {
+            StringBuilder col = new StringBuilder();
+            if (columns != null) {
+                for (ColumnProposalDetailInfo info : columns) {
+                    String column = info.getColumnName();
+                    if (col.length() > 0) {
+                        col.append(", ");
+                    }
+                    col.append(QuerySyntax.escapeKeyword(column));
+                }
+            }
+            query =
+                    "SELECT "
+                            + col.toString()
+                            + " FROM "
+                            + QuerySyntax.escapeKeyword(tableName)
+                            + " "
+                            + appendLimit()
+                            + ";"
+                            + StringUtil.NEWLINE;
+            cursorPosition = query.length() - 1;
+        } else if (type == 2) {
+            StringBuilder col = new StringBuilder();
+            StringBuilder col2 = new StringBuilder();
+            if (columns != null) {
+                for (ColumnProposalDetailInfo info : columns) {
+                    String column = info.getColumnName();
+                    if (col.length() > 0) {
+                        col.append(", ");
+                        col2.append(", ");
+                    }
+                    col.append(QuerySyntax.escapeKeyword(column));
+                    col2.append(column);
+                }
+            }
+            query =
+                    "INSERT INTO "
+                            + QuerySyntax.escapeKeyword(tableName)
+                            + " ("
+                            + col.toString()
+                            + ") VALUES ("
+                            + col2.toString()
+                            + ");\n";
+            cursorPosition = 14 + tableName.length() + col.length() + 10;
+        } else if (type == 3) {
+            StringBuilder col = new StringBuilder();
+            if (columns != null) {
+                for (ColumnProposalDetailInfo info : columns) {
+                    String column = info.getColumnName();
+                    if (col.length() > 0) {
+                        col.append(", ");
+                    }
+                    col.append(QuerySyntax.escapeKeyword(column)).append("=");
+                }
+            }
+            query =
+                    "UPDATE "
+                            + QuerySyntax.escapeKeyword(tableName)
+                            + " SET "
+                            + col.toString()
+                            + " WHERE ;"
+                            + StringUtil.NEWLINE;
+            cursorPosition = 12 + tableName.length();
+        }
 
-		pasteIntoQueryEditor(query, cursorPosition);
-    	closeThisDialog();
+        pasteIntoQueryEditor(query, cursorPosition);
+        closeThisDialog();
     }
 
     private String appendLimit() { // FIXME move this logic to core module
-    	if (isSupportLimit) {
-    		return " LIMIT 0, 100";
-    	} else {
-    		return " WHERE ROWNUM BETWEEN 1 AND 100";
-    	}
+        if (isSupportLimit) {
+            return " LIMIT 0, 100";
+        } else {
+            return " WHERE ROWNUM BETWEEN 1 AND 100";
+        }
     }
 
-	private void pasteIntoQueryEditor(String query, int cursor) {
-		StyledText text = sqlComp.getText();
-		int cursorOffset = text.getCaretOffset();
-		int pos = cursorOffset + cursor - 1;
-		if (pos < 0) {
-			pos = 0;
-		}
-		text.getContent().replaceTextRange(cursorOffset, 0, query);
-		try {
-			text.setSelectionRange(pos, 0);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    private void pasteIntoQueryEditor(String query, int cursor) {
+        StyledText text = sqlComp.getText();
+        int cursorOffset = text.getCaretOffset();
+        int pos = cursorOffset + cursor - 1;
+        if (pos < 0) {
+            pos = 0;
+        }
+        text.getContent().replaceTextRange(cursorOffset, 0, query);
+        try {
+            text.setSelectionRange(pos, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void closeThisDialog() {
-		shell.dispose();
-	}
+    private void closeThisDialog() {
+        shell.dispose();
+    }
 }

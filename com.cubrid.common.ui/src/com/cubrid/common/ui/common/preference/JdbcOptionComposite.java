@@ -27,6 +27,11 @@
  */
 package com.cubrid.common.ui.common.preference;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
+import com.novocode.naf.swt.custom.Hyperlink;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -37,7 +42,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
@@ -69,427 +73,427 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
-import com.novocode.naf.swt.custom.Hyperlink;
-
 /**
  * A composite to show JDBC advanced options page
  *
  * @author Isaiah Choe 2012-05-21
  */
-public class JdbcOptionComposite extends
-		Composite {
-	private final List<Map<String, String>> jdbcListData = new ArrayList<Map<String, String>>();
-	private TableViewer jdbcInfoTv;
-	private String jdbcAttrs = null;
-	private TableEditor editor = null;
-	private Button addButton = null;
+public class JdbcOptionComposite extends Composite {
+    private final List<Map<String, String>> jdbcListData = new ArrayList<Map<String, String>>();
+    private TableViewer jdbcInfoTv;
+    private String jdbcAttrs = null;
+    private TableEditor editor = null;
+    private Button addButton = null;
 
-	private Text txtConnectTimeout = null;
-	private Text txtQueryTimeout = null;
-	private Combo cbZeroDateTimeBehavior = null;
+    private Text txtConnectTimeout = null;
+    private Text txtQueryTimeout = null;
+    private Combo cbZeroDateTimeBehavior = null;
 
-	private Map<String, String> attributes = new HashMap<String, String>();
+    private Map<String, String> attributes = new HashMap<String, String>();
 
-	public JdbcOptionComposite(Composite parent, String jdbcAttrs) {
-		super(parent, SWT.NONE);
-		this.jdbcAttrs = jdbcAttrs;
-		createContent();
-	}
+    public JdbcOptionComposite(Composite parent, String jdbcAttrs) {
+        super(parent, SWT.NONE);
+        this.jdbcAttrs = jdbcAttrs;
+        createContent();
+    }
 
-	/**
-	 * load JDBC option from preference store
-	 */
-	public void loadPreference() {
-		Properties props = JDBCConnectionManager.parseJdbcOptions(jdbcAttrs, false);
-		for (Enumeration<Object> e = props.keys(); e.hasMoreElements(); ) {
-			String key = (String)e.nextElement();
-			String val = (String)props.get(key);
+    /** load JDBC option from preference store */
+    public void loadPreference() {
+        Properties props = JDBCConnectionManager.parseJdbcOptions(jdbcAttrs, false);
+        for (Enumeration<Object> e = props.keys(); e.hasMoreElements(); ) {
+            String key = (String) e.nextElement();
+            String val = (String) props.get(key);
 
-			if ("connectTimeout".equals(key) || "queryTimeout".equals(key) || "zeroDateTimeBehavior".equals(key)) {
-				attributes.put(key, val);
-				continue;
-			}
+            if ("connectTimeout".equals(key)
+                    || "queryTimeout".equals(key)
+                    || "zeroDateTimeBehavior".equals(key)) {
+                attributes.put(key, val);
+                continue;
+            }
 
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("0", key);
-			map.put("1", val);
-			jdbcListData.add(map);
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("0", key);
+            map.put("1", val);
+            jdbcListData.add(map);
+        }
+        jdbcInfoTv.refresh();
+        CommonUITool.packTable(jdbcInfoTv);
 
+        if (attributes.get("connectTimeout") != null) {
+            txtConnectTimeout.setText(attributes.get("connectTimeout"));
+        }
 
-		}
-		jdbcInfoTv.refresh();
-		CommonUITool.packTable(jdbcInfoTv);
+        if (attributes.get("queryTimeout") != null) {
+            txtQueryTimeout.setText(attributes.get("queryTimeout"));
+        }
+        if (attributes.get("zeroDateTimeBehavior") != null) {
+            String val = attributes.get("zeroDateTimeBehavior");
+            if ("exception".equals(val)) {
+                cbZeroDateTimeBehavior.select(0);
+            } else if ("round".equals(val)) {
+                cbZeroDateTimeBehavior.select(1);
+            } else if ("convertToNull".equals(val)) {
+                cbZeroDateTimeBehavior.select(2);
+            }
+        }
+    }
 
-		if (attributes.get("connectTimeout") != null) {
-			txtConnectTimeout.setText(attributes.get("connectTimeout"));
-		}
+    /** save options */
+    public void save() {
+        attributes.remove("connectTimeout");
+        int val = StringUtil.intValue(txtConnectTimeout.getText(), -1);
+        if (val > 0) {
+            attributes.put("connectTimeout", "" + val);
+        }
 
-		if (attributes.get("queryTimeout") != null) {
-			txtQueryTimeout.setText(attributes.get("queryTimeout"));
-		}
-		if (attributes.get("zeroDateTimeBehavior") != null) {
-			String val = attributes.get("zeroDateTimeBehavior");
-			if ("exception".equals(val)) {
-				cbZeroDateTimeBehavior.select(0);
-			} else if ("round".equals(val)) {
-				cbZeroDateTimeBehavior.select(1);
-			} else if ("convertToNull".equals(val)) {
-				cbZeroDateTimeBehavior.select(2);
-			}
-		}
-	}
+        attributes.remove("queryTimeout");
+        val = StringUtil.intValue(txtQueryTimeout.getText(), -1);
+        if (val > 0) {
+            attributes.put("queryTimeout", "" + val);
+        }
 
-	/**
-	 *
-	 * save options
-	 */
-	public void save() {
-		attributes.remove("connectTimeout");
-		int val = StringUtil.intValue(txtConnectTimeout.getText(), -1);
-		if (val > 0) {
-			attributes.put("connectTimeout", ""+val);
-		}
+        attributes.remove("zeroDateTimeBehavior");
+        val = cbZeroDateTimeBehavior.getSelectionIndex();
+        if (val >= 0 && val < 3) {
+            String str = null;
+            if (val == 0) {
+                str = "exception";
+            } else if (val == 1) {
+                str = "round";
+            } else if (val == 2) {
+                str = "convertToNull";
+            }
 
-		attributes.remove("queryTimeout");
-		val = StringUtil.intValue(txtQueryTimeout.getText(), -1);
-		if (val > 0) {
-			attributes.put("queryTimeout", ""+val);
-		}
+            if (str != null) {
+                attributes.put("zeroDateTimeBehavior", str);
+            }
+        }
 
-		attributes.remove("zeroDateTimeBehavior");
-		val = cbZeroDateTimeBehavior.getSelectionIndex();
-		if (val >= 0 && val < 3) {
-			String str = null;
-			if (val == 0) {
-				str = "exception";
-			} else if (val == 1) {
-				str = "round";
-			} else if (val == 2) {
-				str = "convertToNull";
-			}
+        StringBuilder sb = new StringBuilder();
+        TableItem[] items = jdbcInfoTv.getTable().getItems();
+        for (TableItem item : items) {
+            String key = item.getText(0).trim();
+            if ("connectTimeout".equals(key)
+                    || "queryTimeout".equals(key)
+                    || "zeroDateTimeBehavior".equals(key)
+                    || key.length() == 0) {
+                continue;
+            }
 
-			if (str != null) {
-				attributes.put("zeroDateTimeBehavior", str);
-			}
-		}
+            if (sb.length() > 0) {
+                sb.append("&");
+            }
+            sb.append(item.getText(0).trim());
+            sb.append("=");
+            sb.append(item.getText(1).trim());
+        }
 
-		StringBuilder sb = new StringBuilder();
-		TableItem[] items = jdbcInfoTv.getTable().getItems();
-		for (TableItem item : items) {
-			String key = item.getText(0).trim();
-			if ("connectTimeout".equals(key) || "queryTimeout".equals(key) || "zeroDateTimeBehavior".equals(key) || key.length() == 0) {
-				continue;
-			}
+        Set<String> keys = attributes.keySet();
+        for (String key : keys) {
+            if (sb.length() > 0) {
+                sb.append("&");
+            }
+            sb.append(key);
+            sb.append("=");
+            sb.append(attributes.get(key));
+        }
 
-			if (sb.length() > 0) {
-				sb.append("&");
-			}
-			sb.append(item.getText(0).trim());
-			sb.append("=");
-			sb.append(item.getText(1).trim());
-		}
+        jdbcAttrs = sb.toString();
+    }
 
-		Set<String> keys = attributes.keySet();
-		for (String key : keys) {
-			if (sb.length() > 0) {
-				sb.append("&");
-			}
-			sb.append(key);
-			sb.append("=");
-			sb.append(attributes.get(key));
-		}
+    public boolean hasDuplicatedKey() {
+        Set<String> set = new HashSet<String>();
+        TableItem[] items = jdbcInfoTv.getTable().getItems();
+        for (TableItem item : items) {
+            String key = item.getText(0).trim();
+            if (set.contains(key)) {
+                return true;
+            }
+            set.add(key);
+        }
+        return false;
+    }
 
-		jdbcAttrs = sb.toString();
-	}
+    public String getJdbcAttrs() {
+        return jdbcAttrs;
+    }
 
-	public boolean hasDuplicatedKey() {
-		Set<String> set = new HashSet<String>();
-		TableItem[] items = jdbcInfoTv.getTable().getItems();
-		for (TableItem item : items) {
-			String key = item.getText(0).trim();
-			if (set.contains(key)) {
-				return true;
-			}
-			set.add(key);
-		}
-		return false;
-	}
+    /**
+     * Create JDBC table group
+     *
+     * @param composite the composite
+     */
+    private void createJdbcTableGroup(Composite composite) {
+        final String[] columnNameArr =
+                new String[] {Messages.tblColJdbcAttrName, Messages.tblColJdbcAttrValue};
+        jdbcInfoTv =
+                CommonUITool.createCommonTableViewer(
+                        composite,
+                        null,
+                        columnNameArr,
+                        CommonUITool.createGridData(GridData.FILL_BOTH, 3, 1, -1, 150));
+        jdbcInfoTv.setInput(jdbcListData);
 
-	public String getJdbcAttrs() {
-		return jdbcAttrs;
-	}
+        TableLayout tableLayout = new TableLayout();
+        jdbcInfoTv.getTable().setLayout(tableLayout);
+        tableLayout.addColumnData(new ColumnWeightData(35, true));
+        tableLayout.addColumnData(new ColumnWeightData(65, true));
 
-	/**
-	 *
-	 * Create JDBC table group
-	 *
-	 * @param composite the composite
-	 */
-	private void createJdbcTableGroup(Composite composite) {
-		final String[] columnNameArr = new String[]{
-				Messages.tblColJdbcAttrName, Messages.tblColJdbcAttrValue  };
-		jdbcInfoTv = CommonUITool.createCommonTableViewer(composite, null,
-				columnNameArr,
-				CommonUITool.createGridData(GridData.FILL_BOTH, 3, 1, -1, 150));
-		jdbcInfoTv.setInput(jdbcListData);
+        editor = new TableEditor(jdbcInfoTv.getTable());
+        editor.horizontalAlignment = SWT.LEFT;
+        editor.grabHorizontal = true;
 
-		TableLayout tableLayout = new TableLayout();
-		jdbcInfoTv.getTable().setLayout(tableLayout);
-		tableLayout.addColumnData(new ColumnWeightData(35, true));
-		tableLayout.addColumnData(new ColumnWeightData(65, true));
+        jdbcInfoTv
+                .getTable()
+                .addListener(
+                        SWT.MouseUp,
+                        new Listener() {
+                            public void handleEvent(Event event) {
+                                if (event.button != 1) {
+                                    return;
+                                }
 
-		editor = new TableEditor(jdbcInfoTv.getTable());
-		editor.horizontalAlignment = SWT.LEFT;
-		editor.grabHorizontal = true;
+                                Point pt = new Point(event.x, event.y);
 
-		jdbcInfoTv.getTable().addListener(SWT.MouseUp, new Listener() {
-			public void handleEvent(Event event) {
-				if (event.button != 1) {
-					return;
-				}
+                                int newIndex = jdbcInfoTv.getTable().getSelectionIndex();
 
-				Point pt = new Point(event.x, event.y);
+                                if (jdbcInfoTv.getTable().getItemCount() <= newIndex
+                                        || newIndex < 0) {
+                                    return;
+                                }
 
-				int newIndex = jdbcInfoTv.getTable().getSelectionIndex();
+                                final TableItem item = jdbcInfoTv.getTable().getItem(newIndex);
+                                if (item == null) {
+                                    return;
+                                }
 
-				if (jdbcInfoTv.getTable().getItemCount() <= newIndex || newIndex < 0) {
-					return;
-				}
+                                for (int i = 0; i < 2; i++) {
+                                    Rectangle rect = item.getBounds(i);
+                                    if (rect.contains(pt)) {
+                                        focusCell(item, newIndex, i);
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+    }
 
-				final TableItem item = jdbcInfoTv.getTable().getItem(newIndex);
-				if (item == null) {
-					return;
-				}
+    /**
+     * Create button composite
+     *
+     * @param composite the composite
+     */
+    private void createButtonComp(Composite composite) {
+        Composite buttonComposite = new Composite(composite, SWT.NONE);
+        {
+            GridLayout layout = new GridLayout();
+            layout.numColumns = 3;
+            buttonComposite.setLayout(layout);
+            buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        }
 
-				for (int i = 0; i < 2; i++) {
-					Rectangle rect = item.getBounds(i);
-					if (rect.contains(pt)) {
-						focusCell(item, newIndex, i);
-						break;
-					}
-				}
-			}
-		});
-	}
+        Hyperlink link = new Hyperlink(buttonComposite, SWT.None);
+        link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        link.setText(Messages.titleJdbcAdvancedOptionView);
+        link.addMouseListener(
+                new MouseListener() {
+                    public void mouseUp(MouseEvent e) {
+                        IWorkbenchBrowserSupport browserSupport =
+                                PlatformUI.getWorkbench().getBrowserSupport();
+                        try {
+                            IWebBrowser br = browserSupport.createBrowser(null);
+                            br.openURL(new URL(Messages.msgCubridJdbcInfoUrl));
+                        } catch (Exception ignored) {
+                        }
+                    }
 
-	/**
-	 *
-	 * Create button composite
-	 *
-	 * @param composite the composite
-	 */
-	private void createButtonComp(Composite composite) {
-		Composite buttonComposite = new Composite(composite, SWT.NONE);
-		{
-			GridLayout layout = new GridLayout();
-			layout.numColumns = 3;
-			buttonComposite.setLayout(layout);
-			buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-					true, false));
-		}
+                    public void mouseDown(MouseEvent e) {}
 
-		Hyperlink link = new Hyperlink(buttonComposite, SWT.None);
-		link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		link.setText(Messages.titleJdbcAdvancedOptionView);
-		link.addMouseListener(new MouseListener() {
-			public void mouseUp(MouseEvent e) {
-				IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
-				try {
-				    IWebBrowser br = browserSupport.createBrowser(null);
-				    br.openURL(new URL(Messages.msgCubridJdbcInfoUrl));
-				} catch (Exception ignored) {
-				}
-			}
+                    public void mouseDoubleClick(MouseEvent e) {}
+                });
 
-			public void mouseDown(MouseEvent e) {
-			}
+        addButton = new Button(buttonComposite, SWT.PUSH);
+        addButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+        addButton.setText(Messages.btnAdd);
+        addButton.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        TableItem itemNew = new TableItem(jdbcInfoTv.getTable(), SWT.SINGLE);
+                        int newIndex = jdbcInfoTv.getTable().getItemCount() - 1;
+                        focusCell(itemNew, newIndex, 0);
+                    }
+                });
 
-			public void mouseDoubleClick(MouseEvent e) {
-			}
-		});
+        Button delButton = new Button(buttonComposite, SWT.PUSH);
+        delButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+        delButton.setText(Messages.btnDelete);
+        delButton.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        TableItem[] selection = jdbcInfoTv.getTable().getSelection();
+                        if (selection == null || selection.length == 0) {
+                            return;
+                        }
 
-		addButton = new Button(buttonComposite, SWT.PUSH);
-		addButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		addButton.setText(Messages.btnAdd);
-		addButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				TableItem itemNew = new TableItem(jdbcInfoTv.getTable(), SWT.SINGLE);
-				int newIndex = jdbcInfoTv.getTable().getItemCount() - 1;
-				focusCell(itemNew, newIndex, 0);
-			}
-		});
+                        jdbcInfoTv.getTable().setSelection(-1);
 
-		Button delButton = new Button(buttonComposite, SWT.PUSH);
-		delButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		delButton.setText(Messages.btnDelete);
-		delButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				TableItem[] selection = jdbcInfoTv.getTable().getSelection();
-				if (selection == null || selection.length == 0) {
-					return;
-				}
+                        for (TableItem item : selection) {
+                            item.dispose();
+                        }
+                    }
+                });
+    }
 
-				jdbcInfoTv.getTable().setSelection(-1);
+    /** Create page content */
+    private void createContent() {
+        setLayout(new GridLayout());
+        setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        createQuickGroup(this);
+        createJdbcTableGroup(this);
+        createButtonComp(this);
+    }
 
-				for (TableItem item : selection) {
-					item.dispose();
-				}
-			}
-		});
-	}
+    private void createQuickGroup(Composite composite) {
+        Group group = new Group(composite, SWT.None);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        group.setLayoutData(gridData);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        group.setLayout(layout);
+        group.setText(Messages.lblJdbcAdvancedBasic);
 
-	/**
-	 *
-	 * Create page content
-	 *
-	 */
-	private void createContent() {
-		setLayout(new GridLayout());
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		createQuickGroup(this);
-		createJdbcTableGroup(this);
-		createButtonComp(this);
-	}
+        {
+            Label label = new Label(group, SWT.None);
+            label.setText(Messages.lblConnectionTimeout);
 
-	private void createQuickGroup(Composite composite) {
-		Group group = new Group(composite, SWT.None);
-		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		group.setLayoutData(gridData);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		group.setLayout(layout);
-		group.setText(Messages.lblJdbcAdvancedBasic);
+            Text text = new Text(group, SWT.LEFT | SWT.BORDER);
+            text.setLayoutData(
+                    CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
+            text.setText("0");
+            txtConnectTimeout = text;
+        }
 
-		{
-			Label label = new Label(group, SWT.None);
-			label.setText(Messages.lblConnectionTimeout);
+        {
+            Label label = new Label(group, SWT.None);
+            label.setText(Messages.lblQueryTimeout);
 
-			Text text = new Text(group, SWT.LEFT | SWT.BORDER);
-			text.setLayoutData(CommonUITool.createGridData(
-					GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
-			text.setText("0");
-			txtConnectTimeout = text;
-		}
+            Text text = new Text(group, SWT.LEFT | SWT.BORDER);
+            text.setLayoutData(
+                    CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
+            text.setText("0");
+            txtQueryTimeout = text;
+        }
 
-		{
-			Label label = new Label(group, SWT.None);
-			label.setText(Messages.lblQueryTimeout);
+        {
+            Label label = new Label(group, SWT.None);
+            label.setText(Messages.lblZeroDateTimeBehavior);
 
-			Text text = new Text(group, SWT.LEFT | SWT.BORDER);
-			text.setLayoutData(CommonUITool.createGridData(
-					GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
-			text.setText("0");
-			txtQueryTimeout = text;
-		}
+            Combo combo = new Combo(group, SWT.READ_ONLY);
+            combo.setLayoutData(
+                    CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
+            combo.setItems(
+                    new String[] {
+                        Messages.msgZeroDateTimeBehavior1,
+                        Messages.msgZeroDateTimeBehavior2,
+                        Messages.msgZeroDateTimeBehavior3,
+                        ""
+                    });
+            cbZeroDateTimeBehavior = combo;
+        }
+    }
 
-		{
-			Label label = new Label(group, SWT.None);
-			label.setText(Messages.lblZeroDateTimeBehavior);
+    public void focusCell(final TableItem item, final int row, final int col) {
+        final StyledText text = new StyledText(jdbcInfoTv.getTable(), SWT.SINGLE);
+        Listener textListener = new TableItemEditor(text, item, row, col);
+        text.addListener(SWT.FocusOut, textListener);
+        text.addListener(SWT.Traverse, textListener);
+        text.addListener(SWT.FocusIn, textListener);
+        text.addTraverseListener(
+                new TraverseListener() {
+                    public void keyTraversed(TraverseEvent e) {
+                        if (e.detail == SWT.TRAVERSE_TAB_NEXT
+                                || e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
+                            e.doit = false;
+                            int newColumn = col == 0 ? 1 : 0;
+                            focusCell(item, row, newColumn);
+                        } else if (e.detail == SWT.TRAVERSE_RETURN) {
+                            e.doit = false;
+                            addButton.setFocus();
+                        }
+                    }
+                });
+        text.setEditable(true);
+        editor.setEditor(text, item, col);
+        text.setText(item.getText(col));
+        text.selectAll();
+        try {
+            text.setFocus();
+        } catch (Exception e) {
+        }
+    }
 
-			Combo combo = new Combo(group, SWT.READ_ONLY);
-			combo.setLayoutData(CommonUITool.createGridData(
-					GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
-			combo.setItems(new String[] {
-					Messages.msgZeroDateTimeBehavior1,
-					Messages.msgZeroDateTimeBehavior2,
-					Messages.msgZeroDateTimeBehavior3,
-					""});
-			cbZeroDateTimeBehavior = combo;
-		}
-	}
+    /**
+     * Table item editor
+     *
+     * @author Isaiah Choe
+     * @version 1.0 - 2012-5-21 created by Isaiah Choe
+     */
+    private class TableItemEditor implements Listener {
+        private boolean isRunning = false;
+        private final TableItem item;
+        private final int row;
+        private final int column;
+        private final StyledText text;
+        private Shell shell;
 
-	public void focusCell(final TableItem item, final int row, final int col) {
-		final StyledText text = new StyledText(jdbcInfoTv.getTable(), SWT.SINGLE);
-		Listener textListener = new TableItemEditor(text, item, row, col);
-		text.addListener(SWT.FocusOut, textListener);
-		text.addListener(SWT.Traverse, textListener);
-		text.addListener(SWT.FocusIn, textListener);
-		text.addTraverseListener(new TraverseListener() {
-			public void keyTraversed(TraverseEvent e) {
-				if (e.detail == SWT.TRAVERSE_TAB_NEXT || e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
-					e.doit = false;
-					int newColumn = col == 0 ? 1 : 0;
-					focusCell(item, row, newColumn);
-				}
-				else if (e.detail == SWT.TRAVERSE_RETURN) {
-					e.doit = false;
-					addButton.setFocus();
-				}
-			}
-		});
-		text.setEditable(true);
-		editor.setEditor(text, item, col);
-		text.setText(item.getText(col));
-		text.selectAll();
-		try {
-			text.setFocus();
-		} catch (Exception e) {
-		}
-	}
+        public TableItemEditor(StyledText text, TableItem item, int row, int column) {
+            this.text = text;
+            this.item = item;
+            this.row = row;
+            this.column = column;
+            shell =
+                    new Shell(
+                            Display.getDefault().getActiveShell(),
+                            SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+            shell.setText("");
+            shell.setLayout(new GridLayout());
+            shell.setLayoutData(new GridData(GridData.FILL_BOTH));
+        }
 
-	/**
-	 * Table item editor
-	 *
-	 * @author Isaiah Choe
-	 * @version 1.0 - 2012-5-21 created by Isaiah Choe
-	 */
-	private class TableItemEditor implements Listener {
-		private boolean isRunning = false;
-		private final TableItem item;
-		private final int row;
-		private final int column;
-		private final StyledText text;
-		private Shell shell;
+        /**
+         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+         * @param event the event which occurred
+         */
+        public void handleEvent(final Event event) {
+            if (event.type == SWT.FocusOut) {
+                if (isRunning) {
+                    return;
+                }
+                isRunning = true;
 
-		public TableItemEditor(StyledText text, TableItem item, int row, int column) {
-			this.text = text;
-			this.item = item;
-			this.row = row;
-			this.column = column;
-			shell = new Shell(Display.getDefault().getActiveShell(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-			shell.setText("");
-			shell.setLayout(new GridLayout());
-			shell.setLayoutData(new GridData(GridData.FILL_BOTH));
-		}
-
-		/**
-		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-		 * @param event the event which occurred
-		 */
-		public void handleEvent(final Event event) {
-			if (event.type == SWT.FocusOut) {
-				if (isRunning) {
-					return;
-				}
-				isRunning = true;
-
-				boolean isChanged = !text.getText().equals(item.getText(column));
-				if (isChanged) {
-					String key = text.getText().toLowerCase(Locale.getDefault());
-					if ("charset".equalsIgnoreCase(key)) {
-						CommonUITool.openErrorBox(Messages.jdbcOptionsErrMsg);
-					} else {
-						item.setText(column, text.getText());
-					}
-				} else if (text.getText().length() == 0) {
-					item.setText(column, "");
-				}
-				text.dispose();
-				isRunning = false;
-			} else if (event.type == SWT.Traverse && event.detail == SWT.TRAVERSE_ESCAPE) {
-				if (isRunning) {
-					return;
-				}
-				isRunning = true;
-				text.dispose();
-				event.doit = false;
-				isRunning = false;
-			} else if (event.type == SWT.FocusIn) {
-			}
-		}
-	}
+                boolean isChanged = !text.getText().equals(item.getText(column));
+                if (isChanged) {
+                    String key = text.getText().toLowerCase(Locale.getDefault());
+                    if ("charset".equalsIgnoreCase(key)) {
+                        CommonUITool.openErrorBox(Messages.jdbcOptionsErrMsg);
+                    } else {
+                        item.setText(column, text.getText());
+                    }
+                } else if (text.getText().length() == 0) {
+                    item.setText(column, "");
+                }
+                text.dispose();
+                isRunning = false;
+            } else if (event.type == SWT.Traverse && event.detail == SWT.TRAVERSE_ESCAPE) {
+                if (isRunning) {
+                    return;
+                }
+                isRunning = true;
+                text.dispose();
+                event.doit = false;
+                isRunning = false;
+            } else if (event.type == SWT.FocusIn) {
+            }
+        }
+    }
 }

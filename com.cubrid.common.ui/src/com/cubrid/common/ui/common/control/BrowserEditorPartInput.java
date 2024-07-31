@@ -29,45 +29,41 @@
  */
 package com.cubrid.common.ui.common.control;
 
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.common.Messages;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.common.Messages;
-
 /**
- * <p>
  * The input of BrowserEditorPart
- * </p>
  *
  * @author Kevin.Wang
  * @version 1.0 - Apr 23, 2012 created by Kevin.Wang
  */
-public class BrowserEditorPartInput implements
-		IEditorInput {
-	public boolean exists() {
-		return false;
-	}
+public class BrowserEditorPartInput implements IEditorInput {
+    public boolean exists() {
+        return false;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return CommonUIPlugin.getImageDescriptor("icons/cubrid_web_site.gif");
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return CommonUIPlugin.getImageDescriptor("icons/cubrid_web_site.gif");
+    }
 
-	public String getName() {
-		return Messages.tabSearch;
-	}
+    public String getName() {
+        return Messages.tabSearch;
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public String getToolTipText() {
-		return Messages.tooltipTabSearch;
-	}
+    public String getToolTipText() {
+        return Messages.tooltipTabSearch;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        return null;
+    }
 }

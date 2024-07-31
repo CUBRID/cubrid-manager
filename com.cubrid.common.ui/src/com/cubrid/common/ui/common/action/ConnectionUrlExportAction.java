@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,18 +23,9 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.common.action;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
 
 import com.cubrid.common.ui.common.Messages;
 import com.cubrid.common.ui.common.dialog.ExportConnectionDialog;
@@ -44,117 +35,122 @@ import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.common.ui.spi.model.DefaultCubridNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.util.CommonUITool;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Export connection action
- * 
+ *
  * @author Kevin.Wang
  * @version 1.0 - Jun 13, 2012 created by Kevin.Wang
  */
-public class ConnectionUrlExportAction extends
-		SelectionAction {
+public class ConnectionUrlExportAction extends SelectionAction {
 
-	public static final String ID = ConnectionUrlExportAction.class.getName();
+    public static final String ID = ConnectionUrlExportAction.class.getName();
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public ConnectionUrlExportAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public ConnectionUrlExportAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public ConnectionUrlExportAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public ConnectionUrlExportAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	public void run() {
-		Object[] objs = this.getSelectedObj();
-		if (objs == null || objs.length == 0) {
-			CommonUITool.openErrorBox(Messages.errNoDatabaseSelected);
-			return;
-		}
+    public void run() {
+        Object[] objs = this.getSelectedObj();
+        if (objs == null || objs.length == 0) {
+            CommonUITool.openErrorBox(Messages.errNoDatabaseSelected);
+            return;
+        }
 
-		List<ICubridNode> selections = new ArrayList<ICubridNode>();
-		Set<CubridDatabase> addedDatabaseSet = new HashSet<CubridDatabase>();
-		
-		for (Object obj : objs) {
-			if (obj instanceof CubridServer) {
-				CubridServer server = (CubridServer) obj;
+        List<ICubridNode> selections = new ArrayList<ICubridNode>();
+        Set<CubridDatabase> addedDatabaseSet = new HashSet<CubridDatabase>();
 
-				selections.add(server);
+        for (Object obj : objs) {
+            if (obj instanceof CubridServer) {
+                CubridServer server = (CubridServer) obj;
 
-				List<ICubridNode> children = server.getChildren();
-				if (children != null) {
-					for (ICubridNode child : children) {
-						if (child instanceof DefaultCubridNode) {
-							List<ICubridNode> dbChildren = ((DefaultCubridNode) child).getChildren();
-							for (ICubridNode dbChild : dbChildren) {
-								if (dbChild instanceof CubridDatabase) {
-									addedDatabaseSet.add((CubridDatabase) dbChild);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+                selections.add(server);
 
-		for (Object obj : objs) {
-			if (obj instanceof CubridDatabase) {
-				if (!addedDatabaseSet.contains(obj)) {
-					selections.add((ICubridNode) obj);
-				}
-			}
-		}
+                List<ICubridNode> children = server.getChildren();
+                if (children != null) {
+                    for (ICubridNode child : children) {
+                        if (child instanceof DefaultCubridNode) {
+                            List<ICubridNode> dbChildren =
+                                    ((DefaultCubridNode) child).getChildren();
+                            for (ICubridNode dbChild : dbChildren) {
+                                if (dbChild instanceof CubridDatabase) {
+                                    addedDatabaseSet.add((CubridDatabase) dbChild);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		/*Process export*/
-		ExportConnectionDialog dialog = new ExportConnectionDialog(
-				this.getShell(), selections);
-		dialog.open();
-	}
+        for (Object obj : objs) {
+            if (obj instanceof CubridDatabase) {
+                if (!addedDatabaseSet.contains(obj)) {
+                    selections.add((ICubridNode) obj);
+                }
+            }
+        }
 
-	public boolean allowMultiSelections() {
-		return true;
-	}
+        /*Process export*/
+        ExportConnectionDialog dialog = new ExportConnectionDialog(this.getShell(), selections);
+        dialog.open();
+    }
 
-	public boolean isSupported(Object obj) {
-		if (obj instanceof CubridServer) {
-			CubridServer server = (CubridServer) obj;
-			if (server.isConnected()) {
-				return true;
-			} else {
-				return false;
-			}
-		}
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-		if (obj instanceof Object[]) {
-			for (Object object : (Object[]) obj) {
-				if (object instanceof CubridServer) {
-					CubridServer server = (CubridServer) object;
-					if (!server.isConnected()) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
+    public boolean isSupported(Object obj) {
+        if (obj instanceof CubridServer) {
+            CubridServer server = (CubridServer) obj;
+            if (server.isConnected()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        if (obj instanceof Object[]) {
+            for (Object object : (Object[]) obj) {
+                if (object instanceof CubridServer) {
+                    CubridServer server = (CubridServer) object;
+                    if (!server.isConnected()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
+        return true;
+    }
 }

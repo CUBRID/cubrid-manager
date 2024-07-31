@@ -33,9 +33,9 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
  * @author CHOE JUNGYEON
  */
 public class WhenTag extends IfTag {
-	private static final long serialVersionUID = 5071864812217053951L;
+    private static final long serialVersionUID = 5071864812217053951L;
 
-	public WhenTag() {
-		this.setType("when");
-	}
+    public WhenTag() {
+        this.setType("when");
+    }
 }

@@ -29,20 +29,19 @@ package com.cubrid.cubridmanager.core.monstatistic.task;
 
 import com.cubrid.cubridmanager.core.SetupEnvTestCase;
 
-public class SetMonitorIntervalTaskTest extends
-		SetupEnvTestCase {
+public class SetMonitorIntervalTaskTest extends SetupEnvTestCase {
 
-	public void testExecute() {
-		int interval = 60;
-		SetMonitorIntervalTask task = new SetMonitorIntervalTask(serverInfo930);
-		task.setInterval(interval);
-		task.execute();
-		assertNull(task.getErrorMsg());
-		
-		GetMonitorIntervalTask getTask = new GetMonitorIntervalTask(serverInfo930);
-		getTask.execute();
-		if (getTask.getErrorMsg() == null) {
-			assertEquals(getTask.getInterval(), Integer.toString(interval));
-		}
-	}
+    public void testExecute() {
+        int interval = 60;
+        SetMonitorIntervalTask task = new SetMonitorIntervalTask(serverInfo930);
+        task.setInterval(interval);
+        task.execute();
+        assertNull(task.getErrorMsg());
+
+        GetMonitorIntervalTask getTask = new GetMonitorIntervalTask(serverInfo930);
+        getTask.execute();
+        if (getTask.getErrorMsg() == null) {
+            assertEquals(getTask.getInterval(), Integer.toString(interval));
+        }
+    }
 }

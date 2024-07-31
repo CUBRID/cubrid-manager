@@ -1,34 +1,36 @@
 /*
- * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search Solution. 
+ * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search Solution.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
- * are permitted provided that the following conditions are met: 
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
  *
- * - Redistributions of source code must retain the above copyright notice, 
- *   this list of conditions and the following disclaimer. 
+ * - Redistributions of source code must retain the above copyright notice,
+ *   this list of conditions and the following disclaimer.
  *
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
- *   and/or other materials provided with the distribution. 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
  *
- * - Neither the name of the <ORGANIZATION> nor the names of its contributors 
- *   may be used to endorse or promote products derived from this software without 
- *   specific prior written permission. 
+ * - Neither the name of the <ORGANIZATION> nor the names of its contributors
+ *   may be used to endorse or promote products derived from this software without
+ *   specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
- * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
- * OF SUCH DAMAGE. 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+ * OF SUCH DAMAGE.
  *
  */
 package com.cubrid.jdbc.proxy.driver;
 
+import com.cubrid.jdbc.proxy.ConnectionInfo;
+import com.cubrid.jdbc.proxy.SetupEnv;
 import java.io.UnsupportedEncodingException;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -43,1038 +45,871 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import com.cubrid.jdbc.proxy.ConnectionInfo;
-import com.cubrid.jdbc.proxy.SetupEnv;
-
 /**
- * 
  * Test CUBRIDConnectionProxy
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2010-1-18 created by pangqiren
  */
-public class CUBRIDConnectionProxyTest extends
-		SetupEnv {
-
-	private static final String testTableName = "testCUBRIDConnectionProxy";
-
-	public void test() {
-		System.out.println("Test CUBRIDConnectionProxy class:");
-		for (ConnectionInfo connInfo : connInfoList) {
-			CUBRIDConnectionProxy conn = null;
-			System.out.println("Test connection url:"
-					+ connInfo.getConnectionUrl());
-			try {
-				CUBRIDDriverProxy driver = new CUBRIDDriverProxy(
-						connInfo.getServerVersion());
-				Properties props = new Properties();
-				props.put("user", connInfo.getDbUser());
-				props.put("password", connInfo.getDbUserPass() == null ? ""
-						: connInfo.getDbUserPass());
-				conn = (CUBRIDConnectionProxy) driver.connect(
-						connInfo.getConnectionUrl(), props);
-				assertTrue(conn != null);
-				//create test table
-				createTestTable(conn);
-				//test every method
-				methodGetMetaData(conn);
-				methodGetCatalog(conn);
-				methodGetTransactionIsolation(conn);
-				methodGetServerVersion(connInfo, conn);
-				methodSetServerVersion(connInfo, conn);
-				methodGetAutoCommit(conn);
-				methodCreateStatement(conn);
-				methodCreateStatementIntInt(conn);
-				methodCreateStatementIntIntInt(conn);
-				methodSetAutoCommit(conn);
-				methodGetTypeMap(conn);
-				methodIsReadOnly(conn);
-
-				methodGetHoldability(conn);
-				methodNativeSQL(conn);
-				methodIsReadOnly(conn);
-				methodPrepareCallString(conn);
-				methodPrepareCallStringIntInt(conn);
-				methodPrepareStatementString(conn);
-				methodPrepareStatementStringInt(conn);
-				methodPrepareStatementStringIntArray(conn);
-				methodPrepareStatementStringStringArray(conn);
-				methodPrepareStatementStringIntInt(conn);
-				methodPrepareStatementStringIntIntInt(conn);
-				methodReleaseSavepoint(conn);
-				methodRollback(conn);
-				methodRollbackSavepoint(conn);
-				methodSetAutoGeneratedKeys(conn);
-				methodSetCharset(conn);
-				methodSetLockTimeout(conn);
-				methodSetSignedConnection(conn);
-				methodSetAutoCommit(conn);
-				methodSetCatalog(conn);
-				methodSetHoldability(conn);
-				methodSetReadOnly(conn);
-				methodSetSavepoint(conn);
-				methodSetSavepointString(conn);
-				methodSetTransactionIsolation(conn);
-				methodSetTypeMap(conn);
-				methodCreateArrayOf(conn);
-				methodGetNewGLOStringInputStream(conn);
-				methodGetNewGLOStringInputStreamInt(conn);
-				methodGetProxyClass(conn);
-				methodGetProxyObject(conn);
-				methodLogout(conn);
-				methodNewGloFbo(conn);
-				methodNewGloLo(conn);
-				methodGetWarnings(conn);
-				methodClearWarnings(conn);
-
-				//new test cases for jdk1.6 jdbc interfaces 
-				methodCreateBlob(conn);
-				methodCreateClob(conn);
-				methodCreateNClob(conn);
-				methodCreateSQLXML(conn);
-				methodCreateStruct(conn);
-				methodGetClientInfo(conn);
-				methodGetClientInfo2(conn);
-				methodIsValid(conn);
-				methodSetClientInfo(conn);
-				methodSetClientInfo2(conn);
-				methodIsWrapperFor(conn);
-				methodUnwrap(conn);
-				//drop test table
-				dropTestTable(conn);
-			} catch (Exception e) {
-				e.printStackTrace();
-				assertFalse(true);
-			} finally {
-				if (conn != null) {
-					methodCommit(conn);
-					methodClose(conn);
-					methodIsClosed(conn);
-				}
-			}
-		}
-	}
-
-	private boolean createTestTable(Connection conn) {
-		String sql = "create table \"" + testTableName + "\" ("
-				+ "code integer," + "name character varying(40)  NOT NULL "
-				+ ")";
-		return executeDDL(conn, sql);
-	}
-
-	private boolean dropTestTable(Connection conn) {
-		String sql = "drop table \"" + testTableName + "\"";
-		return executeDDL(conn, sql);
-	}
-
-	private void printDatabaseMeta(DatabaseMetaData metaData) {
-		System.out.println("DatabaseMetaData:");
-		try {
-			System.out.println("DatabaseMetaData url:" + metaData.getURL());
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	private void printTypeMap(Map<String, Class<?>> typeMap) {
-		if (typeMap != null) {
-			System.out.println("Type map:");
-			Iterator<Map.Entry<String, Class<?>>> it = typeMap.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry<String, Class<?>> entry = it.next();
-				System.out.println(entry.getKey() + "="
-						+ entry.getValue().getName());
-			}
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getJdbcVersion()}
-	 * .
-	 */
-	public void methodGetServerVersion(ConnectionInfo connInfo,
-			CUBRIDConnectionProxy conn) {
-		assertEquals(conn.getJdbcVersion(), connInfo.getServerVersion());
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setJdbcVersion(java.lang.String)}
-	 * .
-	 */
-	public void methodSetServerVersion(ConnectionInfo connInfo,
-			CUBRIDConnectionProxy conn) {
-		conn.setJdbcVersion(connInfo.getServerVersion());
-		assertEquals(conn.getJdbcVersion(), connInfo.getServerVersion());
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#CUBRIDConnectionProxy(java.sql.Connection, java.lang.String)}
-	 * .
-	 */
-	public void methodCUBRIDConnectionProxy(CUBRIDConnectionProxy conn) {
-		new CUBRIDConnectionProxy(null, null);
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#clearWarnings()}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodClearWarnings(CUBRIDConnectionProxy conn) {
-		try {
-			conn.clearWarnings();
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#close()}.
-	 * 
-	 * @
-	 */
-	public void methodClose(CUBRIDConnectionProxy conn) {
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#commit()}.
-	 * 
-	 * @
-	 */
-	public void methodCommit(CUBRIDConnectionProxy conn) {
-		try {
-			conn.commit();
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createStatement()}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodCreateStatement(CUBRIDConnectionProxy conn) {
-		Statement stmt;
-		try {
-			stmt = conn.createStatement();
-			assertTrue(stmt != null);
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createStatement(int, int)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodCreateStatementIntInt(CUBRIDConnectionProxy conn) {
-		Statement stmt;
-		try {
-			stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-					ResultSet.CONCUR_READ_ONLY);
-			assertTrue(stmt != null);
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createStatement(int, int, int)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodCreateStatementIntIntInt(CUBRIDConnectionProxy conn) {
-		Statement stmt;
-		try {
-			stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-					ResultSet.CONCUR_READ_ONLY,
-					ResultSet.CLOSE_CURSORS_AT_COMMIT);
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getAutoCommit()}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodGetAutoCommit(CUBRIDConnectionProxy conn) {
-		try {
-			assertTrue(conn.getAutoCommit());
-		} catch (SQLException e) {
-			assertFalse(true);
-			;
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getCatalog()}.
-	 * 
-	 * @
-	 */
-	public void methodGetCatalog(CUBRIDConnectionProxy conn) {
-		String catalogName;
-		try {
-			catalogName = conn.getCatalog();
-			System.out.println("Connection Catalog Name:" + catalogName);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getHoldability()}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodGetHoldability(CUBRIDConnectionProxy conn) {
-		try {
-			System.out.println("Connection Holdability:"
-					+ conn.getHoldability());
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getMetaData()}.
-	 * 
-	 * @
-	 */
-	public void methodGetMetaData(CUBRIDConnectionProxy conn) {
-		DatabaseMetaData meta;
-		try {
-			meta = conn.getMetaData();
-			assertTrue(meta != null);
-			printDatabaseMeta(meta);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getTransactionIsolation()}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodGetTransactionIsolation(CUBRIDConnectionProxy conn) {
-		try {
-			System.out.println("Connection Transaction Isolation:"
-					+ conn.getTransactionIsolation());
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getTypeMap()}.
-	 * 
-	 * @
-	 */
-	public void methodGetTypeMap(CUBRIDConnectionProxy conn) {
-		try {
-			Map<String, Class<?>> typeMap = conn.getTypeMap();
-			printTypeMap(typeMap);
-		} catch (UnsupportedOperationException e) {
-
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getWarnings()}.
-	 * 
-	 * @
-	 */
-	public void methodGetWarnings(CUBRIDConnectionProxy conn) {
-		try {
-			System.out.println("Connection Warning:" + conn.getWarnings());
-			assertTrue(conn.getWarnings() == null);
-		} catch (Exception e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#isClosed()}.
-	 * 
-	 * @
-	 */
-	public void methodIsClosed(CUBRIDConnectionProxy conn) {
-		try {
-			assertTrue(conn.isClosed());
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#isReadOnly()}.
-	 * 
-	 * @
-	 */
-	public void methodIsReadOnly(CUBRIDConnectionProxy conn) {
-		try {
-			System.out.println("Connection Readonly:" + conn.isReadOnly());
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#nativeSQL(java.lang.String)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodNativeSQL(CUBRIDConnectionProxy conn) {
-		String sql = "select * from db_user";
-		try {
-			sql = conn.nativeSQL(sql);
-		} catch (UnsupportedOperationException e) {
-			assertTrue(true);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareCall(java.lang.String)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodPrepareCallString(CUBRIDConnectionProxy conn) {
-		//conn.prepareCall("");
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareCall(java.lang.String, int, int)}
-	 * .
-	 */
-	public void methodPrepareCallStringIntInt(CUBRIDConnectionProxy conn) {
-		//conn.prepareCall(sql, resultSetType, resultSetConcurrency);
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareCall(java.lang.String, int, int, int)}
-	 * .
-	 */
-	public void methodPrepareCallStringIntIntInt(CUBRIDConnectionProxy conn) {
-		//conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodPrepareStatementString(CUBRIDConnectionProxy conn) {
-		try {
-			String sql = "select * from db_user where name=?";
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			assertTrue(stmt != null);
-		} catch (Exception e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, int)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodPrepareStatementStringInt(CUBRIDConnectionProxy conn) {
-		try {
-			String sql = "insert into \"" + testTableName
-					+ "\" values(?,'wo test ne');";
-			PreparedStatement stmt = conn.prepareStatement(sql,
-					Statement.NO_GENERATED_KEYS);
-			assertTrue(stmt != null);
-		} catch (Exception e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, int[])}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodPrepareStatementStringIntArray(CUBRIDConnectionProxy conn) {
-		try {
-			String sql = "insert into \"" + testTableName
-					+ "\" values(?,'wo test ne');";
-			PreparedStatement stmt = conn.prepareStatement(sql, new int[]{1 });
-			assertTrue(stmt != null);
-		} catch (Exception e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, java.lang.String[])}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodPrepareStatementStringStringArray(
-			CUBRIDConnectionProxy conn) {
-		try {
-			String sql = "insert into \"" + testTableName
-					+ "\" values(?,'wo test ne');";
-			PreparedStatement stmt = conn.prepareStatement(sql,
-					new String[]{"code" });
-			assertTrue(stmt != null);
-		} catch (Exception e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, int, int)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodPrepareStatementStringIntInt(CUBRIDConnectionProxy conn) {
-		try {
-			String sql = "select * from db_user where name=?";
-			PreparedStatement stmt = conn.prepareStatement(sql,
-					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			assertTrue(stmt != null);
-		} catch (Exception e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, int, int, int)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodPrepareStatementStringIntIntInt(CUBRIDConnectionProxy conn) {
-		try {
-			String sql = "select * from db_user where name=?";
-			PreparedStatement stmt = conn.prepareStatement(sql,
-					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-					ResultSet.CLOSE_CURSORS_AT_COMMIT);
-			assertTrue(stmt != null);
-		} catch (Exception e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#releaseSavepoint(java.sql.Savepoint)}
-	 * .
-	 */
-	public void methodReleaseSavepoint(CUBRIDConnectionProxy conn) {
-		//TODO
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#rollback()}.
-	 * 
-	 * @
-	 */
-	public void methodRollback(CUBRIDConnectionProxy conn) {
-		try {
-			conn.rollback();
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#rollback(java.sql.Savepoint)}
-	 * .
-	 */
-	public void methodRollbackSavepoint(CUBRIDConnectionProxy conn) {
-		//TODO
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setAutoGeneratedKeys(boolean)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetAutoGeneratedKeys(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setAutoGeneratedKeys(false);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setCharset(java.lang.String)}
-	 * .
-	 * 
-	 * @
-	 * 
-	 * @throws UnsupportedEncodingException
-	 */
-	public void methodSetCharset(CUBRIDConnectionProxy conn) throws UnsupportedEncodingException,
-			SQLException {
-		conn.setCharset("UTF-8");
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setLockTimeout(int)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetLockTimeout(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setLockTimeout(100);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setSignedConnection()}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetSignedConnection(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setSignedConnection();
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setAutoCommit(boolean)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetAutoCommit(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setAutoCommit(false);
-			assertFalse(conn.getAutoCommit());
-		} catch (Exception e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setCatalog(java.lang.String)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetCatalog(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setCatalog(conn.getCatalog());
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setHoldability(int)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetHoldability(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setReadOnly(boolean)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetReadOnly(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setReadOnly(false);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setSavepoint()}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetSavepoint(CUBRIDConnectionProxy conn) {
-		/*		try {
-					conn.setSavepoint();
-				} catch (SQLException e) {
-					assertFalse(true);
-				}*/
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setSavepoint(java.lang.String)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetSavepointString(CUBRIDConnectionProxy conn) {
-		/*		try {
-					conn.setSavepoint("pointname");
-				} catch (SQLException e) {
-					assertFalse(true);
-				}*/
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setTransactionIsolation(int)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetTransactionIsolation(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setTypeMap(java.util.Map)}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodSetTypeMap(CUBRIDConnectionProxy conn) {
-		try {
-			conn.setTypeMap(null);
-		} catch (UnsupportedOperationException e) {
-
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createArrayOf(java.lang.String, java.lang.Object[])}
-	 * .
-	 * 
-	 * @
-	 */
-	public void methodCreateArrayOf(CUBRIDConnectionProxy conn) {
-		try {
-			assertTrue(conn.createArrayOf(null, null) == null);
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getNewGLO(java.lang.String, java.io.InputStream)}
-	 * .
-	 */
-	public void methodGetNewGLOStringInputStream(CUBRIDConnectionProxy conn) {
-		//TODO
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getNewGLO(java.lang.String, java.io.InputStream, int)}
-	 * .
-	 */
-	public void methodGetNewGLOStringInputStreamInt(CUBRIDConnectionProxy conn) {
-		//TODO
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getProxyClass()}
-	 * .
-	 */
-	public void methodGetProxyClass(CUBRIDConnectionProxy conn) {
-		System.out.println("proxyed class:" + conn.getProxyClass().getName());
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getProxyObject()}
-	 * .
-	 */
-	public void methodGetProxyObject(CUBRIDConnectionProxy conn) {
-		System.out.println("proxyed class:"
-				+ conn.getProxyObject().getClass().getName());
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#logout()}.
-	 * 
-	 * @
-	 */
-	public void methodLogout(CUBRIDConnectionProxy conn) {
-		try {
-			conn.logout();
-		} catch (SQLException e) {
-			assertFalse(true);
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#newGloFbo(java.lang.String, java.lang.String)}
-	 * .
-	 */
-	public void methodNewGloFbo(CUBRIDConnectionProxy conn) {
-		//TODO
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#newGloLo(java.lang.String)}
-	 * .
-	 */
-	public void methodNewGloLo(CUBRIDConnectionProxy conn) {
-		//TODO
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createBlob()} .
-	 */
-	public void methodCreateBlob(CUBRIDConnectionProxy conn) throws SQLException {
-		Blob blob = conn.createBlob();
-		assertNotNull(blob);
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createClob()} .
-	 */
-	public void methodCreateClob(CUBRIDConnectionProxy conn) throws SQLException {
-		Clob clob = conn.createClob();
-		assertNotNull(clob);
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createNClob()}
-	 * .
-	 */
-	public void methodCreateNClob(CUBRIDConnectionProxy conn) throws SQLException {
-		try {
-			conn.createNClob();
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createSQLXML()}
-	 * .
-	 */
-	public void methodCreateSQLXML(CUBRIDConnectionProxy conn) throws SQLException {
-		try {
-			conn.createSQLXML();
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createStruct(String typeName, Object[] attributes)}
-	 * .
-	 */
-	public void methodCreateStruct(CUBRIDConnectionProxy conn) throws SQLException {
-		try {
-			conn.createStruct("test_struct", new Object[]{});
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getClientInfo()}
-	 * .
-	 */
-	public void methodGetClientInfo(CUBRIDConnectionProxy conn) throws SQLException {
-		try {
-			conn.getClientInfo();
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getClientInfo(String name)}
-	 * .
-	 */
-	public void methodGetClientInfo2(CUBRIDConnectionProxy conn) throws SQLException {
-		try {
-			conn.getClientInfo("cubrid");
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#isValid(int timeout)}
-	 * .
-	 */
-	public void methodIsValid(CUBRIDConnectionProxy conn) throws SQLException {
-		try {
-			conn.isValid(2000);
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setClientInfo(Properties properties)}
-	 * .
-	 */
-	public void methodSetClientInfo(CUBRIDConnectionProxy conn) throws SQLClientInfoException {
-		try {
-			conn.setClientInfo(new Properties());
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setClientInfo(String name, String value)}
-	 * .
-	 */
-	public void methodSetClientInfo2(CUBRIDConnectionProxy conn) throws SQLClientInfoException {
-		try {
-			conn.setClientInfo("cubrid", "cubrid");
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-	}
-
-	/**
-	 * Test method for {@link
-	 * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#isWrapperFor(Class<?>
-	 * iface)} .
-	 */
-	public void methodIsWrapperFor(CUBRIDConnectionProxy conn) throws SQLException {
-		try {
-			conn.isWrapperFor(CUBRIDConnectionProxy.class);
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-	}
-
-	/**
-	 * Test method for {@link
-	 * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#unwrap(Class<T>
-	 * iface)} .
-	 */
-	public void methodUnwrap(CUBRIDConnectionProxy conn) throws SQLException {
-		try {
-			conn.unwrap(CUBRIDConnectionProxy.class);
-		} catch (UnsupportedOperationException ue) {
-			ue.printStackTrace();
-		}
-	}
-
+public class CUBRIDConnectionProxyTest extends SetupEnv {
+
+    private static final String testTableName = "testCUBRIDConnectionProxy";
+
+    public void test() {
+        System.out.println("Test CUBRIDConnectionProxy class:");
+        for (ConnectionInfo connInfo : connInfoList) {
+            CUBRIDConnectionProxy conn = null;
+            System.out.println("Test connection url:" + connInfo.getConnectionUrl());
+            try {
+                CUBRIDDriverProxy driver = new CUBRIDDriverProxy(connInfo.getServerVersion());
+                Properties props = new Properties();
+                props.put("user", connInfo.getDbUser());
+                props.put(
+                        "password",
+                        connInfo.getDbUserPass() == null ? "" : connInfo.getDbUserPass());
+                conn = (CUBRIDConnectionProxy) driver.connect(connInfo.getConnectionUrl(), props);
+                assertTrue(conn != null);
+                // create test table
+                createTestTable(conn);
+                // test every method
+                methodGetMetaData(conn);
+                methodGetCatalog(conn);
+                methodGetTransactionIsolation(conn);
+                methodGetServerVersion(connInfo, conn);
+                methodSetServerVersion(connInfo, conn);
+                methodGetAutoCommit(conn);
+                methodCreateStatement(conn);
+                methodCreateStatementIntInt(conn);
+                methodCreateStatementIntIntInt(conn);
+                methodSetAutoCommit(conn);
+                methodGetTypeMap(conn);
+                methodIsReadOnly(conn);
+
+                methodGetHoldability(conn);
+                methodNativeSQL(conn);
+                methodIsReadOnly(conn);
+                methodPrepareCallString(conn);
+                methodPrepareCallStringIntInt(conn);
+                methodPrepareStatementString(conn);
+                methodPrepareStatementStringInt(conn);
+                methodPrepareStatementStringIntArray(conn);
+                methodPrepareStatementStringStringArray(conn);
+                methodPrepareStatementStringIntInt(conn);
+                methodPrepareStatementStringIntIntInt(conn);
+                methodReleaseSavepoint(conn);
+                methodRollback(conn);
+                methodRollbackSavepoint(conn);
+                methodSetAutoGeneratedKeys(conn);
+                methodSetCharset(conn);
+                methodSetLockTimeout(conn);
+                methodSetSignedConnection(conn);
+                methodSetAutoCommit(conn);
+                methodSetCatalog(conn);
+                methodSetHoldability(conn);
+                methodSetReadOnly(conn);
+                methodSetSavepoint(conn);
+                methodSetSavepointString(conn);
+                methodSetTransactionIsolation(conn);
+                methodSetTypeMap(conn);
+                methodCreateArrayOf(conn);
+                methodGetNewGLOStringInputStream(conn);
+                methodGetNewGLOStringInputStreamInt(conn);
+                methodGetProxyClass(conn);
+                methodGetProxyObject(conn);
+                methodLogout(conn);
+                methodNewGloFbo(conn);
+                methodNewGloLo(conn);
+                methodGetWarnings(conn);
+                methodClearWarnings(conn);
+
+                // new test cases for jdk1.6 jdbc interfaces
+                methodCreateBlob(conn);
+                methodCreateClob(conn);
+                methodCreateNClob(conn);
+                methodCreateSQLXML(conn);
+                methodCreateStruct(conn);
+                methodGetClientInfo(conn);
+                methodGetClientInfo2(conn);
+                methodIsValid(conn);
+                methodSetClientInfo(conn);
+                methodSetClientInfo2(conn);
+                methodIsWrapperFor(conn);
+                methodUnwrap(conn);
+                // drop test table
+                dropTestTable(conn);
+            } catch (Exception e) {
+                e.printStackTrace();
+                assertFalse(true);
+            } finally {
+                if (conn != null) {
+                    methodCommit(conn);
+                    methodClose(conn);
+                    methodIsClosed(conn);
+                }
+            }
+        }
+    }
+
+    private boolean createTestTable(Connection conn) {
+        String sql =
+                "create table \""
+                        + testTableName
+                        + "\" ("
+                        + "code integer,"
+                        + "name character varying(40)  NOT NULL "
+                        + ")";
+        return executeDDL(conn, sql);
+    }
+
+    private boolean dropTestTable(Connection conn) {
+        String sql = "drop table \"" + testTableName + "\"";
+        return executeDDL(conn, sql);
+    }
+
+    private void printDatabaseMeta(DatabaseMetaData metaData) {
+        System.out.println("DatabaseMetaData:");
+        try {
+            System.out.println("DatabaseMetaData url:" + metaData.getURL());
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    private void printTypeMap(Map<String, Class<?>> typeMap) {
+        if (typeMap != null) {
+            System.out.println("Type map:");
+            Iterator<Map.Entry<String, Class<?>>> it = typeMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Class<?>> entry = it.next();
+                System.out.println(entry.getKey() + "=" + entry.getValue().getName());
+            }
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getJdbcVersion()} .
+     */
+    public void methodGetServerVersion(ConnectionInfo connInfo, CUBRIDConnectionProxy conn) {
+        assertEquals(conn.getJdbcVersion(), connInfo.getServerVersion());
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setJdbcVersion(java.lang.String)} .
+     */
+    public void methodSetServerVersion(ConnectionInfo connInfo, CUBRIDConnectionProxy conn) {
+        conn.setJdbcVersion(connInfo.getServerVersion());
+        assertEquals(conn.getJdbcVersion(), connInfo.getServerVersion());
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#CUBRIDConnectionProxy(java.sql.Connection,
+     * java.lang.String)} .
+     */
+    public void methodCUBRIDConnectionProxy(CUBRIDConnectionProxy conn) {
+        new CUBRIDConnectionProxy(null, null);
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#clearWarnings()}
+     * . @
+     */
+    public void methodClearWarnings(CUBRIDConnectionProxy conn) {
+        try {
+            conn.clearWarnings();
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /** Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#close()}. @ */
+    public void methodClose(CUBRIDConnectionProxy conn) {
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /** Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#commit()}. @ */
+    public void methodCommit(CUBRIDConnectionProxy conn) {
+        try {
+            conn.commit();
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createStatement()}
+     * . @
+     */
+    public void methodCreateStatement(CUBRIDConnectionProxy conn) {
+        Statement stmt;
+        try {
+            stmt = conn.createStatement();
+            assertTrue(stmt != null);
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createStatement(int, int)} . @
+     */
+    public void methodCreateStatementIntInt(CUBRIDConnectionProxy conn) {
+        Statement stmt;
+        try {
+            stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            assertTrue(stmt != null);
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createStatement(int, int, int)} . @
+     */
+    public void methodCreateStatementIntIntInt(CUBRIDConnectionProxy conn) {
+        Statement stmt;
+        try {
+            stmt =
+                    conn.createStatement(
+                            ResultSet.TYPE_FORWARD_ONLY,
+                            ResultSet.CONCUR_READ_ONLY,
+                            ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getAutoCommit()}
+     * . @
+     */
+    public void methodGetAutoCommit(CUBRIDConnectionProxy conn) {
+        try {
+            assertTrue(conn.getAutoCommit());
+        } catch (SQLException e) {
+            assertFalse(true);
+            ;
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getCatalog()}. @
+     */
+    public void methodGetCatalog(CUBRIDConnectionProxy conn) {
+        String catalogName;
+        try {
+            catalogName = conn.getCatalog();
+            System.out.println("Connection Catalog Name:" + catalogName);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getHoldability()}
+     * . @
+     */
+    public void methodGetHoldability(CUBRIDConnectionProxy conn) {
+        try {
+            System.out.println("Connection Holdability:" + conn.getHoldability());
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getMetaData()}. @
+     */
+    public void methodGetMetaData(CUBRIDConnectionProxy conn) {
+        DatabaseMetaData meta;
+        try {
+            meta = conn.getMetaData();
+            assertTrue(meta != null);
+            printDatabaseMeta(meta);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getTransactionIsolation()} . @
+     */
+    public void methodGetTransactionIsolation(CUBRIDConnectionProxy conn) {
+        try {
+            System.out.println(
+                    "Connection Transaction Isolation:" + conn.getTransactionIsolation());
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getTypeMap()}. @
+     */
+    public void methodGetTypeMap(CUBRIDConnectionProxy conn) {
+        try {
+            Map<String, Class<?>> typeMap = conn.getTypeMap();
+            printTypeMap(typeMap);
+        } catch (UnsupportedOperationException e) {
+
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getWarnings()}. @
+     */
+    public void methodGetWarnings(CUBRIDConnectionProxy conn) {
+        try {
+            System.out.println("Connection Warning:" + conn.getWarnings());
+            assertTrue(conn.getWarnings() == null);
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    /** Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#isClosed()}. @ */
+    public void methodIsClosed(CUBRIDConnectionProxy conn) {
+        try {
+            assertTrue(conn.isClosed());
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#isReadOnly()}. @
+     */
+    public void methodIsReadOnly(CUBRIDConnectionProxy conn) {
+        try {
+            System.out.println("Connection Readonly:" + conn.isReadOnly());
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#nativeSQL(java.lang.String)} . @
+     */
+    public void methodNativeSQL(CUBRIDConnectionProxy conn) {
+        String sql = "select * from db_user";
+        try {
+            sql = conn.nativeSQL(sql);
+        } catch (UnsupportedOperationException e) {
+            assertTrue(true);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareCall(java.lang.String)} . @
+     */
+    public void methodPrepareCallString(CUBRIDConnectionProxy conn) {
+        // conn.prepareCall("");
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareCall(java.lang.String, int, int)} .
+     */
+    public void methodPrepareCallStringIntInt(CUBRIDConnectionProxy conn) {
+        // conn.prepareCall(sql, resultSetType, resultSetConcurrency);
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareCall(java.lang.String, int, int,
+     * int)} .
+     */
+    public void methodPrepareCallStringIntIntInt(CUBRIDConnectionProxy conn) {
+        // conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String)} . @
+     */
+    public void methodPrepareStatementString(CUBRIDConnectionProxy conn) {
+        try {
+            String sql = "select * from db_user where name=?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            assertTrue(stmt != null);
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, int)}
+     * . @
+     */
+    public void methodPrepareStatementStringInt(CUBRIDConnectionProxy conn) {
+        try {
+            String sql = "insert into \"" + testTableName + "\" values(?,'wo test ne');";
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.NO_GENERATED_KEYS);
+            assertTrue(stmt != null);
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, int[])}
+     * . @
+     */
+    public void methodPrepareStatementStringIntArray(CUBRIDConnectionProxy conn) {
+        try {
+            String sql = "insert into \"" + testTableName + "\" values(?,'wo test ne');";
+            PreparedStatement stmt = conn.prepareStatement(sql, new int[] {1});
+            assertTrue(stmt != null);
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String,
+     * java.lang.String[])} . @
+     */
+    public void methodPrepareStatementStringStringArray(CUBRIDConnectionProxy conn) {
+        try {
+            String sql = "insert into \"" + testTableName + "\" values(?,'wo test ne');";
+            PreparedStatement stmt = conn.prepareStatement(sql, new String[] {"code"});
+            assertTrue(stmt != null);
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, int,
+     * int)} . @
+     */
+    public void methodPrepareStatementStringIntInt(CUBRIDConnectionProxy conn) {
+        try {
+            String sql = "select * from db_user where name=?";
+            PreparedStatement stmt =
+                    conn.prepareStatement(
+                            sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            assertTrue(stmt != null);
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#prepareStatement(java.lang.String, int,
+     * int, int)} . @
+     */
+    public void methodPrepareStatementStringIntIntInt(CUBRIDConnectionProxy conn) {
+        try {
+            String sql = "select * from db_user where name=?";
+            PreparedStatement stmt =
+                    conn.prepareStatement(
+                            sql,
+                            ResultSet.TYPE_FORWARD_ONLY,
+                            ResultSet.CONCUR_READ_ONLY,
+                            ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            assertTrue(stmt != null);
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#releaseSavepoint(java.sql.Savepoint)} .
+     */
+    public void methodReleaseSavepoint(CUBRIDConnectionProxy conn) {
+        // TODO
+    }
+
+    /** Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#rollback()}. @ */
+    public void methodRollback(CUBRIDConnectionProxy conn) {
+        try {
+            conn.rollback();
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#rollback(java.sql.Savepoint)} .
+     */
+    public void methodRollbackSavepoint(CUBRIDConnectionProxy conn) {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setAutoGeneratedKeys(boolean)} . @
+     */
+    public void methodSetAutoGeneratedKeys(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setAutoGeneratedKeys(false);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setCharset(java.lang.String)} . @
+     *
+     * @throws UnsupportedEncodingException
+     */
+    public void methodSetCharset(CUBRIDConnectionProxy conn)
+            throws UnsupportedEncodingException, SQLException {
+        conn.setCharset("UTF-8");
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setLockTimeout(int)} . @
+     */
+    public void methodSetLockTimeout(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setLockTimeout(100);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setSignedConnection()} . @
+     */
+    public void methodSetSignedConnection(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setSignedConnection();
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setAutoCommit(boolean)} . @
+     */
+    public void methodSetAutoCommit(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setAutoCommit(false);
+            assertFalse(conn.getAutoCommit());
+        } catch (Exception e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setCatalog(java.lang.String)} . @
+     */
+    public void methodSetCatalog(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setCatalog(conn.getCatalog());
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setHoldability(int)} . @
+     */
+    public void methodSetHoldability(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setReadOnly(boolean)} . @
+     */
+    public void methodSetReadOnly(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setReadOnly(false);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setSavepoint()} . @
+     */
+    public void methodSetSavepoint(CUBRIDConnectionProxy conn) {
+        /*		try {
+        	conn.setSavepoint();
+        } catch (SQLException e) {
+        	assertFalse(true);
+        }*/
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setSavepoint(java.lang.String)} . @
+     */
+    public void methodSetSavepointString(CUBRIDConnectionProxy conn) {
+        /*		try {
+        	conn.setSavepoint("pointname");
+        } catch (SQLException e) {
+        	assertFalse(true);
+        }*/
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setTransactionIsolation(int)} . @
+     */
+    public void methodSetTransactionIsolation(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setTypeMap(java.util.Map)} . @
+     */
+    public void methodSetTypeMap(CUBRIDConnectionProxy conn) {
+        try {
+            conn.setTypeMap(null);
+        } catch (UnsupportedOperationException e) {
+
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createArrayOf(java.lang.String,
+     * java.lang.Object[])} . @
+     */
+    public void methodCreateArrayOf(CUBRIDConnectionProxy conn) {
+        try {
+            assertTrue(conn.createArrayOf(null, null) == null);
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getNewGLO(java.lang.String,
+     * java.io.InputStream)} .
+     */
+    public void methodGetNewGLOStringInputStream(CUBRIDConnectionProxy conn) {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getNewGLO(java.lang.String,
+     * java.io.InputStream, int)} .
+     */
+    public void methodGetNewGLOStringInputStreamInt(CUBRIDConnectionProxy conn) {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getProxyClass()} .
+     */
+    public void methodGetProxyClass(CUBRIDConnectionProxy conn) {
+        System.out.println("proxyed class:" + conn.getProxyClass().getName());
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getProxyObject()} .
+     */
+    public void methodGetProxyObject(CUBRIDConnectionProxy conn) {
+        System.out.println("proxyed class:" + conn.getProxyObject().getClass().getName());
+    }
+
+    /** Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#logout()}. @ */
+    public void methodLogout(CUBRIDConnectionProxy conn) {
+        try {
+            conn.logout();
+        } catch (SQLException e) {
+            assertFalse(true);
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#newGloFbo(java.lang.String,
+     * java.lang.String)} .
+     */
+    public void methodNewGloFbo(CUBRIDConnectionProxy conn) {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#newGloLo(java.lang.String)} .
+     */
+    public void methodNewGloLo(CUBRIDConnectionProxy conn) {
+        // TODO
+    }
+
+    /** Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createBlob()} . */
+    public void methodCreateBlob(CUBRIDConnectionProxy conn) throws SQLException {
+        Blob blob = conn.createBlob();
+        assertNotNull(blob);
+    }
+
+    /** Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createClob()} . */
+    public void methodCreateClob(CUBRIDConnectionProxy conn) throws SQLException {
+        Clob clob = conn.createClob();
+        assertNotNull(clob);
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createNClob()} .
+     */
+    public void methodCreateNClob(CUBRIDConnectionProxy conn) throws SQLException {
+        try {
+            conn.createNClob();
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createSQLXML()} .
+     */
+    public void methodCreateSQLXML(CUBRIDConnectionProxy conn) throws SQLException {
+        try {
+            conn.createSQLXML();
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#createStruct(String
+     * typeName, Object[] attributes)} .
+     */
+    public void methodCreateStruct(CUBRIDConnectionProxy conn) throws SQLException {
+        try {
+            conn.createStruct("test_struct", new Object[] {});
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getClientInfo()} .
+     */
+    public void methodGetClientInfo(CUBRIDConnectionProxy conn) throws SQLException {
+        try {
+            conn.getClientInfo();
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#getClientInfo(String name)} .
+     */
+    public void methodGetClientInfo2(CUBRIDConnectionProxy conn) throws SQLException {
+        try {
+            conn.getClientInfo("cubrid");
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#isValid(int
+     * timeout)} .
+     */
+    public void methodIsValid(CUBRIDConnectionProxy conn) throws SQLException {
+        try {
+            conn.isValid(2000);
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setClientInfo(Properties properties)} .
+     */
+    public void methodSetClientInfo(CUBRIDConnectionProxy conn) throws SQLClientInfoException {
+        try {
+            conn.setClientInfo(new Properties());
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#setClientInfo(String name, String value)}
+     * .
+     */
+    public void methodSetClientInfo2(CUBRIDConnectionProxy conn) throws SQLClientInfoException {
+        try {
+            conn.setClientInfo("cubrid", "cubrid");
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link
+     * com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#isWrapperFor(Class<?> iface)} .
+     */
+    public void methodIsWrapperFor(CUBRIDConnectionProxy conn) throws SQLException {
+        try {
+            conn.isWrapperFor(CUBRIDConnectionProxy.class);
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
+
+    /**
+     * Test method for {@link com.cubrid.jdbc.proxy.driver.CUBRIDConnectionProxy#unwrap(Class<T>
+     * iface)} .
+     */
+    public void methodUnwrap(CUBRIDConnectionProxy conn) throws SQLException {
+        try {
+            conn.unwrap(CUBRIDConnectionProxy.class);
+        } catch (UnsupportedOperationException ue) {
+            ue.printStackTrace();
+        }
+    }
 }

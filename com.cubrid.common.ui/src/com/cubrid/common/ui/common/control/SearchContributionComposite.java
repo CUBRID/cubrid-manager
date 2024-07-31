@@ -29,6 +29,10 @@
  */
 package com.cubrid.common.ui.common.control;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.common.Messages;
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -48,114 +52,115 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.common.Messages;
-
 /**
  * The Search Contribution
  *
  * @author Kevin.Wang
  * @version 1.0 - Apr 23, 2012 created by Kevin.Wang
  */
-public class SearchContributionComposite extends
-		Composite {
-	private static final Logger LOGGER = LogUtil.getLogger(SearchContributionComposite.class);
-	private Text text;
-	private Button searchButton;
+public class SearchContributionComposite extends Composite {
+    private static final Logger LOGGER = LogUtil.getLogger(SearchContributionComposite.class);
+    private Text text;
+    private Button searchButton;
 
-	/**
-	 * SearchContributionComposite constructor
-	 *
-	 * @param parent
-	 * @param style
-	 */
-	public SearchContributionComposite(Composite parent, int style) {
-		super(parent, style);
-		setLayout(new FillLayout());
+    /**
+     * SearchContributionComposite constructor
+     *
+     * @param parent
+     * @param style
+     */
+    public SearchContributionComposite(Composite parent, int style) {
+        super(parent, style);
+        setLayout(new FillLayout());
 
-		boolean isMac = Util.isMac();
-		final Composite group = isMac ? new Composite(this, SWT.None) : new Group(this, SWT.None);
-		group.setLayout(new GridLayout(5, false));
+        boolean isMac = Util.isMac();
+        final Composite group = isMac ? new Composite(this, SWT.None) : new Group(this, SWT.None);
+        group.setLayout(new GridLayout(5, false));
 
-		text = new Text(group, SWT.FILL | SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL);
-		text.setToolTipText(Messages.lblSearchDesc);
-		final GridData gridData = new GridData();
-		gridData.widthHint = 190;
-		text.setLayoutData(gridData);
-		text.setMessage(Messages.msgSearchKeyword);
+        text = new Text(group, SWT.FILL | SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL);
+        text.setToolTipText(Messages.lblSearchDesc);
+        final GridData gridData = new GridData();
+        gridData.widthHint = 190;
+        text.setLayoutData(gridData);
+        text.setMessage(Messages.msgSearchKeyword);
 
-		text.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
-				// Handle the press of the Enter key in the locationText.
-				// This will browse to the entered text.
-				if (e.character == SWT.LF || e.character == SWT.CR) {
-					e.doit = false;
-					processSearch();
-				}
-			}
-		});
+        text.addKeyListener(
+                new KeyAdapter() {
+                    public void keyPressed(KeyEvent e) {
+                        // Handle the press of the Enter key in the locationText.
+                        // This will browse to the entered text.
+                        if (e.character == SWT.LF || e.character == SWT.CR) {
+                            e.doit = false;
+                            processSearch();
+                        }
+                    }
+                });
 
-		if (!isMac) {
-			searchButton = new Button(group, SWT.None);
-			searchButton.setImage(CommonUIPlugin.getImage("icons/control/search.png"));
-			searchButton.setToolTipText(Messages.btnSearchTooltip);
-			searchButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					processSearch();
-				}
-			});
-		}
-	}
+        if (!isMac) {
+            searchButton = new Button(group, SWT.None);
+            searchButton.setImage(CommonUIPlugin.getImage("icons/control/search.png"));
+            searchButton.setToolTipText(Messages.btnSearchTooltip);
+            searchButton.addSelectionListener(
+                    new SelectionAdapter() {
+                        public void widgetSelected(SelectionEvent e) {
+                            processSearch();
+                        }
+                    });
+        }
+    }
 
-	public void processSearch() {
-		if (text.getText().length() == 0) {
-			return;
-		}
+    public void processSearch() {
+        if (text.getText().length() == 0) {
+            return;
+        }
 
-		String key = StringUtil.urlencode(text.getText(), "UTF-8");
-		if (key == null) {
-			LOGGER.error("Encode key word error");
-			return;
-		}
+        String key = StringUtil.urlencode(text.getText(), "UTF-8");
+        if (key == null) {
+            LOGGER.error("Encode key word error");
+            return;
+        }
 
-		String url = getUrl(key);
-		BrowserEditorPart browserViewPart = null;
+        String url = getUrl(key);
+        BrowserEditorPart browserViewPart = null;
 
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		IEditorReference[] editorReferences = window.getActivePage().getEditorReferences();
-		for (IEditorReference reference : editorReferences) {
-			if (reference.getId().equals(BrowserEditorPart.ID)) {
-				browserViewPart = (BrowserEditorPart) reference.getEditor(true);
-			}
-		}
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        IEditorReference[] editorReferences = window.getActivePage().getEditorReferences();
+        for (IEditorReference reference : editorReferences) {
+            if (reference.getId().equals(BrowserEditorPart.ID)) {
+                browserViewPart = (BrowserEditorPart) reference.getEditor(true);
+            }
+        }
 
-		if (browserViewPart == null) {
-			try {
-				browserViewPart = (BrowserEditorPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-						new BrowserEditorPartInput(), BrowserEditorPart.ID);
-			} catch (PartInitException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-		if (browserViewPart != null) {
-			browserViewPart.go(url);
-			// For bug TOOLS-1014
-			window.getActivePage().activate(browserViewPart);
-		}
-	}
+        if (browserViewPart == null) {
+            try {
+                browserViewPart =
+                        (BrowserEditorPart)
+                                PlatformUI.getWorkbench()
+                                        .getActiveWorkbenchWindow()
+                                        .getActivePage()
+                                        .openEditor(
+                                                new BrowserEditorPartInput(), BrowserEditorPart.ID);
+            } catch (PartInitException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+        if (browserViewPart != null) {
+            browserViewPart.go(url);
+            // For bug TOOLS-1014
+            window.getActivePage().activate(browserViewPart);
+        }
+    }
 
-	/**
-	 * Get the url
-	 *
-	 * @param keyword
-	 * @return
-	 */
-	private String getUrl(String keyword) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(Messages.urlSearch);
-		sb.append(keyword);
-		return sb.toString();
-	}
+    /**
+     * Get the url
+     *
+     * @param keyword
+     * @return
+     */
+    private String getUrl(String keyword) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Messages.urlSearch);
+        sb.append(keyword);
+        return sb.toString();
+    }
 }

@@ -31,6 +31,7 @@ package com.cubrid.common.ui.common.control;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -42,76 +43,73 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * This is web browser editor part
  *
  * @author Isaiah Choe
  * @version 1.0 - Apr 23, 2012 created by Isaiah Choe
  */
-public class NewFeatureEditorPart extends
-		EditorPart {
-	public final static String ID = "com.cubrid.common.ui.common.control.NewFeatureEditorPart";
-	private Browser browser;
+public class NewFeatureEditorPart extends EditorPart {
+    public static final String ID = "com.cubrid.common.ui.common.control.NewFeatureEditorPart";
+    private Browser browser;
 
-	public void createPartControl(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginBottom = 0;
-		layout.marginTop = 0;
-		layout.marginLeft = 0;
-		layout.marginRight = 0;
+    public void createPartControl(Composite parent) {
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 1;
+        layout.marginBottom = 0;
+        layout.marginTop = 0;
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
 
-		parent.setLayout(layout);
+        parent.setLayout(layout);
 
-		browser = new Browser(parent, SWT.None);
-		browser.setLayoutData(CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, -1));
-	}
+        browser = new Browser(parent, SWT.None);
+        browser.setLayoutData(CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, -1));
+    }
 
-	public void setFocus() {
-		noOp();
-	}
+    public void setFocus() {
+        noOp();
+    }
 
-	public void go(String url) {
-		browser.setUrl(url);
-	}
+    public void go(String url) {
+        browser.setUrl(url);
+    }
 
-	public void refresh() {
-		browser.refresh();
-	}
+    public void refresh() {
+        browser.refresh();
+    }
 
-	public void back() {
-		browser.back();
-	}
+    public void back() {
+        browser.back();
+    }
 
-	public void forward() {
-		browser.forward();
-	}
+    public void forward() {
+        browser.forward();
+    }
 
-	public void stop() {
-		browser.stop();
-	}
+    public void stop() {
+        browser.stop();
+    }
 
-	public void doSave(IProgressMonitor monitor) {
-		noOp();
-	}
+    public void doSave(IProgressMonitor monitor) {
+        noOp();
+    }
 
-	public void doSaveAs() {
-		noOp();
-	}
+    public void doSaveAs() {
+        noOp();
+    }
 
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		setSite(site);
-		setInput(input);
-		setTitleToolTip(input.getToolTipText());
-	}
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        setSite(site);
+        setInput(input);
+        setTitleToolTip(input.getToolTipText());
+    }
 
-	public boolean isDirty() {
-		return false;
-	}
+    public boolean isDirty() {
+        return false;
+    }
 
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
+    public boolean isSaveAsAllowed() {
+        return false;
+    }
 }

@@ -27,11 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.broker.action;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.DefaultCubridNode;
@@ -47,6 +42,10 @@ import com.cubrid.cubridmanager.core.common.model.ServerUserInfo;
 import com.cubrid.cubridmanager.ui.broker.Messages;
 import com.cubrid.cubridmanager.ui.spi.model.CubridBroker;
 import com.cubrid.cubridmanager.ui.spi.model.CubridBrokerFolder;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Restart broker
@@ -55,78 +54,78 @@ import com.cubrid.cubridmanager.ui.spi.model.CubridBrokerFolder;
  * @version 1.0 - 2012-10-8 created by fulei
  */
 public class RestartBrokerAction extends SelectionAction {
-	public static final String ID = RestartBrokerAction.class.getName();
+    public static final String ID = RestartBrokerAction.class.getName();
 
-	public RestartBrokerAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
+    public RestartBrokerAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	}
+    protected RestartBrokerAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	protected RestartBrokerAction(Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    public void run() {
+        final Object[] obj = this.getSelectedObj();
+        DefaultCubridNode selection = (DefaultCubridNode) obj[0];
+        if (selection == null || selection.getServer() == null) {
+            return;
+        }
 
-	public void run() {
-		final Object[] obj = this.getSelectedObj();
-		DefaultCubridNode selection = (DefaultCubridNode) obj[0];
-		if (selection == null || selection.getServer() == null) {
-			return;
-		}
+        ServerInfo serverInfo = selection.getServer().getServerInfo();
+        if (serverInfo == null) {
+            return;
+        }
 
-		ServerInfo serverInfo = selection.getServer().getServerInfo();
-		if (serverInfo == null) {
-			return;
-		}
+        // stop first
+        StopBrokerTask stopTask = new StopBrokerTask(serverInfo);
+        stopTask.setBrokerName(selection.getLabel());
 
-		//stop first
-		StopBrokerTask stopTask = new StopBrokerTask(serverInfo);
-		stopTask.setBrokerName(selection.getLabel());
+        // then start again
+        StartBrokerTask startTask = new StartBrokerTask(serverInfo);
+        startTask.setBrokerName(selection.getLabel());
 
-		//then start again
-		StartBrokerTask startTask = new StartBrokerTask(serverInfo);
-		startTask.setBrokerName(selection.getLabel());
+        final String taskName = Messages.bind(Messages.restartBrokerTaskName, selection.getLabel());
+        TaskExecutor taskExecutor = new CommonTaskExec(taskName);
+        taskExecutor.addTask(stopTask);
+        taskExecutor.addTask(startTask);
 
-		final String taskName = Messages.bind(Messages.restartBrokerTaskName, selection.getLabel());
-		TaskExecutor taskExecutor = new CommonTaskExec(taskName);
-		taskExecutor.addTask(stopTask);
-		taskExecutor.addTask(startTask);
+        new ExecTaskWithProgress(taskExecutor).exec();
+        if (!taskExecutor.isSuccess()) {
+            return;
+        }
 
-		new ExecTaskWithProgress(taskExecutor).exec();
-		if (!taskExecutor.isSuccess()) {
-			return;
-		}
+        TreeViewer treeViewer = (TreeViewer) this.getSelectionProvider();
+        CommonUITool.refreshNavigatorTree(treeViewer, selection.getParent());
+        ActionManager.getInstance().fireSelectionChanged(getSelection());
+    }
 
-		TreeViewer treeViewer = (TreeViewer) this.getSelectionProvider();
-		CommonUITool.refreshNavigatorTree(treeViewer, selection.getParent());
-		ActionManager.getInstance().fireSelectionChanged(getSelection());
-	}
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    public boolean isSupported(Object obj) {
+        return isSupportedNode(obj);
+    }
 
-	public boolean isSupported(Object obj) {
-		return isSupportedNode(obj);
-	}
+    public static boolean isSupportedNode(Object obj) {
+        if (obj instanceof CubridBroker) {
+            CubridBroker selection = ((CubridBroker) obj);
+            if (selection.getServer() == null || selection.getServer().getServerInfo() == null) {
+                return false;
+            }
 
-	public static boolean isSupportedNode(Object obj) {
-		if (obj instanceof CubridBroker) {
-			CubridBroker selection = ((CubridBroker) obj);
-			if (selection.getServer() == null || selection.getServer().getServerInfo() == null) {
-				return false;
-			}
+            ServerUserInfo userInfo = selection.getServer().getServerInfo().getLoginedUserInfo();
+            if (userInfo == null || CasAuthType.AUTH_ADMIN != userInfo.getCasAuth()) {
+                return false;
+            }
 
-			ServerUserInfo userInfo = selection.getServer().getServerInfo().getLoginedUserInfo();
-			if (userInfo == null || CasAuthType.AUTH_ADMIN != userInfo.getCasAuth()) {
-				return false;
-			}
+            CubridBrokerFolder parent = (CubridBrokerFolder) (selection.getParent());
+            return parent.isRunning() && selection.isRunning();
+        }
 
-			CubridBrokerFolder parent = (CubridBrokerFolder) (selection.getParent());
-			return parent.isRunning() && selection.isRunning();
-		}
-
-		return false;
-	}
+        return false;
+    }
 }

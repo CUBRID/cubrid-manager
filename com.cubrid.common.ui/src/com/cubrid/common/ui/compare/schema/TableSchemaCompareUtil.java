@@ -27,16 +27,6 @@
  */
 package com.cubrid.common.ui.compare.schema;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.TableDetailInfo;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.compare.schema.model.TableSchemaCompareModel;
@@ -44,6 +34,14 @@ import com.cubrid.common.ui.compare.schema.model.TableSchemaModel;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.progress.OpenTablesDetailInfoPartProgress;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.slf4j.Logger;
 
 /**
  * Table Schema Compare Util
@@ -52,103 +50,97 @@ import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
  * @version 1.0 - 2012.10.10 created by Ray Yin
  */
 public class TableSchemaCompareUtil {
-	private static final Logger LOGGER = LogUtil.getLogger(TableSchemaCompareUtil.class);
+    private static final Logger LOGGER = LogUtil.getLogger(TableSchemaCompareUtil.class);
 
-	/**
-	 * The constructor
-	 */
-	private TableSchemaCompareUtil() {
-	}
+    /** The constructor */
+    private TableSchemaCompareUtil() {}
 
-	/**
-	 * Create a TableSchemaCompareModel for two database tables
-	 *
-	 * @param sourceDB
-	 * @param targetDB
-	 * @param sourceTableInfoList
-	 * @param targetTableInfoList
-	 * @return
-	 */
-	public static TableSchemaCompareModel createTableSchemaCompareModel(
-			CubridDatabase sourceDB, CubridDatabase targetDB,
-			List<TableDetailInfo> sourceTableInfoList,
-			List<TableDetailInfo> targetTableInfoList) {
-		TableSchemaModel left = createTableSchemaModel(sourceTableInfoList);
-		TableSchemaModel right = createTableSchemaModel(targetTableInfoList);
+    /**
+     * Create a TableSchemaCompareModel for two database tables
+     *
+     * @param sourceDB
+     * @param targetDB
+     * @param sourceTableInfoList
+     * @param targetTableInfoList
+     * @return
+     */
+    public static TableSchemaCompareModel createTableSchemaCompareModel(
+            CubridDatabase sourceDB,
+            CubridDatabase targetDB,
+            List<TableDetailInfo> sourceTableInfoList,
+            List<TableDetailInfo> targetTableInfoList) {
+        TableSchemaModel left = createTableSchemaModel(sourceTableInfoList);
+        TableSchemaModel right = createTableSchemaModel(targetTableInfoList);
 
-		TableSchemaComparator comparator = new TableSchemaComparator(sourceDB,
-				targetDB);
-		TableSchemaCompareModel root = comparator.compare(left, right);
-		root.setSourceDB(sourceDB);
-		root.setTargetDB(targetDB);
+        TableSchemaComparator comparator = new TableSchemaComparator(sourceDB, targetDB);
+        TableSchemaCompareModel root = comparator.compare(left, right);
+        root.setSourceDB(sourceDB);
+        root.setTargetDB(targetDB);
 
-		return root;
-	}
+        return root;
+    }
 
-	public static TableSchemaModel createTableSchemaModel(
-			List<TableDetailInfo> TableInfoList) {
-		TableSchemaModel tableSchemaModel = new TableSchemaModel();
+    public static TableSchemaModel createTableSchemaModel(List<TableDetailInfo> TableInfoList) {
+        TableSchemaModel tableSchemaModel = new TableSchemaModel();
 
-		for (TableDetailInfo tableInfo : TableInfoList) {
-			tableSchemaModel.setTableSchemaMap(tableInfo.getTableName(), "");
-			tableSchemaModel.setTableDetailInfoMap(tableInfo.getTableName(),
-					tableInfo);
-		}
+        for (TableDetailInfo tableInfo : TableInfoList) {
+            tableSchemaModel.setTableSchemaMap(tableInfo.getTableName(), "");
+            tableSchemaModel.setTableDetailInfoMap(tableInfo.getTableName(), tableInfo);
+        }
 
-		return tableSchemaModel;
-	}
+        return tableSchemaModel;
+    }
 
-	/**
-	 * Returns all tables detail of a database
-	 *
-	 * @param db
-	 * @return
-	 */
-	public static List<TableDetailInfo> getTableInfoList(CubridDatabase db) { // FIXME logic code move to core module
-		if (db.isVirtual()) {
-			return new ArrayList<TableDetailInfo>();
-		}
+    /**
+     * Returns all tables detail of a database
+     *
+     * @param db
+     * @return
+     */
+    public static List<TableDetailInfo> getTableInfoList(
+            CubridDatabase db) { // FIXME logic code move to core module
+        if (db.isVirtual()) {
+            return new ArrayList<TableDetailInfo>();
+        }
 
-		OpenTablesDetailInfoPartProgress progress = new OpenTablesDetailInfoPartProgress(
-				db);
+        OpenTablesDetailInfoPartProgress progress = new OpenTablesDetailInfoPartProgress(db);
 
-		List<TableDetailInfo> tableList = null;
-		Connection conn = null;
-		try {
-			conn = JDBCConnectionManager.getConnection(db.getDatabaseInfo(),
-					true);
-			Map<String, TableDetailInfo> map = new HashMap<String, TableDetailInfo>();
+        List<TableDetailInfo> tableList = null;
+        Connection conn = null;
+        try {
+            conn = JDBCConnectionManager.getConnection(db.getDatabaseInfo(), true);
+            Map<String, TableDetailInfo> map = new HashMap<String, TableDetailInfo>();
 
-			if (!progress.loadUserSchemaList(conn, map)) {
-				return null;
-			}
+            if (!progress.loadUserSchemaList(conn, map)) {
+                return null;
+            }
 
-			tableList = new ArrayList<TableDetailInfo>();
-			Set<String> tableNameSet = map.keySet();
-			if (tableNameSet != null) {
-				List<String> tableNames = new ArrayList<String>();
-				for (String tableName : tableNameSet) {
+            tableList = new ArrayList<TableDetailInfo>();
+            Set<String> tableNameSet = map.keySet();
+            if (tableNameSet != null) {
+                List<String> tableNames = new ArrayList<String>();
+                for (String tableName : tableNameSet) {
 
-					tableNames.add(tableName);
-				}
+                    tableNames.add(tableName);
+                }
 
-				Collections.sort(tableNames);
+                Collections.sort(tableNames);
 
-				for (String tableName : tableNames) {
-					TableDetailInfo info = map.get(tableName);
-					String classType = info.getClassType();
+                for (String tableName : tableNames) {
+                    TableDetailInfo info = map.get(tableName);
+                    String classType = info.getClassType();
 
-					if (classType.equals("CLASS") || classType.equals("VCLASS")) {
-						info.setRecordsCount(-1);
-						tableList.add(info);
-					}
-				}
-			}
-		} catch (Exception e) {
-			tableList = null;
-			LOGGER.error(e.getMessage(), e);
-		}
+                    if (classType.equals("CLASS") || classType.equals("VCLASS")) {
+                        info.setRecordsCount(-1);
+                        tableList.add(info);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            tableList = null;
+            LOGGER.error(e.getMessage(), e);
+        }
 
-		return tableList;
-	}
+        return tableList;
+    }
 }

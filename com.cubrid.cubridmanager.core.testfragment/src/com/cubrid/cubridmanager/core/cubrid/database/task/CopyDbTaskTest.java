@@ -6,144 +6,125 @@ import com.cubrid.cubridmanager.core.SystemParameter;
 import com.cubrid.cubridmanager.core.common.model.OnOffType;
 import com.cubrid.cubridmanager.core.utils.ModelUtil.YesNoType;
 
-public class CopyDbTaskTest extends
-		SetupEnvTestCase {
+public class CopyDbTaskTest extends SetupEnvTestCase {
 
-	public void testCopyExistDB() {
+    public void testCopyExistDB() {
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		System.out.println("<database.copydb.001.req.txt>");
+        System.out.println("<database.copydb.001.req.txt>");
 
-		CopyDbTask task = new CopyDbTask(serverInfo);
-		task.setSrcdbname("demodb");
-		task.setDestdbname("newdb");
-		task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setOverwrite(YesNoType.N);
-		task.setMove(YesNoType.N);
-		task.setAdvanced(OnOffType.OFF);
+        CopyDbTask task = new CopyDbTask(serverInfo);
+        task.setSrcdbname("demodb");
+        task.setDestdbname("newdb");
+        task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setOverwrite(YesNoType.N);
+        task.setMove(YesNoType.N);
+        task.setAdvanced(OnOffType.OFF);
 
-		task.execute();
-		assertNull(task.getErrorMsg());
+        task.execute();
+        assertNull(task.getErrorMsg());
+    }
 
-	}
+    public void testCopyTargetExistDB() {
 
-	public void testCopyTargetExistDB() {
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        System.out.println("<database.copydb.002.req.txt>");
 
-		System.out.println("<database.copydb.002.req.txt>");
+        CopyDbTask task = new CopyDbTask(serverInfo);
+        task.setSrcdbname("existdb");
+        task.setDestdbname("newdb");
+        task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setOverwrite(YesNoType.Y);
+        task.setMove(YesNoType.N);
+        task.setAdvanced(OnOffType.OFF);
 
-		CopyDbTask task = new CopyDbTask(serverInfo);
-		task.setSrcdbname("existdb");
-		task.setDestdbname("newdb");
-		task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setOverwrite(YesNoType.Y);
-		task.setMove(YesNoType.N);
-		task.setAdvanced(OnOffType.OFF);
+        task.execute();
+        assertNull(task.getErrorMsg());
+    }
 
-		task.execute();
-		assertNull(task.getErrorMsg());
+    public void testCopyDbEmptyDestPath() {
 
-	}
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-	public void testCopyDbEmptyDestPath() {
+        System.out.println("<database.copydb.003.req.txt>");
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        CopyDbTask task = new CopyDbTask(serverInfo);
+        task.setSrcdbname("demodb");
+        task.setDestdbname("newdb");
+        task.setDestdbpath(null);
+        task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setOverwrite(YesNoType.N);
+        task.setMove(YesNoType.N);
+        task.setAdvanced(OnOffType.OFF);
 
-		System.out.println("<database.copydb.003.req.txt>");
+        task.execute();
+        assertNotNull(task.getErrorMsg());
+    }
 
-		CopyDbTask task = new CopyDbTask(serverInfo);
-		task.setSrcdbname("demodb");
-		task.setDestdbname("newdb");
-		task.setDestdbpath(null);
-		task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setOverwrite(YesNoType.N);
-		task.setMove(YesNoType.N);
-		task.setAdvanced(OnOffType.OFF);
+    public void testCopyDbEmptyExvolPath() {
 
-		task.execute();
-		assertNotNull(task.getErrorMsg());
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-	}
+        System.out.println("<database.copydb.004.req.txt>");
 
-	public void testCopyDbEmptyExvolPath() {
+        CopyDbTask task = new CopyDbTask(serverInfo);
+        task.setSrcdbname("demodb");
+        task.setDestdbname("newdb");
+        task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setExvolpath(null);
+        task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setOverwrite(YesNoType.N);
+        task.setMove(YesNoType.N);
+        task.setAdvanced(OnOffType.OFF);
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        task.execute();
+        assertNotNull(task.getErrorMsg());
+    }
 
-		System.out.println("<database.copydb.004.req.txt>");
+    public void testCopyDbEmptyLogPath() {
 
-		CopyDbTask task = new CopyDbTask(serverInfo);
-		task.setSrcdbname("demodb");
-		task.setDestdbname("newdb");
-		task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setExvolpath(null);
-		task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setOverwrite(YesNoType.N);
-		task.setMove(YesNoType.N);
-		task.setAdvanced(OnOffType.OFF);
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		task.execute();
-		assertNotNull(task.getErrorMsg());
+        System.out.println("<database.copydb.005.req.txt>");
 
-	}
+        CopyDbTask task = new CopyDbTask(serverInfo);
+        task.setSrcdbname("demodb");
+        task.setDestdbname("newdb");
+        task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setLogpath(null);
+        task.setOverwrite(YesNoType.N);
+        task.setMove(YesNoType.N);
+        task.setAdvanced(OnOffType.OFF);
 
-	public void testCopyDbEmptyLogPath() {
+        task.execute();
+        assertNotNull(task.getErrorMsg());
+    }
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+    public void testCopyNotExistDB() {
 
-		System.out.println("<database.copydb.005.req.txt>");
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		CopyDbTask task = new CopyDbTask(serverInfo);
-		task.setSrcdbname("demodb");
-		task.setDestdbname("newdb");
-		task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setLogpath(null);
-		task.setOverwrite(YesNoType.N);
-		task.setMove(YesNoType.N);
-		task.setAdvanced(OnOffType.OFF);
+        System.out.println("<database.copydb.006.req.txt>");
 
-		task.execute();
-		assertNotNull(task.getErrorMsg());
+        CopyDbTask task = new CopyDbTask(serverInfo);
+        task.setSrcdbname("notexistdb");
+        task.setDestdbname("newdb");
+        task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
+        task.setOverwrite(YesNoType.N);
+        task.setMove(YesNoType.N);
+        task.setAdvanced(OnOffType.OFF);
 
-	}
-
-	public void testCopyNotExistDB() {
-
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
-
-		System.out.println("<database.copydb.006.req.txt>");
-
-		CopyDbTask task = new CopyDbTask(serverInfo);
-		task.setSrcdbname("notexistdb");
-		task.setDestdbname("newdb");
-		task.setDestdbpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setExvolpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setLogpath("/opt/frameworks/cubrid/databases/newdb");
-		task.setOverwrite(YesNoType.N);
-		task.setMove(YesNoType.N);
-		task.setAdvanced(OnOffType.OFF);
-
-		task.execute();
-		assertNotNull(task.getErrorMsg());
-
-	}
+        task.execute();
+        assertNotNull(task.getErrorMsg());
+    }
 }

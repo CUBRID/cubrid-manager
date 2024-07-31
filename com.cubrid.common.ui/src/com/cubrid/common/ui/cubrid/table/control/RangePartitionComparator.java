@@ -29,11 +29,10 @@
  */
 package com.cubrid.common.ui.cubrid.table.control;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
 import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * The range partition expression value comparator
@@ -41,42 +40,39 @@ import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
  * @author pangqiren
  * @version 1.0 - 2010-3-12 created by pangqiren
  */
-public class RangePartitionComparator implements
-		Comparator<PartitionInfo>,
-		Serializable { // FIXME move this logic to core module
+public class RangePartitionComparator
+        implements Comparator<PartitionInfo>, Serializable { // FIXME move this logic to core module
 
-	private static final long serialVersionUID = -8678700348438262739L;
-	private final String columnType;
+    private static final long serialVersionUID = -8678700348438262739L;
+    private final String columnType;
 
-	public RangePartitionComparator(String dataType) {
-		this.columnType = dataType;
-	}
+    public RangePartitionComparator(String dataType) {
+        this.columnType = dataType;
+    }
 
-	/**
-	 * Compare the two partition information
-	 *
-	 * @param o1 the first object to be compared.
-	 * @param o2 the second object to be compared.
-	 * @return a negative integer, zero, or a positive integer as the first
-	 *         argument is less than, equal to, or greater than the second.
-	 */
-	public int compare(PartitionInfo o1, PartitionInfo o2) {
-		String str1 = o1.getPartitionValues() == null ? null
-				: o1.getPartitionValues().get(1);
-		String str2 = o2.getPartitionValues() == null ? null
-				: o2.getPartitionValues().get(1);
-		return compareData(str1, str2);
-	}
+    /**
+     * Compare the two partition information
+     *
+     * @param o1 the first object to be compared.
+     * @param o2 the second object to be compared.
+     * @return a negative integer, zero, or a positive integer as the first argument is less than,
+     *     equal to, or greater than the second.
+     */
+    public int compare(PartitionInfo o1, PartitionInfo o2) {
+        String str1 = o1.getPartitionValues() == null ? null : o1.getPartitionValues().get(1);
+        String str2 = o2.getPartitionValues() == null ? null : o2.getPartitionValues().get(1);
+        return compareData(str1, str2);
+    }
 
-	/**
-	 * Compare the two expression value
-	 *
-	 * @param str1 the first object to be compared.
-	 * @param str2 the second object to be compared.
-	 * @return a negative integer, zero, or a positive integer as the first
-	 *         argument is less than, equal to, or greater than the second.
-	 */
-	public int compareData(String str1, String str2) {
-		return FieldHandlerUtils.compareData(columnType, str1, str2);
-	}
+    /**
+     * Compare the two expression value
+     *
+     * @param str1 the first object to be compared.
+     * @param str2 the second object to be compared.
+     * @return a negative integer, zero, or a positive integer as the first argument is less than,
+     *     equal to, or greater than the second.
+     */
+    public int compareData(String str1, String str2) {
+        return FieldHandlerUtils.compareData(columnType, str1, str2);
+    }
 }

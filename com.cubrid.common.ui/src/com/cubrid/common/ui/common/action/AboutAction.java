@@ -27,12 +27,11 @@
  */
 package com.cubrid.common.ui.common.action;
 
+import com.cubrid.common.ui.common.dialog.AboutDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-
-import com.cubrid.common.ui.common.dialog.AboutDialog;
 
 /**
  * Open the about dialog
@@ -42,33 +41,37 @@ import com.cubrid.common.ui.common.dialog.AboutDialog;
  * @version 1.1 - 2012-09-05 updated by Isaiah Choe
  */
 public class AboutAction extends Action {
-	public static final String ID = AboutAction.class.getName();
+    public static final String ID = AboutAction.class.getName();
 
-	/*
-	 * Be defined on com.cubrid.cubridmanager.ui/version.properties as follows:
-	 * releaseStr=2008 R4.3
-	 * releaseVersion=8.4.3
-	 * buildVersionId=8.4.3.xxxx
-	 */
-	private final String productName;
-	private final String versionId;
-	private final ImageDescriptor aboutImageDescriptor;
+    /*
+     * Be defined on com.cubrid.cubridmanager.ui/version.properties as follows:
+     * releaseStr=2008 R4.3
+     * releaseVersion=8.4.3
+     * buildVersionId=8.4.3.xxxx
+     */
+    private final String productName;
+    private final String versionId;
+    private final ImageDescriptor aboutImageDescriptor;
 
-	public AboutAction(String text, String productName, String versionId, ImageDescriptor icon,
-			ImageDescriptor aboutImageDescriptor) {
-		super(text, icon);
-		this.setId(ID);
-		this.productName = productName;
-		this.versionId = versionId;
-		this.aboutImageDescriptor = aboutImageDescriptor;
-	}
+    public AboutAction(
+            String text,
+            String productName,
+            String versionId,
+            ImageDescriptor icon,
+            ImageDescriptor aboutImageDescriptor) {
+        super(text, icon);
+        this.setId(ID);
+        this.productName = productName;
+        this.versionId = versionId;
+        this.aboutImageDescriptor = aboutImageDescriptor;
+    }
 
-	public void run() {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
+    public void run() {
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (window == null) {
+            return;
+        }
 
-		new AboutDialog(window.getShell(), productName, versionId, aboutImageDescriptor).open();
-	}
+        new AboutDialog(window.getShell(), productName, versionId, aboutImageDescriptor).open();
+    }
 }

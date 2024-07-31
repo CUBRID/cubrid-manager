@@ -27,18 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.logs.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.DefaultCubridNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
@@ -52,174 +40,174 @@ import com.cubrid.cubridmanager.core.logs.model.LogInfo;
 import com.cubrid.cubridmanager.core.logs.task.DelAllLogTask;
 import com.cubrid.cubridmanager.ui.logs.Messages;
 import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 /**
- *
  * This action is responsible to RemoveLogAction
  *
  * @author wuyingshi
  * @version 1.0 - 2009-3-10 created by wuyingshi
  */
-public class RemoveLogAction extends
-		SelectionAction {
+public class RemoveLogAction extends SelectionAction {
 
-	public static final String ID = RemoveLogAction.class.getName();
+    public static final String ID = RemoveLogAction.class.getName();
 
-	/**
-	 * The Constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public RemoveLogAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The Constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public RemoveLogAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The Constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public RemoveLogAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The Constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public RemoveLogAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj Object
-	 * @return boolean(whether to support)
-	 */
-	public boolean isSupported(Object obj) {
-		if (obj instanceof Object[]) {
-			return true;
-		}
-		if (!(obj instanceof ICubridNode)) {
-			return false;
-		}
-		ICubridNode node = (ICubridNode) obj;
-		if (node.getServer() == null) {
-			return false;
-		}
-		ServerUserInfo serverUserInfo = node.getServer().getServerInfo().getLoginedUserInfo();
-		String type = node.getType();
-		if (CubridNodeType.BROKER_SQL_LOG.equals(type)) {
-			if (serverUserInfo == null
-					|| serverUserInfo.getCasAuth() != CasAuthType.AUTH_ADMIN) {
-				return false;
-			}
-			return true;
-		} else if (CubridNodeType.LOGS_BROKER_ACCESS_LOG.equals(type)
-				|| CubridNodeType.LOGS_BROKER_ERROR_LOG.equals(type)
-				|| CubridNodeType.LOGS_SERVER_DATABASE_LOG.equals(type)) {
-			if (serverUserInfo == null || !serverUserInfo.isAdmin()) {
-				return false;
-			}
-			if (CubridNodeType.LOGS_SERVER_DATABASE_LOG.equals(type)
-					&& isLastDbServerLog(node)) {
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj Object
+     * @return boolean(whether to support)
+     */
+    public boolean isSupported(Object obj) {
+        if (obj instanceof Object[]) {
+            return true;
+        }
+        if (!(obj instanceof ICubridNode)) {
+            return false;
+        }
+        ICubridNode node = (ICubridNode) obj;
+        if (node.getServer() == null) {
+            return false;
+        }
+        ServerUserInfo serverUserInfo = node.getServer().getServerInfo().getLoginedUserInfo();
+        String type = node.getType();
+        if (CubridNodeType.BROKER_SQL_LOG.equals(type)) {
+            if (serverUserInfo == null || serverUserInfo.getCasAuth() != CasAuthType.AUTH_ADMIN) {
+                return false;
+            }
+            return true;
+        } else if (CubridNodeType.LOGS_BROKER_ACCESS_LOG.equals(type)
+                || CubridNodeType.LOGS_BROKER_ERROR_LOG.equals(type)
+                || CubridNodeType.LOGS_SERVER_DATABASE_LOG.equals(type)) {
+            if (serverUserInfo == null || !serverUserInfo.isAdmin()) {
+                return false;
+            }
+            if (CubridNodeType.LOGS_SERVER_DATABASE_LOG.equals(type) && isLastDbServerLog(node)) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
 
-	/**
-	 *
-	 * Return whether it is the last database server log path
-	 *
-	 * @param node ICubridNode
-	 * @return boolean
-	 */
-	private boolean isLastDbServerLog(ICubridNode node) {
-		LogInfo logInfo = (LogInfo) node.getAdapter(LogInfo.class);
-		String logPath = logInfo.getPath();
-		String lastDBLog = "";
-		if (CubridNodeType.LOGS_SERVER_DATABASE_LOG.equals(node.getType())) {
-			String[] path = new String[node.getParent().getChildren().size()];
-			for (int j = 0, len = path.length; j < len; j++) {
-				LogInfo currLogFile = ((LogInfo) (node.getParent().getChildren().get(
-						j).getAdapter(LogInfo.class)));
-				if (lastDBLog.trim().length() == 0) {
-					lastDBLog = currLogFile.getPath();
-					continue;
-				}
-				if (lastDBLog.compareTo(currLogFile.getPath()) < 0) {
-					lastDBLog = currLogFile.getPath();
-				}
-			}
-		}
+    /**
+     * Return whether it is the last database server log path
+     *
+     * @param node ICubridNode
+     * @return boolean
+     */
+    private boolean isLastDbServerLog(ICubridNode node) {
+        LogInfo logInfo = (LogInfo) node.getAdapter(LogInfo.class);
+        String logPath = logInfo.getPath();
+        String lastDBLog = "";
+        if (CubridNodeType.LOGS_SERVER_DATABASE_LOG.equals(node.getType())) {
+            String[] path = new String[node.getParent().getChildren().size()];
+            for (int j = 0, len = path.length; j < len; j++) {
+                LogInfo currLogFile =
+                        ((LogInfo)
+                                (node.getParent().getChildren().get(j).getAdapter(LogInfo.class)));
+                if (lastDBLog.trim().length() == 0) {
+                    lastDBLog = currLogFile.getPath();
+                    continue;
+                }
+                if (lastDBLog.compareTo(currLogFile.getPath()) < 0) {
+                    lastDBLog = currLogFile.getPath();
+                }
+            }
+        }
 
-		return lastDBLog.equals(logPath);
-	}
+        return lastDBLog.equals(logPath);
+    }
 
-	/**
-	 * Delete log file
-	 */
-	public void run() {
-		if (!CommonUITool.openConfirmBox(Messages.warningRemoveLog)) {
-			return;
-		}
-		Object[] selected = this.getSelectedObj();
-		if (selected == null || selected.length == 0) {
-			return;
-		}
-		List<String> logPathList = new ArrayList<String>();
-		for (int i = 0; i < selected.length; i++) {
-			ICubridNode node = (ICubridNode) selected[i];
-			if (isLastDbServerLog(node)) {
-				continue;
-			}
-			LogInfo logInfo = (LogInfo) node.getAdapter(LogInfo.class);
-			if (logInfo != null && logInfo.getPath() != null
-					&& logInfo.getPath().trim().length() > 0) {
-				logPathList.add(logInfo.getPath());
-			}
-		}
-		DelAllLogTask delLogTask = new DelAllLogTask(
-				((DefaultCubridNode) selected[0]).getServer().getServerInfo());
-		String[] paths = new String[logPathList.size()];
-		delLogTask.setPath(logPathList.toArray(paths));
-		TaskExecutor taskExecutor = new CommonTaskExec(
-				Messages.removeLogTaskName);
-		taskExecutor.addTask(delLogTask);
-		new ExecTaskWithProgress(taskExecutor).busyCursorWhile();
-		if (taskExecutor.isSuccess()) {
-			TreeViewer treeViewer = (TreeViewer) this.getSelectionProvider();
-			for (int i = 0; i < selected.length; i++) {
-				ICubridNode delNode = (ICubridNode) selected[i];
-				if (isLastDbServerLog(delNode)) {
-					continue;
-				}
-				ICubridNode parentNode = delNode.getParent();
-				parentNode.removeChild(delNode);
-				treeViewer.remove(delNode);
+    /** Delete log file */
+    public void run() {
+        if (!CommonUITool.openConfirmBox(Messages.warningRemoveLog)) {
+            return;
+        }
+        Object[] selected = this.getSelectedObj();
+        if (selected == null || selected.length == 0) {
+            return;
+        }
+        List<String> logPathList = new ArrayList<String>();
+        for (int i = 0; i < selected.length; i++) {
+            ICubridNode node = (ICubridNode) selected[i];
+            if (isLastDbServerLog(node)) {
+                continue;
+            }
+            LogInfo logInfo = (LogInfo) node.getAdapter(LogInfo.class);
+            if (logInfo != null
+                    && logInfo.getPath() != null
+                    && logInfo.getPath().trim().length() > 0) {
+                logPathList.add(logInfo.getPath());
+            }
+        }
+        DelAllLogTask delLogTask =
+                new DelAllLogTask(((DefaultCubridNode) selected[0]).getServer().getServerInfo());
+        String[] paths = new String[logPathList.size()];
+        delLogTask.setPath(logPathList.toArray(paths));
+        TaskExecutor taskExecutor = new CommonTaskExec(Messages.removeLogTaskName);
+        taskExecutor.addTask(delLogTask);
+        new ExecTaskWithProgress(taskExecutor).busyCursorWhile();
+        if (taskExecutor.isSuccess()) {
+            TreeViewer treeViewer = (TreeViewer) this.getSelectionProvider();
+            for (int i = 0; i < selected.length; i++) {
+                ICubridNode delNode = (ICubridNode) selected[i];
+                if (isLastDbServerLog(delNode)) {
+                    continue;
+                }
+                ICubridNode parentNode = delNode.getParent();
+                parentNode.removeChild(delNode);
+                treeViewer.remove(delNode);
 
-				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				IWorkbenchPage activePage = window.getActivePage();
-				IEditorPart editor = activePage.findEditor(delNode);
-				if (null != editor) {
-					activePage.closeEditor(editor, true);
-				}
-			}
-
-		}
-	}
-
+                IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                IWorkbenchPage activePage = window.getActivePage();
+                IEditorPart editor = activePage.findEditor(delNode);
+                if (null != editor) {
+                    activePage.closeEditor(editor, true);
+                }
+            }
+        }
+    }
 }

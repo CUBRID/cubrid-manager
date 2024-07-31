@@ -31,55 +31,52 @@ package com.cubrid.tool.editor;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * 
- * This is message bundle classes and provide convenience methods for
- * manipulating messages.
- * 
+ * This is message bundle classes and provide convenience methods for manipulating messages.
+ *
  * @author Kevin Cao
  * @version 1.0 - 2011-2-16 created by Kevin Cao
  */
-public class Messages extends
-		NLS {
-	static {
-		NLS.initializeMessages(CUBRIDTextEditorPlugin.PLUGIN_ID + ".Messages",
-				Messages.class);
-	}
-	public static String btnFind;
-	public static String btnRepalceAndFind;
-	public static String btnReplace;
-	public static String btnReplaceAll;
-	public static String btnClose;
+public class Messages extends NLS {
+    static {
+        NLS.initializeMessages(CUBRIDTextEditorPlugin.PLUGIN_ID + ".Messages", Messages.class);
+    }
 
-	public static String grpOptions;
-	public static String btnCaseSenitive;
-	public static String btnWrapSearch;
-	public static String btnWholeWord;
-	public static String btnIncremental;
-	public static String btnRegularExpressions;
+    public static String btnFind;
+    public static String btnRepalceAndFind;
+    public static String btnReplace;
+    public static String btnReplaceAll;
+    public static String btnClose;
 
-	public static String grpDirection;
-	public static String btnForward;
-	public static String btnBackward;
+    public static String grpOptions;
+    public static String btnCaseSenitive;
+    public static String btnWrapSearch;
+    public static String btnWholeWord;
+    public static String btnIncremental;
+    public static String btnRegularExpressions;
 
-	public static String grpScope;
-	public static String btnScopeAll;
-	public static String btnScopeSelectedLines;
+    public static String grpDirection;
+    public static String btnForward;
+    public static String btnBackward;
 
-	public static String labelFind;
-	public static String labelRepalceWith;
+    public static String grpScope;
+    public static String btnScopeAll;
+    public static String btnScopeSelectedLines;
 
-	public static String messageStringNotFound;
-	public static String messageTotalReplaced;
-	//message box
-	public static String btnYes;
-	public static String btnNo;
-	public static String titleError;
-	public static String invalidateXML;
-	//menu text
-	public static String menuCut;
-	public static String menuCopy;
-	public static String menuPast;
-	public static String menuFindReplace;
-	public static String menuFormat;
-	public static String findReplaceDialogTitle;
+    public static String labelFind;
+    public static String labelRepalceWith;
+
+    public static String messageStringNotFound;
+    public static String messageTotalReplaced;
+    // message box
+    public static String btnYes;
+    public static String btnNo;
+    public static String titleError;
+    public static String invalidateXML;
+    // menu text
+    public static String menuCut;
+    public static String menuCopy;
+    public static String menuPast;
+    public static String menuFindReplace;
+    public static String menuFormat;
+    public static String findReplaceDialogTitle;
 }

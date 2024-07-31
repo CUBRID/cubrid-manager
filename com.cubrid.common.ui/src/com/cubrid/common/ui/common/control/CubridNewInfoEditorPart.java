@@ -30,8 +30,10 @@ package com.cubrid.common.ui.common.control;
 import static com.cubrid.common.core.util.NoOp.noOp;
 import static com.cubrid.common.ui.spi.util.UrlConnUtil.*;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.net.URL;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
@@ -48,111 +50,100 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.part.EditorPart;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
- *
  * CUBRID new information editor part
  *
  * @author pangqiren
  * @version 1.0 - 2009-6-23 created by pangqiren
  */
-public class CubridNewInfoEditorPart extends
-		EditorPart {
-	private static final Logger LOGGER = LogUtil.getLogger(CubridNewInfoEditorPart.class);
-	public static final String ID = CubridNewInfoEditorPart.class.getName();
+public class CubridNewInfoEditorPart extends EditorPart {
+    private static final Logger LOGGER = LogUtil.getLogger(CubridNewInfoEditorPart.class);
+    public static final String ID = CubridNewInfoEditorPart.class.getName();
 
-	/**
-	 * Saves the contents of this editor.
-	 *
-	 * @param monitor the progress monitor
-	 */
-	public void doSave(IProgressMonitor monitor) {
-		noOp();
-	}
+    /**
+     * Saves the contents of this editor.
+     *
+     * @param monitor the progress monitor
+     */
+    public void doSave(IProgressMonitor monitor) {
+        noOp();
+    }
 
-	/**
-	 * Saves the contents of this editor to another object.
-	 *
-	 * @see IEditorPart
-	 */
-	public void doSaveAs() {
-		noOp();
-	}
+    /**
+     * Saves the contents of this editor to another object.
+     *
+     * @see IEditorPart
+     */
+    public void doSaveAs() {
+        noOp();
+    }
 
-	/**
-	 * Initializes this editor with the given editor site and input.
-	 *
-	 * @param site the editor site
-	 * @param input the editor input
-	 * @exception PartInitException if this editor was not initialized
-	 *            successfully
-	 */
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		setSite(site);
-		setInput(input);
-		setTitleToolTip(input.getToolTipText());
-	}
+    /**
+     * Initializes this editor with the given editor site and input.
+     *
+     * @param site the editor site
+     * @param input the editor input
+     * @exception PartInitException if this editor was not initialized successfully
+     */
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        setSite(site);
+        setInput(input);
+        setTitleToolTip(input.getToolTipText());
+    }
 
-	/**
-	 * Dispose the system resource
-	 */
-	public void dispose() {
-		noOp();
-	}
+    /** Dispose the system resource */
+    public void dispose() {
+        noOp();
+    }
 
-	/**
-	 * Return whether the editor is dirty
-	 *
-	 * @return <code>true</code> if it is dirty;<code>false</code> otherwise
-	 */
-	public boolean isDirty() {
-		return false;
-	}
+    /**
+     * Return whether the editor is dirty
+     *
+     * @return <code>true</code> if it is dirty;<code>false</code> otherwise
+     */
+    public boolean isDirty() {
+        return false;
+    }
 
-	/**
-	 * Return whether the save as operation is allowed
-	 *
-	 * @return <code>true</code> if it is allowed;<code>false</code> otherwise
-	 */
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
+    /**
+     * Return whether the save as operation is allowed
+     *
+     * @return <code>true</code> if it is allowed;<code>false</code> otherwise
+     */
+    public boolean isSaveAsAllowed() {
+        return false;
+    }
 
-	/**
-	 * Create the editor content
-	 *
-	 * @param parent the parent composite
-	 */
-	public void createPartControl(Composite parent) {
-		String url = Platform.getNL().equals("ko_KR") ? CHECK_NEW_INFO_URL_KO
-				: CHECK_NEW_INFO_URL_EN;
-		try {
-			Browser browser = new Browser(parent, SWT.NONE);
-			browser.setUrl(url);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+    /**
+     * Create the editor content
+     *
+     * @param parent the parent composite
+     */
+    public void createPartControl(Composite parent) {
+        String url =
+                Platform.getNL().equals("ko_KR") ? CHECK_NEW_INFO_URL_KO : CHECK_NEW_INFO_URL_EN;
+        try {
+            Browser browser = new Browser(parent, SWT.NONE);
+            browser.setUrl(url);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
 
-			Label label = new Label(parent, SWT.NONE);
-			IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
-			try {
-				IWebBrowser browser = support.getExternalBrowser();
-				browser.openURL(new URL(CommonUITool.urlEncodeForSpaces(url.toCharArray())));
-			} catch (Exception browserEx) {
-				LOGGER.warn(browserEx.getMessage(), browserEx);
-				label.setText(Messages.errCannotOpenExternalBrowser);
-				return;
-			}
-			label.setText(Messages.errCannotOpenInternalBrowser);
-		}
-	}
+            Label label = new Label(parent, SWT.NONE);
+            IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
+            try {
+                IWebBrowser browser = support.getExternalBrowser();
+                browser.openURL(new URL(CommonUITool.urlEncodeForSpaces(url.toCharArray())));
+            } catch (Exception browserEx) {
+                LOGGER.warn(browserEx.getMessage(), browserEx);
+                label.setText(Messages.errCannotOpenExternalBrowser);
+                return;
+            }
+            label.setText(Messages.errCannotOpenInternalBrowser);
+        }
+    }
 
-	/**
-	 * When editor is focus,call this method
-	 */
-	public void setFocus() {
-		noOp();
-	}
+    /** When editor is focus,call this method */
+    public void setFocus() {
+        noOp();
+    }
 }

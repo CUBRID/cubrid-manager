@@ -27,34 +27,29 @@
  */
 package com.cubrid.common.ui.common.sqlrunner;
 
+import com.cubrid.common.ui.common.sqlrunner.model.SqlRunnerProgress;
 import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.cubrid.common.ui.common.sqlrunner.model.SqlRunnerProgress;
-
 /**
  * table Content Provider
+ *
  * @author fulei
  */
-public class RunSQLFileTableContentProvider implements
-		IStructuredContentProvider {
-	public void dispose() {
-	}
+public class RunSQLFileTableContentProvider implements IStructuredContentProvider {
+    public void dispose() {}
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	}
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
-	@SuppressWarnings("all")
-	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof List) {
-			List<SqlRunnerProgress> list = (List<SqlRunnerProgress>) inputElement;
-			SqlRunnerProgress[] nodeArr = new SqlRunnerProgress[list.size()];
-			return list.toArray(nodeArr);
-		}
+    @SuppressWarnings("all")
+    public Object[] getElements(Object inputElement) {
+        if (inputElement instanceof List) {
+            List<SqlRunnerProgress> list = (List<SqlRunnerProgress>) inputElement;
+            SqlRunnerProgress[] nodeArr = new SqlRunnerProgress[list.size()];
+            return list.toArray(nodeArr);
+        }
 
-		return new Object[] {};
-	}
-	
+        return new Object[] {};
+    }
 }

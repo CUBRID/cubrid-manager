@@ -27,15 +27,6 @@
  */
 package com.cubrid.common.ui.spi.progress;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.common.model.Trigger;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.ApplicationType;
@@ -45,70 +36,78 @@ import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.trigger.task.GetTriggerListTask;
 import com.cubrid.cubridmanager.core.cubrid.trigger.task.JDBCGetTriggerListTask;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-1-9 created by fulei
  */
 public class OpenTriggerDetailInfoPartProgress implements IRunnableWithProgress {
 
-	private static final Logger LOGGER = LogUtil.getLogger(OpenViewsDetailInfoPartProgress.class);
-	private final CubridDatabase database;
-	private List<Trigger> triggerList = null;
-	private boolean success = false;
-	
-	public OpenTriggerDetailInfoPartProgress (CubridDatabase database) {
-		this.database = database;
-	}
-	
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,
-			InterruptedException {
-		DatabaseInfo databaseInfo = database.getDatabaseInfo();
-		ITask task = null;
-		if (ApplicationType.CUBRID_MANAGER.equals(PerspectiveManager.getInstance().getCurrentMode())) {
-			task = new GetTriggerListTask(database.getServer().getServerInfo());
-			((GetTriggerListTask) task).setDbName(database.getLabel());
-		} else {
-			task = new JDBCGetTriggerListTask(databaseInfo);
-		}
-		task.execute();
-		if (!task.isSuccess()) {
-			LOGGER.error(task.getErrorMsg());
-			return;
-		}
-		if (task instanceof GetTriggerListTask) {
-			triggerList = ((GetTriggerListTask) task).getTriggerInfoList();
-		} else if (task instanceof JDBCGetTriggerListTask) {
-			triggerList = ((JDBCGetTriggerListTask) task).getTriggerInfoList();
-		}
-		success = true;
-	}
+    private static final Logger LOGGER = LogUtil.getLogger(OpenViewsDetailInfoPartProgress.class);
+    private final CubridDatabase database;
+    private List<Trigger> triggerList = null;
+    private boolean success = false;
 
-	/**
-	 * load trigger info list
-	 * 
-	 * @return Catalog
-	 */
-	public void loadTriggerInfoList() {
-		Display display = Display.getDefault();
-		display.syncExec(new Runnable() {
-			public void run() {
-				try {
-					new ProgressMonitorDialog(null).run(true, false,
-							OpenTriggerDetailInfoPartProgress.this);
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-				}
-			}
-		});
-	}
-	
-	public List<Trigger> getTriggerList() {
-		return triggerList;
-	}
+    public OpenTriggerDetailInfoPartProgress(CubridDatabase database) {
+        this.database = database;
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    public void run(IProgressMonitor monitor)
+            throws InvocationTargetException, InterruptedException {
+        DatabaseInfo databaseInfo = database.getDatabaseInfo();
+        ITask task = null;
+        if (ApplicationType.CUBRID_MANAGER.equals(
+                PerspectiveManager.getInstance().getCurrentMode())) {
+            task = new GetTriggerListTask(database.getServer().getServerInfo());
+            ((GetTriggerListTask) task).setDbName(database.getLabel());
+        } else {
+            task = new JDBCGetTriggerListTask(databaseInfo);
+        }
+        task.execute();
+        if (!task.isSuccess()) {
+            LOGGER.error(task.getErrorMsg());
+            return;
+        }
+        if (task instanceof GetTriggerListTask) {
+            triggerList = ((GetTriggerListTask) task).getTriggerInfoList();
+        } else if (task instanceof JDBCGetTriggerListTask) {
+            triggerList = ((JDBCGetTriggerListTask) task).getTriggerInfoList();
+        }
+        success = true;
+    }
+
+    /**
+     * load trigger info list
+     *
+     * @return Catalog
+     */
+    public void loadTriggerInfoList() {
+        Display display = Display.getDefault();
+        display.syncExec(
+                new Runnable() {
+                    public void run() {
+                        try {
+                            new ProgressMonitorDialog(null)
+                                    .run(true, false, OpenTriggerDetailInfoPartProgress.this);
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                        }
+                    }
+                });
+    }
+
+    public List<Trigger> getTriggerList() {
+        return triggerList;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
 }

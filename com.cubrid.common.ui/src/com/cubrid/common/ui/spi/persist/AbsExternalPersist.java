@@ -27,64 +27,67 @@
  */
 package com.cubrid.common.ui.spi.persist;
 
+import com.cubrid.cubridmanager.core.common.xml.IXMLMemento;
+import com.cubrid.cubridmanager.core.common.xml.XMLMemento;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import org.eclipse.jface.preference.PreferenceStore;
 
-import com.cubrid.cubridmanager.core.common.xml.IXMLMemento;
-import com.cubrid.cubridmanager.core.common.xml.XMLMemento;
-
-/**
- * 
- * @author Kevin.Wang
- * 
- */
+/** @author Kevin.Wang */
 public abstract class AbsExternalPersist {
-	protected final static String DATABASE_XML_CONTENT = "CUBRID_DATABASES";
-	protected PreferenceStore preferenceStore;
-	protected String folderPath;
+    protected static final String DATABASE_XML_CONTENT = "CUBRID_DATABASES";
+    protected PreferenceStore preferenceStore;
+    protected String folderPath;
 
-	protected AbsExternalPersist(String folderPath) {
-		this.folderPath = folderPath;
-	}
+    protected AbsExternalPersist(String folderPath) {
+        this.folderPath = folderPath;
+    }
 
-	public abstract void load() throws IOException;
+    public abstract void load() throws IOException;
 
-	public abstract String getPreferenceFileName();
+    public abstract String getPreferenceFileName();
 
-	//	protected String getMapKey(String dbUser, String dbName, String address,
-	//			String port, String connectionName) {
-	//		StringBuffer sb = new StringBuffer();
-	//		sb.append(dbUser);
-	//		sb.append("@");
-	//		sb.append(dbName);
-	//		sb.append("@");
-	//		sb.append(address);
-	//		sb.append("@");
-	//		sb.append(port);
-	//
-	//		return sb.toString();
-	//	}
+    //	protected String getMapKey(String dbUser, String dbName, String address,
+    //			String port, String connectionName) {
+    //		StringBuffer sb = new StringBuffer();
+    //		sb.append(dbUser);
+    //		sb.append("@");
+    //		sb.append(dbName);
+    //		sb.append("@");
+    //		sb.append(address);
+    //		sb.append("@");
+    //		sb.append(port);
+    //
+    //		return sb.toString();
+    //	}
 
-	protected IXMLMemento getXMLmemento(String nodeName) throws UnsupportedEncodingException {
-		String xmlString = preferenceStore.getString(nodeName);
-		if (xmlString == null || xmlString.trim().length() == 0) {
-			return null;
-		}
-		ByteArrayInputStream in = new ByteArrayInputStream(xmlString.getBytes("UTF-8"));
-		IXMLMemento memento = XMLMemento.loadMemento(in);
+    protected IXMLMemento getXMLmemento(String nodeName) throws UnsupportedEncodingException {
+        String xmlString = preferenceStore.getString(nodeName);
+        if (xmlString == null || xmlString.trim().length() == 0) {
+            return null;
+        }
+        ByteArrayInputStream in = new ByteArrayInputStream(xmlString.getBytes("UTF-8"));
+        IXMLMemento memento = XMLMemento.loadMemento(in);
 
-		return memento;
-	}
+        return memento;
+    }
 
-	protected String getPreferenceFilePath() {
-		String filePath = folderPath + File.separator + ".metadata" + File.separator + ".plugins"
-				+ File.separator + "org.eclipse.core.runtime" + File.separator + ".settings"
-				+ File.separator + getPreferenceFileName();
+    protected String getPreferenceFilePath() {
+        String filePath =
+                folderPath
+                        + File.separator
+                        + ".metadata"
+                        + File.separator
+                        + ".plugins"
+                        + File.separator
+                        + "org.eclipse.core.runtime"
+                        + File.separator
+                        + ".settings"
+                        + File.separator
+                        + getPreferenceFileName();
 
-		return filePath;
-	}
+        return filePath;
+    }
 }

@@ -28,8 +28,8 @@
 package com.cubrid.common.ui.spi;
 
 public class Constants { // move to core module
-	public static final String BROKER_DEFAULT_HOST = "localhost";
-	public static final String BROKER_DEFAULT_PORT = "30000";
-	public static final String DEFAULT_DBUSER = "dba";
-	public static final String DEFAULT_DBNAME = "demodb";
+    public static final String BROKER_DEFAULT_HOST = "localhost";
+    public static final String BROKER_DEFAULT_PORT = "30000";
+    public static final String DEFAULT_DBUSER = "dba";
+    public static final String DEFAULT_DBNAME = "demodb";
 }

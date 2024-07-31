@@ -27,15 +27,14 @@
  */
 package com.navercorp.dbtools.sqlmap.parser;
 
+import com.navercorp.dbtools.sqlmap.parser.impl.MapperFileImpl;
+import com.nhn.dbtool.query.parser.sqlmap.Parser;
+import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapFile;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.navercorp.dbtools.sqlmap.parser.impl.MapperFileImpl;
-import com.nhn.dbtool.query.parser.sqlmap.Parser;
-import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapFile;
 
 /**
  * An implementation of the mapper parser.
@@ -43,60 +42,63 @@ import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapFile;
  * @author CHOE JUNGYEON
  */
 public class MapperParserImpl implements MapperParser {
-	private static String NEWLINE = "\n";
+    private static String NEWLINE = "\n";
 
-	public List<MapperFile> parse(List<File> fileList) throws Exception {
-		List<SqlMapFile> sqlMapFiles = readSqlMapFiles(fileList);
-		Parser parser = new Parser();
-		parser.parse(sqlMapFiles);
-		return convertToMapperFiles(sqlMapFiles);
-	}
+    public List<MapperFile> parse(List<File> fileList) throws Exception {
+        List<SqlMapFile> sqlMapFiles = readSqlMapFiles(fileList);
+        Parser parser = new Parser();
+        parser.parse(sqlMapFiles);
+        return convertToMapperFiles(sqlMapFiles);
+    }
 
-	private List<MapperFile> convertToMapperFiles(List<SqlMapFile> sqlMapFiles) {
-		List<MapperFile> mapperFiles = new ArrayList<MapperFile>();
-		for (SqlMapFile sqlMapFile : sqlMapFiles) {
-			mapperFiles.add(new MapperFileImpl(sqlMapFile));
-		}
-		return mapperFiles;
-	}
+    private List<MapperFile> convertToMapperFiles(List<SqlMapFile> sqlMapFiles) {
+        List<MapperFile> mapperFiles = new ArrayList<MapperFile>();
+        for (SqlMapFile sqlMapFile : sqlMapFiles) {
+            mapperFiles.add(new MapperFileImpl(sqlMapFile));
+        }
+        return mapperFiles;
+    }
 
-	private List<SqlMapFile> readSqlMapFiles(List<File> fileList) {
-		List<SqlMapFile> sqlMapFiles = new ArrayList<SqlMapFile>();
-		for (File file : fileList) {
-			SqlMapFile sqlMapFile = new SqlMapFile();
-			sqlMapFile.setFileName(file.getName());
-			sqlMapFile.setFileContent(readFileContent(file));
-			sqlMapFiles.add(sqlMapFile);
-		}
-		return sqlMapFiles;
-	}
+    private List<SqlMapFile> readSqlMapFiles(List<File> fileList) {
+        List<SqlMapFile> sqlMapFiles = new ArrayList<SqlMapFile>();
+        for (File file : fileList) {
+            SqlMapFile sqlMapFile = new SqlMapFile();
+            sqlMapFile.setFileName(file.getName());
+            sqlMapFile.setFileContent(readFileContent(file));
+            sqlMapFiles.add(sqlMapFile);
+        }
+        return sqlMapFiles;
+    }
 
-	private String readFileContent(File file) {
-		BufferedReader br = null;
-		StringBuilder content = new StringBuilder();
+    private String readFileContent(File file) {
+        BufferedReader br = null;
+        StringBuilder content = new StringBuilder();
 
-		try {
-			br = new BufferedReader(new FileReader(file));
+        try {
+            br = new BufferedReader(new FileReader(file));
 
-			String buf = null;
-			while ((buf = br.readLine()) != null) {
-				content.append(buf).append(NEWLINE);
-			}
-			return content.toString();
-		} catch (Exception e) {
-			return "";
-		} finally {
-			try { br.close(); } catch (Exception ignored) {}
-		}
-	}
+            String buf = null;
+            while ((buf = br.readLine()) != null) {
+                content.append(buf).append(NEWLINE);
+            }
+            return content.toString();
+        } catch (Exception e) {
+            return "";
+        } finally {
+            try {
+                br.close();
+            } catch (Exception ignored) {
+            }
+        }
+    }
 
-	public MapperFile parse(String queryXml) throws Exception {
-		SqlMapFile sqlMapFile = new SqlMapFile();
-		sqlMapFile.setFileName("");
-		sqlMapFile.setFileContent(queryXml);
+    public MapperFile parse(String queryXml) throws Exception {
+        SqlMapFile sqlMapFile = new SqlMapFile();
+        sqlMapFile.setFileName("");
+        sqlMapFile.setFileContent(queryXml);
 
-		Parser parser = new Parser();
-		parser.parse(sqlMapFile);
-		return new MapperFileImpl(sqlMapFile);
-	}
+        Parser parser = new Parser();
+        parser.parse(sqlMapFile);
+        return new MapperFileImpl(sqlMapFile);
+    }
 }

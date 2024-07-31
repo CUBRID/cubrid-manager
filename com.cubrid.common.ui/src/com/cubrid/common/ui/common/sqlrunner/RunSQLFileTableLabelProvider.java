@@ -27,8 +27,9 @@
  */
 package com.cubrid.common.ui.common.sqlrunner;
 
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.common.sqlrunner.model.SqlRunnerProgress;
 import java.text.SimpleDateFormat;
-
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -37,124 +38,113 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.common.sqlrunner.model.SqlRunnerProgress;
-
 /**
  * table label provider
+ *
  * @author fulei
  */
-public class RunSQLFileTableLabelProvider extends LabelProvider implements
-		ITableLabelProvider, ITableColorProvider {
-	private SimpleDateFormat formater = new SimpleDateFormat("mm:ss.SSS");
-	
-	/**
-	 * Retrieves the error color
-	 * 
-	 * @return red color
-	 */
-	protected Color getErrorColor() {
-		return Display.getDefault().getSystemColor(SWT.COLOR_RED);
-	}
+public class RunSQLFileTableLabelProvider extends LabelProvider
+        implements ITableLabelProvider, ITableColorProvider {
+    private SimpleDateFormat formater = new SimpleDateFormat("mm:ss.SSS");
 
-	/**
-	 * Default return null
-	 * 
-	 * @param element
-	 *            to be display.
-	 * @param columnIndex
-	 *            is the index of column. Begin with 0.
-	 * @return null
-	 */
-	public Image getColumnImage(Object element, int columnIndex) {
-		return null;
-	}
+    /**
+     * Retrieves the error color
+     *
+     * @return red color
+     */
+    protected Color getErrorColor() {
+        return Display.getDefault().getSystemColor(SWT.COLOR_RED);
+    }
 
-	/**
-	 * Retrieves the column's text by column index
-	 * 
-	 * @param element
-	 *            to be displayed.
-	 * @param columnIndex
-	 *            is the index of column. Begin with 0.
-	 * @return String to be filled in the column.
-	 */
-	public String getColumnText(Object element, int columnIndex) {
-		SqlRunnerProgress p = (SqlRunnerProgress) element;
-		switch (columnIndex) {
-		case 0:
-			return p.getFileName();
+    /**
+     * Default return null
+     *
+     * @param element to be display.
+     * @param columnIndex is the index of column. Begin with 0.
+     * @return null
+     */
+    public Image getColumnImage(Object element, int columnIndex) {
+        return null;
+    }
 
-		case 1:
-			return Long.toString(p.getSuccessCount());
+    /**
+     * Retrieves the column's text by column index
+     *
+     * @param element to be displayed.
+     * @param columnIndex is the index of column. Begin with 0.
+     * @return String to be filled in the column.
+     */
+    public String getColumnText(Object element, int columnIndex) {
+        SqlRunnerProgress p = (SqlRunnerProgress) element;
+        switch (columnIndex) {
+            case 0:
+                return p.getFileName();
 
-		case 2:
-			return Long.toString(p.getFailCount());
+            case 1:
+                return Long.toString(p.getSuccessCount());
 
-		case 3:
-			if (p.getStatus() == 2) {
-				return Messages.runSQLStatusFinished;
-			} else if (p.getStatus() == 1) {
-				return Messages.runSQLStatusRunning;
-			} else if (p.getStatus() == 3) {
-				return Messages.runSQLStatusStopped;
-			}
-			return Messages.runSQLStatusWaiting;
+            case 2:
+                return Long.toString(p.getFailCount());
 
-		case 4:
-			return getElapsedTimeString(p.getElapsedTime());
+            case 3:
+                if (p.getStatus() == 2) {
+                    return Messages.runSQLStatusFinished;
+                } else if (p.getStatus() == 1) {
+                    return Messages.runSQLStatusRunning;
+                } else if (p.getStatus() == 3) {
+                    return Messages.runSQLStatusStopped;
+                }
+                return Messages.runSQLStatusWaiting;
 
-		default:
-			return null;
-		}
-	}
+            case 4:
+                return getElapsedTimeString(p.getElapsedTime());
 
-	
-	/**
-	 * get elapseTime "hh:mm:ss.SSS"
-	 * @param elapsedTime
-	 * @return
-	 */
-	public String getElapsedTimeString(Long elapsedTime) {
-		String hourString = "";
-		long hour = elapsedTime / (3600 * 1000); 
-		if (hour == 0 ) {
-			hourString = "00";
-		} else if (hour < 10) {
-			hourString = "0" + Long.valueOf(hour);
-		} else {
-			hourString = Long.toString(hour);
-		}
+            default:
+                return null;
+        }
+    }
 
-		return hourString + ":" + formater.format(elapsedTime);
-	}
+    /**
+     * get elapseTime "hh:mm:ss.SSS"
+     *
+     * @param elapsedTime
+     * @return
+     */
+    public String getElapsedTimeString(Long elapsedTime) {
+        String hourString = "";
+        long hour = elapsedTime / (3600 * 1000);
+        if (hour == 0) {
+            hourString = "00";
+        } else if (hour < 10) {
+            hourString = "0" + Long.valueOf(hour);
+        } else {
+            hourString = Long.toString(hour);
+        }
 
-	/**
-	 * Provides a foreground color for the given element.
-	 * 
-	 * @param element
-	 *            the element
-	 * @param columnIndex
-	 *            the zero-based index of the column in which the color appears
-	 * @return the foreground color for the element, or <code>null</code> to use
-	 *         the default foreground color
-	 */
-	public Color getForeground(Object element, int columnIndex) {
-		return null;
-	}
+        return hourString + ":" + formater.format(elapsedTime);
+    }
 
-	/**
-	 * Provides a background color for the given element at the specified index
-	 * 
-	 * @param element
-	 *            the element
-	 * @param columnIndex
-	 *            the zero-based index of the column in which the color appears
-	 * @return the background color for the element, or <code>null</code> to use
-	 *         the default background color
-	 * 
-	 */
-	public Color getBackground(Object element, int columnIndex) {
-		return null;
-	}
+    /**
+     * Provides a foreground color for the given element.
+     *
+     * @param element the element
+     * @param columnIndex the zero-based index of the column in which the color appears
+     * @return the foreground color for the element, or <code>null</code> to use the default
+     *     foreground color
+     */
+    public Color getForeground(Object element, int columnIndex) {
+        return null;
+    }
+
+    /**
+     * Provides a background color for the given element at the specified index
+     *
+     * @param element the element
+     * @param columnIndex the zero-based index of the column in which the color appears
+     * @return the background color for the element, or <code>null</code> to use the default
+     *     background color
+     */
+    public Color getBackground(Object element, int columnIndex) {
+        return null;
+    }
 }

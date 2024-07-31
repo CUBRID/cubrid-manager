@@ -27,13 +27,12 @@
  */
 package com.cubrid.common.ui.common.control;
 
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.common.Messages;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
-
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.common.Messages;
 
 /**
  * CUBRID notice editor input
@@ -41,59 +40,57 @@ import com.cubrid.common.ui.common.Messages;
  * @author fulei
  * @version 1.0 - 2012-12-04 created by fulei
  */
-public class CubridNoticeInfoEditorInput implements
-		IEditorInput {
-	private final String label = Messages.cubridNoticeEditorName;
-	private final String noticeContents;
+public class CubridNoticeInfoEditorInput implements IEditorInput {
+    private final String label = Messages.cubridNoticeEditorName;
+    private final String noticeContents;
 
-	public CubridNoticeInfoEditorInput(String noticeContents) {
-		this.noticeContents = noticeContents;
-	}
+    public CubridNoticeInfoEditorInput(String noticeContents) {
+        this.noticeContents = noticeContents;
+    }
 
-	/**
-	 * Returns whether the editor input exists.
-	 *
-	 * @return <code>true</code> if the editor input exists; <code>false</code>
-	 *         otherwise
-	 */
-	public boolean exists() {
-		return false;
-	}
+    /**
+     * Returns whether the editor input exists.
+     *
+     * @return <code>true</code> if the editor input exists; <code>false</code> otherwise
+     */
+    public boolean exists() {
+        return false;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return CommonUIPlugin.getImageDescriptor("icons/new_info.png");
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return CommonUIPlugin.getImageDescriptor("icons/new_info.png");
+    }
 
-	public String getName() {
-		return getLabel();
-	}
+    public String getName() {
+        return getLabel();
+    }
 
-	private String getLabel() {
-		return this.label;
-	}
+    private String getLabel() {
+        return this.label;
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public String getToolTipText() {
-		return getLabel();
-	}
+    public String getToolTipText() {
+        return getLabel();
+    }
 
-	/**
-	 * Returns an object which is an instance of the given class associated with
-	 * this object. Returns <code>null</code> if no such object can be found.
-	 *
-	 * @param adapter the adapter class to look up
-	 * @return a object castable to the given class, or <code>null</code> if
-	 *         this object does not have an adapter for the given class
-	 */
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(String.class)) {
-			return noticeContents;
-		}
+    /**
+     * Returns an object which is an instance of the given class associated with this object.
+     * Returns <code>null</code> if no such object can be found.
+     *
+     * @param adapter the adapter class to look up
+     * @return a object castable to the given class, or <code>null</code> if this object does not
+     *     have an adapter for the given class
+     */
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(String.class)) {
+            return noticeContents;
+        }
 
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 }

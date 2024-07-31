@@ -25,30 +25,25 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- package com.cubrid.common.ui.compare.data.control;
+package com.cubrid.common.ui.compare.data.control;
 
+import com.cubrid.common.ui.compare.data.model.DataCompare;
 import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.cubrid.common.ui.compare.data.model.DataCompare;
+public class DataCompareSchemaListContentProvider implements IStructuredContentProvider {
+    public void dispose() {}
 
-public class DataCompareSchemaListContentProvider implements
-		IStructuredContentProvider {
-	public void dispose() {
-	}
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	}
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Object[] getElements(Object inputElement) {
+        if (inputElement instanceof List) {
+            int size = ((List) inputElement).size();
+            return ((List) inputElement).toArray(new DataCompare[size]);
+        }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof List) {
-			int size = ((List) inputElement).size();
-			return ((List) inputElement).toArray(new DataCompare[size]);
-		}
-
-		return null;
-	}
+        return null;
+    }
 }

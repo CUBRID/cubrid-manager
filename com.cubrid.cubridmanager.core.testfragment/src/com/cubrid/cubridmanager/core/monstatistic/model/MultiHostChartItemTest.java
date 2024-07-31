@@ -27,52 +27,49 @@
  */
 package com.cubrid.cubridmanager.core.monstatistic.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.MetricType;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.StatisticType;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.TimeType;
-
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.TestCase;
 
-public class MultiHostChartItemTest extends TestCase{
+public class MultiHostChartItemTest extends TestCase {
 
-	public void testMultiHostChartItem() {
-		String nodeId = "demo";
-		MultiHostChartItem multiHostChartItem = new MultiHostChartItem(nodeId,
-				StatisticType.DB);
+    public void testMultiHostChartItem() {
+        String nodeId = "demo";
+        MultiHostChartItem multiHostChartItem = new MultiHostChartItem(nodeId, StatisticType.DB);
 
-		String dtype = TimeType.DAILY.getType();
-		multiHostChartItem.setDType(dtype);
-		assertEquals(multiHostChartItem.getDType(), dtype);
+        String dtype = TimeType.DAILY.getType();
+        multiHostChartItem.setDType(dtype);
+        assertEquals(multiHostChartItem.getDType(), dtype);
 
-		List<StatisticChartHost> hostlist = new ArrayList<StatisticChartHost>();
-		StatisticChartHost host = new StatisticChartHost("localhost");
-		host.setMetric(MetricType.BROKER_ERR_Q.getMetric());
-		hostlist.add(host);
-		multiHostChartItem.setHostList(hostlist);
-		StatisticChartHost host2 = new StatisticChartHost("localhost2");
-		host2.setMetric(MetricType.BROKER_JQ.getMetric());
-		multiHostChartItem.addStatisticChartHost(host2);
-		assertNotNull(multiHostChartItem.getHostList());
-		assertTrue(multiHostChartItem.getHostList().contains(host));
-		assertTrue(multiHostChartItem.getHostList().contains(host2));
+        List<StatisticChartHost> hostlist = new ArrayList<StatisticChartHost>();
+        StatisticChartHost host = new StatisticChartHost("localhost");
+        host.setMetric(MetricType.BROKER_ERR_Q.getMetric());
+        hostlist.add(host);
+        multiHostChartItem.setHostList(hostlist);
+        StatisticChartHost host2 = new StatisticChartHost("localhost2");
+        host2.setMetric(MetricType.BROKER_JQ.getMetric());
+        multiHostChartItem.addStatisticChartHost(host2);
+        assertNotNull(multiHostChartItem.getHostList());
+        assertTrue(multiHostChartItem.getHostList().contains(host));
+        assertTrue(multiHostChartItem.getHostList().contains(host2));
 
-		assertTrue(multiHostChartItem.isMultiHost());
+        assertTrue(multiHostChartItem.isMultiHost());
 
-		assertNotNull(multiHostChartItem.getName());
-		List<StatisticChartHost> hostlist2 = new ArrayList<StatisticChartHost>();
-		multiHostChartItem.setHostList(hostlist2);
-		assertEquals(multiHostChartItem.getName(), "");
+        assertNotNull(multiHostChartItem.getName());
+        List<StatisticChartHost> hostlist2 = new ArrayList<StatisticChartHost>();
+        multiHostChartItem.setHostList(hostlist2);
+        assertEquals(multiHostChartItem.getName(), "");
 
-		assertEquals(multiHostChartItem.getNodeId(), nodeId);
+        assertEquals(multiHostChartItem.getNodeId(), nodeId);
 
-		multiHostChartItem.setSeries(5);
-		assertEquals(multiHostChartItem.getSeries(), 5);
+        multiHostChartItem.setSeries(5);
+        assertEquals(multiHostChartItem.getSeries(), 5);
 
-		StatisticType type = StatisticType.BROKER;
-		multiHostChartItem.setType(type);
-		assertEquals(multiHostChartItem.getType(), type);
-	}
+        StatisticType type = StatisticType.BROKER;
+        multiHostChartItem.setType(type);
+        assertEquals(multiHostChartItem.getType(), type);
+    }
 }

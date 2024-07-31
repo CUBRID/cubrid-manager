@@ -43,46 +43,45 @@ import org.eclipse.swt.widgets.Text;
  * @author Yu Guojia
  * @version 1.0 - 2013-7-12 created by Yu Guojia
  */
-public class LabelCellEditorLocator implements
-		CellEditorLocator {
-	private static final int MARGIN_TOP = 3;
-	private static final int MARGIN_BOTTOM = 1;
-	private static final int MARGIN_WIDTH = 1;
-	private Label label;
+public class LabelCellEditorLocator implements CellEditorLocator {
+    private static final int MARGIN_TOP = 3;
+    private static final int MARGIN_BOTTOM = 1;
+    private static final int MARGIN_WIDTH = 1;
+    private Label label;
 
-	public LabelCellEditorLocator(Label label) {
-		setLabel(label);
-	}
+    public LabelCellEditorLocator(Label label) {
+        setLabel(label);
+    }
 
-	public void relocate(CellEditor celleditor) {
-		if (celleditor == null || !(celleditor.getControl() instanceof Text)) {
-			return;
-		}
+    public void relocate(CellEditor celleditor) {
+        if (celleditor == null || !(celleditor.getControl() instanceof Text)) {
+            return;
+        }
 
-		allocateToCenter((Text) celleditor.getControl());
-	}
+        allocateToCenter((Text) celleditor.getControl());
+    }
 
-	protected Label getLabel() {
-		return label;
-	}
+    protected Label getLabel() {
+        return label;
+    }
 
-	protected void setLabel(Label label) {
-		this.label = label;
-	}
+    protected void setLabel(Label label) {
+        this.label = label;
+    }
 
-	private Rectangle getLabelBounds() {
-		Rectangle rect = label.getTextBounds().getCopy();
-		label.translateToAbsolute(rect);
-		return rect;
-	}
+    private Rectangle getLabelBounds() {
+        Rectangle rect = label.getTextBounds().getCopy();
+        label.translateToAbsolute(rect);
+        return rect;
+    }
 
-	private void allocateToCenter(Text text) {
-		Point textRect = text.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		Rectangle labelRect = getLabelBounds();
-		text.setBounds(
-				labelRect.x - MARGIN_WIDTH,
-				labelRect.y - MARGIN_TOP,
-				textRect.x + MARGIN_WIDTH,
-				textRect.y + MARGIN_BOTTOM);
-	}
+    private void allocateToCenter(Text text) {
+        Point textRect = text.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        Rectangle labelRect = getLabelBounds();
+        text.setBounds(
+                labelRect.x - MARGIN_WIDTH,
+                labelRect.y - MARGIN_TOP,
+                textRect.x + MARGIN_WIDTH,
+                textRect.y + MARGIN_BOTTOM);
+    }
 }

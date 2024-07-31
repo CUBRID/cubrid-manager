@@ -37,15 +37,14 @@ import org.eclipse.ui.IPerspectiveFactory;
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
 public class Perspective implements IPerspectiveFactory {
-	public static final String ID = "com.cubrid.cubridmanager.app.Perspective";
+    public static final String ID = "com.cubrid.cubridmanager.app.Perspective";
 
-	/**
-	 * create initial layout for CUBRID Manager workbench window
-	 *
-	 * @param layout the workbench page layout object
-	 */
-	public void createInitialLayout(IPageLayout layout) {
-		layout.setEditorAreaVisible(true);
-
-	}
+    /**
+     * create initial layout for CUBRID Manager workbench window
+     *
+     * @param layout the workbench page layout object
+     */
+    public void createInitialLayout(IPageLayout layout) {
+        layout.setEditorAreaVisible(true);
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.common.task;
 
@@ -34,57 +34,53 @@ import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 
 /**
- * 
  * Get CUBRID Manager server version
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2011-3-8 created by pangqiren
  */
-public class GetCmsEnvTask extends
-		SocketTask {
-	/**
-	 * The constructor
-	 * 
-	 * @param serverInfo
-	 */
-	public GetCmsEnvTask(ServerInfo serverInfo) {
-		super("getcmsenv", serverInfo, null);
-		setUsingMonPort(true);
-		setNeedServerConnected(false);
-	}
+public class GetCmsEnvTask extends SocketTask {
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public GetCmsEnvTask(ServerInfo serverInfo) {
+        super("getcmsenv", serverInfo, null);
+        setUsingMonPort(true);
+        setNeedServerConnected(false);
+    }
 
-	/**
-	 * 
-	 * Get CUBRID Manager server version
-	 * 
-	 * @return String
-	 */
-	public String getVersion() {
-		TreeNode node = getResponse();
-		if (node == null
-				|| (getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
-			return null;
-		}
-		return node.getValue("CUBRIDVER");
-	}
+    /**
+     * Get CUBRID Manager server version
+     *
+     * @return String
+     */
+    public String getVersion() {
+        TreeNode node = getResponse();
+        if (node == null || (getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
+            return null;
+        }
+        return node.getValue("CUBRIDVER");
+    }
 
-	public CertStatus getCertStatus() {
-		TreeNode node = getResponse();
-		if (node == null || (getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
-			return CertStatus.UNKNOWN;
-		}
+    public CertStatus getCertStatus() {
+        TreeNode node = getResponse();
+        if (node == null || (getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
+            return CertStatus.UNKNOWN;
+        }
 
-		String status = node.getValue("is_default_cert");
-		if (StringUtil.isEmpty(status)) {
-			return CertStatus.UNKNOWN;
-		} else if (StringUtil.booleanValueWithYN(status)) {
-			return CertStatus.DEFAULT;
-		} else {
-			return CertStatus.CUSTOMIZED;
-		}
-	}
-	
-	public boolean canConnect() {
-		return clientService.canConnect();
-	}
+        String status = node.getValue("is_default_cert");
+        if (StringUtil.isEmpty(status)) {
+            return CertStatus.UNKNOWN;
+        } else if (StringUtil.booleanValueWithYN(status)) {
+            return CertStatus.DEFAULT;
+        } else {
+            return CertStatus.CUSTOMIZED;
+        }
+    }
+
+    public boolean canConnect() {
+        return clientService.canConnect();
+    }
 }

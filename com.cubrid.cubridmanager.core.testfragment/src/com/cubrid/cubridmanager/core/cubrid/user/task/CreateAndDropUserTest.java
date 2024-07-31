@@ -27,36 +27,35 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.user.task;
 
+import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-25 created by fulei
  */
+public class CreateAndDropUserTest extends SetupJDBCTestCase {
 
-public class CreateAndDropUserTest extends SetupJDBCTestCase{
-	
-	private String testUserName = "testCreateAndDropUser";
-	protected void setUp() throws Exception {
-		super.setUp();
-		DropUserTask task = new DropUserTask(databaseInfo, testUserName);
-		task.execute();
-	}
-	
-	public void testCreateUser() {
-		List<String> groupList = new ArrayList<String>();
-		groupList.add("public");
-		List<String> memberList = new ArrayList<String>();
-		CreateUserTask createTask = new CreateUserTask(databaseInfo, testUserName, "1111", groupList, memberList, null);
-		createTask.execute();
-		assertNull (createTask.getErrorMsg());
-		
-		DropUserTask dropTask = new DropUserTask(databaseInfo, testUserName);
-		dropTask.execute();
-		assertNull (dropTask.getErrorMsg());
-	}
+    private String testUserName = "testCreateAndDropUser";
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        DropUserTask task = new DropUserTask(databaseInfo, testUserName);
+        task.execute();
+    }
+
+    public void testCreateUser() {
+        List<String> groupList = new ArrayList<String>();
+        groupList.add("public");
+        List<String> memberList = new ArrayList<String>();
+        CreateUserTask createTask =
+                new CreateUserTask(databaseInfo, testUserName, "1111", groupList, memberList, null);
+        createTask.execute();
+        assertNull(createTask.getErrorMsg());
+
+        DropUserTask dropTask = new DropUserTask(databaseInfo, testUserName);
+        dropTask.execute();
+        assertNull(dropTask.getErrorMsg());
+    }
 }

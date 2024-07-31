@@ -29,74 +29,73 @@
  */
 package com.cubrid.common.ui.query.editor;
 
+import com.cubrid.common.core.common.model.SchemaInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cubrid.common.core.common.model.SchemaInfo;
-
 /**
- *
  * ColumnProposal Description
  *
  * @author Kevin.Wang
  * @version 1.0 - 2013-4-8 created by Kevin.Wang
  */
 public class ColumnProposal { // Move to core module
-	private List<String> tableNameList = new ArrayList<String>();
-	private Map<String, SchemaInfo> schemaInfoMap = new HashMap<String, SchemaInfo>();
-	private Map<String, List<ColumnProposalDetailInfo>> columnListMap = new HashMap<String, List<ColumnProposalDetailInfo>>();
+    private List<String> tableNameList = new ArrayList<String>();
+    private Map<String, SchemaInfo> schemaInfoMap = new HashMap<String, SchemaInfo>();
+    private Map<String, List<ColumnProposalDetailInfo>> columnListMap =
+            new HashMap<String, List<ColumnProposalDetailInfo>>();
 
-	public List<String> getTableNames() {
-		return tableNameList;
-	}
+    public List<String> getTableNames() {
+        return tableNameList;
+    }
 
-	public void setTableNames(List<String> tableNames) {
-		this.tableNameList = tableNames;
-	}
+    public void setTableNames(List<String> tableNames) {
+        this.tableNameList = tableNames;
+    }
 
-	public SchemaInfo getSchemaInfos(String tableName) {
-		return schemaInfoMap.get(tableName);
-	}
+    public SchemaInfo getSchemaInfos(String tableName) {
+        return schemaInfoMap.get(tableName);
+    }
 
-	public Map<String, List<ColumnProposalDetailInfo>> getColumns() {
-		return columnListMap;
-	}
+    public Map<String, List<ColumnProposalDetailInfo>> getColumns() {
+        return columnListMap;
+    }
 
-	public void setColumns(Map<String, List<ColumnProposalDetailInfo>> columns) {
-		this.columnListMap = columns;
+    public void setColumns(Map<String, List<ColumnProposalDetailInfo>> columns) {
+        this.columnListMap = columns;
 
-		schemaInfoMap = new HashMap<String, SchemaInfo>();
-		for (String tableName : tableNameList) {
-			List<ColumnProposalDetailInfo> infos = columns.get(tableName);
-			ColumnProposalDetailInfo info = infos.get(0);
-			schemaInfoMap.put(tableName, info.getSchemaInfo());
-		}
-	}
+        schemaInfoMap = new HashMap<String, SchemaInfo>();
+        for (String tableName : tableNameList) {
+            List<ColumnProposalDetailInfo> infos = columns.get(tableName);
+            ColumnProposalDetailInfo info = infos.get(0);
+            schemaInfoMap.put(tableName, info.getSchemaInfo());
+        }
+    }
 
-	/**
-	 * Remove schema info
-	 *
-	 * @param tableName
-	 */
-	public void removeSchemaInfo(String tableName) {
-		tableNameList.remove(tableName);
-		schemaInfoMap.remove(tableName);
-		columnListMap.remove(tableName);
-	}
+    /**
+     * Remove schema info
+     *
+     * @param tableName
+     */
+    public void removeSchemaInfo(String tableName) {
+        tableNameList.remove(tableName);
+        schemaInfoMap.remove(tableName);
+        columnListMap.remove(tableName);
+    }
 
-	/**
-	 * Add schema info
-	 *
-	 * @param tableName
-	 * @param schemaInfo
-	 * @param columnList
-	 */
-	public void addSchemaInfo(String tableName, SchemaInfo schemaInfo,
-			List<ColumnProposalDetailInfo> columnList) {
-		tableNameList.add(tableName);
-		schemaInfoMap.put(tableName, schemaInfo);
-		columnListMap.put(tableName, columnList);
-	}
+    /**
+     * Add schema info
+     *
+     * @param tableName
+     * @param schemaInfo
+     * @param columnList
+     */
+    public void addSchemaInfo(
+            String tableName, SchemaInfo schemaInfo, List<ColumnProposalDetailInfo> columnList) {
+        tableNameList.add(tableName);
+        schemaInfoMap.put(tableName, schemaInfo);
+        columnListMap.put(tableName, columnList);
+    }
 }

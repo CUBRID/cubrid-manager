@@ -27,37 +27,34 @@
  */
 package com.cubrid.cubridmanager.core.monstatistic.model;
 
-
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.StatisticType;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.TimeType;
-
 import junit.framework.TestCase;
 
-public class StatisticChartItemTest extends TestCase{
+public class StatisticChartItemTest extends TestCase {
 
-	public void testStatisticChartItem() {
-		String nodeId = "demo";
-		StatisticType type = StatisticType.OS;
-		StatisticChartItem statisticChartItem = new SingleHostChartItem(nodeId,
-				type);
+    public void testStatisticChartItem() {
+        String nodeId = "demo";
+        StatisticType type = StatisticType.OS;
+        StatisticChartItem statisticChartItem = new SingleHostChartItem(nodeId, type);
 
-		String dtype = TimeType.DAILY.getType();
-		statisticChartItem.setDType(dtype);
-		assertEquals(statisticChartItem.getDType(), dtype);
+        String dtype = TimeType.DAILY.getType();
+        statisticChartItem.setDType(dtype);
+        assertEquals(statisticChartItem.getDType(), dtype);
 
-		assertFalse(statisticChartItem.isMultiHost());
+        assertFalse(statisticChartItem.isMultiHost());
 
-		String name = "";
-		statisticChartItem.setName(name);
-		assertEquals(statisticChartItem.getName(), "");
+        String name = "";
+        statisticChartItem.setName(name);
+        assertEquals(statisticChartItem.getName(), "");
 
-		assertEquals(statisticChartItem.getNodeId(), nodeId);
+        assertEquals(statisticChartItem.getNodeId(), nodeId);
 
-		int series = 10;
-		statisticChartItem.setSeries(series);
-		assertEquals(statisticChartItem.getSeries(), series);
+        int series = 10;
+        statisticChartItem.setSeries(series);
+        assertEquals(statisticChartItem.getSeries(), series);
 
-		statisticChartItem.setType(StatisticType.DB);
-		assertEquals(statisticChartItem.getType(), StatisticType.DB);
-	}
+        statisticChartItem.setType(StatisticType.DB);
+        assertEquals(statisticChartItem.getType(), StatisticType.DB);
+    }
 }

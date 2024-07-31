@@ -27,25 +27,6 @@
  */
 package com.cubrid.cubridquery.ui.common.dialog;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.common.control.ConnectionComposite;
 import com.cubrid.common.ui.query.control.DatabaseNavigatorMenu;
 import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
@@ -64,266 +45,283 @@ import com.cubrid.cubridmanager.core.cubrid.user.task.IsDBAUserTask;
 import com.cubrid.cubridmanager.ui.spi.model.loader.CQBDbConnectionLoader;
 import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
 import com.cubrid.cubridquery.ui.common.Messages;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- * 
  * Login Query editor dialog
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2010-11-10 created by pangqiren
  */
-public class LoginQueryEditorDialog extends
-		CMTitleAreaDialog implements
-		ModifyListener {
+public class LoginQueryEditorDialog extends CMTitleAreaDialog implements ModifyListener {
 
-	public final static int TEST_CONNECT_ID = 3;
+    public static final int TEST_CONNECT_ID = 3;
 
-	private ConnectionComposite connectionComp;
-	private Combo allConnCombo;
-	private String selectedConnName;
-	private final Map<String, CubridDatabase> dbMap = new HashMap<String, CubridDatabase>();
+    private ConnectionComposite connectionComp;
+    private Combo allConnCombo;
+    private String selectedConnName;
+    private final Map<String, CubridDatabase> dbMap = new HashMap<String, CubridDatabase>();
 
-	/**
-	 * The constructor
-	 * 
-	 * @param parentShell
-	 */
-	public LoginQueryEditorDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     */
+    public LoginQueryEditorDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	/**
-	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 * @param parent The parent composite to contain the dialog area
-	 * @return the dialog area control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
+    /**
+     * @see
+     *     org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     * @param parent The parent composite to contain the dialog area
+     * @return the dialog area control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
 
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		{
-			composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-			GridLayout layout = new GridLayout();
-			layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-			layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-			layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-			layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-			composite.setLayout(layout);
-		}
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        {
+            composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+            GridLayout layout = new GridLayout();
+            layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+            layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+            layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+            layout.horizontalSpacing =
+                    convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+            composite.setLayout(layout);
+        }
 
-		Group connInfoGroup = new Group(composite, SWT.NONE);
-		{
-			connInfoGroup.setText(Messages.grpRegisteredConnInfo);
-			GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-			connInfoGroup.setLayoutData(gridData);
-			GridLayout layout = new GridLayout();
-			layout.numColumns = 3;
-			connInfoGroup.setLayout(layout);
+        Group connInfoGroup = new Group(composite, SWT.NONE);
+        {
+            connInfoGroup.setText(Messages.grpRegisteredConnInfo);
+            GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+            connInfoGroup.setLayoutData(gridData);
+            GridLayout layout = new GridLayout();
+            layout.numColumns = 3;
+            connInfoGroup.setLayout(layout);
 
-			Label allConnLabel = new Label(connInfoGroup, SWT.LEFT);
-			allConnLabel.setText(Messages.lblConnName);
-			allConnLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+            Label allConnLabel = new Label(connInfoGroup, SWT.LEFT);
+            allConnLabel.setText(Messages.lblConnName);
+            allConnLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
 
-			allConnCombo = new Combo(connInfoGroup, SWT.LEFT | SWT.BORDER
-					| SWT.READ_ONLY);
-			allConnCombo.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent event) {
-					selectedConnName = allConnCombo.getText();
-					changeSelection();
-					valid();
-				}
-			});
-			allConnCombo.setLayoutData(CommonUITool.createGridData(
-					GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
-		}
+            allConnCombo = new Combo(connInfoGroup, SWT.LEFT | SWT.BORDER | SWT.READ_ONLY);
+            allConnCombo.addSelectionListener(
+                    new SelectionAdapter() {
+                        public void widgetSelected(SelectionEvent event) {
+                            selectedConnName = allConnCombo.getText();
+                            changeSelection();
+                            valid();
+                        }
+                    });
+            allConnCombo.setLayoutData(
+                    CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
+        }
 
-		connectionComp = new ConnectionComposite(composite, false, false);
+        connectionComp = new ConnectionComposite(composite, false, false);
 
-		setTitle(Messages.titleNewQueryDialog);
-		setMessage(Messages.msgNewQueryDialog);
-		initial();
-		return parentComp;
-	}
+        setTitle(Messages.titleNewQueryDialog);
+        setMessage(Messages.msgNewQueryDialog);
+        initial();
+        return parentComp;
+    }
 
-	/**
-	 * initialize some values
-	 * 
-	 */
-	private void initial() {
-		List<CubridDatabase> databaseList = CQBDBNodePersistManager.getInstance().getAllDatabase();
-		for (CubridDatabase database : databaseList) {
-			dbMap.put(database.getLabel(), database);
-			allConnCombo.add(database.getLabel());
-		}
-		dbMap.put(DatabaseNavigatorMenu.SELF_DATABASE_SELECTED_LABEL,
-				DatabaseNavigatorMenu.SELF_DATABASE);
-		allConnCombo.add(DatabaseNavigatorMenu.SELF_DATABASE_SELECTED_LABEL);
-		allConnCombo.setText(selectedConnName);
+    /** initialize some values */
+    private void initial() {
+        List<CubridDatabase> databaseList = CQBDBNodePersistManager.getInstance().getAllDatabase();
+        for (CubridDatabase database : databaseList) {
+            dbMap.put(database.getLabel(), database);
+            allConnCombo.add(database.getLabel());
+        }
+        dbMap.put(
+                DatabaseNavigatorMenu.SELF_DATABASE_SELECTED_LABEL,
+                DatabaseNavigatorMenu.SELF_DATABASE);
+        allConnCombo.add(DatabaseNavigatorMenu.SELF_DATABASE_SELECTED_LABEL);
+        allConnCombo.setText(selectedConnName);
 
-		connectionComp.init(dbMap.get(selectedConnName), this);
-	}
+        connectionComp.init(dbMap.get(selectedConnName), this);
+    }
 
-	/**
-	 * Change the selection
-	 * 
-	 */
-	private void changeSelection() {
-		connectionComp.changeData(null);
+    /** Change the selection */
+    private void changeSelection() {
+        connectionComp.changeData(null);
 
-		CubridDatabase database = dbMap.get(selectedConnName);
-		if (database != null && database.getDatabaseInfo() != null) {
-			connectionComp.changeData(database);
-		}
-	}
+        CubridDatabase database = dbMap.get(selectedConnName);
+        if (database != null && database.getDatabaseInfo() != null) {
+            connectionComp.changeData(database);
+        }
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog#constrainShellSize()
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		getShell().setText(Messages.titleNewQueryDialog);
-	}
+    /** @see com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog#constrainShellSize() */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        getShell().setText(Messages.titleNewQueryDialog);
+    }
 
-	/**
-	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
-	 * @param parent the button bar composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, TEST_CONNECT_ID,
-				com.cubrid.cubridquery.ui.connection.Messages.btnTestConn,
-				false);
-		createButton(parent, IDialogConstants.OK_ID,
-				com.cubrid.cubridquery.ui.connection.Messages.btnConnect, true);
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				com.cubrid.common.ui.common.Messages.btnCancel, false);
-		valid();
-	}
+    /**
+     * @see
+     *     org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+     * @param parent the button bar composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(
+                parent,
+                TEST_CONNECT_ID,
+                com.cubrid.cubridquery.ui.connection.Messages.btnTestConn,
+                false);
+        createButton(
+                parent,
+                IDialogConstants.OK_ID,
+                com.cubrid.cubridquery.ui.connection.Messages.btnConnect,
+                true);
+        createButton(
+                parent,
+                IDialogConstants.CANCEL_ID,
+                com.cubrid.common.ui.common.Messages.btnCancel,
+                false);
+        valid();
+    }
 
-	/**
-	 * validate the data
-	 * 
-	 */
-	private void valid() {
-		setErrorMessage(null);
-		boolean isValid = connectionComp.valid();
-		if (!isValid) {
-			setButtonStatus(false);
-			String errorMsg = connectionComp.getErrorMsg();
-			if (errorMsg != null) {
-				setErrorMessage(errorMsg);
-			}
-			return;
-		}
-		setButtonStatus(true);
-	}
+    /** validate the data */
+    private void valid() {
+        setErrorMessage(null);
+        boolean isValid = connectionComp.valid();
+        if (!isValid) {
+            setButtonStatus(false);
+            String errorMsg = connectionComp.getErrorMsg();
+            if (errorMsg != null) {
+                setErrorMessage(errorMsg);
+            }
+            return;
+        }
+        setButtonStatus(true);
+    }
 
-	/**
-	 * 
-	 * Set button status
-	 * 
-	 * @param isEnabled boolean
-	 */
-	private void setButtonStatus(boolean isEnabled) {
-		if (getButton(TEST_CONNECT_ID) != null) {
-			getButton(TEST_CONNECT_ID).setEnabled(isEnabled);
-		}
-		if (getButton(IDialogConstants.OK_ID) != null) {
-			getButton(IDialogConstants.OK_ID).setEnabled(isEnabled);
-		}
-	}
+    /**
+     * Set button status
+     *
+     * @param isEnabled boolean
+     */
+    private void setButtonStatus(boolean isEnabled) {
+        if (getButton(TEST_CONNECT_ID) != null) {
+            getButton(TEST_CONNECT_ID).setEnabled(isEnabled);
+        }
+        if (getButton(IDialogConstants.OK_ID) != null) {
+            getButton(IDialogConstants.OK_ID).setEnabled(isEnabled);
+        }
+    }
 
-	/**
-	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
-	 * @param buttonId the id of the button that was pressed (see
-	 *        <code>IDialogConstants.*_ID</code> constants)
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == TEST_CONNECT_ID || buttonId == IDialogConstants.OK_ID) {
-			String dbName = connectionComp.getDatabaseText().getText();
-			String brokerIp = connectionComp.getBrokerIpText().getText();
-			String brokerPort = connectionComp.getBrokerPortText().getText();
-			String userName = connectionComp.getUserNameText().getText();
-			String password = connectionComp.getPasswordText().getText();
-			String charset = connectionComp.getCharsetCombo().getText();
-			String jdbcDriver = connectionComp.getJdbcCombo().getText();
-			String jdbcAttrs = connectionComp.getAttrText().getText().trim();
-			boolean isShard = connectionComp.getBtnShard().getSelection();
-			int currentShardId = connectionComp.getCurShardId();
-			
-			ServerInfo serverInfo = new ServerInfo();
-			serverInfo.setServerName(DatabaseNavigatorMenu.SELF_DATABASE_ID);
-			serverInfo.setHostAddress(brokerIp);
-			serverInfo.setHostMonPort(Integer.parseInt(brokerPort));
-			serverInfo.setHostJSPort(Integer.parseInt(brokerPort) + 1);
-			serverInfo.setJdbcDriverVersion(jdbcDriver);
+    /**
+     * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
+     * @param buttonId the id of the button that was pressed (see <code>IDialogConstants.*_ID</code>
+     *     constants)
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == TEST_CONNECT_ID || buttonId == IDialogConstants.OK_ID) {
+            String dbName = connectionComp.getDatabaseText().getText();
+            String brokerIp = connectionComp.getBrokerIpText().getText();
+            String brokerPort = connectionComp.getBrokerPortText().getText();
+            String userName = connectionComp.getUserNameText().getText();
+            String password = connectionComp.getPasswordText().getText();
+            String charset = connectionComp.getCharsetCombo().getText();
+            String jdbcDriver = connectionComp.getJdbcCombo().getText();
+            String jdbcAttrs = connectionComp.getAttrText().getText().trim();
+            boolean isShard = connectionComp.getBtnShard().getSelection();
+            int currentShardId = connectionComp.getCurShardId();
 
-			DatabaseInfo dbInfo = new DatabaseInfo(dbName, serverInfo);
-			dbInfo.setBrokerIP(brokerIp);
-			dbInfo.setBrokerPort(brokerPort);
-			dbInfo.setCharSet(charset);
-			dbInfo.setJdbcAttrs(jdbcAttrs);
-			dbInfo.setShard(isShard);
-			dbInfo.setCurrentShardId(currentShardId);
+            ServerInfo serverInfo = new ServerInfo();
+            serverInfo.setServerName(DatabaseNavigatorMenu.SELF_DATABASE_ID);
+            serverInfo.setHostAddress(brokerIp);
+            serverInfo.setHostMonPort(Integer.parseInt(brokerPort));
+            serverInfo.setHostJSPort(Integer.parseInt(brokerPort) + 1);
+            serverInfo.setJdbcDriverVersion(jdbcDriver);
 
-			DbUserInfo userInfo = new DbUserInfo();
-			userInfo.setDbName(dbName);
-			userInfo.setName(userName);
-			userInfo.setNoEncryptPassword(password);
-			dbInfo.setAuthLoginedDbUserInfo(userInfo);
+            DatabaseInfo dbInfo = new DatabaseInfo(dbName, serverInfo);
+            dbInfo.setBrokerIP(brokerIp);
+            dbInfo.setBrokerPort(brokerPort);
+            dbInfo.setCharSet(charset);
+            dbInfo.setJdbcAttrs(jdbcAttrs);
+            dbInfo.setShard(isShard);
+            dbInfo.setCurrentShardId(currentShardId);
 
-			TaskExecutor taskExcutor = new ConnectDatabaseExecutor(dbInfo);
-			new ExecTaskWithProgress(taskExcutor).exec();	
-			
-			if(! taskExcutor.isSuccess()) {
-				return;
-			}
-			
-			if (buttonId == TEST_CONNECT_ID) {
-				CommonUITool.openInformationBox(
-						com.cubrid.cubridquery.ui.connection.Messages.titleSuccess,
-						com.cubrid.cubridquery.ui.connection.Messages.msgTestConnSuccess);
-				return;
-			}
-			// check whether dba authorization
-			IsDBAUserTask checkTask = new IsDBAUserTask(dbInfo);
-			checkTask.execute();
-			userInfo.setDbaAuthority(checkTask.isDBAUser());
+            DbUserInfo userInfo = new DbUserInfo();
+            userInfo.setDbName(dbName);
+            userInfo.setName(userName);
+            userInfo.setNoEncryptPassword(password);
+            dbInfo.setAuthLoginedDbUserInfo(userInfo);
 
-			dbInfo.setLogined(true);
-			dbInfo.setRunningType(DbRunningType.CS);
-			dbInfo.getServerInfo().setConnected(true);
-			dbInfo.setLogined(true);
+            TaskExecutor taskExcutor = new ConnectDatabaseExecutor(dbInfo);
+            new ExecTaskWithProgress(taskExcutor).exec();
 
-			CubridServer server = new CubridServer(
-					DatabaseNavigatorMenu.SELF_DATABASE_ID,
-					DatabaseNavigatorMenu.SELF_DATABASE_SELECTED_LABEL, null,
-					null);
-			server.setServerInfo(serverInfo);
-			server.setType(NodeType.SERVER);
+            if (!taskExcutor.isSuccess()) {
+                return;
+            }
 
-			DatabaseNavigatorMenu.SELF_DATABASE.setDatabaseInfo(dbInfo);
-			DatabaseNavigatorMenu.SELF_DATABASE.setServer(server);
-			DatabaseNavigatorMenu.SELF_DATABASE.setStartAndLoginIconPath("icons/navigator/database_start_connected.png");
-			DatabaseNavigatorMenu.SELF_DATABASE.setStartAndLogoutIconPath("icons/navigator/database_start_disconnected.png");
-			DatabaseNavigatorMenu.SELF_DATABASE.setLoader(new CQBDbConnectionLoader());
-		}
-		super.buttonPressed(buttonId);
-	}
+            if (buttonId == TEST_CONNECT_ID) {
+                CommonUITool.openInformationBox(
+                        com.cubrid.cubridquery.ui.connection.Messages.titleSuccess,
+                        com.cubrid.cubridquery.ui.connection.Messages.msgTestConnSuccess);
+                return;
+            }
+            // check whether dba authorization
+            IsDBAUserTask checkTask = new IsDBAUserTask(dbInfo);
+            checkTask.execute();
+            userInfo.setDbaAuthority(checkTask.isDBAUser());
 
-	/**
-	 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-	 * @param event an event containing information about the modify
-	 */
-	public void modifyText(ModifyEvent event) {
-		valid();
-	}
+            dbInfo.setLogined(true);
+            dbInfo.setRunningType(DbRunningType.CS);
+            dbInfo.getServerInfo().setConnected(true);
+            dbInfo.setLogined(true);
 
-	public String getSelectedConnName() {
-		return selectedConnName;
-	}
+            CubridServer server =
+                    new CubridServer(
+                            DatabaseNavigatorMenu.SELF_DATABASE_ID,
+                            DatabaseNavigatorMenu.SELF_DATABASE_SELECTED_LABEL,
+                            null,
+                            null);
+            server.setServerInfo(serverInfo);
+            server.setType(NodeType.SERVER);
 
-	public void setSelectedConnName(String selectedConnName) {
-		this.selectedConnName = selectedConnName;
-	}
+            DatabaseNavigatorMenu.SELF_DATABASE.setDatabaseInfo(dbInfo);
+            DatabaseNavigatorMenu.SELF_DATABASE.setServer(server);
+            DatabaseNavigatorMenu.SELF_DATABASE.setStartAndLoginIconPath(
+                    "icons/navigator/database_start_connected.png");
+            DatabaseNavigatorMenu.SELF_DATABASE.setStartAndLogoutIconPath(
+                    "icons/navigator/database_start_disconnected.png");
+            DatabaseNavigatorMenu.SELF_DATABASE.setLoader(new CQBDbConnectionLoader());
+        }
+        super.buttonPressed(buttonId);
+    }
 
+    /**
+     * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+     * @param event an event containing information about the modify
+     */
+    public void modifyText(ModifyEvent event) {
+        valid();
+    }
+
+    public String getSelectedConnName() {
+        return selectedConnName;
+    }
+
+    public void setSelectedConnName(String selectedConnName) {
+        this.selectedConnName = selectedConnName;
+    }
 }

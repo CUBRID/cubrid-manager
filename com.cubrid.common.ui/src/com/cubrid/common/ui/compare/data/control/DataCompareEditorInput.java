@@ -25,63 +25,62 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- package com.cubrid.common.ui.compare.data.control;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IPersistableElement;
+package com.cubrid.common.ui.compare.data.control;
 
 import com.cubrid.common.ui.compare.Messages;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPersistableElement;
 
 public class DataCompareEditorInput implements IEditorInput {
-	private DatabaseInfo sourceDB;
-	private DatabaseInfo targetDB;
+    private DatabaseInfo sourceDB;
+    private DatabaseInfo targetDB;
 
-	public DataCompareEditorInput(ICubridNode sourceNode, ICubridNode targetNode) {
-		if (sourceNode instanceof CubridDatabase) {
-			this.sourceDB = ((CubridDatabase) sourceNode).getDatabaseInfo();
-			this.targetDB = ((CubridDatabase) targetNode).getDatabaseInfo();
-		} else if (sourceNode instanceof DatabaseInfo) {
-			this.sourceDB = (DatabaseInfo) sourceNode;
-			this.targetDB = (DatabaseInfo) targetNode;
-		} else {
-			throw new RuntimeException("There are invalid Parameters.");
-		}
-	}
+    public DataCompareEditorInput(ICubridNode sourceNode, ICubridNode targetNode) {
+        if (sourceNode instanceof CubridDatabase) {
+            this.sourceDB = ((CubridDatabase) sourceNode).getDatabaseInfo();
+            this.targetDB = ((CubridDatabase) targetNode).getDatabaseInfo();
+        } else if (sourceNode instanceof DatabaseInfo) {
+            this.sourceDB = (DatabaseInfo) sourceNode;
+            this.targetDB = (DatabaseInfo) targetNode;
+        } else {
+            throw new RuntimeException("There are invalid Parameters.");
+        }
+    }
 
-	public DatabaseInfo getSourceDB() {
-		return sourceDB;
-	}
+    public DatabaseInfo getSourceDB() {
+        return sourceDB;
+    }
 
-	public DatabaseInfo getTargetDB() {
-		return targetDB;
-	}
+    public DatabaseInfo getTargetDB() {
+        return targetDB;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        return null;
+    }
 
-	public boolean exists() {
-		return false;
-	}
+    public boolean exists() {
+        return false;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	public String getName() {
-		return Messages.titleCompareDataWizard;
-	}
+    public String getName() {
+        return Messages.titleCompareDataWizard;
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public String getToolTipText() {
-		return getName();
-	}
+    public String getToolTipText() {
+        return getName();
+    }
 }

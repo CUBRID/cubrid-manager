@@ -29,164 +29,147 @@ package com.cubrid.cubridquery.ui.spi.model;
 
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 
-public class DatabaseUIWrapper implements
-		Comparable<DatabaseUIWrapper> {
-	private final static int SAME_ID = 1;
-	private final static int SAME_NAME = 1 << 1;
-	private final static int SAME_HOST = 1 << 2;
-	private final static int SAME_PORT = 1 << 3;
-	private CubridDatabase server;
+public class DatabaseUIWrapper implements Comparable<DatabaseUIWrapper> {
+    private static final int SAME_ID = 1;
+    private static final int SAME_NAME = 1 << 1;
+    private static final int SAME_HOST = 1 << 2;
+    private static final int SAME_PORT = 1 << 3;
+    private CubridDatabase server;
 
-	public DatabaseUIWrapper(CubridDatabase server) {
-		this.server = server;
-	}
+    public DatabaseUIWrapper(CubridDatabase server) {
+        this.server = server;
+    }
 
-	private boolean seleted = false;
+    private boolean seleted = false;
 
-	public boolean isSeleted() {
-		return seleted;
-	}
+    public boolean isSeleted() {
+        return seleted;
+    }
 
-	public void setSeleted(boolean seleted) {
-		this.seleted = seleted;
-	}
+    public void setSeleted(boolean seleted) {
+        this.seleted = seleted;
+    }
 
-	public void setSavePassword(String save) {
-		server.setAutoSavePassword(Boolean.parseBoolean(save));
-	}
+    public void setSavePassword(String save) {
+        server.setAutoSavePassword(Boolean.parseBoolean(save));
+    }
 
-	public boolean isAutoSavePassword() {
-		return server.isAutoSavePassword();
-	}
+    public boolean isAutoSavePassword() {
+        return server.isAutoSavePassword();
+    }
 
-	public void setAddress(String address) {
-		if (server.getDatabaseInfo() == null)
-			return;
-		server.getDatabaseInfo().setBrokerIP(address);
-	}
+    public void setAddress(String address) {
+        if (server.getDatabaseInfo() == null) return;
+        server.getDatabaseInfo().setBrokerIP(address);
+    }
 
-	public String getAddress() {
-		if (server.getDatabaseInfo() == null)
-			return "";
-		return server.getDatabaseInfo().getBrokerIP();
-	}
+    public String getAddress() {
+        if (server.getDatabaseInfo() == null) return "";
+        return server.getDatabaseInfo().getBrokerIP();
+    }
 
-	public void setJdbcDriver(String jdbcDriver) {
-		if (server.getServer() == null || server.getServer().getServerInfo() == null)
-			return;
-		server.getServer().getServerInfo().setJdbcDriverVersion(jdbcDriver);
-	}
+    public void setJdbcDriver(String jdbcDriver) {
+        if (server.getServer() == null || server.getServer().getServerInfo() == null) return;
+        server.getServer().getServerInfo().setJdbcDriverVersion(jdbcDriver);
+    }
 
-	public String getJdbcDriverVersion() {
-		if (server.getServer() == null || server.getServer().getServerInfo() == null)
-			return "";
-		return server.getServer().getServerInfo().getJdbcDriverVersion();
-	}
+    public String getJdbcDriverVersion() {
+        if (server.getServer() == null || server.getServer().getServerInfo() == null) return "";
+        return server.getServer().getServerInfo().getJdbcDriverVersion();
+    }
 
-	public void setPort(String port) {
-		if (server.getDatabaseInfo() == null)
-			return;
-		server.getDatabaseInfo().setBrokerIP(port);
-	}
+    public void setPort(String port) {
+        if (server.getDatabaseInfo() == null) return;
+        server.getDatabaseInfo().setBrokerIP(port);
+    }
 
-	public String getPort() {
-		if (server.getDatabaseInfo() == null)
-			return "";
-		return server.getDatabaseInfo().getBrokerPort();
-	}
+    public String getPort() {
+        if (server.getDatabaseInfo() == null) return "";
+        return server.getDatabaseInfo().getBrokerPort();
+    }
 
-	public void setCharSet(String charset) {
-		if (server.getDatabaseInfo() == null)
-			return;
-		server.getDatabaseInfo().setCharSet(charset);
-	}
+    public void setCharSet(String charset) {
+        if (server.getDatabaseInfo() == null) return;
+        server.getDatabaseInfo().setCharSet(charset);
+    }
 
-	public String getCharSet() {
-		if (server.getDatabaseInfo() == null)
-			return "";
-		return server.getDatabaseInfo().getCharSet();
-	}
+    public String getCharSet() {
+        if (server.getDatabaseInfo() == null) return "";
+        return server.getDatabaseInfo().getCharSet();
+    }
 
-	public void setUser(String name) {
-		if (server.getDatabaseInfo() == null
-				|| server.getDatabaseInfo().getAuthLoginedDbUserInfo() == null)
-			return;
-		server.getDatabaseInfo().getAuthLoginedDbUserInfo().setName(name);
-	}
+    public void setUser(String name) {
+        if (server.getDatabaseInfo() == null
+                || server.getDatabaseInfo().getAuthLoginedDbUserInfo() == null) return;
+        server.getDatabaseInfo().getAuthLoginedDbUserInfo().setName(name);
+    }
 
-	public String getUser() {
-		if (server.getDatabaseInfo() == null
-				|| server.getDatabaseInfo().getAuthLoginedDbUserInfo() == null)
-			return "";
-		return server.getDatabaseInfo().getAuthLoginedDbUserInfo().getName();
-	}
+    public String getUser() {
+        if (server.getDatabaseInfo() == null
+                || server.getDatabaseInfo().getAuthLoginedDbUserInfo() == null) return "";
+        return server.getDatabaseInfo().getAuthLoginedDbUserInfo().getName();
+    }
 
-	public void setPassword(String password) {
-		if (server.getDatabaseInfo() == null
-				|| server.getDatabaseInfo().getAuthLoginedDbUserInfo() == null)
-			return;
-		server.getDatabaseInfo().getAuthLoginedDbUserInfo().setPassword(password);
-	}
+    public void setPassword(String password) {
+        if (server.getDatabaseInfo() == null
+                || server.getDatabaseInfo().getAuthLoginedDbUserInfo() == null) return;
+        server.getDatabaseInfo().getAuthLoginedDbUserInfo().setPassword(password);
+    }
 
-	public String getPassword() {
-		if (server.getDatabaseInfo() == null
-				|| server.getDatabaseInfo().getAuthLoginedDbUserInfo() == null)
-			return "";
-		return server.getDatabaseInfo().getAuthLoginedDbUserInfo().getPassword();
-	}
+    public String getPassword() {
+        if (server.getDatabaseInfo() == null
+                || server.getDatabaseInfo().getAuthLoginedDbUserInfo() == null) return "";
+        return server.getDatabaseInfo().getAuthLoginedDbUserInfo().getPassword();
+    }
 
-	public void setDbName(String dbName) {
-		if (server == null || server.getDatabaseInfo() == null)
-			return;
-		server.getDatabaseInfo().setDbName(dbName);
-	}
+    public void setDbName(String dbName) {
+        if (server == null || server.getDatabaseInfo() == null) return;
+        server.getDatabaseInfo().setDbName(dbName);
+    }
 
-	public String getDbName() {
-		if (server == null || server.getDatabaseInfo() == null)
-			return "";
-		return server.getDatabaseInfo().getDbName();
-	}
+    public String getDbName() {
+        if (server == null || server.getDatabaseInfo() == null) return "";
+        return server.getDatabaseInfo().getDbName();
+    }
 
-	public void setName(String name) {
-		if (server == null)
-			return;
-		server.setLabel(name);
-	}
+    public void setName(String name) {
+        if (server == null) return;
+        server.setLabel(name);
+    }
 
-	public String getName() {
-		if (server == null)
-			return "";
-		return server.getLabel();
-	}
+    public String getName() {
+        if (server == null) return "";
+        return server.getLabel();
+    }
 
-	public String getId() {
-		if (server == null)
-			return "";
-		return server.getId();
-	}
+    public String getId() {
+        if (server == null) return "";
+        return server.getId();
+    }
 
-	public CubridDatabase getDatabase() {
-		return this.server;
-	}
+    public CubridDatabase getDatabase() {
+        return this.server;
+    }
 
-	public int compareTo(DatabaseUIWrapper obj) {
-		int retVal = 0;
-		retVal = (obj.getId().equals(this.getId())) ? retVal | SAME_ID : retVal;
-		retVal = (obj.getName().equals(obj.getName())) ? retVal | SAME_NAME : retVal;
-		retVal = (obj.getAddress().equals(getAddress())) ? retVal | SAME_HOST : retVal;
-		retVal = (obj.getPort().equals(getPort())) ? retVal | SAME_PORT : retVal;
-		return retVal;
-	}
+    public int compareTo(DatabaseUIWrapper obj) {
+        int retVal = 0;
+        retVal = (obj.getId().equals(this.getId())) ? retVal | SAME_ID : retVal;
+        retVal = (obj.getName().equals(obj.getName())) ? retVal | SAME_NAME : retVal;
+        retVal = (obj.getAddress().equals(getAddress())) ? retVal | SAME_HOST : retVal;
+        retVal = (obj.getPort().equals(getPort())) ? retVal | SAME_PORT : retVal;
+        return retVal;
+    }
 
-	public int compareTo(CubridDatabase obj) {
-		try {
-			boolean same = (obj.getId().equals(this.getId()))
-					&& (obj.getDatabaseInfo().getBrokerIP().equals(getAddress()))
-					&& (obj.getDatabaseInfo().getDbName().equals(obj.getName()))
-					&& (obj.getDatabaseInfo().getBrokerIP().equals(getPort()));
-			return (same) ? 0 : 1;
-		} catch (Exception e) {
-			return 0;
-		}
-	}
+    public int compareTo(CubridDatabase obj) {
+        try {
+            boolean same =
+                    (obj.getId().equals(this.getId()))
+                            && (obj.getDatabaseInfo().getBrokerIP().equals(getAddress()))
+                            && (obj.getDatabaseInfo().getDbName().equals(obj.getName()))
+                            && (obj.getDatabaseInfo().getBrokerIP().equals(getPort()));
+            return (same) ? 0 : 1;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

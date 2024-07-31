@@ -27,134 +27,142 @@
  */
 package com.cubrid.common.ui.common.sqlrunner.part;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import java.util.List;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-
 /**
  * run SQL part input
+ *
  * @author Kevin.Wang
  */
 public class RunSQLFileEditorInput implements IEditorInput {
-	private final List<String> fileList;
-	private final CubridDatabase database;
-	
-	private int maxThreadSize = 1;
-	private int commitCount = 1000;
-	private String charset = "UTF-8";
-	private String logFolderPath = Platform.getInstanceLocation().getURL().getPath();
+    private final List<String> fileList;
+    private final CubridDatabase database;
 
-	/**
-	 * The constructor
-	 * @param database
-	 * @param fileList
-	 * @param charset
-	 * @param maxThreadSize
-	 * @param commitCount
-	 * @param logFolderPath
-	 */
-	public RunSQLFileEditorInput(CubridDatabase database, List<String> fileList, String charset, int maxThreadSize,int commitCount, String logFolderPath) {
-		this.database = database;
-		this.fileList = fileList;
-		this.charset = charset;
-		this.maxThreadSize = maxThreadSize;
-		this.commitCount = commitCount;
-		if(!StringUtil.isEmpty(logFolderPath)) {
-			this.logFolderPath = logFolderPath;
-		}
-	}
-	
-	/**
-	 * The constructor
-	 * @param database
-	 * @param fileList
-	 */
-	public RunSQLFileEditorInput(CubridDatabase database, List<String> fileList) {
-		this.database = database;
-		this.fileList = fileList;
-	}
+    private int maxThreadSize = 1;
+    private int commitCount = 1000;
+    private String charset = "UTF-8";
+    private String logFolderPath = Platform.getInstanceLocation().getURL().getPath();
 
-	public boolean exists() {
-		return false;
-	}
+    /**
+     * The constructor
+     *
+     * @param database
+     * @param fileList
+     * @param charset
+     * @param maxThreadSize
+     * @param commitCount
+     * @param logFolderPath
+     */
+    public RunSQLFileEditorInput(
+            CubridDatabase database,
+            List<String> fileList,
+            String charset,
+            int maxThreadSize,
+            int commitCount,
+            String logFolderPath) {
+        this.database = database;
+        this.fileList = fileList;
+        this.charset = charset;
+        this.maxThreadSize = maxThreadSize;
+        this.commitCount = commitCount;
+        if (!StringUtil.isEmpty(logFolderPath)) {
+            this.logFolderPath = logFolderPath;
+        }
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
+    /**
+     * The constructor
+     *
+     * @param database
+     * @param fileList
+     */
+    public RunSQLFileEditorInput(CubridDatabase database, List<String> fileList) {
+        this.database = database;
+        this.fileList = fileList;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    public boolean exists() {
+        return false;
+    }
 
-	public String getName() {
-		DatabaseInfo dbInfo = database.getDatabaseInfo();
-		if (dbInfo == null) {
-			return "";
-		}
-		return database.getName() + "@" + dbInfo.getBrokerIP();
-	}
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        return null;
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	public String getToolTipText() {
-		return this.getName();
-	}
+    public String getName() {
+        DatabaseInfo dbInfo = database.getDatabaseInfo();
+        if (dbInfo == null) {
+            return "";
+        }
+        return database.getName() + "@" + dbInfo.getBrokerIP();
+    }
 
-	public CubridDatabase getDatabase() {
-		return database;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	/**
-	 * Get Max Thread Size
-	 * 
-	 * @return the maxThreadSize
-	 */
-	public int getMaxThreadSize() {
-		return maxThreadSize;
-	}
+    public String getToolTipText() {
+        return this.getName();
+    }
 
-	/**
-	 * Get Commit Count
-	 * 
-	 * @return the commitCount
-	 */
-	public int getCommitCount() {
-		return commitCount;
-	}
+    public CubridDatabase getDatabase() {
+        return database;
+    }
 
-	/**
-	 * Get Charset
-	 * 
-	 * @return the charset
-	 */
-	public String getCharset() {
-		return charset;
-	}
+    /**
+     * Get Max Thread Size
+     *
+     * @return the maxThreadSize
+     */
+    public int getMaxThreadSize() {
+        return maxThreadSize;
+    }
 
-	/**
-	 * Get Log Folder Path
-	 * 
-	 * @return the logFolderPath
-	 */
-	public String getLogFolderPath() {
-		return logFolderPath;
-	}
+    /**
+     * Get Commit Count
+     *
+     * @return the commitCount
+     */
+    public int getCommitCount() {
+        return commitCount;
+    }
 
-	/**
-	 * Get file List
-	 * @return the fileList
-	 */
-	public List<String> getFileList() {
-		return fileList;
-	}
+    /**
+     * Get Charset
+     *
+     * @return the charset
+     */
+    public String getCharset() {
+        return charset;
+    }
+
+    /**
+     * Get Log Folder Path
+     *
+     * @return the logFolderPath
+     */
+    public String getLogFolderPath() {
+        return logFolderPath;
+    }
+
+    /**
+     * Get file List
+     *
+     * @return the fileList
+     */
+    public List<String> getFileList() {
+        return fileList;
+    }
 }

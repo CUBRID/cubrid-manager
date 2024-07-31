@@ -2,7 +2,6 @@ package com.cubrid.common.ui.cubrid.database.erwin.xmlmodel;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -11,257 +10,233 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-
-})
+@XmlType(
+        name = "",
+        propOrder = {})
 @XmlRootElement(name = "Model")
 public class Model {
 
-	@XmlElement(name = "Entity_Groups")
-	protected Model.EntityGroups entityGroups;
-	@XmlElement(name = "Relationship_Groups")
-	protected Model.RelationshipGroups relationshipGroups;
-	@XmlElement(name = "Default_Value_Groups")
-	protected Model.DefaultValueGroups defaultValueGroups;
-	@XmlAttribute(name = "id", required = true)
-	protected String id;
-	@XmlAttribute(name = "Name")
-	protected String name;
-	@XmlAttribute(name = "TargetServer")
-	protected String targetServer;
-	@XmlAttribute(name = "DBMSVersion")
-	protected String dbmsVersion;
-	@XmlElement(name = "ModelProps")
-	protected Model.ModelProps modelProps;
-	@XmlElement(name = "Subject_Area_Groups")
-	protected Model.SubjectAreaGroups subjectAreaGroups;
+    @XmlElement(name = "Entity_Groups")
+    protected Model.EntityGroups entityGroups;
 
-	public Model.SubjectAreaGroups getSubjectAreaGroups() {
-		return subjectAreaGroups;
-	}
+    @XmlElement(name = "Relationship_Groups")
+    protected Model.RelationshipGroups relationshipGroups;
 
-	public void setSubjectAreaGroups(Model.SubjectAreaGroups subjectAreaGroups) {
-		this.subjectAreaGroups = subjectAreaGroups;
-	}
+    @XmlElement(name = "Default_Value_Groups")
+    protected Model.DefaultValueGroups defaultValueGroups;
 
-	public Model.ModelProps getModelProps() {
-		return modelProps;
-	}
+    @XmlAttribute(name = "id", required = true)
+    protected String id;
 
-	public void setModelProps(Model.ModelProps modelProps) {
-		this.modelProps = modelProps;
-	}
+    @XmlAttribute(name = "Name")
+    protected String name;
 
-	public String getDbmsVersion() {
-		return dbmsVersion;
-	}
+    @XmlAttribute(name = "TargetServer")
+    protected String targetServer;
 
-	public void setDbmsVersion(String dbmsVersion) {
-		this.dbmsVersion = dbmsVersion;
-	}
+    @XmlAttribute(name = "DBMSVersion")
+    protected String dbmsVersion;
 
-	public String getTargetServer() {
-		return targetServer;
-	}
+    @XmlElement(name = "ModelProps")
+    protected Model.ModelProps modelProps;
 
-	public void setTargetServer(String targetServer) {
-		this.targetServer = targetServer;
-	}
+    @XmlElement(name = "Subject_Area_Groups")
+    protected Model.SubjectAreaGroups subjectAreaGroups;
 
-	/**
-	 * 
-	 * @return possible object is {@link Model.EntityGroups }
-	 * 
-	 */
-	public Model.EntityGroups getEntityGroups() {
-		return entityGroups;
-	}
+    public Model.SubjectAreaGroups getSubjectAreaGroups() {
+        return subjectAreaGroups;
+    }
 
-	/**
-	 * 
-	 * @param value allowed object is {@link Model.EntityGroups }
-	 * 
-	 */
-	public void setEntityGroups(Model.EntityGroups value) {
-		this.entityGroups = value;
-	}
+    public void setSubjectAreaGroups(Model.SubjectAreaGroups subjectAreaGroups) {
+        this.subjectAreaGroups = subjectAreaGroups;
+    }
 
-	/**
-	 * @return the relationshipGroups
-	 */
-	public Model.RelationshipGroups getRelationshipGroups() {
-		return relationshipGroups;
-	}
+    public Model.ModelProps getModelProps() {
+        return modelProps;
+    }
 
-	/**
-	 * @param relationshipGroups the relationshipGroups to set
-	 */
-	public void setRelationshipGroups(
-			Model.RelationshipGroups relationshipGroups) {
-		this.relationshipGroups = relationshipGroups;
-	}
+    public void setModelProps(Model.ModelProps modelProps) {
+        this.modelProps = modelProps;
+    }
 
-	/**
-	 * 
-	 * @return the defaultValueGroups
-	 */
-	public Model.DefaultValueGroups getDefaultValueGroups() {
-		return defaultValueGroups;
-	}
+    public String getDbmsVersion() {
+        return dbmsVersion;
+    }
 
-	/**
-	 * @param defaultValueGroups the defaultValueGroups to set
-	 */
-	public void setDefaultValueGroups(
-			Model.DefaultValueGroups defaultValueGroups) {
-		this.defaultValueGroups = defaultValueGroups;
-	}
+    public void setDbmsVersion(String dbmsVersion) {
+        this.dbmsVersion = dbmsVersion;
+    }
 
-	/**
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    public String getTargetServer() {
+        return targetServer;
+    }
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setTargetServer(String targetServer) {
+        this.targetServer = targetServer;
+    }
 
-	/**
-	 * 
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /** @return possible object is {@link Model.EntityGroups } */
+    public Model.EntityGroups getEntityGroups() {
+        return entityGroups;
+    }
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /** @param value allowed object is {@link Model.EntityGroups } */
+    public void setEntityGroups(Model.EntityGroups value) {
+        this.entityGroups = value;
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "entity" })
-	public static class EntityGroups {
+    /** @return the relationshipGroups */
+    public Model.RelationshipGroups getRelationshipGroups() {
+        return relationshipGroups;
+    }
 
-		@XmlElement(name = "Entity")
-		protected List<Entity> entity;
+    /** @param relationshipGroups the relationshipGroups to set */
+    public void setRelationshipGroups(Model.RelationshipGroups relationshipGroups) {
+        this.relationshipGroups = relationshipGroups;
+    }
 
-		/**
-		 * Gets the value of the entity property.
-		 * 
-		 * <p>
-		 * This accessor method returns a reference to the live list, not a
-		 * snapshot. Therefore any modification you make to the returned list
-		 * will be present inside the JAXB object. This is why there is not a
-		 * <CODE>set</CODE> method for the entity property.
-		 * 
-		 * <p>
-		 * For example, to add a new item, do as follows:
-		 * 
-		 * <pre>
-		 * getEntity().add(newItem);
-		 * </pre>
-		 * 
-		 * 
-		 * <p>
-		 * Objects of the following type(s) are allowed in the list
-		 * {@link Entity }
-		 * 
-		 * 
-		 */
-		public List<Entity> getEntity() {
-			if (entity == null) {
-				entity = new ArrayList<Entity>();
-			}
-			return this.entity;
-		}
+    /** @return the defaultValueGroups */
+    public Model.DefaultValueGroups getDefaultValueGroups() {
+        return defaultValueGroups;
+    }
 
-	}
+    /** @param defaultValueGroups the defaultValueGroups to set */
+    public void setDefaultValueGroups(Model.DefaultValueGroups defaultValueGroups) {
+        this.defaultValueGroups = defaultValueGroups;
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "relationship" })
-	public static class RelationshipGroups {
+    /** @return the id */
+    public String getId() {
+        return id;
+    }
 
-		@XmlElement(name = "Relationship")
-		protected List<Relationship> relationship;
+    /** @param id the id to set */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-		public List<Relationship> getRelationship() {
-			if (relationship == null) {
-				relationship = new ArrayList<Relationship>();
-			}
-			return this.relationship;
-		}
+    /** @return the name */
+    public String getName() {
+        return name;
+    }
 
-	}
+    /** @param name the name to set */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "defaultValue" })
-	public static class DefaultValueGroups {
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"entity"})
+    public static class EntityGroups {
 
-		@XmlElement(name = "Default_Value")
-		protected List<Default> defaultValue;
+        @XmlElement(name = "Entity")
+        protected List<Entity> entity;
 
-		public List<Default> getDefault() {
-			if (defaultValue == null) {
-				defaultValue = new ArrayList<Default>();
-			}
-			return this.defaultValue;
-		}
+        /**
+         * Gets the value of the entity property.
+         *
+         * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore
+         * any modification you make to the returned list will be present inside the JAXB object.
+         * This is why there is not a <CODE>set</CODE> method for the entity property.
+         *
+         * <p>For example, to add a new item, do as follows:
+         *
+         * <pre>
+         * getEntity().add(newItem);
+         * </pre>
+         *
+         * <p>Objects of the following type(s) are allowed in the list {@link Entity }
+         */
+        public List<Entity> getEntity() {
+            if (entity == null) {
+                entity = new ArrayList<Entity>();
+            }
+            return this.entity;
+        }
+    }
 
-	}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"relationship"})
+    public static class RelationshipGroups {
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "targetServer", "dbmsVersion" })
-	public static class ModelProps {
+        @XmlElement(name = "Relationship")
+        protected List<Relationship> relationship;
 
-		@XmlElement(name = "Target_Server")
-		protected TargetServer targetServer;
-		@XmlElement(name = "DBMS_Version")
-		protected DBMSVersion dbmsVersion;
+        public List<Relationship> getRelationship() {
+            if (relationship == null) {
+                relationship = new ArrayList<Relationship>();
+            }
+            return this.relationship;
+        }
+    }
 
-		public TargetServer getTargetServer() {
-			return targetServer;
-		}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"defaultValue"})
+    public static class DefaultValueGroups {
 
-		public void setTargetServer(TargetServer targetServer) {
-			this.targetServer = targetServer;
-		}
+        @XmlElement(name = "Default_Value")
+        protected List<Default> defaultValue;
 
-		public DBMSVersion getDbmsVersion() {
-			return dbmsVersion;
-		}
+        public List<Default> getDefault() {
+            if (defaultValue == null) {
+                defaultValue = new ArrayList<Default>();
+            }
+            return this.defaultValue;
+        }
+    }
 
-		public void setDbmsVersion(DBMSVersion dbmsVersion) {
-			this.dbmsVersion = dbmsVersion;
-		}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"targetServer", "dbmsVersion"})
+    public static class ModelProps {
 
-	}
+        @XmlElement(name = "Target_Server")
+        protected TargetServer targetServer;
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "subjectAreaList" })
-	public static class SubjectAreaGroups {
-		@XmlElement(name = "Subject_Area")
-		protected List<SubjectArea> subjectAreaList;
+        @XmlElement(name = "DBMS_Version")
+        protected DBMSVersion dbmsVersion;
 
-		public List<SubjectArea> getSubjectAreaList() {
-			if(subjectAreaList == null) {
-				subjectAreaList = new ArrayList<SubjectArea>();
-			}
-			return subjectAreaList;
-		}
+        public TargetServer getTargetServer() {
+            return targetServer;
+        }
 
-		public void setSubjectAreaList(List<SubjectArea> subjectAreaList) {
-			this.subjectAreaList = subjectAreaList;
-		}
+        public void setTargetServer(TargetServer targetServer) {
+            this.targetServer = targetServer;
+        }
 
-	}
+        public DBMSVersion getDbmsVersion() {
+            return dbmsVersion;
+        }
 
+        public void setDbmsVersion(DBMSVersion dbmsVersion) {
+            this.dbmsVersion = dbmsVersion;
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"subjectAreaList"})
+    public static class SubjectAreaGroups {
+        @XmlElement(name = "Subject_Area")
+        protected List<SubjectArea> subjectAreaList;
+
+        public List<SubjectArea> getSubjectAreaList() {
+            if (subjectAreaList == null) {
+                subjectAreaList = new ArrayList<SubjectArea>();
+            }
+            return subjectAreaList;
+        }
+
+        public void setSubjectAreaList(List<SubjectArea> subjectAreaList) {
+            this.subjectAreaList = subjectAreaList;
+        }
+    }
 }

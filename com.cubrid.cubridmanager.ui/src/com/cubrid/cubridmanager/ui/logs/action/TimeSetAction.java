@@ -27,16 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.logs.action;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.ICubridNode;
@@ -51,120 +41,120 @@ import com.cubrid.cubridmanager.ui.logs.Messages;
 import com.cubrid.cubridmanager.ui.logs.dialog.TimeSetDialog;
 import com.cubrid.cubridmanager.ui.logs.editor.LogEditorPart;
 import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
 
 /**
- *
  * This action is responsible to set time option.
  *
  * @author wuyingshi
  * @version 1.0 - 2009-3-10 created by wuyingshi
  */
-public class TimeSetAction extends
-		SelectionAction {
+public class TimeSetAction extends SelectionAction {
 
-	private static final Logger LOGGER = LogUtil.getLogger(TimeSetAction.class);
-	public static final String ID = TimeSetAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(TimeSetAction.class);
+    public static final String ID = TimeSetAction.class.getName();
 
-	/**
-	 * The Constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public TimeSetAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The Constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public TimeSetAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The Constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public TimeSetAction(Shell shell, ISelectionProvider provider, String text,
-			ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The Constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public TimeSetAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj Object
-	 * @return boolean(whether to support)
-	 */
-	public boolean isSupported(Object obj) {
-		if (obj instanceof ICubridNode) {
-			ICubridNode node = (ICubridNode) obj;
-			if (node.getServer() == null) {
-				return false;
-			}
-			ServerUserInfo serverUserInfo = node.getServer().getServerInfo().getLoginedUserInfo();
-			if (serverUserInfo == null || !serverUserInfo.isAdmin()) {
-				return false;
-			}
-			if (CubridNodeType.BROKER_SQL_LOG.equals(node.getType())
-					|| CubridNodeType.BROKER_SQL_LOG_FOLDER.equals(node.getType())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj Object
+     * @return boolean(whether to support)
+     */
+    public boolean isSupported(Object obj) {
+        if (obj instanceof ICubridNode) {
+            ICubridNode node = (ICubridNode) obj;
+            if (node.getServer() == null) {
+                return false;
+            }
+            ServerUserInfo serverUserInfo = node.getServer().getServerInfo().getLoginedUserInfo();
+            if (serverUserInfo == null || !serverUserInfo.isAdmin()) {
+                return false;
+            }
+            if (CubridNodeType.BROKER_SQL_LOG.equals(node.getType())
+                    || CubridNodeType.BROKER_SQL_LOG_FOLDER.equals(node.getType())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Open dialog
-	 */
-	public void run() {
+    /** Open dialog */
+    public void run() {
 
-		TimeSetDialog timeSetDialog = new TimeSetDialog(getShell());
-		timeSetDialog.create();
-		timeSetDialog.getShell().setSize(580, 275);
-		if (timeSetDialog.open() == Dialog.OK) {
-			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			if (window == null) {
-				return;
-			}
-			Object[] obj = this.getSelectedObj();
-			if (!isSupported(obj[0])) {
-				setEnabled(false);
-				return;
-			}
-			ICubridNode node = (ICubridNode) obj[0];
-			LogInfo logInfo = (LogInfo) node.getAdapter(LogInfo.class);
-			GetLogListTask task = new GetLogListTask(
-					node.getServer().getServerInfo());
-			task.setPath(logInfo.getPath());
-			task.setStart("1");
-			task.setEnd("100");
-			TaskExecutor taskExcutor = new CommonTaskExec(
-					Messages.loadLogTaskName);
-			taskExcutor.addTask(task);
-			new ExecTaskWithProgress(taskExcutor).exec();
-			if (!taskExcutor.isSuccess()) {
-				return;
-			}
-			LogContentInfo logContentInfo = (LogContentInfo) task.getLogContent();
-			IEditorPart editor;
-			try {
-				editor = window.getActivePage().openEditor(node,
-						LogEditorPart.ID);
-				((LogEditorPart) editor).setTableInfo(logContentInfo, true);
-			} catch (PartInitException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-	}
+        TimeSetDialog timeSetDialog = new TimeSetDialog(getShell());
+        timeSetDialog.create();
+        timeSetDialog.getShell().setSize(580, 275);
+        if (timeSetDialog.open() == Dialog.OK) {
+            IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            if (window == null) {
+                return;
+            }
+            Object[] obj = this.getSelectedObj();
+            if (!isSupported(obj[0])) {
+                setEnabled(false);
+                return;
+            }
+            ICubridNode node = (ICubridNode) obj[0];
+            LogInfo logInfo = (LogInfo) node.getAdapter(LogInfo.class);
+            GetLogListTask task = new GetLogListTask(node.getServer().getServerInfo());
+            task.setPath(logInfo.getPath());
+            task.setStart("1");
+            task.setEnd("100");
+            TaskExecutor taskExcutor = new CommonTaskExec(Messages.loadLogTaskName);
+            taskExcutor.addTask(task);
+            new ExecTaskWithProgress(taskExcutor).exec();
+            if (!taskExcutor.isSuccess()) {
+                return;
+            }
+            LogContentInfo logContentInfo = (LogContentInfo) task.getLogContent();
+            IEditorPart editor;
+            try {
+                editor = window.getActivePage().openEditor(node, LogEditorPart.ID);
+                ((LogEditorPart) editor).setTableInfo(logContentInfo, true);
+            } catch (PartInitException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+    }
 }

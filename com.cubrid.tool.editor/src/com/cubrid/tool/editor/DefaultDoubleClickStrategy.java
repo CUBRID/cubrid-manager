@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,155 +24,153 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.tool.editor;
 
 import org.eclipse.jface.text.*;
 
 /**
- * 
  * Double Click Strategy Class.
- * 
+ *
  * @author Kevin Cao
  * @version 1.0 - 2011-1-21 created by Kevin Cao
  */
-public class DefaultDoubleClickStrategy implements
-		ITextDoubleClickStrategy {
-	protected ITextViewer fText;
+public class DefaultDoubleClickStrategy implements ITextDoubleClickStrategy {
+    protected ITextViewer fText;
 
-	/**
-	 * The action to be executed when text double clicked.
-	 * 
-	 * @param part ITextViewer
-	 */
-	public void doubleClicked(ITextViewer part) {
-		int pos = part.getSelectedRange().x;
+    /**
+     * The action to be executed when text double clicked.
+     *
+     * @param part ITextViewer
+     */
+    public void doubleClicked(ITextViewer part) {
+        int pos = part.getSelectedRange().x;
 
-		if (pos < 0) {
-			return;
-		}
+        if (pos < 0) {
+            return;
+        }
 
-		fText = part;
+        fText = part;
 
-		if (!selectComment(pos)) {
-			selectWord(pos);
-		}
-	}
+        if (!selectComment(pos)) {
+            selectWord(pos);
+        }
+    }
 
-	/**
-	 * Select comment
-	 * 
-	 * @param caretPos int
-	 * @return true or false
-	 */
-	protected boolean selectComment(int caretPos) {
-		IDocument doc = fText.getDocument();
-		int startPos, endPos;
+    /**
+     * Select comment
+     *
+     * @param caretPos int
+     * @return true or false
+     */
+    protected boolean selectComment(int caretPos) {
+        IDocument doc = fText.getDocument();
+        int startPos, endPos;
 
-		try {
-			int pos = caretPos;
-			char c = ' ';
+        try {
+            int pos = caretPos;
+            char c = ' ';
 
-			while (pos >= 0) {
-				c = doc.getChar(pos);
-				if (c == '\\') {
-					pos -= 2;
-					continue;
-				}
-				if (c == Character.LINE_SEPARATOR || c == '\"') {
-					break;
-				}
-				--pos;
-			}
+            while (pos >= 0) {
+                c = doc.getChar(pos);
+                if (c == '\\') {
+                    pos -= 2;
+                    continue;
+                }
+                if (c == Character.LINE_SEPARATOR || c == '\"') {
+                    break;
+                }
+                --pos;
+            }
 
-			if (c != '\"') {
-				return false;
-			}
+            if (c != '\"') {
+                return false;
+            }
 
-			startPos = pos;
+            startPos = pos;
 
-			pos = caretPos;
-			int length = doc.getLength();
-			c = ' ';
+            pos = caretPos;
+            int length = doc.getLength();
+            c = ' ';
 
-			while (pos < length) {
-				c = doc.getChar(pos);
-				if (c == Character.LINE_SEPARATOR || c == '\"') {
-					break;
-				}
-				++pos;
-			}
-			if (c != '\"') {
-				return false;
-			}
+            while (pos < length) {
+                c = doc.getChar(pos);
+                if (c == Character.LINE_SEPARATOR || c == '\"') {
+                    break;
+                }
+                ++pos;
+            }
+            if (c != '\"') {
+                return false;
+            }
 
-			endPos = pos;
+            endPos = pos;
 
-			int offset = startPos + 1;
-			int len = endPos - offset;
-			fText.setSelectedRange(offset, len);
-			return true;
-		} catch (BadLocationException x) {
-			return false;
-		}
-	}
+            int offset = startPos + 1;
+            int len = endPos - offset;
+            fText.setSelectedRange(offset, len);
+            return true;
+        } catch (BadLocationException x) {
+            return false;
+        }
+    }
 
-	/**
-	 * Select word
-	 * 
-	 * @param caretPos int
-	 * @return true or false.
-	 */
-	protected boolean selectWord(int caretPos) {
+    /**
+     * Select word
+     *
+     * @param caretPos int
+     * @return true or false.
+     */
+    protected boolean selectWord(int caretPos) {
 
-		IDocument doc = fText.getDocument();
-		int startPos, endPos;
+        IDocument doc = fText.getDocument();
+        int startPos, endPos;
 
-		try {
+        try {
 
-			int pos = caretPos;
-			char c;
+            int pos = caretPos;
+            char c;
 
-			while (pos >= 0) {
-				c = doc.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c)) {
-					break;
-				}
-				--pos;
-			}
+            while (pos >= 0) {
+                c = doc.getChar(pos);
+                if (!Character.isJavaIdentifierPart(c)) {
+                    break;
+                }
+                --pos;
+            }
 
-			startPos = pos;
+            startPos = pos;
 
-			pos = caretPos;
-			int length = doc.getLength();
+            pos = caretPos;
+            int length = doc.getLength();
 
-			while (pos < length) {
-				c = doc.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c)) {
-					break;
-				}
-				++pos;
-			}
+            while (pos < length) {
+                c = doc.getChar(pos);
+                if (!Character.isJavaIdentifierPart(c)) {
+                    break;
+                }
+                ++pos;
+            }
 
-			endPos = pos;
-			selectRange(startPos, endPos);
-			return true;
+            endPos = pos;
+            selectRange(startPos, endPos);
+            return true;
 
-		} catch (BadLocationException x) {
-			return false;
-		}
-	}
+        } catch (BadLocationException x) {
+            return false;
+        }
+    }
 
-	/**
-	 * Select range
-	 * 
-	 * @param startPos int
-	 * @param stopPos int
-	 */
-	private void selectRange(int startPos, int stopPos) {
-		int offset = startPos + 1;
-		int length = stopPos - offset;
-		fText.setSelectedRange(offset, length);
-	}
+    /**
+     * Select range
+     *
+     * @param startPos int
+     * @param stopPos int
+     */
+    private void selectRange(int startPos, int stopPos) {
+        int offset = startPos + 1;
+        int length = stopPos - offset;
+        fText.setSelectedRange(offset, length);
+    }
 }

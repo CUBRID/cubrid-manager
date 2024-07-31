@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2012 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,87 +23,78 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.host.control;
 
+import com.cubrid.common.ui.spi.model.CubridServer;
 import java.util.Map;
 
-import com.cubrid.common.ui.spi.model.CubridServer;
-
 /**
- * 
  * HA Server
- * 
+ *
  * @author Kevin.Wang
  * @version 1.0 - 2012-12-5 created by Kevin.Wang
  */
 public class HAServer {
-	private CubridServer server;
-	private String hostName;
-	private Map<String, Map<String, String>>  cubridParameters = null;
-	private Map<String, Map<String, String>>  cubridHAParameters = null;
-	
-	private Map<String, Map<String, String>>  originCubridParameters = null;
-	private Map<String, Map<String, String>>  origincCubridHAParameters = null;
-	
-	public HAServer(CubridServer server) {
-		this.server = server;
-	}
-	
-	public CubridServer getServer() {
-		return server;
-	}
-	public void setServer(CubridServer server) {
-		this.server = server;
-	}
+    private CubridServer server;
+    private String hostName;
+    private Map<String, Map<String, String>> cubridParameters = null;
+    private Map<String, Map<String, String>> cubridHAParameters = null;
 
-	public Map<String, Map<String, String>> getCubridParameters() {
-		return cubridParameters;
-	}
+    private Map<String, Map<String, String>> originCubridParameters = null;
+    private Map<String, Map<String, String>> origincCubridHAParameters = null;
 
-	public void setCubridParameters(
-			Map<String, Map<String, String>> cubridParameters) {
-		this.cubridParameters = cubridParameters;
-	}
+    public HAServer(CubridServer server) {
+        this.server = server;
+    }
 
-	public Map<String, Map<String, String>> getCubridHAParameters() {
-		return cubridHAParameters;
-	}
+    public CubridServer getServer() {
+        return server;
+    }
 
-	public void setCubridHAParameters(
-			Map<String, Map<String, String>> cubridHAParameters) {
-		this.cubridHAParameters = cubridHAParameters;
-	}
+    public void setServer(CubridServer server) {
+        this.server = server;
+    }
 
-	public String getHostName() {
-		return hostName;
-	}
+    public Map<String, Map<String, String>> getCubridParameters() {
+        return cubridParameters;
+    }
 
-	public void setHostName(String hostName) {
-		this.hostName = hostName;
-	}
+    public void setCubridParameters(Map<String, Map<String, String>> cubridParameters) {
+        this.cubridParameters = cubridParameters;
+    }
 
-	public Map<String, Map<String, String>> getOriginCubridParameters() {
-		return originCubridParameters;
-	}
+    public Map<String, Map<String, String>> getCubridHAParameters() {
+        return cubridHAParameters;
+    }
 
-	public void setOriginCubridParameters(
-			Map<String, Map<String, String>> originCubridParameters) {
-		this.originCubridParameters = originCubridParameters;
-	}
-	
-	public Map<String, Map<String, String>> getOrigincCubridHAParameters() {
-		return origincCubridHAParameters;
-	}
+    public void setCubridHAParameters(Map<String, Map<String, String>> cubridHAParameters) {
+        this.cubridHAParameters = cubridHAParameters;
+    }
 
-	public void setOrigincCubridHAParameters(
-			Map<String, Map<String, String>> origincCubridHAParameters) {
-		this.origincCubridHAParameters = origincCubridHAParameters;
-	}
+    public String getHostName() {
+        return hostName;
+    }
 
-	
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
 
+    public Map<String, Map<String, String>> getOriginCubridParameters() {
+        return originCubridParameters;
+    }
 
+    public void setOriginCubridParameters(Map<String, Map<String, String>> originCubridParameters) {
+        this.originCubridParameters = originCubridParameters;
+    }
 
+    public Map<String, Map<String, String>> getOrigincCubridHAParameters() {
+        return origincCubridHAParameters;
+    }
+
+    public void setOrigincCubridHAParameters(
+            Map<String, Map<String, String>> origincCubridHAParameters) {
+        this.origincCubridHAParameters = origincCubridHAParameters;
+    }
 }

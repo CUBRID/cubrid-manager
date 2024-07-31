@@ -29,110 +29,98 @@
  */
 package com.cubrid.common.ui.common.query.autosave;
 
+import com.cubrid.common.core.util.LogUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
-
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-
 /**
- *
- *
  * Application Heart Beat Task Manager
  *
  * @author Kevin.Wang
  * @version 1.0 - Jun 4, 2012 created by Kevin.Wang
  */
-public class HeartBeatTaskManager extends
-		TimerTask { // FIXME logic code move to core module
+public class HeartBeatTaskManager extends TimerTask { // FIXME logic code move to core module
 
-	private static final Logger LOGGER = LogUtil.getLogger(HeartBeatTaskManager.class);
+    private static final Logger LOGGER = LogUtil.getLogger(HeartBeatTaskManager.class);
 
-	/*Heart beat time, The unit is second*/
-	public static final int BEAT_TIME = 6000;
-	private static HeartBeatTaskManager instance;
+    /*Heart beat time, The unit is second*/
+    public static final int BEAT_TIME = 6000;
+    private static HeartBeatTaskManager instance;
 
-	/*All the task list*/
-	private List<IHeartBeatTask> tasks = new ArrayList<IHeartBeatTask>();
+    /*All the task list*/
+    private List<IHeartBeatTask> tasks = new ArrayList<IHeartBeatTask>();
 
-	/**
-	 * The constructor
-	 */
-	private HeartBeatTaskManager() {
-		tasks.add(CheckQueryEditorTask.getInstance());
-	}
+    /** The constructor */
+    private HeartBeatTaskManager() {
+        tasks.add(CheckQueryEditorTask.getInstance());
+    }
 
-	/**
-	 * Get the ApplicationHeartBeat
-	 *
-	 * @return
-	 */
-	public static HeartBeatTaskManager getInstance() {
-		synchronized (HeartBeatTaskManager.class) {
-			if (instance == null) {
-				instance = new HeartBeatTaskManager();
-			}
-		}
-		return instance;
-	}
+    /**
+     * Get the ApplicationHeartBeat
+     *
+     * @return
+     */
+    public static HeartBeatTaskManager getInstance() {
+        synchronized (HeartBeatTaskManager.class) {
+            if (instance == null) {
+                instance = new HeartBeatTaskManager();
+            }
+        }
+        return instance;
+    }
 
-	public void run() {
-		synchronized (HeartBeatTaskManager.class) {
-			for (IHeartBeatTask task : tasks) {
-				task.beat();
-			}
-		}
-	}
+    public void run() {
+        synchronized (HeartBeatTaskManager.class) {
+            for (IHeartBeatTask task : tasks) {
+                task.beat();
+            }
+        }
+    }
 
-	/**
-	 * Add a task
-	 *
-	 * @param task
-	 */
-	public void addTask(IHeartBeatTask task) {
-		if (task == null) {
-			return;
-		}
-		synchronized (HeartBeatTaskManager.class) {
-			tasks.add(task);
-		}
-	}
+    /**
+     * Add a task
+     *
+     * @param task
+     */
+    public void addTask(IHeartBeatTask task) {
+        if (task == null) {
+            return;
+        }
+        synchronized (HeartBeatTaskManager.class) {
+            tasks.add(task);
+        }
+    }
 
-	/**
-	 * Remove the task
-	 *
-	 * @param task
-	 */
-	public void removeTask(IHeartBeatTask task) {
-		if (task == null) {
-			return;
-		}
-		synchronized (HeartBeatTaskManager.class) {
-			tasks.remove(task);
-		}
-	}
+    /**
+     * Remove the task
+     *
+     * @param task
+     */
+    public void removeTask(IHeartBeatTask task) {
+        if (task == null) {
+            return;
+        }
+        synchronized (HeartBeatTaskManager.class) {
+            tasks.remove(task);
+        }
+    }
 
-	/**
-	 * Clear all the task
-	 *
-	 */
-	public void clearAllTask() {
-		synchronized (HeartBeatTaskManager.class) {
-			tasks.clear();
-		}
-	}
+    /** Clear all the task */
+    public void clearAllTask() {
+        synchronized (HeartBeatTaskManager.class) {
+            tasks.clear();
+        }
+    }
 
-	/**
-	 * Stop the task
-	 */
-	public boolean cancel() {
-		synchronized (HeartBeatTaskManager.class) {
-			for (IHeartBeatTask task : tasks) {
-				task.stop();
-			}
-		}
-		return super.cancel();
-	}
+    /** Stop the task */
+    public boolean cancel() {
+        synchronized (HeartBeatTaskManager.class) {
+            for (IHeartBeatTask task : tasks) {
+                task.stop();
+            }
+        }
+        return super.cancel();
+    }
 }

@@ -33,7 +33,6 @@ import static com.cubrid.common.core.util.NoOp.noOp;
 
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -43,26 +42,25 @@ import org.eclipse.jface.viewers.Viewer;
  * @author Kevin.Wang
  * @version 1.0 - 2013-4-12 created by Kevin.Wang
  */
-public class QueryPlanContentProvider implements
-		IStructuredContentProvider {
+public class QueryPlanContentProvider implements IStructuredContentProvider {
 
-	public void dispose() {
-		noOp();
-	}
+    public void dispose() {
+        noOp();
+    }
 
-	public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-		noOp();
-	}
+    public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+        noOp();
+    }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof List) {
-			List<Map> list = (List<Map>) inputElement;
-			Object[] dataArray = new Object[list.size()];
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Object[] getElements(Object inputElement) {
+        if (inputElement instanceof List) {
+            List<Map> list = (List<Map>) inputElement;
+            Object[] dataArray = new Object[list.size()];
 
-			return list.toArray(dataArray);
-		}
+            return list.toArray(dataArray);
+        }
 
-		return new Object[] {};
-	}
+        return new Object[] {};
+    }
 }

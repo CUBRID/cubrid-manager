@@ -2,7 +2,6 @@ package com.cubrid.common.ui.cubrid.database.erwin.xmlmodel;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -12,91 +11,91 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "Stored_Display")
-@XmlType(name = "", propOrder = {})
+@XmlType(
+        name = "",
+        propOrder = {})
 public class StoredDisplay {
 
-	@XmlAttribute(name = "id")
-	protected String id;
-	@XmlAttribute(name = "Name")
-	protected String name;
+    @XmlAttribute(name = "id")
+    protected String id;
 
-	@XmlElement(name = "Drawing_Object_Entity_Groups")
-	protected StoredDisplay.DrawingObjectEntityGroups drawingObjectEntityGroups;
-	@XmlElement(name = "Drawing_Object_Relationship_Groups")
-	protected StoredDisplay.DrawingObjectRelationshipGroups drawingObjectRelationshipGroups;
-	
-	public String getId() {
-		return id;
-	}
+    @XmlAttribute(name = "Name")
+    protected String name;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    @XmlElement(name = "Drawing_Object_Entity_Groups")
+    protected StoredDisplay.DrawingObjectEntityGroups drawingObjectEntityGroups;
 
-	public String getName() {
-		return name;
-	}
+    @XmlElement(name = "Drawing_Object_Relationship_Groups")
+    protected StoredDisplay.DrawingObjectRelationshipGroups drawingObjectRelationshipGroups;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public StoredDisplay.DrawingObjectEntityGroups getDrawingObjectEntityGroups() {
-		return drawingObjectEntityGroups;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setDrawingObjectEntityGroups(
-			StoredDisplay.DrawingObjectEntityGroups drawingObjectEntityGroups) {
-		this.drawingObjectEntityGroups = drawingObjectEntityGroups;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public StoredDisplay.DrawingObjectRelationshipGroups getDrawingObjectRelationshipGroups() {
-		return drawingObjectRelationshipGroups;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDrawingObjectRelationshipGroups(
-			StoredDisplay.DrawingObjectRelationshipGroups drawingObjectRelationshipGroups) {
-		this.drawingObjectRelationshipGroups = drawingObjectRelationshipGroups;
-	}
+    public StoredDisplay.DrawingObjectEntityGroups getDrawingObjectEntityGroups() {
+        return drawingObjectEntityGroups;
+    }
 
-	
-	@XmlAccessorType(XmlAccessType.FIELD)
-	public static class DrawingObjectEntityGroups {
+    public void setDrawingObjectEntityGroups(
+            StoredDisplay.DrawingObjectEntityGroups drawingObjectEntityGroups) {
+        this.drawingObjectEntityGroups = drawingObjectEntityGroups;
+    }
 
-		@XmlElement(name = "Drawing_Object_Entity")
-		protected List<DrawingObjectEntity> drawingObjectEntity;
+    public StoredDisplay.DrawingObjectRelationshipGroups getDrawingObjectRelationshipGroups() {
+        return drawingObjectRelationshipGroups;
+    }
 
-		public List<DrawingObjectEntity> getDrawingObjectEntity() {
-			if (drawingObjectEntity == null) {
-				drawingObjectEntity = new ArrayList<DrawingObjectEntity>();
-			}
-			return drawingObjectEntity;
-		}
+    public void setDrawingObjectRelationshipGroups(
+            StoredDisplay.DrawingObjectRelationshipGroups drawingObjectRelationshipGroups) {
+        this.drawingObjectRelationshipGroups = drawingObjectRelationshipGroups;
+    }
 
-		public void setDrawingObjectEntity(
-				List<DrawingObjectEntity> drawingObjectEntity) {
-			this.drawingObjectEntity = drawingObjectEntity;
-		}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class DrawingObjectEntityGroups {
 
-	}
-	
-	@XmlAccessorType(XmlAccessType.FIELD)
-	public static class DrawingObjectRelationshipGroups {
+        @XmlElement(name = "Drawing_Object_Entity")
+        protected List<DrawingObjectEntity> drawingObjectEntity;
 
-		@XmlElement(name = "Drawing_Object_Relationship")
-		protected List<DrawingObjectRelation> drawingObjectRelationshipEntity;
+        public List<DrawingObjectEntity> getDrawingObjectEntity() {
+            if (drawingObjectEntity == null) {
+                drawingObjectEntity = new ArrayList<DrawingObjectEntity>();
+            }
+            return drawingObjectEntity;
+        }
 
-		public List<DrawingObjectRelation> getDrawingObjectRelationshipEntity() {
-			if(drawingObjectRelationshipEntity == null) {
-				drawingObjectRelationshipEntity = new ArrayList<DrawingObjectRelation>();
-			}
-			return drawingObjectRelationshipEntity;
-		}
+        public void setDrawingObjectEntity(List<DrawingObjectEntity> drawingObjectEntity) {
+            this.drawingObjectEntity = drawingObjectEntity;
+        }
+    }
 
-		public void setDrawingObjectRelationshipEntity(
-				List<DrawingObjectRelation> drawingObjectRelationshipEntity) {
-			this.drawingObjectRelationshipEntity = drawingObjectRelationshipEntity;
-		}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class DrawingObjectRelationshipGroups {
 
-	}
+        @XmlElement(name = "Drawing_Object_Relationship")
+        protected List<DrawingObjectRelation> drawingObjectRelationshipEntity;
+
+        public List<DrawingObjectRelation> getDrawingObjectRelationshipEntity() {
+            if (drawingObjectRelationshipEntity == null) {
+                drawingObjectRelationshipEntity = new ArrayList<DrawingObjectRelation>();
+            }
+            return drawingObjectRelationshipEntity;
+        }
+
+        public void setDrawingObjectRelationshipEntity(
+                List<DrawingObjectRelation> drawingObjectRelationshipEntity) {
+            this.drawingObjectRelationshipEntity = drawingObjectRelationshipEntity;
+        }
+    }
 }

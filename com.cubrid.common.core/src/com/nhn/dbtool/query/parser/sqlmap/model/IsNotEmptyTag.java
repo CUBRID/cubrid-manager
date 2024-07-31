@@ -27,17 +27,16 @@
  */
 package com.nhn.dbtool.query.parser.sqlmap.model;
 
-
 /**
- * A definition of isNotEmpty tag.
- * <isNotEmpty property="" prepend="" open="" close="" removeFirstPrepend="true"></isNotEmpty>
+ * A definition of isNotEmpty tag. <isNotEmpty property="" prepend="" open="" close=""
+ * removeFirstPrepend="true"></isNotEmpty>
  *
  * @author Bumsik, Jang
  */
 public class IsNotEmptyTag extends SqlMapCondition {
-	private static final long serialVersionUID = -1493804681831077222L;
+    private static final long serialVersionUID = -1493804681831077222L;
 
-	public IsNotEmptyTag() {
-		this.setType("isNotEmpty");
-	}
+    public IsNotEmptyTag() {
+        this.setType("isNotEmpty");
+    }
 }

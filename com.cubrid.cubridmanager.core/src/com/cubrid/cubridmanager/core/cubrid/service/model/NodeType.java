@@ -28,5 +28,10 @@
 package com.cubrid.cubridmanager.core.cubrid.service.model;
 
 public enum NodeType { // FIXME description
-	MASTER, SLAVE, REPLICA, SHARD, BROKER, NORMAL;
+    MASTER,
+    SLAVE,
+    REPLICA,
+    SHARD,
+    BROKER,
+    NORMAL;
 }

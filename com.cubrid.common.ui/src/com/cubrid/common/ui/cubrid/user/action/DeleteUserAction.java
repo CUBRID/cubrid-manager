@@ -28,11 +28,6 @@
 
 package com.cubrid.common.ui.cubrid.user.action;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
 import com.cubrid.common.ui.cubrid.user.Messages;
 import com.cubrid.common.ui.cubrid.user.dialog.EditUserDialog;
@@ -54,140 +49,141 @@ import com.cubrid.cubridmanager.core.common.model.DbRunningType;
 import com.cubrid.cubridmanager.core.common.task.CommonTaskName;
 import com.cubrid.cubridmanager.core.cubrid.user.model.DbUserInfo;
 import com.cubrid.cubridmanager.core.cubrid.user.task.DropUserTask;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Delete the user
  *
  * @author robin 2009-3-18
  */
-public class DeleteUserAction extends
-		SelectionAction {
+public class DeleteUserAction extends SelectionAction {
 
-	public static final String ID = DeleteUserAction.class.getName();
+    public static final String ID = DeleteUserAction.class.getName();
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 */
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     */
+    public DeleteUserAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	public DeleteUserAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     */
+    public DeleteUserAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 */
-	public DeleteUserAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 *
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj the Object
+     * @return <code>true</code> if support this obj;<code>false</code> otherwise
+     */
+    public boolean isSupported(Object obj) {
+        if (!(obj instanceof ISchemaNode)) {
+            return false;
+        }
+        ISchemaNode node = (ISchemaNode) obj;
+        CubridDatabase database = node.getDatabase();
+        if (database != null
+                && database.getRunningType() == DbRunningType.CS
+                && database.isLogined()) {
+            DbUserInfo dbUserInfo = database.getDatabaseInfo().getAuthLoginedDbUserInfo();
+            if (dbUserInfo == null) {
+                return false;
+            }
+            if (EditUserDialog.DB_DEFAULT_USERNAME.equalsIgnoreCase(node.getName())
+                    || EditUserDialog.DB_DBA_USERNAME.equalsIgnoreCase(node.getName())) {
+                return false;
+            }
+            if (dbUserInfo.getName() != null
+                    && dbUserInfo.getName().equalsIgnoreCase(node.getName())) {
+                return false;
+            }
+            if (dbUserInfo != null && dbUserInfo.isDbaAuthority()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 *
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj the Object
-	 * @return <code>true</code> if support this obj;<code>false</code>
-	 *         otherwise
-	 */
-	public boolean isSupported(Object obj) {
-		if (!(obj instanceof ISchemaNode)) {
-			return false;
-		}
-		ISchemaNode node = (ISchemaNode) obj;
-		CubridDatabase database = node.getDatabase();
-		if (database != null && database.getRunningType() == DbRunningType.CS
-				&& database.isLogined()) {
-			DbUserInfo dbUserInfo = database.getDatabaseInfo().getAuthLoginedDbUserInfo();
-			if (dbUserInfo == null) {
-				return false;
-			}
-			if (EditUserDialog.DB_DEFAULT_USERNAME.equalsIgnoreCase(node.getName())
-					|| EditUserDialog.DB_DBA_USERNAME.equalsIgnoreCase(node.getName())) {
-				return false;
-			}
-			if (dbUserInfo.getName() != null
-					&& dbUserInfo.getName().equalsIgnoreCase(node.getName())) {
-				return false;
-			}
-			if (dbUserInfo != null && dbUserInfo.isDbaAuthority()) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /** @see org.eclipse.jface.action.Action#run() */
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        if (obj.length == 1 && obj[0] instanceof DefaultCubridNode) {
+            ISchemaNode schemaNode = (ISchemaNode) obj[0];
+            String msg = Messages.bind(Messages.msgDoYouWantToDeleteUser, schemaNode.getName());
+            if (!CommonUITool.openConfirmBox(getShell(), msg)) {
+                return;
+            }
+            doRun(schemaNode);
+        }
+    }
 
-	/**
-	 *
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		if (obj.length == 1 && obj[0] instanceof DefaultCubridNode) {
-			ISchemaNode schemaNode = (ISchemaNode) obj[0];
-			String msg = Messages.bind(Messages.msgDoYouWantToDeleteUser, schemaNode.getName());
-			if (!CommonUITool.openConfirmBox(getShell(), msg)) {
-				return;
-			}
-			doRun(schemaNode);
-		}
-	}
+    public void doRun(ISchemaNode node) { // FIXME move this logic to core module
+        CubridDatabase database = node.getDatabase();
+        if (database == null || node == null) {
+            CommonUITool.openErrorBox(getShell(), Messages.msgSelectDB);
+            return;
+        }
 
-	public void doRun(ISchemaNode node) { // FIXME move this logic to core module
-		CubridDatabase database = node.getDatabase();
-		if (database == null || node == null) {
-			CommonUITool.openErrorBox(getShell(), Messages.msgSelectDB);
-			return;
-		}
+        String childId =
+                database.getId()
+                        + ICubridNodeLoader.NODE_SEPARATOR
+                        + CubridNodeLoader.USERS_FOLDER_ID;
+        ICubridNode folderNode = database.getChild(childId);
+        if (folderNode == null || !folderNode.getLoader().isLoaded()) {
+            return;
+        }
+        //		if (database.getDatabaseInfo().isHAMode()) {
+        //
+        //	CommonUITool.openErrorBox(com.cubrid.cubridmanager.ui.common.Messages.errNoSupportInHA);
+        //			return;
+        //		}
 
-		String childId = database.getId() + ICubridNodeLoader.NODE_SEPARATOR + CubridNodeLoader.USERS_FOLDER_ID;
-		ICubridNode folderNode = database.getChild(childId);
-		if (folderNode == null || !folderNode.getLoader().isLoaded()) {
-			return;
-		}
-//		if (database.getDatabaseInfo().isHAMode()) {
-//			CommonUITool.openErrorBox(com.cubrid.cubridmanager.ui.common.Messages.errNoSupportInHA);
-//			return;
-//		}
+        TaskExecutor taskExecutor = new CommonTaskExec(CommonTaskName.DELETE_USER_TASK_NAME);
+        DropUserTask task = new DropUserTask(database.getDatabaseInfo(), node.getName());
+        taskExecutor.addTask(task);
+        new ExecTaskWithProgress(taskExecutor).busyCursorWhile();
 
-		TaskExecutor taskExecutor = new CommonTaskExec(CommonTaskName.DELETE_USER_TASK_NAME);
-		DropUserTask task = new DropUserTask(database.getDatabaseInfo(), node.getName());
-		taskExecutor.addTask(task);
-		new ExecTaskWithProgress(taskExecutor).busyCursorWhile();
-
-		if (taskExecutor.isSuccess()) {
-			CubridNavigatorView navigatorView = CubridNavigatorView.findNavigationView();
-			if (navigatorView != null) {
-				TreeViewer treeViewer = navigatorView.getViewer();
-				if (treeViewer != null) {
-					//refresh user folder count label
-					CubridNodeChangedEvent event = new CubridNodeChangedEvent(
-							folderNode, CubridNodeChangedEventType.NODE_REFRESH);
-					CubridNodeManager.getInstance().fireCubridNodeChanged(event);
-					CommonUITool.updateFolderNodeLabelIncludingChildrenCount(treeViewer, node.getParent());
-					CommonUITool.openInformationBox(
-							com.cubrid.common.ui.common.Messages.titleSuccess,
-							Messages.msgDeleteUserSuccess);
-				}
-			}
-		}
-	}
+        if (taskExecutor.isSuccess()) {
+            CubridNavigatorView navigatorView = CubridNavigatorView.findNavigationView();
+            if (navigatorView != null) {
+                TreeViewer treeViewer = navigatorView.getViewer();
+                if (treeViewer != null) {
+                    // refresh user folder count label
+                    CubridNodeChangedEvent event =
+                            new CubridNodeChangedEvent(
+                                    folderNode, CubridNodeChangedEventType.NODE_REFRESH);
+                    CubridNodeManager.getInstance().fireCubridNodeChanged(event);
+                    CommonUITool.updateFolderNodeLabelIncludingChildrenCount(
+                            treeViewer, node.getParent());
+                    CommonUITool.openInformationBox(
+                            com.cubrid.common.ui.common.Messages.titleSuccess,
+                            Messages.msgDeleteUserSuccess);
+                }
+            }
+        }
+    }
 }

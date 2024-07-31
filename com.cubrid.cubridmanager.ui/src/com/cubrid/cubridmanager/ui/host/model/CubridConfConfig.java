@@ -31,32 +31,30 @@ import java.util.ArrayList;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-2-19 created by fulei
  */
-
 public class CubridConfConfig {
 
-	private String confAnnotation;
-	private ArrayList<CubridConfProperty> propertyList = new ArrayList<CubridConfProperty>();
-	
-	public String getConfAnnotation() {
-		return confAnnotation;
-	}
+    private String confAnnotation;
+    private ArrayList<CubridConfProperty> propertyList = new ArrayList<CubridConfProperty>();
 
-	public void setConfAnnotation(String confAnnotation) {
-		this.confAnnotation = confAnnotation;
-	}
+    public String getConfAnnotation() {
+        return confAnnotation;
+    }
 
-	public ArrayList<CubridConfProperty> getPropertyList() {
-		return propertyList;
-	}
+    public void setConfAnnotation(String confAnnotation) {
+        this.confAnnotation = confAnnotation;
+    }
 
-	public void setPropertyList(ArrayList<CubridConfProperty> propertyList) {
-		this.propertyList = propertyList;
-	}
+    public ArrayList<CubridConfProperty> getPropertyList() {
+        return propertyList;
+    }
 
-	public void addCubridConfProperty (CubridConfProperty property) {
-		getPropertyList().add(property);
-	}
+    public void setPropertyList(ArrayList<CubridConfProperty> propertyList) {
+        this.propertyList = propertyList;
+    }
+
+    public void addCubridConfProperty(CubridConfProperty property) {
+        getPropertyList().add(property);
+    }
 }

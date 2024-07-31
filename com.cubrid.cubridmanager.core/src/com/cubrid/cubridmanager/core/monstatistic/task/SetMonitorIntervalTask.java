@@ -32,25 +32,22 @@ import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 
 /**
  * CMS API "set_mon_interval"
- * 
+ *
  * @author Santiago Wang 2013-06-24
  */
-public class SetMonitorIntervalTask extends
-		SocketTask {
-	private static final String[] SENDED_MSG_ITEMS = new String[]{"task",
-		"token", "interval" };
+public class SetMonitorIntervalTask extends SocketTask {
+    private static final String[] SENDED_MSG_ITEMS = new String[] {"task", "token", "interval"};
 
-	/**
-	 * The constructor
-	 * 
-	 * @param serverInfo
-	 */
-	public SetMonitorIntervalTask(ServerInfo serverInfo) {
-		super("set_mon_interval", serverInfo, SENDED_MSG_ITEMS);
-	}
-	
-	public void setInterval(long interval){
-		super.setMsgItem("interval", String.valueOf(interval));
-	}
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public SetMonitorIntervalTask(ServerInfo serverInfo) {
+        super("set_mon_interval", serverInfo, SENDED_MSG_ITEMS);
+    }
 
+    public void setInterval(long interval) {
+        super.setMsgItem("interval", String.valueOf(interval));
+    }
 }

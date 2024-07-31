@@ -29,27 +29,23 @@ package com.cubrid.common.core.util;
 
 import com.cubrid.cubridmanager.core.SetupEnvTestCase;
 
-
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-21 created by fulei
  */
+public class FtpUtilTest extends SetupEnvTestCase {
 
-public class FtpUtilTest  extends SetupEnvTestCase{
+    public void testFtpUitl() {
+        FtpUtil util = new FtpUtil();
+        try {
+            util.connectServer();
+            util.upload("xxx", "xxx");
+            util.download("xxx", "xxx");
 
-	public void testFtpUitl () {
-		FtpUtil util = new FtpUtil();
-		try {
-			util.connectServer();
-			util.upload("xxx", "xxx");
-			util.download("xxx", "xxx");
-			
-		} catch (Exception ignore) {
-			
-		} finally {
-			util.closeServer();
-		}
-	}
+        } catch (Exception ignore) {
+
+        } finally {
+            util.closeServer();
+        }
+    }
 }

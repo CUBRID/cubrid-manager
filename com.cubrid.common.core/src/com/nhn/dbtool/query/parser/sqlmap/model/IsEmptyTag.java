@@ -30,20 +30,20 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of isEmpty tag.
- * <isEmpty property="" prepend="" open="" close="" removeFirstPrepend="true"></isEmpty>
+ * A definition of isEmpty tag. <isEmpty property="" prepend="" open="" close=""
+ * removeFirstPrepend="true"></isEmpty>
  *
  * @author Bumsik, Jang
  */
 public class IsEmptyTag extends SqlMapCondition {
-	private static final long serialVersionUID = -5140790830124138830L;
+    private static final long serialVersionUID = -5140790830124138830L;
 
-	public IsEmptyTag() {
-		this.setType("isEmpty");
-	}
+    public IsEmptyTag() {
+        this.setType("isEmpty");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return !super.isMatchCondition(parameterList);
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return !super.isMatchCondition(parameterList);
+    }
 }

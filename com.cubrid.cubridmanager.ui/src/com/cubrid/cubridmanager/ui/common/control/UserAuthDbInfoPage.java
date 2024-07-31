@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,15 +23,24 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.common.control;
 
+import com.cubrid.common.ui.spi.TableViewerSorter;
+import com.cubrid.common.ui.spi.model.CubridServer;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.core.broker.model.BrokerInfo;
+import com.cubrid.cubridmanager.core.broker.model.BrokerInfoList;
+import com.cubrid.cubridmanager.core.broker.model.BrokerInfos;
+import com.cubrid.cubridmanager.core.common.model.ServerUserInfo;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import com.cubrid.cubridmanager.ui.common.Messages;
+import com.cubrid.cubridmanager.ui.cubrid.database.control.VolumeInfoPage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -46,399 +55,376 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 
-import com.cubrid.common.ui.spi.TableViewerSorter;
-import com.cubrid.common.ui.spi.model.CubridServer;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.core.broker.model.BrokerInfo;
-import com.cubrid.cubridmanager.core.broker.model.BrokerInfoList;
-import com.cubrid.cubridmanager.core.broker.model.BrokerInfos;
-import com.cubrid.cubridmanager.core.common.model.ServerUserInfo;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
-import com.cubrid.cubridmanager.ui.common.Messages;
-import com.cubrid.cubridmanager.ui.cubrid.database.control.VolumeInfoPage;
-
 /**
- * 
- * 
  * CUBRID Manager user authorization database page
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-4-23 created by pangqiren
  */
-public class UserAuthDbInfoPage extends
-		WizardPage {
+public class UserAuthDbInfoPage extends WizardPage {
 
-	public static final String PAGENAME = VolumeInfoPage.class.getName();
+    public static final String PAGENAME = VolumeInfoPage.class.getName();
 
-	private TableViewer authTableViewer;
-	private final CubridServer server;
-	private final ServerUserInfo userInfo;
-	private final List<Map<String, Object>> databaseAuthInfoTableList = new ArrayList<Map<String, Object>>();
-	private String[] allBrokerPorts = null;
-	private final String[] allowConnected = {"Yes", "No" };
-	private String[] columnNameArr;
+    private TableViewer authTableViewer;
+    private final CubridServer server;
+    private final ServerUserInfo userInfo;
+    private final List<Map<String, Object>> databaseAuthInfoTableList =
+            new ArrayList<Map<String, Object>>();
+    private String[] allBrokerPorts = null;
+    private final String[] allowConnected = {"Yes", "No"};
+    private String[] columnNameArr;
 
-	/**
-	 * The constructor
-	 */
-	public UserAuthDbInfoPage(CubridServer server, ServerUserInfo userInfo) {
-		super(PAGENAME);
-		this.userInfo = userInfo;
-		this.server = server;
-	}
+    /** The constructor */
+    public UserAuthDbInfoPage(CubridServer server, ServerUserInfo userInfo) {
+        super(PAGENAME);
+        this.userInfo = userInfo;
+        this.server = server;
+    }
 
-	/**
-	 * Creates the controls for this page
-	 * 
-	 * @param parent the parent composite
-	 */
-	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = 10;
-		layout.marginWidth = 10;
-		composite.setLayout(layout);
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		composite.setLayoutData(gridData);
+    /**
+     * Creates the controls for this page
+     *
+     * @param parent the parent composite
+     */
+    public void createControl(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 10;
+        layout.marginWidth = 10;
+        composite.setLayout(layout);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        composite.setLayoutData(gridData);
 
-		createTable(composite);
+        createTable(composite);
 
-		setTitle(Messages.titleDbAuth);
-		setMessage(Messages.msgDbAuth);
-		setControl(composite);
+        setTitle(Messages.titleDbAuth);
+        setMessage(Messages.msgDbAuth);
+        setControl(composite);
+    }
 
-	}
+    /**
+     * Create authoration information table area
+     *
+     * @param parent the parent composite
+     */
+    private void createTable(Composite parent) {
 
-	/**
-	 * 
-	 * Create authoration information table area
-	 * 
-	 * @param parent the parent composite
-	 */
-	private void createTable(Composite parent) {
+        Label tipLabel = new Label(parent, SWT.LEFT | SWT.WRAP);
+        tipLabel.setText(Messages.msgDbAuthList);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        tipLabel.setLayoutData(gridData);
 
-		Label tipLabel = new Label(parent, SWT.LEFT | SWT.WRAP);
-		tipLabel.setText(Messages.msgDbAuthList);
-		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		tipLabel.setLayoutData(gridData);
+        columnNameArr =
+                new String[] {
+                    Messages.tblColumnDbName,
+                    Messages.tblColumnConnected,
+                    Messages.tblColumnDbUser,
+                    Messages.tblColumnBrokerIP,
+                    Messages.tblColumnBrokerPort
+                };
+        authTableViewer =
+                CommonUITool.createCommonTableViewer(
+                        parent,
+                        new TableViewerSorter(),
+                        columnNameArr,
+                        CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, -1));
 
-		columnNameArr = new String[]{Messages.tblColumnDbName,
-				Messages.tblColumnConnected, Messages.tblColumnDbUser,
-				Messages.tblColumnBrokerIP, Messages.tblColumnBrokerPort };
-		authTableViewer = CommonUITool.createCommonTableViewer(parent,
-				new TableViewerSorter(), columnNameArr,
-				CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, -1));
+        initialBrokerPorts(server.getHostAddress());
 
-		initialBrokerPorts(server.getHostAddress());
+        initialTableModel();
+        authTableViewer.setInput(databaseAuthInfoTableList);
+        authTableViewer.setColumnProperties(columnNameArr);
+        packTable();
+        setCellEditors();
+        setCellModifier();
+    }
 
-		initialTableModel();
-		authTableViewer.setInput(databaseAuthInfoTableList);
-		authTableViewer.setColumnProperties(columnNameArr);
-		packTable();
-		setCellEditors();
-		setCellModifier();
-	}
+    /** Set cell editors */
+    private void setCellEditors() {
 
-	/**
-	 * 
-	 * Set cell editors
-	 */
-	private void setCellEditors() {
+        authTableViewer.setCellEditors(null);
 
-		authTableViewer.setCellEditors(null);
+        Table authTable = authTableViewer.getTable();
+        CellEditor[] editors = new CellEditor[5];
+        editors[0] = null;
+        editors[1] = new ComboBoxCellEditor(authTable, allowConnected, SWT.READ_ONLY);
+        editors[2] = new TextCellEditor(authTable);
+        editors[3] = new TextCellEditor(authTable);
+        if (allBrokerPorts != null && allBrokerPorts.length > 0) {
+            editors[4] = new ComboBoxCellEditor(authTable, allBrokerPorts, SWT.READ_ONLY);
+        } else {
+            editors[4] = new TextCellEditor(authTable);
+        }
+        authTableViewer.setCellEditors(editors);
+    }
 
-		Table authTable = authTableViewer.getTable();
-		CellEditor[] editors = new CellEditor[5];
-		editors[0] = null;
-		editors[1] = new ComboBoxCellEditor(authTable, allowConnected,
-				SWT.READ_ONLY);
-		editors[2] = new TextCellEditor(authTable);
-		editors[3] = new TextCellEditor(authTable);
-		if (allBrokerPorts != null && allBrokerPorts.length > 0) {
-			editors[4] = new ComboBoxCellEditor(authTable, allBrokerPorts,
-					SWT.READ_ONLY);
-		} else {
-			editors[4] = new TextCellEditor(authTable);
-		}
-		authTableViewer.setCellEditors(editors);
-	}
+    /** Set cell modifier */
+    private void setCellModifier() {
 
-	/**
-	 * 
-	 * Set cell modifier
-	 * 
-	 */
-	private void setCellModifier() {
+        authTableViewer.setCellModifier(
+                new ICellModifier() {
+                    @SuppressWarnings("unchecked")
+                    public boolean canModify(Object element, String property) {
+                        Map<String, String> map = (Map<String, String>) element;
+                        String str = map.get("1");
+                        String ip = map.get("3");
+                        if (property.equals(columnNameArr[2])) {
+                            return "Yes".equals(str);
+                        } else if (property.equals(columnNameArr[3])) {
+                            return "Yes".equals(str);
+                        } else if (property.equals(columnNameArr[4])) {
+                            if ("Yes".equals(str)) {
+                                initialBrokerPorts(ip);
+                                setCellEditors();
+                                return true;
+                            }
+                            return false;
+                        }
+                        return true;
+                    }
 
-		authTableViewer.setCellModifier(new ICellModifier() {
-			@SuppressWarnings("unchecked")
-			public boolean canModify(Object element, String property) {
-				Map<String, String> map = (Map<String, String>) element;
-				String str = map.get("1");
-				String ip = map.get("3");
-				if (property.equals(columnNameArr[2])) {
-					return "Yes".equals(str);
-				} else if (property.equals(columnNameArr[3])) {
-					return "Yes".equals(str);
-				} else if (property.equals(columnNameArr[4])) {
-					if ("Yes".equals(str)) {
-						initialBrokerPorts(ip);
-						setCellEditors();
-						return true;
-					}
-					return false;
-				}
-				return true;
-			}
+                    @SuppressWarnings("unchecked")
+                    public Object getValue(Object element, String property) {
+                        Map<String, String> map = (Map<String, String>) element;
+                        if (property.equals(columnNameArr[1])) {
+                            String str = map.get("1");
+                            int index = 0;
+                            if (str != null) {
+                                for (int i = 0;
+                                        allowConnected != null && i < allowConnected.length;
+                                        i++) {
+                                    if (str.equals(allowConnected[i])) {
+                                        index = i;
+                                        break;
+                                    }
+                                }
+                            }
+                            return Integer.valueOf(index);
+                        } else if (property.equals(columnNameArr[2])) {
+                            return map.get("2");
+                        } else if (property.equals(columnNameArr[3])) {
+                            return map.get("3");
+                        } else if (property.equals(columnNameArr[4])) {
+                            String str = map.get("4");
+                            if (allBrokerPorts != null && allBrokerPorts.length > 0) {
+                                int index = 0;
+                                if (str != null) {
+                                    for (int i = 0;
+                                            allBrokerPorts != null && i < allBrokerPorts.length;
+                                            i++) {
+                                        if (str.equals(allBrokerPorts[i])) {
+                                            index = i;
+                                            break;
+                                        }
+                                    }
+                                }
+                                return Integer.valueOf(index);
+                            } else {
+                                return str;
+                            }
+                        }
+                        return null;
+                    }
 
-			@SuppressWarnings("unchecked")
-			public Object getValue(Object element, String property) {
-				Map<String, String> map = (Map<String, String>) element;
-				if (property.equals(columnNameArr[1])) {
-					String str = map.get("1");
-					int index = 0;
-					if (str != null) {
-						for (int i = 0; allowConnected != null
-								&& i < allowConnected.length; i++) {
-							if (str.equals(allowConnected[i])) {
-								index = i;
-								break;
-							}
-						}
-					}
-					return Integer.valueOf(index);
-				} else if (property.equals(columnNameArr[2])) {
-					return map.get("2");
-				} else if (property.equals(columnNameArr[3])) {
-					return map.get("3");
-				} else if (property.equals(columnNameArr[4])) {
-					String str = map.get("4");
-					if (allBrokerPorts != null && allBrokerPorts.length > 0) {
-						int index = 0;
-						if (str != null) {
-							for (int i = 0; allBrokerPorts != null
-									&& i < allBrokerPorts.length; i++) {
-								if (str.equals(allBrokerPorts[i])) {
-									index = i;
-									break;
-								}
-							}
-						}
-						return Integer.valueOf(index);
-					} else {
-						return str;
-					}
-				}
-				return null;
-			}
+                    @SuppressWarnings("unchecked")
+                    public void modify(Object element, String property, Object value) {
+                        Object obj = null;
+                        if (element instanceof Item) {
+                            obj = ((Item) element).getData();
+                        }
+                        if (obj == null) {
+                            return;
+                        }
+                        Map<String, String> map = (Map<String, String>) obj;
+                        if (property.equals(columnNameArr[1])) {
+                            String str = value.toString();
+                            if (str.matches("^\\d+$")) {
+                                int index = Integer.parseInt(str);
+                                if (index >= allowConnected.length) {
+                                    index = 0;
+                                }
+                                String yesOrNoStr = allowConnected[index];
+                                map.put("1", yesOrNoStr);
+                                if ("No".equals(yesOrNoStr)) {
+                                    map.put("2", "");
+                                    map.put("3", "");
+                                    map.put("4", "");
+                                } else {
+                                    map.put("3", server.getHostAddress());
+                                }
+                            }
+                        } else if (property.equals(columnNameArr[2])) {
+                            map.put("2", value.toString());
+                        } else if (property.equals(columnNameArr[3])) {
+                            map.put("3", value.toString());
+                        } else if (property.equals(columnNameArr[4])) {
+                            String str = value.toString();
+                            if (allBrokerPorts != null && allBrokerPorts.length > 0) {
+                                if (str.matches("^\\d+$")) {
+                                    int index = Integer.parseInt(str);
+                                    if (allBrokerPorts != null) {
+                                        if (index >= allBrokerPorts.length) {
+                                            index = 0;
+                                        }
+                                        map.put("4", allBrokerPorts[index]);
+                                    }
+                                }
+                            } else {
+                                map.put("4", str);
+                            }
+                        }
+                        authTableViewer.refresh();
+                        packTable();
+                        check();
+                    }
+                });
+    }
 
-			@SuppressWarnings("unchecked")
-			public void modify(Object element, String property, Object value) {
-				Object obj = null;
-				if (element instanceof Item) {
-					obj = ((Item) element).getData();
-				}
-				if (obj == null) {
-					return;
-				}
-				Map<String, String> map = (Map<String, String>) obj;
-				if (property.equals(columnNameArr[1])) {
-					String str = value.toString();
-					if (str.matches("^\\d+$")) {
-						int index = Integer.parseInt(str);
-						if (index >= allowConnected.length) {
-							index = 0;
-						}
-						String yesOrNoStr = allowConnected[index];
-						map.put("1", yesOrNoStr);
-						if ("No".equals(yesOrNoStr)) {
-							map.put("2", "");
-							map.put("3", "");
-							map.put("4", "");
-						} else {
-							map.put("3", server.getHostAddress());
-						}
-					}
-				} else if (property.equals(columnNameArr[2])) {
-					map.put("2", value.toString());
-				} else if (property.equals(columnNameArr[3])) {
-					map.put("3", value.toString());
-				} else if (property.equals(columnNameArr[4])) {
-					String str = value.toString();
-					if (allBrokerPorts != null && allBrokerPorts.length > 0) {
-						if (str.matches("^\\d+$")) {
-							int index = Integer.parseInt(str);
-							if (allBrokerPorts != null) {
-								if (index >= allBrokerPorts.length) {
-									index = 0;
-								}
-								map.put("4", allBrokerPorts[index]);
-							}
-						}
-					} else {
-						map.put("4", str);
-					}
-				}
-				authTableViewer.refresh();
-				packTable();
-				check();
-			}
-		});
-	}
+    /** Pack table */
+    private void packTable() {
+        Table authTable = authTableViewer.getTable();
+        for (int i = 0; i < authTable.getColumnCount(); i++) {
+            authTable.getColumn(i).pack();
+        }
+    }
 
-	/**
-	 * 
-	 * Pack table
-	 * 
-	 */
-	private void packTable() {
-		Table authTable = authTableViewer.getTable();
-		for (int i = 0; i < authTable.getColumnCount(); i++) {
-			authTable.getColumn(i).pack();
-		}
-	}
+    /**
+     * Initial the broker ports
+     *
+     * @param brokerIp String
+     */
+    private void initialBrokerPorts(String brokerIp) {
+        String ip = server.getHostAddress();
+        if (!ip.equals(brokerIp)) {
+            allBrokerPorts = null;
+            return;
+        }
+        BrokerInfos brokerInfos = server.getServerInfo().getBrokerInfos();
+        if (brokerInfos != null) {
+            String brokerStauts = brokerInfos.getBrokerstatus();
+            BrokerInfoList brokerInfo = brokerInfos.getBorkerInfoList();
+            if (brokerInfo != null) {
+                List<BrokerInfo> brokerInfoList = brokerInfo.getBrokerInfoList();
+                if (brokerInfoList != null) {
+                    List<String> brokerPortList = new ArrayList<String>();
+                    for (int i = 0; i < brokerInfoList.size(); i++) {
+                        BrokerInfo info = brokerInfoList.get(i);
+                        if (info.getPort() == null || info.getPort().trim().length() == 0) {
+                            continue;
+                        }
+                        String port = info.getPort();
+                        String status = "";
+                        if (brokerStauts == null || !brokerStauts.equalsIgnoreCase("ON")) {
+                            status = "OFF";
+                        } else {
+                            status =
+                                    info.getState() == null
+                                                    || info.getState()
+                                                            .trim()
+                                                            .equalsIgnoreCase("OFF")
+                                            ? "OFF"
+                                            : "ON";
+                        }
+                        brokerPortList.add(info.getName() + "[" + port + "/" + status + "]");
+                    }
+                    if (!brokerPortList.isEmpty()) {
+                        allBrokerPorts = new String[brokerPortList.size()];
+                        brokerPortList.toArray(allBrokerPorts);
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * 
-	 * Initial the broker ports
-	 * 
-	 * @param brokerIp String
-	 * 
-	 */
-	private void initialBrokerPorts(String brokerIp) {
-		String ip = server.getHostAddress();
-		if (!ip.equals(brokerIp)) {
-			allBrokerPorts = null;
-			return;
-		}
-		BrokerInfos brokerInfos = server.getServerInfo().getBrokerInfos();
-		if (brokerInfos != null) {
-			String brokerStauts = brokerInfos.getBrokerstatus();
-			BrokerInfoList brokerInfo = brokerInfos.getBorkerInfoList();
-			if (brokerInfo != null) {
-				List<BrokerInfo> brokerInfoList = brokerInfo.getBrokerInfoList();
-				if (brokerInfoList != null) {
-					List<String> brokerPortList = new ArrayList<String>();
-					for (int i = 0; i < brokerInfoList.size(); i++) {
-						BrokerInfo info = brokerInfoList.get(i);
-						if (info.getPort() == null
-								|| info.getPort().trim().length() == 0) {
-							continue;
-						}
-						String port = info.getPort();
-						String status = "";
-						if (brokerStauts == null
-								|| !brokerStauts.equalsIgnoreCase("ON")) {
-							status = "OFF";
-						} else {
-							status = info.getState() == null
-									|| info.getState().trim().equalsIgnoreCase(
-											"OFF") ? "OFF" : "ON";
-						}
-						brokerPortList.add(info.getName() + "[" + port + "/"
-								+ status + "]");
-					}
-					if (!brokerPortList.isEmpty()) {
-						allBrokerPorts = new String[brokerPortList.size()];
-						brokerPortList.toArray(allBrokerPorts);
-					}
-				}
-			}
-		}
-	}
+    /** Initial the table model in user list table */
+    private void initialTableModel() {
+        List<String> databaseList = server.getServerInfo().getAllDatabaseList();
+        for (int i = 0; databaseList != null && i < databaseList.size(); i++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            String dbName = databaseList.get(i);
+            map.put("0", dbName);
+            map.put("1", "No");
+            map.put("2", "");
+            map.put("3", "");
+            map.put("4", "");
+            databaseAuthInfoTableList.add(map);
+        }
+        String ip = server.getHostAddress();
+        if (userInfo != null) {
+            List<DatabaseInfo> databaseInfoList = userInfo.getDatabaseInfoList();
+            for (int i = 0; databaseInfoList != null && i < databaseInfoList.size(); i++) {
+                DatabaseInfo databaseInfo = databaseInfoList.get(i);
+                String dbName = databaseInfo.getDbName();
+                for (int j = 0; j < databaseAuthInfoTableList.size(); j++) {
+                    Map<String, Object> map = databaseAuthInfoTableList.get(j);
+                    if (map.get("0").equals(dbName)) {
+                        map.put("0", databaseInfo.getDbName());
+                        map.put("1", "Yes");
+                        map.put(
+                                "2",
+                                databaseInfo.getAuthLoginedDbUserInfo() == null
+                                        ? ""
+                                        : databaseInfo.getAuthLoginedDbUserInfo().getName());
+                        String brokerIP = databaseInfo.getBrokerIP();
+                        map.put("3", brokerIP == null ? "" : brokerIP);
+                        String port =
+                                databaseInfo.getBrokerPort() == null
+                                        ? ""
+                                        : databaseInfo.getBrokerPort();
+                        if (ip.equals(brokerIP)
+                                && allBrokerPorts != null
+                                && allBrokerPorts.length > 0) {
+                            for (int k = 0;
+                                    allBrokerPorts != null && k < allBrokerPorts.length;
+                                    k++) {
+                                String portInfo =
+                                        allBrokerPorts[k].substring(
+                                                allBrokerPorts[k].indexOf("[") + 1,
+                                                allBrokerPorts[k].indexOf("/"));
+                                if (port.equals(portInfo)) {
+                                    port = allBrokerPorts[k];
+                                    break;
+                                }
+                            }
+                            map.put("4", port);
+                        } else {
+                            map.put("4", port);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * 
-	 * Initial the table model in user list table
-	 * 
-	 */
-	private void initialTableModel() {
-		List<String> databaseList = server.getServerInfo().getAllDatabaseList();
-		for (int i = 0; databaseList != null && i < databaseList.size(); i++) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			String dbName = databaseList.get(i);
-			map.put("0", dbName);
-			map.put("1", "No");
-			map.put("2", "");
-			map.put("3", "");
-			map.put("4", "");
-			databaseAuthInfoTableList.add(map);
-		}
-		String ip = server.getHostAddress();
-		if (userInfo != null) {
-			List<DatabaseInfo> databaseInfoList = userInfo.getDatabaseInfoList();
-			for (int i = 0; databaseInfoList != null
-					&& i < databaseInfoList.size(); i++) {
-				DatabaseInfo databaseInfo = databaseInfoList.get(i);
-				String dbName = databaseInfo.getDbName();
-				for (int j = 0; j < databaseAuthInfoTableList.size(); j++) {
-					Map<String, Object> map = databaseAuthInfoTableList.get(j);
-					if (map.get("0").equals(dbName)) {
-						map.put("0", databaseInfo.getDbName());
-						map.put("1", "Yes");
-						map.put(
-								"2",
-								databaseInfo.getAuthLoginedDbUserInfo() == null ? ""
-										: databaseInfo.getAuthLoginedDbUserInfo().getName());
-						String brokerIP = databaseInfo.getBrokerIP();
-						map.put("3", brokerIP == null ? "" : brokerIP);
-						String port = databaseInfo.getBrokerPort() == null ? ""
-								: databaseInfo.getBrokerPort();
-						if (ip.equals(brokerIP) && allBrokerPorts != null
-								&& allBrokerPorts.length > 0) {
-							for (int k = 0; allBrokerPorts != null
-									&& k < allBrokerPorts.length; k++) {
-								String portInfo = allBrokerPorts[k].substring(
-										allBrokerPorts[k].indexOf("[") + 1,
-										allBrokerPorts[k].indexOf("/"));
-								if (port.equals(portInfo)) {
-									port = allBrokerPorts[k];
-									break;
-								}
-							}
-							map.put("4", port);
-						} else {
-							map.put("4", port);
-						}
-						break;
-					}
-				}
-			}
-		}
-	}
+    /** Check the validation */
+    private void check() {
+        for (int i = 0; i < databaseAuthInfoTableList.size(); i++) {
+            Map<String, Object> map = databaseAuthInfoTableList.get(i);
+            String dbName = (String) map.get("0");
+            String connected = (String) map.get("1");
+            String dbUser = (String) map.get("2");
+            String brokerIP = (String) map.get("3");
+            String brokerPort = (String) map.get("4");
+            if ("Yes".equals(connected)
+                    && (dbUser.trim().length() <= 0
+                            || brokerPort.trim().length() <= 0
+                            || brokerIP.trim().length() <= 0)) {
+                setErrorMessage(Messages.bind(Messages.errDbAuth, dbName));
+                setPageComplete(false);
+                return;
+            }
+        }
+        setErrorMessage(null);
+        setPageComplete(true);
+    }
 
-	/**
-	 * 
-	 * Check the validation
-	 * 
-	 */
-	private void check() {
-		for (int i = 0; i < databaseAuthInfoTableList.size(); i++) {
-			Map<String, Object> map = databaseAuthInfoTableList.get(i);
-			String dbName = (String) map.get("0");
-			String connected = (String) map.get("1");
-			String dbUser = (String) map.get("2");
-			String brokerIP = (String) map.get("3");
-			String brokerPort = (String) map.get("4");
-			if ("Yes".equals(connected)
-					&& (dbUser.trim().length() <= 0
-							|| brokerPort.trim().length() <= 0 || brokerIP.trim().length() <= 0)) {
-				setErrorMessage(Messages.bind(Messages.errDbAuth, dbName));
-				setPageComplete(false);
-				return;
-			}
-		}
-		setErrorMessage(null);
-		setPageComplete(true);
-	}
-
-	/**
-	 * 
-	 * Get database auth information list
-	 * 
-	 * @return the authorization information list
-	 */
-	public List<Map<String, Object>> getDbAuthInfoList() {
-		return this.databaseAuthInfoTableList;
-	}
+    /**
+     * Get database auth information list
+     *
+     * @return the authorization information list
+     */
+    public List<Map<String, Object>> getDbAuthInfoList() {
+        return this.databaseAuthInfoTableList;
+    }
 }

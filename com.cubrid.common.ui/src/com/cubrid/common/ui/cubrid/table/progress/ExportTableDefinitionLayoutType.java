@@ -27,11 +27,12 @@
  */
 package com.cubrid.common.ui.cubrid.table.progress;
 
+import com.cubrid.common.core.common.model.SchemaInfo;
+import com.cubrid.common.core.util.LogUtil;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import jxl.format.Border;
 import jxl.format.BorderLineStyle;
 import jxl.format.Colour;
@@ -39,134 +40,130 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.common.model.SchemaInfo;
-import com.cubrid.common.core.util.LogUtil;
-
-/**
- *
- * @author CHOE JUNGYEON
- */
+/** @author CHOE JUNGYEON */
 public abstract class ExportTableDefinitionLayoutType { // FIXME move this logic to core module
-	private ExportTableDefinitionProgress progress;
+    private ExportTableDefinitionProgress progress;
 
-	public ExportTableDefinitionLayoutType(ExportTableDefinitionProgress progress) {
-		this.progress = progress;
-	}
+    public ExportTableDefinitionLayoutType(ExportTableDefinitionProgress progress) {
+        this.progress = progress;
+    }
 
-	private static final Logger LOGGER = LogUtil.getLogger(ExportTableDefinitionLayoutType.class);
+    private static final Logger LOGGER = LogUtil.getLogger(ExportTableDefinitionLayoutType.class);
 
-	protected WritableCellFormat normalCellStyle = getNormalCenterAlignCellStyle();
-	protected WritableCellFormat normalLeftAlignCellStyle = getNormalLeftAlignCellStyle();
-	protected WritableCellFormat normalRightAlignCellStyle = getNormalRightAlignCellStyle();
-	protected WritableCellFormat boldCellStyle = getBoldCenterAlignCellStyle();
-	protected String dateString = new SimpleDateFormat("yyyy.MM.dd").format(new Date());
+    protected WritableCellFormat normalCellStyle = getNormalCenterAlignCellStyle();
+    protected WritableCellFormat normalLeftAlignCellStyle = getNormalLeftAlignCellStyle();
+    protected WritableCellFormat normalRightAlignCellStyle = getNormalRightAlignCellStyle();
+    protected WritableCellFormat boldCellStyle = getBoldCenterAlignCellStyle();
+    protected String dateString = new SimpleDateFormat("yyyy.MM.dd").format(new Date());
 
-	protected ExportTableDefinitionProgress getProgressObject() {
-		return progress;
-	}
+    protected ExportTableDefinitionProgress getProgressObject() {
+        return progress;
+    }
 
-	/**
-	 * Generate table name sheet
-	 *
-	 * @param wwb
-	 * @param conn
-	 * @param exportSchemaInfoList
-	 * @param monitor
-	 * @throws Exception
-	 */
-	public abstract void generateTableDetailSheets(WritableWorkbook wwb,
-			Connection conn, List<SchemaInfo> exportSchemaInfoList,
-			IProgressMonitor monitor) throws Exception;
+    /**
+     * Generate table name sheet
+     *
+     * @param wwb
+     * @param conn
+     * @param exportSchemaInfoList
+     * @param monitor
+     * @throws Exception
+     */
+    public abstract void generateTableDetailSheets(
+            WritableWorkbook wwb,
+            Connection conn,
+            List<SchemaInfo> exportSchemaInfoList,
+            IProgressMonitor monitor)
+            throws Exception;
 
-	/**
-	 * Generate table name sheet
-	 *
-	 * @param wwb
-	 * @param exportTableNames
-	 * @throws Exception
-	 */
-	public abstract void generateTableNamesSheet(WritableWorkbook wwb,
-			List<String> exportTableNames) throws Exception;
+    /**
+     * Generate table name sheet
+     *
+     * @param wwb
+     * @param exportTableNames
+     * @throws Exception
+     */
+    public abstract void generateTableNamesSheet(
+            WritableWorkbook wwb, List<String> exportTableNames) throws Exception;
 
-	/**
-	 * GetNormalCell
-	 *
-	 * @return WritableCellFormat
-	 */
-	public static WritableCellFormat getNormalCenterAlignCellStyle() {
-		WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
-		WritableCellFormat format = new WritableCellFormat(font);
-		try {
-			format.setAlignment(jxl.format.Alignment.CENTRE);
-			format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);
-			format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-			format.setWrap(true);
-		} catch (WriteException e) {
-			LOGGER.error("", e);
-		}
-		return format;
-	}
+    /**
+     * GetNormalCell
+     *
+     * @return WritableCellFormat
+     */
+    public static WritableCellFormat getNormalCenterAlignCellStyle() {
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
+        WritableCellFormat format = new WritableCellFormat(font);
+        try {
+            format.setAlignment(jxl.format.Alignment.CENTRE);
+            format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);
+            format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+            format.setWrap(true);
+        } catch (WriteException e) {
+            LOGGER.error("", e);
+        }
+        return format;
+    }
 
-	/**
-	 * GetNormalLeftAlignCellStyle
-	 *
-	 * @return WritableCellFormat
-	 */
-	public static WritableCellFormat getNormalLeftAlignCellStyle() {
-		WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
-		WritableCellFormat format = new WritableCellFormat(font);
-		try {
-			format.setAlignment(jxl.format.Alignment.LEFT);
-			format.setVerticalAlignment(jxl.format.VerticalAlignment.TOP);
-			format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-			format.setWrap(true);
-		} catch (WriteException e) {
-			LOGGER.error("", e);
-		}
-		return format;
-	}
+    /**
+     * GetNormalLeftAlignCellStyle
+     *
+     * @return WritableCellFormat
+     */
+    public static WritableCellFormat getNormalLeftAlignCellStyle() {
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
+        WritableCellFormat format = new WritableCellFormat(font);
+        try {
+            format.setAlignment(jxl.format.Alignment.LEFT);
+            format.setVerticalAlignment(jxl.format.VerticalAlignment.TOP);
+            format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+            format.setWrap(true);
+        } catch (WriteException e) {
+            LOGGER.error("", e);
+        }
+        return format;
+    }
 
-	/**
-	 * GetNormalRightAlignCellStyle
-	 *
-	 * @return
-	 */
-	public static WritableCellFormat getNormalRightAlignCellStyle() {
-		WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
-		WritableCellFormat format = new WritableCellFormat(font);
-		try {
-			format.setAlignment(jxl.format.Alignment.RIGHT);
-			format.setVerticalAlignment(jxl.format.VerticalAlignment.TOP);
-			format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-			format.setWrap(true);
-		} catch (WriteException e) {
-			LOGGER.error("", e);
-		}
-		return format;
-	}
+    /**
+     * GetNormalRightAlignCellStyle
+     *
+     * @return
+     */
+    public static WritableCellFormat getNormalRightAlignCellStyle() {
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
+        WritableCellFormat format = new WritableCellFormat(font);
+        try {
+            format.setAlignment(jxl.format.Alignment.RIGHT);
+            format.setVerticalAlignment(jxl.format.VerticalAlignment.TOP);
+            format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+            format.setWrap(true);
+        } catch (WriteException e) {
+            LOGGER.error("", e);
+        }
+        return format;
+    }
 
-	/**
-	 * GetNormalCell
-	 *
-	 * @return WritableCellFormat
-	 */
-	public static WritableCellFormat getBoldCenterAlignCellStyle() {
-		WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
-		WritableCellFormat format = new WritableCellFormat(font);
-		try {
-			font.setBoldStyle(WritableFont.BOLD);
-			format.setAlignment(jxl.format.Alignment.CENTRE);
-			format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);
-			format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-			format.setBackground(jxl.format.Colour.GREY_25_PERCENT);
-			format.setWrap(true);
-		} catch (WriteException e) {
-			LOGGER.error("", e);
-		}
-		return format;
-	}
+    /**
+     * GetNormalCell
+     *
+     * @return WritableCellFormat
+     */
+    public static WritableCellFormat getBoldCenterAlignCellStyle() {
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
+        WritableCellFormat format = new WritableCellFormat(font);
+        try {
+            font.setBoldStyle(WritableFont.BOLD);
+            format.setAlignment(jxl.format.Alignment.CENTRE);
+            format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);
+            format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+            format.setBackground(jxl.format.Colour.GREY_25_PERCENT);
+            format.setWrap(true);
+        } catch (WriteException e) {
+            LOGGER.error("", e);
+        }
+        return format;
+    }
 }

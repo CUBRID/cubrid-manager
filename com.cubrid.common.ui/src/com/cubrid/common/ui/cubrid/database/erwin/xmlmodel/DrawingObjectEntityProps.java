@@ -8,91 +8,93 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {})
+@XmlType(
+        name = "",
+        propOrder = {})
 @XmlRootElement(name = "Drawing_Object_EntityProps")
 public class DrawingObjectEntityProps {
-	@XmlElement(name = "DO_Location")
-	protected DrawingObjectEntityProps.DOLocation dolocation;
-	@XmlElement(name = "DO_Reference_Object")
-	protected DOReferenceObject doReferenceObject;
-	@XmlElement(name = "DO_Entity_Width_AutoResizeable")
-	protected DrawingObjectEntityProps.DOEntityWidthAutoResizeable doEntityWidthAutoResizeable;
-	@XmlElement(name = "DO_Entity_Height_AutoResizeable")
-	protected DrawingObjectEntityProps.DOEntityHeightAutoResizeable doEntityHeightAutoResizeable;
+    @XmlElement(name = "DO_Location")
+    protected DrawingObjectEntityProps.DOLocation dolocation;
 
-	public DOLocation getDolocation() {
-		return dolocation;
-	}
+    @XmlElement(name = "DO_Reference_Object")
+    protected DOReferenceObject doReferenceObject;
 
-	public void setDolocation(DOLocation dolocation) {
-		this.dolocation = dolocation;
-	}
+    @XmlElement(name = "DO_Entity_Width_AutoResizeable")
+    protected DrawingObjectEntityProps.DOEntityWidthAutoResizeable doEntityWidthAutoResizeable;
 
-	public DOReferenceObject getDoReferenceObject() {
-		return doReferenceObject;
-	}
+    @XmlElement(name = "DO_Entity_Height_AutoResizeable")
+    protected DrawingObjectEntityProps.DOEntityHeightAutoResizeable doEntityHeightAutoResizeable;
 
-	public void setDoReferenceObject(DOReferenceObject doReferenceObject) {
-		this.doReferenceObject = doReferenceObject;
-	}
+    public DOLocation getDolocation() {
+        return dolocation;
+    }
 
-	public DrawingObjectEntityProps.DOEntityWidthAutoResizeable getDoEntityWidthAutoResizeable() {
-		return doEntityWidthAutoResizeable;
-	}
+    public void setDolocation(DOLocation dolocation) {
+        this.dolocation = dolocation;
+    }
 
-	public void setDoEntityWidthAutoResizeable(
-			DrawingObjectEntityProps.DOEntityWidthAutoResizeable doEntityWidthAutoResizeable) {
-		this.doEntityWidthAutoResizeable = doEntityWidthAutoResizeable;
-	}
+    public DOReferenceObject getDoReferenceObject() {
+        return doReferenceObject;
+    }
 
-	public DrawingObjectEntityProps.DOEntityHeightAutoResizeable getDoEntityHeightAutoResizeable() {
-		return doEntityHeightAutoResizeable;
-	}
+    public void setDoReferenceObject(DOReferenceObject doReferenceObject) {
+        this.doReferenceObject = doReferenceObject;
+    }
 
-	public void setDoEntityHeightAutoResizeable(
-			DrawingObjectEntityProps.DOEntityHeightAutoResizeable doEntityHeightAutoResizeable) {
-		this.doEntityHeightAutoResizeable = doEntityHeightAutoResizeable;
-	}
+    public DrawingObjectEntityProps.DOEntityWidthAutoResizeable getDoEntityWidthAutoResizeable() {
+        return doEntityWidthAutoResizeable;
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	public static class DOLocation {
-		@XmlValue
-		protected String value;
+    public void setDoEntityWidthAutoResizeable(
+            DrawingObjectEntityProps.DOEntityWidthAutoResizeable doEntityWidthAutoResizeable) {
+        this.doEntityWidthAutoResizeable = doEntityWidthAutoResizeable;
+    }
 
-		public String getValue() {
-			return value;
-		}
+    public DrawingObjectEntityProps.DOEntityHeightAutoResizeable getDoEntityHeightAutoResizeable() {
+        return doEntityHeightAutoResizeable;
+    }
 
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
+    public void setDoEntityHeightAutoResizeable(
+            DrawingObjectEntityProps.DOEntityHeightAutoResizeable doEntityHeightAutoResizeable) {
+        this.doEntityHeightAutoResizeable = doEntityHeightAutoResizeable;
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	public static class DOEntityHeightAutoResizeable {
-		@XmlValue
-		protected String value;
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class DOLocation {
+        @XmlValue protected String value;
 
-		public String getValue() {
-			return value;
-		}
+        public String getValue() {
+            return value;
+        }
 
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	public static class DOEntityWidthAutoResizeable {
-		@XmlValue
-		protected String value;
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class DOEntityHeightAutoResizeable {
+        @XmlValue protected String value;
 
-		public String getValue() {
-			return value;
-		}
+        public String getValue() {
+            return value;
+        }
 
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class DOEntityWidthAutoResizeable {
+        @XmlValue protected String value;
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 }

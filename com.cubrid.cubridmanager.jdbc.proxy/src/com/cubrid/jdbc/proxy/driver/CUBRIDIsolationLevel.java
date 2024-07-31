@@ -30,23 +30,22 @@
 package com.cubrid.jdbc.proxy.driver;
 
 /**
- *
  * CUBRID Isolation level class.
  *
  * @author pangqiren
  * @version 1.0 - 2009-12-28 created by pangqiren
  */
 public class CUBRIDIsolationLevel {
-	public final static int TRAN_MIN = 1;
-	public final static int TRAN_MAX = 6;
-	public final static int TRAN_UNKNOWN_ISOLATION = 0;
-	public final static int TRAN_COMMIT_CLASS_UNCOMMIT_INSTANCE = 1;
-	public final static int TRAN_COMMIT_CLASS_COMMIT_INSTANCE = 2;
-	/* TRAN_READ_UNCOMMITTED */
-	public final static int TRAN_REP_CLASS_UNCOMMIT_INSTANCE = 3;
-	/* TRAN_READ_COMMITTED */
-	public final static int TRAN_REP_CLASS_COMMIT_INSTANCE = 4;
-	/* TRAN_SERIALIZABLE */
-	public final static int TRAN_REP_CLASS_REP_INSTANCE = 5;
-	public final static int TRAN_SERIALIZABLE = 6;
+    public static final int TRAN_MIN = 1;
+    public static final int TRAN_MAX = 6;
+    public static final int TRAN_UNKNOWN_ISOLATION = 0;
+    public static final int TRAN_COMMIT_CLASS_UNCOMMIT_INSTANCE = 1;
+    public static final int TRAN_COMMIT_CLASS_COMMIT_INSTANCE = 2;
+    /* TRAN_READ_UNCOMMITTED */
+    public static final int TRAN_REP_CLASS_UNCOMMIT_INSTANCE = 3;
+    /* TRAN_READ_COMMITTED */
+    public static final int TRAN_REP_CLASS_COMMIT_INSTANCE = 4;
+    /* TRAN_SERIALIZABLE */
+    public static final int TRAN_REP_CLASS_REP_INSTANCE = 5;
+    public static final int TRAN_SERIALIZABLE = 6;
 }

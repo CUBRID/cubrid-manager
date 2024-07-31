@@ -5,23 +5,21 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
- 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
 
-})
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(
+        name = "",
+        propOrder = {})
 @XmlRootElement(name = "DBMS_Version")
 public class DBMSVersion {
 
-	@XmlValue
-	protected String value;
+    @XmlValue protected String value;
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

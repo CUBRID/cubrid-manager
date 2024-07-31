@@ -37,32 +37,31 @@ import org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob;
  * @version 1.0 - 2011-7-7 created by pangqiren
  */
 public class InstallPluginHandler extends PreloadingRepositoryHandler {
-	public InstallPluginHandler() {
-		super();
-	}
+    public InstallPluginHandler() {
+        super();
+    }
 
-	protected void doExecute(LoadMetadataRepositoryJob job) {
-		getProvisioningUI().openInstallWizard(null, null, job);
-	}
+    protected void doExecute(LoadMetadataRepositoryJob job) {
+        getProvisioningUI().openInstallWizard(null, null, job);
+    }
 
-	protected boolean preloadRepositories() {
-		return true;
-	}
+    protected boolean preloadRepositories() {
+        return true;
+    }
 
-	protected boolean waitForPreload() {
-		return !getProvisioningUI().getPolicy().getRepositoriesVisible();
-	}
+    protected boolean waitForPreload() {
+        return !getProvisioningUI().getPolicy().getRepositoriesVisible();
+    }
 
-	protected void setLoadJobProperties(Job loadJob) {
-		super.setLoadJobProperties(loadJob);
+    protected void setLoadJobProperties(Job loadJob) {
+        super.setLoadJobProperties(loadJob);
 
-		if (!waitForPreload()) {
-			loadJob.setProperty(
-					LoadMetadataRepositoryJob.SUPPRESS_AUTHENTICATION_JOB_MARKER,
-					Boolean.toString(true));
-			loadJob.setProperty(
-					LoadMetadataRepositoryJob.SUPPRESS_REPOSITORY_EVENTS,
-					Boolean.toString(true));
-		}
-	}
+        if (!waitForPreload()) {
+            loadJob.setProperty(
+                    LoadMetadataRepositoryJob.SUPPRESS_AUTHENTICATION_JOB_MARKER,
+                    Boolean.toString(true));
+            loadJob.setProperty(
+                    LoadMetadataRepositoryJob.SUPPRESS_REPOSITORY_EVENTS, Boolean.toString(true));
+        }
+    }
 }

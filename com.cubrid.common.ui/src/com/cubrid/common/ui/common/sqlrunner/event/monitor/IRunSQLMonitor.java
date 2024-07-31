@@ -31,18 +31,17 @@ import com.cubrid.common.ui.common.sqlrunner.event.RunSQLEvent;
 
 /**
  * SQL moditor interface
+ *
  * @author fulei
  */
 public interface IRunSQLMonitor {
-	/**
-	 * Called when run sql is finished.
-	 */
-	void finished();
+    /** Called when run sql is finished. */
+    void finished();
 
-	/**
-	 * Add event to handle list
-	 * 
-	 * @param event MigrationEvent
-	 */
-	void addEvent(RunSQLEvent event);
+    /**
+     * Add event to handle list
+     *
+     * @param event MigrationEvent
+     */
+    void addEvent(RunSQLEvent event);
 }

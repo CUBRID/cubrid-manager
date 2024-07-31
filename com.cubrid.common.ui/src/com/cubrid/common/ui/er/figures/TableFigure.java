@@ -29,8 +29,8 @@
  */
 package com.cubrid.common.ui.er.figures;
 
+import com.cubrid.common.ui.spi.ResourceManager;
 import java.util.List;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FocusListener;
@@ -40,8 +40,6 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
-import com.cubrid.common.ui.spi.ResourceManager;
-
 /**
  * Figure used to represent a table in the schema
  *
@@ -49,155 +47,153 @@ import com.cubrid.common.ui.spi.ResourceManager;
  * @version 1.0 - 2013-7-10 created by Yu Guojia
  */
 public class TableFigure extends Figure {
-	public static String HEADER_FONT_KEY = "Verdana";
-	private final ColumnsFigure columnsFigure = new ColumnsFigure();
-	private final EditableLabel nameLabel;
-	private boolean isSelected = false;
+    public static String HEADER_FONT_KEY = "Verdana";
+    private final ColumnsFigure columnsFigure = new ColumnsFigure();
+    private final EditableLabel nameLabel;
+    private boolean isSelected = false;
 
-	public static Color defaultBackgroundColor = new Color(null, 0, 165, 81);
-	public static Color selectedBackgroundColor = new Color(null, 3, 156, 77);
-	public static Color disableBackgroundColor = new Color(null, 121, 121, 121);
-	public static Color hoverBackgroundColor = new Color(null, 40, 157, 201);
-	public static Color defaultBorderColor = new Color(null, 204, 204, 204);
-	public static Color selectedBorderColor = new Color(null, 0, 161, 88);
-	public static Color disableBorderColor = disableBackgroundColor;
-	public static Color hoverBorderColor = hoverBackgroundColor;
+    public static Color defaultBackgroundColor = new Color(null, 0, 165, 81);
+    public static Color selectedBackgroundColor = new Color(null, 3, 156, 77);
+    public static Color disableBackgroundColor = new Color(null, 121, 121, 121);
+    public static Color hoverBackgroundColor = new Color(null, 40, 157, 201);
+    public static Color defaultBorderColor = new Color(null, 204, 204, 204);
+    public static Color selectedBorderColor = new Color(null, 0, 161, 88);
+    public static Color disableBorderColor = disableBackgroundColor;
+    public static Color hoverBorderColor = hoverBackgroundColor;
 
-	public TableFigure(EditableLabel name) {
-		this(name, null);
-	}
+    public TableFigure(EditableLabel name) {
+        this(name, null);
+    }
 
-	public TableFigure(EditableLabel name, List colums) {
-		nameLabel = name;
-		nameLabel.setHeader(true);
-		nameLabel.setFont(ResourceManager
-				.getFont(HEADER_FONT_KEY, 11, SWT.NONE));
-		nameLabel.setLabelAlignment(PositionConstants.CENTER);
-		nameLabel.setForegroundColor(ColorConstants.white);
+    public TableFigure(EditableLabel name, List colums) {
+        nameLabel = name;
+        nameLabel.setHeader(true);
+        nameLabel.setFont(ResourceManager.getFont(HEADER_FONT_KEY, 11, SWT.NONE));
+        nameLabel.setLabelAlignment(PositionConstants.CENTER);
+        nameLabel.setForegroundColor(ColorConstants.white);
 
-		ToolbarLayout layout = new ToolbarLayout();
-		layout.setVertical(true);
-		layout.setStretchMinorAxis(true);
-		setLayoutManager(layout);
-		setBorder(new LineBorder(defaultBorderColor, 1));
-		setBackgroundColor(defaultBackgroundColor);
-		setOpaque(true);
-		add(name);
-		add(columnsFigure);
-	}
+        ToolbarLayout layout = new ToolbarLayout();
+        layout.setVertical(true);
+        layout.setStretchMinorAxis(true);
+        setLayoutManager(layout);
+        setBorder(new LineBorder(defaultBorderColor, 1));
+        setBackgroundColor(defaultBackgroundColor);
+        setOpaque(true);
+        add(name);
+        add(columnsFigure);
+    }
 
-	public void setHoverEnterState() {
-		if (isDisabled()) {
-			// do nothing
-		} else {
-			LineBorder lineBorder = (LineBorder) this.getBorder();
-			this.setBackgroundColor(hoverBackgroundColor);
-			lineBorder.setColor(hoverBorderColor);
-		}
-	}
+    public void setHoverEnterState() {
+        if (isDisabled()) {
+            // do nothing
+        } else {
+            LineBorder lineBorder = (LineBorder) this.getBorder();
+            this.setBackgroundColor(hoverBackgroundColor);
+            lineBorder.setColor(hoverBorderColor);
+        }
+    }
 
-	public void setSelectedState() {
-		LineBorder lineBorder = (LineBorder) getBorder();
-		this.setBackgroundColor(selectedBackgroundColor);
-		lineBorder.setColor(selectedBorderColor);
-	}
+    public void setSelectedState() {
+        LineBorder lineBorder = (LineBorder) getBorder();
+        this.setBackgroundColor(selectedBackgroundColor);
+        lineBorder.setColor(selectedBorderColor);
+    }
 
-	public void setNormalState() {
-		LineBorder lineBorder = (LineBorder) this.getBorder();
-		this.setBackgroundColor(defaultBackgroundColor);
-		lineBorder.setColor(defaultBorderColor);
-		if (lineBorder.getWidth() != 1 && !isSelected()) {
-			lineBorder.setWidth(1);
-		}
-	}
+    public void setNormalState() {
+        LineBorder lineBorder = (LineBorder) this.getBorder();
+        this.setBackgroundColor(defaultBackgroundColor);
+        lineBorder.setColor(defaultBorderColor);
+        if (lineBorder.getWidth() != 1 && !isSelected()) {
+            lineBorder.setWidth(1);
+        }
+    }
 
-	public void setDisableState() {
-		LineBorder lineBorder = (LineBorder) this.getBorder();
-		this.setBackgroundColor(disableBackgroundColor);
-		lineBorder.setColor(disableBorderColor);
-	}
+    public void setDisableState() {
+        LineBorder lineBorder = (LineBorder) this.getBorder();
+        this.setBackgroundColor(disableBackgroundColor);
+        lineBorder.setColor(disableBorderColor);
+    }
 
-	public void setHoverExistState() {
-		if (isSelected()) {
-			setSelectedState();
-		} else if (isDisabled()) {
-			// do nothing
-		} else {// nomal
-			setNormalState();
-		}
-	}
+    public void setHoverExistState() {
+        if (isSelected()) {
+            setSelectedState();
+        } else if (isDisabled()) {
+            // do nothing
+        } else { // nomal
+            setNormalState();
+        }
+    }
 
-	public Color getBorderColor() {
-		LineBorder lineBorder = (LineBorder) this.getBorder();
-		return lineBorder.getColor();
-	}
+    public Color getBorderColor() {
+        LineBorder lineBorder = (LineBorder) this.getBorder();
+        return lineBorder.getColor();
+    }
 
-	public boolean isNormalState() {
-		return defaultBackgroundColor.equals(this.getBackgroundColor());
-	}
+    public boolean isNormalState() {
+        return defaultBackgroundColor.equals(this.getBackgroundColor());
+    }
 
-	public boolean isDisabled() {
-		if (disableBackgroundColor.equals(this.getBackgroundColor())) {
-			return true;
-		}
-		return false;
-	}
+    public boolean isDisabled() {
+        if (disableBackgroundColor.equals(this.getBackgroundColor())) {
+            return true;
+        }
+        return false;
+    }
 
-	/**
-	 * Set hover state to the figure
-	 *
-	 * @param isHovered
-	 */
-	public void setHovered(boolean isHovered) {
-		LineBorder lineBorder = (LineBorder) getBorder();
-		if (isHovered) {
-			this.setBackgroundColor(hoverBackgroundColor);
-			lineBorder.setColor(hoverBorderColor);
-		} else {
-			this.setBackgroundColor(defaultBackgroundColor);
-			lineBorder.setColor(defaultBorderColor);
-		}
-	}
+    /**
+     * Set hover state to the figure
+     *
+     * @param isHovered
+     */
+    public void setHovered(boolean isHovered) {
+        LineBorder lineBorder = (LineBorder) getBorder();
+        if (isHovered) {
+            this.setBackgroundColor(hoverBackgroundColor);
+            lineBorder.setColor(hoverBorderColor);
+        } else {
+            this.setBackgroundColor(defaultBackgroundColor);
+            lineBorder.setColor(defaultBorderColor);
+        }
+    }
 
-	public void setDisabled(boolean isDisable) {
-		LineBorder lineBorder = (LineBorder) getBorder();
-		if (isDisable) {
-			this.setBackgroundColor(disableBackgroundColor);
-			lineBorder.setColor(disableBorderColor);
-		} else {
-			setSelected(isSelected);
-		}
+    public void setDisabled(boolean isDisable) {
+        LineBorder lineBorder = (LineBorder) getBorder();
+        if (isDisable) {
+            this.setBackgroundColor(disableBackgroundColor);
+            lineBorder.setColor(disableBorderColor);
+        } else {
+            setSelected(isSelected);
+        }
+    }
 
-	}
+    public void setSelected(boolean isSelected) {
+        LineBorder lineBorder = (LineBorder) getBorder();
+        if (isSelected) {
+            this.setBackgroundColor(selectedBackgroundColor);
+            lineBorder.setColor(selectedBorderColor);
+        } else {
+            this.setBackgroundColor(defaultBackgroundColor);
+            lineBorder.setColor(defaultBorderColor);
+        }
+        if (lineBorder.getWidth() != 1 && !isSelected) {
+            lineBorder.setWidth(1);
+        }
+        this.isSelected = isSelected;
+    }
 
-	public void setSelected(boolean isSelected) {
-		LineBorder lineBorder = (LineBorder) getBorder();
-		if (isSelected) {
-			this.setBackgroundColor(selectedBackgroundColor);
-			lineBorder.setColor(selectedBorderColor);
-		} else {
-			this.setBackgroundColor(defaultBackgroundColor);
-			lineBorder.setColor(defaultBorderColor);
-		}
-		if (lineBorder.getWidth() != 1 && !isSelected) {
-			lineBorder.setWidth(1);
-		}
-		this.isSelected = isSelected;
-	}
+    public EditableLabel getNameLabel() {
+        return nameLabel;
+    }
 
-	public EditableLabel getNameLabel() {
-		return nameLabel;
-	}
+    public ColumnsFigure getColumnsFigure() {
+        return columnsFigure;
+    }
 
-	public ColumnsFigure getColumnsFigure() {
-		return columnsFigure;
-	}
+    public void addFocusListener(FocusListener listener) {
+        super.addFocusListener(listener);
+    }
 
-	public void addFocusListener(FocusListener listener) {
-		super.addFocusListener(listener);
-	}
-
-	public boolean isSelected() {
-		return isSelected;
-	}
+    public boolean isSelected() {
+        return isSelected;
+    }
 }

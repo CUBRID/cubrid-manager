@@ -27,44 +27,40 @@
  */
 package com.cubrid.cubridquery.ui.connection.action;
 
+import com.cubrid.common.ui.spi.action.SelectionAction;
+import com.cubrid.cubridquery.ui.connection.dialog.ImportExportConnectionDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.ui.spi.action.SelectionAction;
-import com.cubrid.cubridquery.ui.connection.dialog.ImportExportConnectionDialog;
+public class ConnectionImportAction extends SelectionAction {
 
-public class ConnectionImportAction extends
-		SelectionAction {
+    public static final String ID = ConnectionImportAction.class.getName();
 
-	public static final String ID = ConnectionImportAction.class.getName();
+    protected ConnectionImportAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+    }
 
-	protected ConnectionImportAction(Shell shell,
-			ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-	}
+    public ConnectionImportAction(Shell shell, String text, ImageDescriptor imageDescriptor) {
+        this(shell, null, text, imageDescriptor);
+    }
 
-	public ConnectionImportAction(Shell shell, String text,
-			ImageDescriptor imageDescriptor) {
-		this(shell, null, text, imageDescriptor);
-	}
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    public boolean isSupported(Object obj) {
+        return isSupportedObject(obj);
+    }
 
-	public boolean isSupported(Object obj) {
-		return isSupportedObject(obj);
-	}
+    private boolean isSupportedObject(Object obj) {
+        return true;
+    }
 
-	private boolean isSupportedObject(Object obj) {
-		return true;
-	}
-
-	public void run() {
-		ImportExportConnectionDialog dialog = new ImportExportConnectionDialog(getShell());
-		dialog.open();
-	}
-
+    public void run() {
+        ImportExportConnectionDialog dialog = new ImportExportConnectionDialog(getShell());
+        dialog.open();
+    }
 }

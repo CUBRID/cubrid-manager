@@ -25,71 +25,71 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- package com.cubrid.common.ui.compare.data.control;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IPersistableElement;
+package com.cubrid.common.ui.compare.data.control;
 
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.ui.compare.Messages;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPersistableElement;
 
 public class DataCompareDetailEditorInput implements IEditorInput {
-	private DatabaseInfo sourceDB;
-	private DatabaseInfo targetDB;
-	private String diffFilePath;
-	private SchemaInfo sourceSchemaInfo;
+    private DatabaseInfo sourceDB;
+    private DatabaseInfo targetDB;
+    private String diffFilePath;
+    private SchemaInfo sourceSchemaInfo;
 
-	public DataCompareDetailEditorInput(DatabaseInfo sourceNode,
-			DatabaseInfo targetNode, String diffFilePath, SchemaInfo sourceSchemaInfo) {
-		this.sourceDB = sourceNode;
-		this.targetDB = targetNode;
-		this.diffFilePath = diffFilePath;
-		this.sourceSchemaInfo = sourceSchemaInfo;
-	}
+    public DataCompareDetailEditorInput(
+            DatabaseInfo sourceNode,
+            DatabaseInfo targetNode,
+            String diffFilePath,
+            SchemaInfo sourceSchemaInfo) {
+        this.sourceDB = sourceNode;
+        this.targetDB = targetNode;
+        this.diffFilePath = diffFilePath;
+        this.sourceSchemaInfo = sourceSchemaInfo;
+    }
 
-	public String getDiffFilePath() {
-		return diffFilePath;
-	}
+    public String getDiffFilePath() {
+        return diffFilePath;
+    }
 
-	/**
-	 * @return the schemaInfo
-	 */
-	public SchemaInfo getSourceSchemaInfo() {
-		return sourceSchemaInfo;
-	}
+    /** @return the schemaInfo */
+    public SchemaInfo getSourceSchemaInfo() {
+        return sourceSchemaInfo;
+    }
 
-	public DatabaseInfo getSourceDB() {
-		return sourceDB;
-	}
+    public DatabaseInfo getSourceDB() {
+        return sourceDB;
+    }
 
-	public DatabaseInfo getTargetDB() {
-		return targetDB;
-	}
+    public DatabaseInfo getTargetDB() {
+        return targetDB;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        return null;
+    }
 
-	public boolean exists() {
-		return false;
-	}
+    public boolean exists() {
+        return false;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	public String getName() {
-		return Messages.titleCompareDataDetail;
-	}
+    public String getName() {
+        return Messages.titleCompareDataDetail;
+    }
 
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public String getToolTipText() {
-		return getName();
-	}
+    public String getToolTipText() {
+        return getName();
+    }
 }

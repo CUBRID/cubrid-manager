@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,7 +24,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.tool.editor.property;
 
@@ -36,49 +36,49 @@ import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 
 /**
- * 
- * Properties Partition Scanner. Partition 1: comment start with '#'; Partition
- * 2: value start with ' '(blank); Partition 3: value start with '	'(tab);
- * Partition 4: value after the '=';Others are properties' names.
- * 
+ * Properties Partition Scanner. Partition 1: comment start with '#'; Partition 2: value start with
+ * ' '(blank); Partition 3: value start with ' '(tab); Partition 4: value after the '=';Others are
+ * properties' names.
+ *
  * @author Kevin Cao
  * @version 1.0 - 2011-1-21 created by Kevin Cao
  */
-public class PropPartitionScanner extends
-		RuleBasedPartitionScanner {
+public class PropPartitionScanner extends RuleBasedPartitionScanner {
 
-	static final String[] LEGAL_CONTENT_TYPES = new String[]{
-			IDocument.DEFAULT_CONTENT_TYPE,
-			PropPartitionScanner.PROPERTIES_COMMENT,
-			PropPartitionScanner.PROPERTIES_CONTENT };
+    static final String[] LEGAL_CONTENT_TYPES =
+            new String[] {
+                IDocument.DEFAULT_CONTENT_TYPE,
+                PropPartitionScanner.PROPERTIES_COMMENT,
+                PropPartitionScanner.PROPERTIES_CONTENT
+            };
 
-	public final static String PROPERTIES_COMMENT = "__properties_comment";
+    public static final String PROPERTIES_COMMENT = "__properties_comment";
 
-	public final static String PROPERTIES_CONTENT = "__properties_content";
+    public static final String PROPERTIES_CONTENT = "__properties_content";
 
-	public PropPartitionScanner() {
-		SingleLineRule slr = null;
-		IPredicateRule[] rules = new IPredicateRule[4];
-		IToken comment = new Token(PROPERTIES_COMMENT);
-		//comment
-		slr = new SingleLineRule("#", "", comment, (char) 0, true);
-		slr.setColumnConstraint(0);
-		rules[0] = slr;
-		//content style 1
-		comment = new Token(PROPERTIES_CONTENT);
-		slr = new SingleLineRule(" ", "", comment, (char) 0, true);
-		slr.setColumnConstraint(0);
-		rules[1] = slr;
-		// content style 2
-		comment = new Token(PROPERTIES_CONTENT);
-		slr = new SingleLineRule("	", "", comment, (char) 0, true);
-		slr.setColumnConstraint(0);
-		rules[2] = slr;
-		// content style 3
-		comment = new Token(PROPERTIES_CONTENT);
-		slr = new SingleLineRule("=", "", comment, (char) 0, true);
-		rules[3] = slr;
-		//others are the property name
-		setPredicateRules(rules);
-	}
+    public PropPartitionScanner() {
+        SingleLineRule slr = null;
+        IPredicateRule[] rules = new IPredicateRule[4];
+        IToken comment = new Token(PROPERTIES_COMMENT);
+        // comment
+        slr = new SingleLineRule("#", "", comment, (char) 0, true);
+        slr.setColumnConstraint(0);
+        rules[0] = slr;
+        // content style 1
+        comment = new Token(PROPERTIES_CONTENT);
+        slr = new SingleLineRule(" ", "", comment, (char) 0, true);
+        slr.setColumnConstraint(0);
+        rules[1] = slr;
+        // content style 2
+        comment = new Token(PROPERTIES_CONTENT);
+        slr = new SingleLineRule("	", "", comment, (char) 0, true);
+        slr.setColumnConstraint(0);
+        rules[2] = slr;
+        // content style 3
+        comment = new Token(PROPERTIES_CONTENT);
+        slr = new SingleLineRule("=", "", comment, (char) 0, true);
+        rules[3] = slr;
+        // others are the property name
+        setPredicateRules(rules);
+    }
 }

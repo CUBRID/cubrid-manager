@@ -29,13 +29,6 @@
  */
 package com.cubrid.common.ui.cubrid.table.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.spi.action.SelectionAction;
@@ -48,6 +41,11 @@ import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.ActionSupportUtil;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.cubrid.table.task.UpdateStatisticsTask;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Update statistics on partition table
@@ -56,64 +54,70 @@ import com.cubrid.cubridmanager.core.cubrid.table.task.UpdateStatisticsTask;
  * @version 1.0 - 2010-3-23 created by pangqiren
  */
 public class UpdateStatisticsAction extends SelectionAction {
-	public static final String ID = UpdateStatisticsAction.class.getName();
+    public static final String ID = UpdateStatisticsAction.class.getName();
 
-	public UpdateStatisticsAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    public UpdateStatisticsAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	public UpdateStatisticsAction(Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    public UpdateStatisticsAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	public boolean isSupported(Object obj) {
-		return ActionSupportUtil.isSupportMultiSelection(
-				obj, new String[] { NodeType.USER_PARTITIONED_TABLE }, false);
-	}
+    public boolean isSupported(Object obj) {
+        return ActionSupportUtil.isSupportMultiSelection(
+                obj, new String[] {NodeType.USER_PARTITIONED_TABLE}, false);
+    }
 
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		if (!isSupported(obj)) {
-			setEnabled(false);
-			return;
-		}
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        if (!isSupported(obj)) {
+            setEnabled(false);
+            return;
+        }
 
-		List<String> sqlList = new ArrayList<String>(); // FIXME move this logic to core module
-		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < obj.length; i++) {
-			ISchemaNode schemaNode = (ISchemaNode) obj[i];
-			String tableName = schemaNode.getParent().getName();
-			int partitionNameLoc = schemaNode.getName().lastIndexOf("__p__");
-			if (partitionNameLoc == -1) {
-				continue;
-			}
-			partitionNameLoc += 5;
-			String partitionName = schemaNode.getName().substring(partitionNameLoc);
-			String sql = "ALTER TABLE " + QuerySyntax.escapeKeyword(tableName)
-					+ " ANALYZE PARTITION " + QuerySyntax.escapeKeyword(partitionName);
-			sqlList.add(sql);
-			buffer.append(",");
-			buffer.append(schemaNode.getName());
-		}
+        List<String> sqlList = new ArrayList<String>(); // FIXME move this logic to core module
+        StringBuilder buffer = new StringBuilder();
+        for (int i = 0; i < obj.length; i++) {
+            ISchemaNode schemaNode = (ISchemaNode) obj[i];
+            String tableName = schemaNode.getParent().getName();
+            int partitionNameLoc = schemaNode.getName().lastIndexOf("__p__");
+            if (partitionNameLoc == -1) {
+                continue;
+            }
+            partitionNameLoc += 5;
+            String partitionName = schemaNode.getName().substring(partitionNameLoc);
+            String sql =
+                    "ALTER TABLE "
+                            + QuerySyntax.escapeKeyword(tableName)
+                            + " ANALYZE PARTITION "
+                            + QuerySyntax.escapeKeyword(partitionName);
+            sqlList.add(sql);
+            buffer.append(",");
+            buffer.append(schemaNode.getName());
+        }
 
-		String str = buffer.toString().replaceFirst(",", "");
-		if (CommonUITool.openConfirmBox(Messages.bind(Messages.msgConfirmUpdateStatis, str))) {
-			DefaultSchemaNode node = (DefaultSchemaNode) obj[0];
-			String taskName = Messages.bind(Messages.updateStatisTaskName, node.getName());
-			TaskExecutor executor = new CommonTaskExec(taskName);
-			UpdateStatisticsTask task = new UpdateStatisticsTask(node.getDatabase().getDatabaseInfo());
-			task.setSqlList(sqlList);
-			executor.addTask(task);
-			new ExecTaskWithProgress(executor).exec();
-			if (executor.isSuccess()) {
-				CommonUITool.openInformationBox(Messages.titleSuccess, Messages.msgSuccessUpdateStatis);
-			}
-		}
-	}
+        String str = buffer.toString().replaceFirst(",", "");
+        if (CommonUITool.openConfirmBox(Messages.bind(Messages.msgConfirmUpdateStatis, str))) {
+            DefaultSchemaNode node = (DefaultSchemaNode) obj[0];
+            String taskName = Messages.bind(Messages.updateStatisTaskName, node.getName());
+            TaskExecutor executor = new CommonTaskExec(taskName);
+            UpdateStatisticsTask task =
+                    new UpdateStatisticsTask(node.getDatabase().getDatabaseInfo());
+            task.setSqlList(sqlList);
+            executor.addTask(task);
+            new ExecTaskWithProgress(executor).exec();
+            if (executor.isSuccess()) {
+                CommonUITool.openInformationBox(
+                        Messages.titleSuccess, Messages.msgSuccessUpdateStatis);
+            }
+        }
+    }
 }

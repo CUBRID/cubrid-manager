@@ -36,7 +36,7 @@ package com.cubrid.common.ui.query.editor;
  * @version 1.0 - 2013-2-1 created by Kevin.Wang
  */
 public interface ICopiableFromTable {
-	public void copySelectedItems();
+    public void copySelectedItems();
 
-	public void copyAllItems();
+    public void copyAllItems();
 }

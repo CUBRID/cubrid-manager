@@ -27,12 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.parts;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
-
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.BrokerConnection;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.BrokerDBListNode;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.BrokerNode;
@@ -42,6 +36,10 @@ import com.cubrid.cubridmanager.ui.mondashboard.editor.model.DatabaseNode;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.Host2ChildConnection;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.MonitorConnection;
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPartFactory;
 
 /**
  * Edit part facotry used by dashboard editor.
@@ -49,45 +47,43 @@ import com.cubrid.cubridmanager.ui.mondashboard.editor.model.MonitorConnection;
  * @author cyl
  * @version 1.0 - 2010-6-2 created by cyl
  */
-public class MonitorEditPartFacotry implements
-		EditPartFactory {
+public class MonitorEditPartFacotry implements EditPartFactory {
 
-	private static final Map<Class<?>, Class<?>> MODEL2PARTMAP = new HashMap<Class<?>, Class<?>>();
-	static {
-		MODEL2PARTMAP.put(Dashboard.class, DashboardPart.class);
-		MODEL2PARTMAP.put(HostNode.class, HostMonitorPart.class);
-		MODEL2PARTMAP.put(DatabaseNode.class, DatabaseMonitorPart.class);
-		MODEL2PARTMAP.put(BrokerNode.class, BrokerMonitorPart.class);
-		MODEL2PARTMAP.put(ClientNode.class, ClientMonitorPart.class);
-		MODEL2PARTMAP.put(BrokerDBListNode.class, BrokerDBListMonitorPart.class);
-		MODEL2PARTMAP.put(MonitorConnection.class, HAConnectionPart.class);
-		MODEL2PARTMAP.put(Host2ChildConnection.class, Host2ChildConnectionPart.class);
-		MODEL2PARTMAP.put(BrokerConnection.class, BrokerConnectionPart.class);
-	}
+    private static final Map<Class<?>, Class<?>> MODEL2PARTMAP = new HashMap<Class<?>, Class<?>>();
 
-	/**
-	 * PartFacotry used by
-	 * {@link com.cubrid.cubridmanager.ui.mondashboard.editor.MonitorDashboardEditor}
-	 *
-	 * @see org.eclipse.gef.EditPartFactory.createEditPart(EditPart context,
-	 *      Object model)
-	 * @param context parent edit part
-	 * @param model current model the new edit part will used
-	 * @return edit part
-	 */
-	public EditPart createEditPart(EditPart context, Object model) {
-		EditPart part = null;
-		Class<?> clazz = MODEL2PARTMAP.get(model.getClass());
-		try {
-			part = (EditPart) clazz.newInstance();
-		} catch (Exception e) {
-			throw new IllegalArgumentException(e);
-		}
-		if (null != part) {
-			part.setModel(model);
-			part.setParent(context);
-		}
-		return part;
-	}
+    static {
+        MODEL2PARTMAP.put(Dashboard.class, DashboardPart.class);
+        MODEL2PARTMAP.put(HostNode.class, HostMonitorPart.class);
+        MODEL2PARTMAP.put(DatabaseNode.class, DatabaseMonitorPart.class);
+        MODEL2PARTMAP.put(BrokerNode.class, BrokerMonitorPart.class);
+        MODEL2PARTMAP.put(ClientNode.class, ClientMonitorPart.class);
+        MODEL2PARTMAP.put(BrokerDBListNode.class, BrokerDBListMonitorPart.class);
+        MODEL2PARTMAP.put(MonitorConnection.class, HAConnectionPart.class);
+        MODEL2PARTMAP.put(Host2ChildConnection.class, Host2ChildConnectionPart.class);
+        MODEL2PARTMAP.put(BrokerConnection.class, BrokerConnectionPart.class);
+    }
 
+    /**
+     * PartFacotry used by {@link
+     * com.cubrid.cubridmanager.ui.mondashboard.editor.MonitorDashboardEditor}
+     *
+     * @see org.eclipse.gef.EditPartFactory.createEditPart(EditPart context, Object model)
+     * @param context parent edit part
+     * @param model current model the new edit part will used
+     * @return edit part
+     */
+    public EditPart createEditPart(EditPart context, Object model) {
+        EditPart part = null;
+        Class<?> clazz = MODEL2PARTMAP.get(model.getClass());
+        try {
+            part = (EditPart) clazz.newInstance();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+        if (null != part) {
+            part.setModel(model);
+            part.setParent(context);
+        }
+        return part;
+    }
 }

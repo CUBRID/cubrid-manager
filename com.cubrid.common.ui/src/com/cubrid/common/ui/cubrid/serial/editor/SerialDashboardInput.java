@@ -27,78 +27,74 @@
  */
 package com.cubrid.common.ui.cubrid.serial.editor;
 
+import com.cubrid.common.core.common.model.SerialInfo;
+import com.cubrid.common.ui.cubrid.serial.Messages;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
 import java.util.List;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.cubrid.common.core.common.model.SerialInfo;
-import com.cubrid.common.ui.cubrid.serial.Messages;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-1-9 created by fulei
  */
 public class SerialDashboardInput implements IEditorInput {
-	private final CubridDatabase database;
-	private final List<SerialInfo> serialList; 
-	
-	public SerialDashboardInput(CubridDatabase database, List<SerialInfo> viewList) {
-		this.database = database;
-		this.serialList = viewList;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(CubridDatabase.class)) {
-			return database;
-		} else if(adapter.equals(List.class)) {
-			return serialList;
-		}
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+    private final CubridDatabase database;
+    private final List<SerialInfo> serialList;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#exists()
-	 */
-	public boolean exists() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public SerialDashboardInput(CubridDatabase database, List<SerialInfo> viewList) {
+        this.database = database;
+        this.serialList = viewList;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-	 */
-	public ImageDescriptor getImageDescriptor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+     */
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(CubridDatabase.class)) {
+            return database;
+        } else if (adapter.equals(List.class)) {
+            return serialList;
+        }
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getName()
-	 */
-	public String getName() {
-		return Messages.serialsDetailInfoPartTitle;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#exists()
+     */
+    public boolean exists() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getPersistable()
-	 */
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
+     */
+    public ImageDescriptor getImageDescriptor() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
-	 */
-	public String getToolTipText() {
-		return this.getName();
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getName()
+     */
+    public String getName() {
+        return Messages.serialsDetailInfoPartTitle;
+    }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getPersistable()
+     */
+    public IPersistableElement getPersistable() {
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getToolTipText()
+     */
+    public String getToolTipText() {
+        return this.getName();
+    }
 }

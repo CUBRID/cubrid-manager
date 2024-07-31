@@ -27,14 +27,6 @@
  */
 package com.cubrid.common.ui.cubrid.synonym.action;
 
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.core.common.model.Synonym;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.ui.cubrid.synonym.Messages;
@@ -53,141 +45,146 @@ import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.ActionSupportUtil;
 import com.cubrid.cubridmanager.core.cubrid.synonym.JDBCGetSynonymInfoTask;
 import com.cubrid.cubridmanager.core.cubrid.user.task.JDBCGetAllDbUserTask;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
 
-public class AlterSynonymAction extends
-		SelectionAction {
+public class AlterSynonymAction extends SelectionAction {
 
-	public static final String ID = AlterSynonymAction.class.getName();
+    public static final String ID = AlterSynonymAction.class.getName();
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public AlterSynonymAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public AlterSynonymAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public AlterSynonymAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public AlterSynonymAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+    }
 
-	/**
-	 *
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 *
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj the Object
-	 * @return <code>true</code> if support this obj;<code>false</code>
-	 *         otherwise
-	 */
-	public boolean isSupported(Object obj) {
-		return ActionSupportUtil.isSupportSinSelCheckDbUser(obj,
-				NodeType.SYNONYM);
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj the Object
+     * @return <code>true</code> if support this obj;<code>false</code> otherwise
+     */
+    public boolean isSupported(Object obj) {
+        return ActionSupportUtil.isSupportSinSelCheckDbUser(obj, NodeType.SYNONYM);
+    }
 
-	/**
-	 * Open alter synonym dialog
-	 */
-	public void run() {
-		Object[] objArr = this.getSelectedObj();
-		if (!isSupported(objArr)) {
-			this.setEnabled(false);
-			return;
-		}
-		final ISchemaNode synonymNode = (ISchemaNode) objArr[0];
-		CubridDatabase database = synonymNode.getDatabase();
-		run (database, synonymNode);
-	}
+    /** Open alter synonym dialog */
+    public void run() {
+        Object[] objArr = this.getSelectedObj();
+        if (!isSupported(objArr)) {
+            this.setEnabled(false);
+            return;
+        }
+        final ISchemaNode synonymNode = (ISchemaNode) objArr[0];
+        CubridDatabase database = synonymNode.getDatabase();
+        run(database, synonymNode);
+    }
 
-	/**
-	 * edit synonym
-	 * @param database
-	 * @param node
-	 * @return
-	 */
-	public int run (final CubridDatabase database, final ISchemaNode node) { // FIXME move this logic to core module
-		TaskExecutor taskExcutor = new TaskExecutor() {
-			public boolean exec(final IProgressMonitor monitor) {
-				if (monitor.isCanceled()) {
-					return false;
-				}
-				for (ITask task : taskList) {
-					task.execute();
-					final String msg = task.getErrorMsg();
-					if (openErrorBox(shell, msg, monitor)) {
-						return false;
-					}
-					if (monitor.isCanceled()) {
-						return false;
-					}
-					Synonym synonym = null;
-					JDBCGetSynonymInfoTask getSynonymInfoTask = (JDBCGetSynonymInfoTask) task;
-					synonym = getSynonymInfoTask.getSynonymInfo(node.getName());
+    /**
+     * edit synonym
+     *
+     * @param database
+     * @param node
+     * @return
+     */
+    public int run(
+            final CubridDatabase database,
+            final ISchemaNode node) { // FIXME move this logic to core module
+        TaskExecutor taskExcutor =
+                new TaskExecutor() {
+                    public boolean exec(final IProgressMonitor monitor) {
+                        if (monitor.isCanceled()) {
+                            return false;
+                        }
+                        for (ITask task : taskList) {
+                            task.execute();
+                            final String msg = task.getErrorMsg();
+                            if (openErrorBox(shell, msg, monitor)) {
+                                return false;
+                            }
+                            if (monitor.isCanceled()) {
+                                return false;
+                            }
+                            Synonym synonym = null;
+                            JDBCGetSynonymInfoTask getSynonymInfoTask =
+                                    (JDBCGetSynonymInfoTask) task;
+                            synonym = getSynonymInfoTask.getSynonymInfo(node.getName());
 
-					if (synonym == null) {
-						openErrorBox(shell, Messages.errNameNoExist, monitor);
-						return false;
-					}
+                            if (synonym == null) {
+                                openErrorBox(shell, Messages.errNameNoExist, monitor);
+                                return false;
+                            }
 
-					node.setModelObj(synonym);
-				}
-				return true;
-			}
-		};
-		ITask task = null;
+                            node.setModelObj(synonym);
+                        }
+                        return true;
+                    }
+                };
+        ITask task = null;
 
-		task = new JDBCGetSynonymInfoTask(database.getDatabaseInfo());
-		taskExcutor.addTask(task);
-		new ExecTaskWithProgress(taskExcutor).busyCursorWhile();
-		if (!taskExcutor.isSuccess()) {
-			return IDialogConstants.CANCEL_ID;
-		}
-		
-		TaskExecutor userTaskExcutor = new CommonTaskExec(null);
-		
-		JDBCGetAllDbUserTask userTask = new JDBCGetAllDbUserTask(database.getDatabaseInfo());
-		userTaskExcutor.addTask(userTask);
-		new ExecTaskWithProgress(userTaskExcutor).busyCursorWhile();
-		if (!taskExcutor.isSuccess()) {
-			return IDialogConstants.CANCEL_ID;
-		}
+        task = new JDBCGetSynonymInfoTask(database.getDatabaseInfo());
+        taskExcutor.addTask(task);
+        new ExecTaskWithProgress(taskExcutor).busyCursorWhile();
+        if (!taskExcutor.isSuccess()) {
+            return IDialogConstants.CANCEL_ID;
+        }
 
-		List<String> dbUserList = userTask.getDbUserList();
+        TaskExecutor userTaskExcutor = new CommonTaskExec(null);
 
-		CreateSynonymDialog dialog = new CreateSynonymDialog(getShell(),
-				node.getDatabase(),
-				(Synonym) node.getAdapter(Synonym.class),
-				dbUserList);
+        JDBCGetAllDbUserTask userTask = new JDBCGetAllDbUserTask(database.getDatabaseInfo());
+        userTaskExcutor.addTask(userTask);
+        new ExecTaskWithProgress(userTaskExcutor).busyCursorWhile();
+        if (!taskExcutor.isSuccess()) {
+            return IDialogConstants.CANCEL_ID;
+        }
 
-		if (dialog.open() != IDialogConstants.CANCEL_ID) {
-			CubridNodeManager.getInstance().fireCubridNodeChanged(
-					new CubridNodeChangedEvent(node,
-							CubridNodeChangedEventType.NODE_REFRESH));
-			ActionManager.getInstance().fireSelectionChanged(getSelection());
-			return IDialogConstants.OK_ID;
-		}
-		return IDialogConstants.CANCEL_ID;
-	}
+        List<String> dbUserList = userTask.getDbUserList();
+
+        CreateSynonymDialog dialog =
+                new CreateSynonymDialog(
+                        getShell(),
+                        node.getDatabase(),
+                        (Synonym) node.getAdapter(Synonym.class),
+                        dbUserList);
+
+        if (dialog.open() != IDialogConstants.CANCEL_ID) {
+            CubridNodeManager.getInstance()
+                    .fireCubridNodeChanged(
+                            new CubridNodeChangedEvent(
+                                    node, CubridNodeChangedEventType.NODE_REFRESH));
+            ActionManager.getInstance().fireSelectionChanged(getSelection());
+            return IDialogConstants.OK_ID;
+        }
+        return IDialogConstants.CANCEL_ID;
+    }
 }

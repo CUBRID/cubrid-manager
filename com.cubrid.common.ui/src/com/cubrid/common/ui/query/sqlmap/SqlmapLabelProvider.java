@@ -27,68 +27,59 @@
  */
 package com.cubrid.common.ui.query.sqlmap;
 
+import com.cubrid.common.ui.CommonUIPlugin;
 import java.util.Map;
-
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import com.cubrid.common.ui.CommonUIPlugin;
-
 /**
- * <p>
  * SQLMap label provider.
- * </p>
  *
  * @author CHOE JUNGYEON
  */
-public class SqlmapLabelProvider implements
-		ITableLabelProvider {
+public class SqlmapLabelProvider implements ITableLabelProvider {
 
-	private SqlmapNavigatorView parentView;
-	private final static Image CHECK_IMAGE = CommonUIPlugin.getImage("icons/checked.gif");
-	private final static Image UNCHECK_IMAGE = CommonUIPlugin.getImage("icons/unchecked.gif");
+    private SqlmapNavigatorView parentView;
+    private static final Image CHECK_IMAGE = CommonUIPlugin.getImage("icons/checked.gif");
+    private static final Image UNCHECK_IMAGE = CommonUIPlugin.getImage("icons/unchecked.gif");
 
-	public SqlmapLabelProvider(SqlmapNavigatorView sqlmapNavigatorView) {
-		this.parentView = sqlmapNavigatorView;
-	}
+    public SqlmapLabelProvider(SqlmapNavigatorView sqlmapNavigatorView) {
+        this.parentView = sqlmapNavigatorView;
+    }
 
-	public void addListener(ILabelProviderListener listener) {
-	}
+    public void addListener(ILabelProviderListener listener) {}
 
-	public void dispose() {
-	}
+    public void dispose() {}
 
-	public boolean isLabelProperty(Object element, String property) {
-		return false;
-	}
+    public boolean isLabelProperty(Object element, String property) {
+        return false;
+    }
 
-	public void removeListener(ILabelProviderListener listener) {
-	}
+    public void removeListener(ILabelProviderListener listener) {}
 
-	@SuppressWarnings("unchecked")
-	public Image getColumnImage(Object element, int columnIndex) {
-		if (!(element instanceof Map)) {
-			return null;
-		}
+    @SuppressWarnings("unchecked")
+    public Image getColumnImage(Object element, int columnIndex) {
+        if (!(element instanceof Map)) {
+            return null;
+        }
 
-		Map<String, String> data = (Map<String, String>) element;
-		switch (columnIndex) {
-		case 0:
-			return parentView.isUseCondition(data.get("1")) ? CHECK_IMAGE : UNCHECK_IMAGE;
-		default:
-			return null;
-		}
-	}
+        Map<String, String> data = (Map<String, String>) element;
+        switch (columnIndex) {
+            case 0:
+                return parentView.isUseCondition(data.get("1")) ? CHECK_IMAGE : UNCHECK_IMAGE;
+            default:
+                return null;
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	public String getColumnText(Object element, int columnIndex) {
-		if (!(element instanceof Map)) {
-			return "";
-		}
-		Map<String, Object> data = (Map<String, Object>) element;
-		Object obj = data.get(String.valueOf(columnIndex));
-		return obj == null ? "" : obj.toString();
-	}
-
+    @SuppressWarnings("unchecked")
+    public String getColumnText(Object element, int columnIndex) {
+        if (!(element instanceof Map)) {
+            return "";
+        }
+        Map<String, Object> data = (Map<String, Object>) element;
+        Object obj = data.get(String.valueOf(columnIndex));
+        return obj == null ? "" : obj.toString();
+    }
 }

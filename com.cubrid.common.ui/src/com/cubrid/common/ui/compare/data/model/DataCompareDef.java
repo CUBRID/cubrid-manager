@@ -25,38 +25,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- package com.cubrid.common.ui.compare.data.model;
+package com.cubrid.common.ui.compare.data.model;
 
 public class DataCompareDef {
-	public enum DataCompareMode {
-		FULLSCAN, RANGESCAN
-	};
+    public enum DataCompareMode {
+        FULLSCAN,
+        RANGESCAN
+    };
 
-	public DataCompareMode compareMode;
-	public long rangeBegin;
-	public long rangeLimit;
+    public DataCompareMode compareMode;
+    public long rangeBegin;
+    public long rangeLimit;
 
-	public DataCompareMode getCompareMode() {
-		return compareMode;
-	}
+    public DataCompareMode getCompareMode() {
+        return compareMode;
+    }
 
-	public void setCompareMode(DataCompareMode compareMode) {
-		this.compareMode = compareMode;
-	}
+    public void setCompareMode(DataCompareMode compareMode) {
+        this.compareMode = compareMode;
+    }
 
-	public long getRangeBegin() {
-		return rangeBegin;
-	}
+    public long getRangeBegin() {
+        return rangeBegin;
+    }
 
-	public void setRangeBegin(long rangeBegin) {
-		this.rangeBegin = rangeBegin;
-	}
+    public void setRangeBegin(long rangeBegin) {
+        this.rangeBegin = rangeBegin;
+    }
 
-	public long getRangeLimit() {
-		return rangeLimit;
-	}
+    public long getRangeLimit() {
+        return rangeLimit;
+    }
 
-	public void setRangeLimit(long rangeLimit) {
-		this.rangeLimit = rangeLimit;
-	}
+    public void setRangeLimit(long rangeLimit) {
+        this.rangeLimit = rangeLimit;
+    }
 }

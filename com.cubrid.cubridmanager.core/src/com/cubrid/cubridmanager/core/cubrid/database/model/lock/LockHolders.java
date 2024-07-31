@@ -34,40 +34,40 @@ package com.cubrid.cubridmanager.core.cubrid.database.model.lock;
  * @version 1.0 - 2009-12-28 created by sq
  */
 public class LockHolders {
-	private int tran_index;
-	private String granted_mode;
-	private int count;
-	private int nsubgranules;
+    private int tran_index;
+    private String granted_mode;
+    private int count;
+    private int nsubgranules;
 
-	public int getTran_index() {
-		return tran_index;
-	}
+    public int getTran_index() {
+        return tran_index;
+    }
 
-	public void setTran_index(int tranIndex) {
-		this.tran_index = tranIndex;
-	}
+    public void setTran_index(int tranIndex) {
+        this.tran_index = tranIndex;
+    }
 
-	public String getGranted_mode() {
-		return granted_mode;
-	}
+    public String getGranted_mode() {
+        return granted_mode;
+    }
 
-	public void setGranted_mode(String grantedMode) {
-		this.granted_mode = grantedMode;
-	}
+    public void setGranted_mode(String grantedMode) {
+        this.granted_mode = grantedMode;
+    }
 
-	public int getCount() {
-		return count;
-	}
+    public int getCount() {
+        return count;
+    }
 
-	public void setCount(int count) {
-		this.count = count;
-	}
+    public void setCount(int count) {
+        this.count = count;
+    }
 
-	public int getNsubgranules() {
-		return nsubgranules;
-	}
+    public int getNsubgranules() {
+        return nsubgranules;
+    }
 
-	public void setNsubgranules(int nsubgranules) {
-		this.nsubgranules = nsubgranules;
-	}
+    public void setNsubgranules(int nsubgranules) {
+        this.nsubgranules = nsubgranules;
+    }
 }

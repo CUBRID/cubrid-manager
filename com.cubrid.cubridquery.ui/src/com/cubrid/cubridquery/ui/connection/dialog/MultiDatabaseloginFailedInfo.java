@@ -30,24 +30,27 @@ package com.cubrid.cubridquery.ui.connection.dialog;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 
 public class MultiDatabaseloginFailedInfo {
-	private CubridDatabase cubridDatabase;
-	private String errMsg;
+    private CubridDatabase cubridDatabase;
+    private String errMsg;
 
-	public CubridDatabase getCubridDatabase() {
-		return cubridDatabase;
-	}
-	public void setCubridDatabase(CubridDatabase cubridDatabase) {
-		this.cubridDatabase = cubridDatabase;
-	}
-	public String getErrMsg() {
-		return errMsg;
-	}
-	public void setErrMsg(String errMsg) {
-		this.errMsg = errMsg;
-	}
+    public CubridDatabase getCubridDatabase() {
+        return cubridDatabase;
+    }
 
-	public MultiDatabaseloginFailedInfo (CubridDatabase cubridDatabase, String errMsg) {
-		this.cubridDatabase = cubridDatabase;
-		this.errMsg = errMsg;
-	}
+    public void setCubridDatabase(CubridDatabase cubridDatabase) {
+        this.cubridDatabase = cubridDatabase;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
+    }
+
+    public MultiDatabaseloginFailedInfo(CubridDatabase cubridDatabase, String errMsg) {
+        this.cubridDatabase = cubridDatabase;
+        this.errMsg = errMsg;
+    }
 }

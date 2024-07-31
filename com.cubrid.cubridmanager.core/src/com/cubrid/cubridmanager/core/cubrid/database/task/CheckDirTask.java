@@ -31,49 +31,45 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 
 /**
- *
  * the task of check the directory
  *
  * @author robin 2009-3-25
  */
-public class CheckDirTask extends
-		SocketTask {
+public class CheckDirTask extends SocketTask {
 
-	private static final String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dir" };
+    private static final String[] SEND_MSG_ITEMS = new String[] {"task", "token", "dir"};
 
-	/**
-	 * The constructor
-	 *
-	 * @param serverInfo
-	 */
-	public CheckDirTask(ServerInfo serverInfo) {
-		super("checkdir", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public CheckDirTask(ServerInfo serverInfo) {
+        super("checkdir", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * Set the directory of checking
-	 *
-	 * @param dirs String[] the directory of checking
-	 */
-	public void setDirectory(String[] dirs) {
-		super.setMsgItem("dir", dirs);
-	}
+    /**
+     * Set the directory of checking
+     *
+     * @param dirs String[] the directory of checking
+     */
+    public void setDirectory(String[] dirs) {
+        super.setMsgItem("dir", dirs);
+    }
 
-	/**
-	 * Get the result of no exit directory
-	 *
-	 * return null when directories does not exists
-	 *
-	 * @return String[]
-	 */
-	public String[] getNoExistDirectory() {
+    /**
+     * Get the result of no exit directory
+     *
+     * <p>return null when directories does not exists
+     *
+     * @return String[]
+     */
+    public String[] getNoExistDirectory() {
 
-		if (isSuccess()) {
-			return getResponse().getValues("noexist");
-		} else {
-			return null;
-		}
-	}
-
+        if (isSuccess()) {
+            return getResponse().getValues("noexist");
+        } else {
+            return null;
+        }
+    }
 }

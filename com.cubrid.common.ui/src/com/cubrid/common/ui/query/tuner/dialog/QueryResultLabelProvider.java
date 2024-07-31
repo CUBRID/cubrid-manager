@@ -29,8 +29,9 @@
  */
 package com.cubrid.common.ui.query.tuner.dialog;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.query.tuner.QueryRecord;
 import java.util.Map;
-
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -38,51 +39,46 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.query.tuner.QueryRecord;
-
 /**
  * QueryResultLabelProvider Description
  *
  * @author Kevin.Wang
  * @version 1.0 - 2013-4-11 created by Kevin.Wang
  */
-public class QueryResultLabelProvider extends
-		LabelProvider implements
-		ITableLabelProvider,
-		ITableColorProvider {
-	private static final Logger LOGGER = LogUtil.getLogger(QueryResultLabelProvider.class);
+public class QueryResultLabelProvider extends LabelProvider
+        implements ITableLabelProvider, ITableColorProvider {
+    private static final Logger LOGGER = LogUtil.getLogger(QueryResultLabelProvider.class);
 
-	private boolean isShowID = true;
-	private QueryRecord queryRecord;
+    private boolean isShowID = true;
+    private QueryRecord queryRecord;
 
-	public QueryResultLabelProvider(QueryRecord queryRecord) {
-		this.queryRecord = queryRecord;
-	}
+    public QueryResultLabelProvider(QueryRecord queryRecord) {
+        this.queryRecord = queryRecord;
+    }
 
-	public Color getBackground(Object arg0, int arg1) {
-		return null;
-	}
+    public Color getBackground(Object arg0, int arg1) {
+        return null;
+    }
 
-	public Color getForeground(Object arg0, int arg1) {
-		return null;
-	}
+    public Color getForeground(Object arg0, int arg1) {
+        return null;
+    }
 
-	public Image getColumnImage(Object arg0, int arg1) {
-		return null;
-	}
+    public Image getColumnImage(Object arg0, int arg1) {
+        return null;
+    }
 
-	public String getColumnText(Object obj, int index) {
-		if (obj != null && obj instanceof Map) {
-			Map data = (Map) obj;
-			int detaIndex = 0;
-			if (!isShowID) {
-				detaIndex = 1;
-			}
-			int realIndex = index + detaIndex;
+    public String getColumnText(Object obj, int index) {
+        if (obj != null && obj instanceof Map) {
+            Map data = (Map) obj;
+            int detaIndex = 0;
+            if (!isShowID) {
+                detaIndex = 1;
+            }
+            int realIndex = index + detaIndex;
 
-			return (String) data.get(String.valueOf(realIndex));
-		}
-		return null;
-	}
+            return (String) data.get(String.valueOf(realIndex));
+        }
+        return null;
+    }
 }

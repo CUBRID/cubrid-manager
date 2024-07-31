@@ -29,10 +29,6 @@ package com.cubrid.cubridmanager.ui.spi.util;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.CubridServer;
@@ -42,9 +38,11 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.LayoutUtil;
 import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
 import com.cubrid.cubridmanager.ui.spi.persist.CMDBNodePersistManager;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
 
 /**
- *
  * Database utility class
  *
  * @author pangqiren
@@ -52,112 +50,112 @@ import com.cubrid.cubridmanager.ui.spi.persist.CMDBNodePersistManager;
  */
 public final class DatabaseUtils {
 
-	private static final Logger LOGGER = LogUtil.getLogger(DatabaseUtils.class);
+    private static final Logger LOGGER = LogUtil.getLogger(DatabaseUtils.class);
 
-	private DatabaseUtils() {
-		noOp();
-	}
+    private DatabaseUtils() {
+        noOp();
+    }
 
-	/**
-	 *
-	 * Process the resource when logout database
-	 *
-	 * @param database CubridDatabase
-	 * @return boolean
-	 */
-	public static boolean processDatabaseLogout(CubridDatabase database) {
+    /**
+     * Process the resource when logout database
+     *
+     * @param database CubridDatabase
+     * @return boolean
+     */
+    public static boolean processDatabaseLogout(CubridDatabase database) {
 
-		final JobFamily jobFamily = new JobFamily();
-		String serverName = database.getServer().getName();
-		String dbName = database.getName();
-		jobFamily.setServerName(serverName);
-		jobFamily.setDbName(dbName);
-		Job[] jobs = Job.getJobManager().find(jobFamily);
+        final JobFamily jobFamily = new JobFamily();
+        String serverName = database.getServer().getName();
+        String dbName = database.getName();
+        jobFamily.setServerName(serverName);
+        jobFamily.setDbName(dbName);
+        Job[] jobs = Job.getJobManager().find(jobFamily);
 
-		if (jobs.length > 0) {
-			boolean isLogout = CommonUITool.openConfirmBox(Messages.bind(
-					Messages.msgConfirmLogoutDBwithJob, dbName));
-			if (!isLogout) {
-				return false;
-			}
-		}
+        if (jobs.length > 0) {
+            boolean isLogout =
+                    CommonUITool.openConfirmBox(
+                            Messages.bind(Messages.msgConfirmLogoutDBwithJob, dbName));
+            if (!isLogout) {
+                return false;
+            }
+        }
 
-		// check the query editor in this database
-		if (!LayoutUtil.checkAllQueryEditor(database)) {
-			return false;
-		}
+        // check the query editor in this database
+        if (!LayoutUtil.checkAllQueryEditor(database)) {
+            return false;
+        }
 
-		cancelJob(jobFamily);
+        cancelJob(jobFamily);
 
-		database.getLoader().setLoaded(false);
-		database.setLogined(false);
-		database.removeAllChild();
-		if (!database.isAutoSavePassword()) {
-			CMDBNodePersistManager.getInstance().deleteDbParameter(database);
-		}
-		return true;
-	}
+        database.getLoader().setLoaded(false);
+        database.setLogined(false);
+        database.removeAllChild();
+        if (!database.isAutoSavePassword()) {
+            CMDBNodePersistManager.getInstance().deleteDbParameter(database);
+        }
+        return true;
+    }
 
-	/**
-	 *
-	 * Process resource when delete database
-	 *
-	 * @param database CubridDatabase
-	 * @return boolean
-	 */
-	public static boolean processDatabaseDeleted(CubridDatabase database) {
+    /**
+     * Process resource when delete database
+     *
+     * @param database CubridDatabase
+     * @return boolean
+     */
+    public static boolean processDatabaseDeleted(CubridDatabase database) {
 
-		final JobFamily jobFamily = new JobFamily();
-		String serverName = database.getServer().getName();
-		String dbName = database.getName();
-		jobFamily.setServerName(serverName);
-		jobFamily.setDbName(dbName);
-		Job[] jobs = Job.getJobManager().find(jobFamily);
+        final JobFamily jobFamily = new JobFamily();
+        String serverName = database.getServer().getName();
+        String dbName = database.getName();
+        jobFamily.setServerName(serverName);
+        jobFamily.setDbName(dbName);
+        Job[] jobs = Job.getJobManager().find(jobFamily);
 
-		if (jobs.length > 0) {
-			boolean isLogout = CommonUITool.openConfirmBox(Messages.bind(
-					Messages.msgConfirmDeleteDBwithJob, dbName));
-			if (!isLogout) {
-				return false;
-			}
-		}
+        if (jobs.length > 0) {
+            boolean isLogout =
+                    CommonUITool.openConfirmBox(
+                            Messages.bind(Messages.msgConfirmDeleteDBwithJob, dbName));
+            if (!isLogout) {
+                return false;
+            }
+        }
 
-		// check the query editor in this database
-		if (!LayoutUtil.checkAllQueryEditor(database)) {
-			return false;
-		}
+        // check the query editor in this database
+        if (!LayoutUtil.checkAllQueryEditor(database)) {
+            return false;
+        }
 
-		cancelJob(jobFamily);
+        cancelJob(jobFamily);
 
-		CubridServer server = database.getServer();
-		CMDBNodePersistManager.getInstance().deleteDbParameter(database);
+        CubridServer server = database.getServer();
+        CMDBNodePersistManager.getInstance().deleteDbParameter(database);
 
-		server.getServerInfo().getAllDatabaseList().remove(database.getName());
-		server.getServerInfo().getLoginedUserInfo().removeDatabaseInfo(
-				database.getDatabaseInfo());
-		QueryOptions.removePref(database, true);
+        server.getServerInfo().getAllDatabaseList().remove(database.getName());
+        server.getServerInfo().getLoginedUserInfo().removeDatabaseInfo(database.getDatabaseInfo());
+        QueryOptions.removePref(database, true);
 
-		database.setLogined(false);
-		database.removeAllChild();
+        database.setLogined(false);
+        database.removeAllChild();
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 *
-	 * Cancel all jobs that belong to the job family
-	 *
-	 * @param jobFamily the JobFamily
-	 */
-	private static void cancelJob(final JobFamily jobFamily) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				try {
-					Job.getJobManager().cancel(jobFamily);
-				} catch (Exception ignored) {
-					LOGGER.error(ignored.getMessage(), ignored);
-				}
-			}
-		});
-	}
+    /**
+     * Cancel all jobs that belong to the job family
+     *
+     * @param jobFamily the JobFamily
+     */
+    private static void cancelJob(final JobFamily jobFamily) {
+        Display.getDefault()
+                .asyncExec(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    Job.getJobManager().cancel(jobFamily);
+                                } catch (Exception ignored) {
+                                    LOGGER.error(ignored.getMessage(), ignored);
+                                }
+                            }
+                        });
+    }
 }

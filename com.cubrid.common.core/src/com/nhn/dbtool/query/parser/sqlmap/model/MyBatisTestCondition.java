@@ -28,7 +28,6 @@
 package com.nhn.dbtool.query.parser.sqlmap.model;
 
 import java.io.Serializable;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -38,46 +37,46 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * @author CHOE JUNGYEON
  */
 public class MyBatisTestCondition implements Serializable {
-	private static final long serialVersionUID = 7059066486771458985L;
+    private static final long serialVersionUID = 7059066486771458985L;
 
-	private String concatenation;
-	private String property;
-	private String operator;
-	private String value;
+    private String concatenation;
+    private String property;
+    private String operator;
+    private String value;
 
-	public String getProperty() {
-		return property;
-	}
+    public String getProperty() {
+        return property;
+    }
 
-	public void setProperty(String property) {
-		this.property = property;
-	}
+    public void setProperty(String property) {
+        this.property = property;
+    }
 
-	public String getOperator() {
-		return operator;
-	}
+    public String getOperator() {
+        return operator;
+    }
 
-	public void setOperator(String operator) {
-		this.operator = operator;
-	}
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public String getConcatenation() {
-		return concatenation;
-	}
+    public String getConcatenation() {
+        return concatenation;
+    }
 
-	public void setConcatenation(String concatenation) {
-		this.concatenation = concatenation;
-	}
+    public void setConcatenation(String concatenation) {
+        this.concatenation = concatenation;
+    }
 
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-	}
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

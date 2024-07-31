@@ -29,9 +29,8 @@
  */
 package com.cubrid.tool.editor.action;
 
-import org.eclipse.jface.action.Action;
-
 import com.cubrid.tool.editor.TextEditorFindReplaceMediator;
+import org.eclipse.jface.action.Action;
 
 /**
  * FindReplaceAction to open find/replace dialog.
@@ -39,21 +38,18 @@ import com.cubrid.tool.editor.TextEditorFindReplaceMediator;
  * @author Kevin Cao
  * @version 1.0 - 2011-2-12 created by Kevin Cao
  */
-public class FindReplaceAction extends
-		Action {
-	/**
-	 * The constructor
-	 *
-	 * @param text String
-	 */
-	public FindReplaceAction(String text) {
-		super(text);
-	}
+public class FindReplaceAction extends Action {
+    /**
+     * The constructor
+     *
+     * @param text String
+     */
+    public FindReplaceAction(String text) {
+        super(text);
+    }
 
-	/**
-	 * Open Find/Replace dialog.
-	 */
-	public void run() {
-		TextEditorFindReplaceMediator.openFindReplaceDialog();
-	}
+    /** Open Find/Replace dialog. */
+    public void run() {
+        TextEditorFindReplaceMediator.openFindReplaceDialog();
+    }
 }

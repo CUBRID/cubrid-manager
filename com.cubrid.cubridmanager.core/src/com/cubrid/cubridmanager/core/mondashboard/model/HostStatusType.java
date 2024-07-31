@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,59 +23,59 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.mondashboard.model;
 
 /**
- * 
  * HA server status type
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2010-5-31 created by pangqiren
  */
 public enum HostStatusType {
-	UNKNOWN("unknown"), NORMAL("normal"), MASTER("master"), SLAVE("slave"), REPLICA(
-			"replica");
-	String text = null;
+    UNKNOWN("unknown"),
+    NORMAL("normal"),
+    MASTER("master"),
+    SLAVE("slave"),
+    REPLICA("replica");
+    String text = null;
 
-	HostStatusType(String text) {
-		this.text = text;
-	}
+    HostStatusType(String text) {
+        this.text = text;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	/**
-	 * 
-	 * Get showed text in UI
-	 * 
-	 * @param type HostStatusType
-	 * @return The String
-	 */
-	public static String getShowText(HostStatusType type) {
-		String ha = "/HA";
-		if (MASTER == type || SLAVE == type || REPLICA == type) {
-			return type.getText() + ha;
-		}
-		return type.getText();
-	}
+    /**
+     * Get showed text in UI
+     *
+     * @param type HostStatusType
+     * @return The String
+     */
+    public static String getShowText(HostStatusType type) {
+        String ha = "/HA";
+        if (MASTER == type || SLAVE == type || REPLICA == type) {
+            return type.getText() + ha;
+        }
+        return type.getText();
+    }
 
-	/**
-	 * 
-	 * Convert the text to HostStatusType
-	 * 
-	 * @param text The String
-	 * @return HostStatusType
-	 */
-	public static HostStatusType getType(String text) {
-		HostStatusType[] typeArr = HostStatusType.values();
-		for (HostStatusType type : typeArr) {
-			if (type.getText().equals(text)) {
-				return type;
-			}
-		}
-		return UNKNOWN;
-	}
+    /**
+     * Convert the text to HostStatusType
+     *
+     * @param text The String
+     * @return HostStatusType
+     */
+    public static HostStatusType getType(String text) {
+        HostStatusType[] typeArr = HostStatusType.values();
+        for (HostStatusType type : typeArr) {
+            if (type.getText().equals(text)) {
+                return type;
+            }
+        }
+        return UNKNOWN;
+    }
 }

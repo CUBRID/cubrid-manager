@@ -27,8 +27,22 @@
  */
 package com.cubrid.cubridquery.ui.connection.dialog;
 
+import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
+import com.cubrid.common.ui.spi.CubridNodeManager;
+import com.cubrid.common.ui.spi.LayoutManager;
+import com.cubrid.common.ui.spi.action.ActionManager;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.event.CubridNodeChangedEvent;
+import com.cubrid.common.ui.spi.event.CubridNodeChangedEventType;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.common.ui.spi.model.DatabaseEditorConfig;
+import com.cubrid.common.ui.spi.persist.QueryOptions;
+import com.cubrid.cubridmanager.core.common.model.ServerInfo;
+import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
+import com.cubrid.cubridmanager.ui.spi.persist.CQBGroupNodePersistManager;
+import com.cubrid.cubridquery.ui.common.navigator.CubridQueryNavigatorView;
+import com.cubrid.cubridquery.ui.connection.Messages;
 import java.util.List;
-
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -55,325 +69,308 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
-import com.cubrid.common.ui.spi.CubridNodeManager;
-import com.cubrid.common.ui.spi.LayoutManager;
-import com.cubrid.common.ui.spi.action.ActionManager;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.event.CubridNodeChangedEvent;
-import com.cubrid.common.ui.spi.event.CubridNodeChangedEventType;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.model.DatabaseEditorConfig;
-import com.cubrid.common.ui.spi.persist.QueryOptions;
-import com.cubrid.cubridmanager.core.common.model.ServerInfo;
-import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
-import com.cubrid.cubridmanager.ui.spi.persist.CQBGroupNodePersistManager;
-import com.cubrid.cubridquery.ui.common.navigator.CubridQueryNavigatorView;
-import com.cubrid.cubridquery.ui.connection.Messages;
-
 public class MultiDatabaseLoginFailedDialog extends CMTitleAreaDialog {
 
-	private List<MultiDatabaseloginFailedInfo> failedDatabaseList;
-	public TableViewer databaseTable = null;
-	private final static int EDIT_ID = -5;
+    private List<MultiDatabaseloginFailedInfo> failedDatabaseList;
+    public TableViewer databaseTable = null;
+    private static final int EDIT_ID = -5;
 
-	public MultiDatabaseLoginFailedDialog(Shell parentShell, List<MultiDatabaseloginFailedInfo> failedDatabaseList) {
-		super(parentShell);
-		this.failedDatabaseList = failedDatabaseList;
-	}
+    public MultiDatabaseLoginFailedDialog(
+            Shell parentShell, List<MultiDatabaseloginFailedInfo> failedDatabaseList) {
+        super(parentShell);
+        this.failedDatabaseList = failedDatabaseList;
+    }
 
-	protected Control createDialogArea(Composite parent) {
-		getShell().setText(Messages.multiDatabaseLoginDialogTitle);
-		Composite parentComp = (Composite) super.createDialogArea(parent);
-		setTitle(Messages.multiDatabaseLoginDialogTitle);
-		setMessage(Messages.multiDatabaseLoginDialogMessages);
+    protected Control createDialogArea(Composite parent) {
+        getShell().setText(Messages.multiDatabaseLoginDialogTitle);
+        Composite parentComp = (Composite) super.createDialogArea(parent);
+        setTitle(Messages.multiDatabaseLoginDialogTitle);
+        setMessage(Messages.multiDatabaseLoginDialogMessages);
 
-		databaseTable = new TableViewer(parentComp,  SWT.SINGLE | SWT.BORDER
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+        databaseTable =
+                new TableViewer(
+                        parentComp,
+                        SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true,
-				true,2,1);
-		databaseTable.getTable().setLayoutData(gridData);
-		databaseTable.getTable().setHeaderVisible(true);
-		databaseTable.getTable().setLinesVisible(true);
+        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
+        databaseTable.getTable().setLayoutData(gridData);
+        databaseTable.getTable().setHeaderVisible(true);
+        databaseTable.getTable().setLinesVisible(true);
 
-		final TableViewerColumn columnHost = new TableViewerColumn(
-				databaseTable, SWT.CENTER);
-		columnHost.getColumn().setWidth(120);
-		columnHost.getColumn().setText(Messages.multiDatabaseLoginDialogColumnHostAddress);
+        final TableViewerColumn columnHost = new TableViewerColumn(databaseTable, SWT.CENTER);
+        columnHost.getColumn().setWidth(120);
+        columnHost.getColumn().setText(Messages.multiDatabaseLoginDialogColumnHostAddress);
 
-		final TableViewerColumn columnDatabase = new TableViewerColumn(
-				databaseTable, SWT.CENTER);
-		columnDatabase.getColumn().setWidth(150);
-		columnDatabase.getColumn().setText(Messages.multiDatabaseLoginDialogColumnDbName);
+        final TableViewerColumn columnDatabase = new TableViewerColumn(databaseTable, SWT.CENTER);
+        columnDatabase.getColumn().setWidth(150);
+        columnDatabase.getColumn().setText(Messages.multiDatabaseLoginDialogColumnDbName);
 
-		final TableViewerColumn columnUser = new TableViewerColumn(
-				databaseTable, SWT.CENTER);
-		columnUser.getColumn().setWidth(100);
-		columnUser.getColumn().setText(Messages.multiDatabaseLoginDialogColumnUser);
+        final TableViewerColumn columnUser = new TableViewerColumn(databaseTable, SWT.CENTER);
+        columnUser.getColumn().setWidth(100);
+        columnUser.getColumn().setText(Messages.multiDatabaseLoginDialogColumnUser);
 
-		final TableViewerColumn columnErrMsg = new TableViewerColumn(
-				databaseTable, SWT.CENTER);
-		columnErrMsg.getColumn().setWidth(200);
-		columnErrMsg.getColumn().setText(Messages.multiDatabaseLoginDialogColumnErrMsg);
+        final TableViewerColumn columnErrMsg = new TableViewerColumn(databaseTable, SWT.CENTER);
+        columnErrMsg.getColumn().setWidth(200);
+        columnErrMsg.getColumn().setText(Messages.multiDatabaseLoginDialogColumnErrMsg);
 
-		final TableViewerColumn columnStatus = new TableViewerColumn(
-				databaseTable, SWT.CENTER);
-		columnStatus.getColumn().setWidth(100);
-		columnStatus.getColumn().setText(Messages.multiDatabaseLoginDialogColumnStatus);
+        final TableViewerColumn columnStatus = new TableViewerColumn(databaseTable, SWT.CENTER);
+        columnStatus.getColumn().setWidth(100);
+        columnStatus.getColumn().setText(Messages.multiDatabaseLoginDialogColumnStatus);
 
-		databaseTable.setContentProvider(new ServerListContentProvider());
-		databaseTable.setLabelProvider(new ServerListLabelProvider());
+        databaseTable.setContentProvider(new ServerListContentProvider());
+        databaseTable.setLabelProvider(new ServerListLabelProvider());
 
-		databaseTable.addDoubleClickListener(new IDoubleClickListener() {
+        databaseTable.addDoubleClickListener(
+                new IDoubleClickListener() {
 
-			public void doubleClick(DoubleClickEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event
-				.getSelection();
-				MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo = (MultiDatabaseloginFailedInfo) selection
-				.getFirstElement();
-				editHost(multiDatabaseloginFailedInfo);
-				//if all database login , close this dialog
-				if(checkAllDatabaseLogin()) {
-					close();
-				}
-			}
-		});
-		databaseTable.setInput(failedDatabaseList);
-		MenuManager menuManager = new MenuManager();
-		Menu contextMenu = menuManager.createContextMenu(databaseTable.getTable());
-		databaseTable.getTable().setMenu(contextMenu);
+                    public void doubleClick(DoubleClickEvent event) {
+                        IStructuredSelection selection =
+                                (IStructuredSelection) event.getSelection();
+                        MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo =
+                                (MultiDatabaseloginFailedInfo) selection.getFirstElement();
+                        editHost(multiDatabaseloginFailedInfo);
+                        // if all database login , close this dialog
+                        if (checkAllDatabaseLogin()) {
+                            close();
+                        }
+                    }
+                });
+        databaseTable.setInput(failedDatabaseList);
+        MenuManager menuManager = new MenuManager();
+        Menu contextMenu = menuManager.createContextMenu(databaseTable.getTable());
+        databaseTable.getTable().setMenu(contextMenu);
 
-		Menu menu = new Menu(getShell(), SWT.POP_UP);
+        Menu menu = new Menu(getShell(), SWT.POP_UP);
 
-		final MenuItem itemEdit = new MenuItem(menu, SWT.PUSH);
-		itemEdit.setText(Messages.multiDatabaseLoginDialogEditLabel);
-		itemEdit.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				IStructuredSelection selection = (StructuredSelection) databaseTable.getSelection();
-				MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo = (MultiDatabaseloginFailedInfo) selection
-				.getFirstElement();
-				editHost(multiDatabaseloginFailedInfo);
-			}
-		});
+        final MenuItem itemEdit = new MenuItem(menu, SWT.PUSH);
+        itemEdit.setText(Messages.multiDatabaseLoginDialogEditLabel);
+        itemEdit.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        IStructuredSelection selection =
+                                (StructuredSelection) databaseTable.getSelection();
+                        MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo =
+                                (MultiDatabaseloginFailedInfo) selection.getFirstElement();
+                        editHost(multiDatabaseloginFailedInfo);
+                    }
+                });
 
-		menu.addMenuListener(new MenuAdapter() {
-			public void menuShown(MenuEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)databaseTable.getSelection();
-				MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo = (MultiDatabaseloginFailedInfo) selection
-				.getFirstElement();
-				if (multiDatabaseloginFailedInfo.getCubridDatabase().isLogined()) {
-					itemEdit.setEnabled(false);
-				} else {
-					itemEdit.setEnabled(true);
-				}
-			}
-		});
-		databaseTable.getTable().setMenu(menu);
-		databaseTable.getTable().addSelectionListener(new SelectionAdapter(){
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (databaseTable.getTable().getSelectionIndices().length > 0) {
-					getButton(EDIT_ID).setEnabled(true);
-				} else {
-					getButton(EDIT_ID).setEnabled(false);
-				}
-			}
+        menu.addMenuListener(
+                new MenuAdapter() {
+                    public void menuShown(MenuEvent event) {
+                        IStructuredSelection selection =
+                                (IStructuredSelection) databaseTable.getSelection();
+                        MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo =
+                                (MultiDatabaseloginFailedInfo) selection.getFirstElement();
+                        if (multiDatabaseloginFailedInfo.getCubridDatabase().isLogined()) {
+                            itemEdit.setEnabled(false);
+                        } else {
+                            itemEdit.setEnabled(true);
+                        }
+                    }
+                });
+        databaseTable.getTable().setMenu(menu);
+        databaseTable
+                .getTable()
+                .addSelectionListener(
+                        new SelectionAdapter() {
+                            @Override
+                            public void widgetSelected(SelectionEvent e) {
+                                if (databaseTable.getTable().getSelectionIndices().length > 0) {
+                                    getButton(EDIT_ID).setEnabled(true);
+                                } else {
+                                    getButton(EDIT_ID).setEnabled(false);
+                                }
+                            }
+                        });
 
-		});
+        return parentComp;
+    }
 
-		return parentComp;
-	}
+    /** @param multiDatabaseloginFailedInfo */
+    public void editHost(MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo) {
+        if (multiDatabaseloginFailedInfo == null) {
+            return;
+        }
+        CubridDatabase database = multiDatabaseloginFailedInfo.getCubridDatabase();
+        // if login ,can't edit
+        if (database.isLogined()) {
+            return;
+        }
 
-	/**
-	 *
-	 * @param multiDatabaseloginFailedInfo
-	 */
-	public void editHost(MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo) {
-		if (multiDatabaseloginFailedInfo == null) {
-			return ;
-		}
-		CubridDatabase database = multiDatabaseloginFailedInfo.getCubridDatabase();
-		//if login ,can't edit
-		if (database.isLogined()) {
-			return;
-		}
+        String preName =
+                (database == null || database.getServer() == null)
+                        ? ""
+                        : database.getServer().getName();
+        ServerInfo preServerInfo =
+                (database == null || database.getServer() == null)
+                        ? null
+                        : database.getServer().getServerInfo();
 
-		String preName = (database == null || database.getServer() == null) ? ""
-				: database.getServer().getName();
-		ServerInfo preServerInfo = (database == null || database.getServer() == null) ? null
-				: database.getServer().getServerInfo();
+        QueryConnDialog dialog = new QueryConnDialog(getShell(), database, false);
+        int returnCode = dialog.open();
+        if (returnCode == QueryConnDialog.CONNECT_ID) {
+            database.removeAllChild();
 
-		QueryConnDialog dialog = new QueryConnDialog(getShell(), database,
-				false);
-		int returnCode = dialog.open();
-		if (returnCode == QueryConnDialog.CONNECT_ID) {
-			database.removeAllChild();
+            CubridNavigatorView view =
+                    CubridNavigatorView.getNavigatorView(CubridQueryNavigatorView.ID);
+            TreeViewer treeViewer = view.getViewer();
+            if (database != null) {
+                DatabaseEditorConfig editorConfig = QueryOptions.getEditorConfig(database, false);
+                if (editorConfig == null) {
+                    editorConfig = new DatabaseEditorConfig();
+                }
+                editorConfig.setBackGround(dialog.getSelectedBackground());
+                QueryOptions.putEditorConfig(database, editorConfig, false);
+            }
 
-			CubridNavigatorView view = CubridNavigatorView.getNavigatorView(CubridQueryNavigatorView.ID);
-			TreeViewer treeViewer = view.getViewer();
-			if (database != null) {
-				DatabaseEditorConfig editorConfig = QueryOptions.getEditorConfig(database, false);
-				if(editorConfig == null) {
-					editorConfig = new DatabaseEditorConfig();
-				}
-				editorConfig.setBackGround(dialog.getSelectedBackground());
-				QueryOptions.putEditorConfig(database, editorConfig, false);
-			}
+            CQBGroupNodePersistManager.getInstance().saveAllGroupNode();
+            CQBDBNodePersistManager.getInstance().saveDatabases();
 
-			CQBGroupNodePersistManager.getInstance().saveAllGroupNode();
-			CQBDBNodePersistManager.getInstance().saveDatabases();
+            if (!preName.equals(database.getServer().getName())) {
+                QueryOptions.removePref(preServerInfo);
+            }
 
-			if (!preName.equals(database.getServer().getName())) {
-				QueryOptions.removePref(preServerInfo);
-			}
+            treeViewer.refresh(database, true);
+            treeViewer.expandToLevel(database, 1);
 
-			treeViewer.refresh(database, true);
-			treeViewer.expandToLevel(database, 1);
+            ActionManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
+            LayoutManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
+            CubridNodeManager.getInstance()
+                    .fireCubridNodeChanged(
+                            new CubridNodeChangedEvent(
+                                    database, CubridNodeChangedEventType.DATABASE_LOGIN));
+            multiDatabaseloginFailedInfo.setErrMsg("");
+        }
+        databaseTable.refresh();
+    }
 
-			ActionManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
-			LayoutManager.getInstance().fireSelectionChanged(treeViewer.getSelection());
-			CubridNodeManager.getInstance().fireCubridNodeChanged(
-					new CubridNodeChangedEvent(database,
-							CubridNodeChangedEventType.DATABASE_LOGIN));
-			multiDatabaseloginFailedInfo.setErrMsg("");
-		}
-		databaseTable.refresh();
-	}
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, EDIT_ID, Messages.multiDatabaseLoginDialogEditLabel, false)
+                .setEnabled(false);
+        createButton(
+                parent, IDialogConstants.CANCEL_ID, Messages.multiDatabaseLoginDialogClose, false);
+    }
 
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, EDIT_ID, Messages.multiDatabaseLoginDialogEditLabel, false).setEnabled(false);
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				Messages.multiDatabaseLoginDialogClose, false);
-	}
+    /**
+     * When press button,call it
+     *
+     * @param buttonId the button id
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == EDIT_ID) {
+            IStructuredSelection selection = (StructuredSelection) databaseTable.getSelection();
+            MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo =
+                    (MultiDatabaseloginFailedInfo) selection.getFirstElement();
+            editHost(multiDatabaseloginFailedInfo);
+            // if all database login , close this dialog
+            if (!checkAllDatabaseLogin()) {
+                return;
+            }
+        }
+        setReturnCode(buttonId);
+        close();
+    }
 
-	/**
-	 * When press button,call it
-	 *
-	 * @param buttonId the button id
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == EDIT_ID) {
-			IStructuredSelection selection = (StructuredSelection) databaseTable.getSelection();
-			MultiDatabaseloginFailedInfo multiDatabaseloginFailedInfo = (MultiDatabaseloginFailedInfo) selection
-			.getFirstElement();
-			editHost(multiDatabaseloginFailedInfo);
-			//if all database login , close this dialog
-			if (!checkAllDatabaseLogin()) {
-				return;
-			}
-		}
-		setReturnCode(buttonId);
-		close();
-	}
+    /**
+     * if all edit database connect ,close this dialog
+     *
+     * @return whether all database is login
+     */
+    public boolean checkAllDatabaseLogin() {
+        for (MultiDatabaseloginFailedInfo failedInfo : failedDatabaseList) {
+            if (!failedInfo.getCubridDatabase().isLogined()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * if all edit database connect ,close this dialog
-	 * @return whether all database is login
-	 */
-	public boolean checkAllDatabaseLogin () {
-		for (MultiDatabaseloginFailedInfo failedInfo : failedDatabaseList) {
-			if (!failedInfo.getCubridDatabase().isLogined()) {
-				return false;
-			}
-		}
-		return true;
-	}
+    /** @author fulei */
+    class ServerListContentProvider implements IStructuredContentProvider {
 
-	/**
-	 *
-	 * @author fulei
-	 *
-	 */
-	class ServerListContentProvider implements
-			IStructuredContentProvider {
+        /**
+         * getElements
+         *
+         * @param inputElement Object
+         * @return Object[]
+         */
+        @SuppressWarnings("unchecked")
+        public Object[] getElements(Object inputElement) {
+            if (inputElement instanceof List) {
+                List<MultiDatabaseloginFailedInfo> list =
+                        (List<MultiDatabaseloginFailedInfo>) inputElement;
+                MultiDatabaseloginFailedInfo[] nodeArr =
+                        new MultiDatabaseloginFailedInfo[list.size()];
+                return list.toArray(nodeArr);
+            }
 
-		/**
-		 * getElements
-		 *
-		 * @param inputElement Object
-		 * @return Object[]
-		 */
-		@SuppressWarnings("unchecked")
-		public Object[] getElements(Object inputElement) {
-			if (inputElement instanceof List) {
-				List<MultiDatabaseloginFailedInfo> list = (List<MultiDatabaseloginFailedInfo>) inputElement;
-				MultiDatabaseloginFailedInfo[] nodeArr = new MultiDatabaseloginFailedInfo[list.size()];
-				return list.toArray(nodeArr);
-			}
+            return new Object[] {};
+        }
 
-			return new Object[]{};
-		}
+        /** dispose */
+        public void dispose() {
+            // do nothing
+        }
 
-		/**
-		 * dispose
-		 */
-		public void dispose() {
-			// do nothing
-		}
+        /**
+         * inputChanged
+         *
+         * @param viewer Viewer
+         * @param oldInput Object
+         * @param newInput Object
+         */
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // do nothing
+        }
+    }
 
-		/**
-		 * inputChanged
-		 *
-		 * @param viewer Viewer
-		 * @param oldInput Object
-		 * @param newInput Object
-		 */
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// do nothing
-		}
+    /** @author fulei */
+    class ServerListLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-	}
+        /**
+         * getColumnImage
+         *
+         * @param element Object
+         * @param columnIndex int
+         * @return Image
+         */
+        public final Image getColumnImage(Object element, int columnIndex) {
 
-	/**
-	 *
-	 * @author fulei
-	 *
-	 */
-	class ServerListLabelProvider extends
-			LabelProvider implements
-			ITableLabelProvider {
-
-		/**
-		 * getColumnImage
-		 *
-		 * @param element Object
-		 * @param columnIndex int
-		 * @return Image
-		 */
-		public final Image getColumnImage(Object element, int columnIndex) {
-
-			return null;
-		}
-		/**
-		 * getColumnText
-		 *
-		 * @param element Object
-		 * @param columnIndex int
-		 * @return String
-		 */
-		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof MultiDatabaseloginFailedInfo) {
-				MultiDatabaseloginFailedInfo dbFailedInfo
-				= (MultiDatabaseloginFailedInfo) element;
-				if (columnIndex == 0) {
-					return dbFailedInfo.getCubridDatabase().getServer().getHostAddress();
-				} else if (columnIndex == 1) {
-					return dbFailedInfo.getCubridDatabase().getDatabaseInfo().getDbName();
-				} else if (columnIndex == 2) {
-					return dbFailedInfo.getCubridDatabase().getDatabaseInfo().getAuthLoginedDbUserInfo().getName();
-				} else if (columnIndex == 3) {
-					if (dbFailedInfo.getErrMsg() != null) {
-						return dbFailedInfo.getErrMsg().replaceAll("[\t\n]", " ");
-					}
-					return "";
-				} else if (columnIndex == 4) {
-					return dbFailedInfo.getCubridDatabase().isLogined()?
-							Messages.multiDatabaseLoginDialogStatusLogin : Messages.multiDatabaseLoginDialogStatusNotLogin;
-				}
-			}
-			return null;
-		}
-	}
-
+            return null;
+        }
+        /**
+         * getColumnText
+         *
+         * @param element Object
+         * @param columnIndex int
+         * @return String
+         */
+        public String getColumnText(Object element, int columnIndex) {
+            if (element instanceof MultiDatabaseloginFailedInfo) {
+                MultiDatabaseloginFailedInfo dbFailedInfo = (MultiDatabaseloginFailedInfo) element;
+                if (columnIndex == 0) {
+                    return dbFailedInfo.getCubridDatabase().getServer().getHostAddress();
+                } else if (columnIndex == 1) {
+                    return dbFailedInfo.getCubridDatabase().getDatabaseInfo().getDbName();
+                } else if (columnIndex == 2) {
+                    return dbFailedInfo
+                            .getCubridDatabase()
+                            .getDatabaseInfo()
+                            .getAuthLoginedDbUserInfo()
+                            .getName();
+                } else if (columnIndex == 3) {
+                    if (dbFailedInfo.getErrMsg() != null) {
+                        return dbFailedInfo.getErrMsg().replaceAll("[\t\n]", " ");
+                    }
+                    return "";
+                } else if (columnIndex == 4) {
+                    return dbFailedInfo.getCubridDatabase().isLogined()
+                            ? Messages.multiDatabaseLoginDialogStatusLogin
+                            : Messages.multiDatabaseLoginDialogStatusNotLogin;
+                }
+            }
+            return null;
+        }
+    }
 }

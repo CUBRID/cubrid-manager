@@ -27,14 +27,6 @@
  */
 package com.cubrid.common.ui.cubrid.table.action;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.StringUtil;
@@ -45,6 +37,13 @@ import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.ISchemaNode;
 import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.util.ActionSupportUtil;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
 
 /**
  * This action is responsible for executing the column selection SQL .
@@ -53,82 +52,86 @@ import com.cubrid.common.ui.spi.util.ActionSupportUtil;
  * @version 1.0 - 2010-12-28 created by lizhiqiang
  */
 public class ColumnSelectSqlAction extends SelectionAction {
-	private static final Logger LOGGER = LogUtil.getLogger(ColumnSelectSqlAction.class);
-	public static final String ID = ColumnSelectSqlAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(ColumnSelectSqlAction.class);
+    public static final String ID = ColumnSelectSqlAction.class.getName();
 
-	public ColumnSelectSqlAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    public ColumnSelectSqlAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	public ColumnSelectSqlAction(Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    public ColumnSelectSqlAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	public boolean isSupported(Object obj) {
-		boolean isPlainSupport = ActionSupportUtil.isSupportMultiSelection(obj, new String[]{NodeType.TABLE_COLUMN }, true);
-		boolean isSameTable = true;
-		if (isPlainSupport && obj instanceof Object[]) {
-			Object[] objArr = (Object[]) obj;
-			String parentNodeId = "";
-			for (int i = 0; i < objArr.length; i++) {
-				ISchemaNode schemaNode = (ISchemaNode) objArr[i];
-				ICubridNode parent = schemaNode.getParent();
-				if (i == 0) {
-					parentNodeId = parent.getId();
-				} else {
-					isSameTable = parentNodeId.equals(parent.getId());
-				}
-			}
-		}
+    public boolean isSupported(Object obj) {
+        boolean isPlainSupport =
+                ActionSupportUtil.isSupportMultiSelection(
+                        obj, new String[] {NodeType.TABLE_COLUMN}, true);
+        boolean isSameTable = true;
+        if (isPlainSupport && obj instanceof Object[]) {
+            Object[] objArr = (Object[]) obj;
+            String parentNodeId = "";
+            for (int i = 0; i < objArr.length; i++) {
+                ISchemaNode schemaNode = (ISchemaNode) objArr[i];
+                ICubridNode parent = schemaNode.getParent();
+                if (i == 0) {
+                    parentNodeId = parent.getId();
+                } else {
+                    isSameTable = parentNodeId.equals(parent.getId());
+                }
+            }
+        }
 
-		return isPlainSupport && isSameTable;
+        return isPlainSupport && isSameTable;
+    }
 
-	}
+    public void run() {
+        Object[] objs = this.getSelectedObj();
+        if (!isSupported(objs)) {
+            setEnabled(false);
+            return;
+        }
 
-	public void run() {
-		Object[] objs = this.getSelectedObj();
-		if (!isSupported(objs)) {
-			setEnabled(false);
-			return;
-		}
+        ISchemaNode table = (ISchemaNode) ((ISchemaNode) objs[0]).getParent().getParent();
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < objs.length; i++) {
+            ISchemaNode columnNode = (ISchemaNode) objs[i];
+            String column = columnNode.getName().split(",")[0];
+            buf.append(QuerySyntax.escapeKeyword(column));
+            if (i != objs.length - 1) {
+                buf.append(',');
+            }
+        }
+        String cols = buf.toString();
+        if (StringUtil.isEmpty(cols)) {
+            return;
+        }
 
-		ISchemaNode table = (ISchemaNode) ((ISchemaNode) objs[0]).getParent().getParent();
-		StringBuilder buf = new StringBuilder();
-		for (int i = 0; i < objs.length; i++) {
-			ISchemaNode columnNode = (ISchemaNode) objs[i];
-			String column = columnNode.getName().split(",")[0];
-			buf.append(QuerySyntax.escapeKeyword(column));
-			if (i != objs.length - 1) {
-				buf.append(',');
-			}
-		}
-		String cols = buf.toString();
-		if (StringUtil.isEmpty(cols)) {
-			return;
-		}
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (window == null) {
+            return;
+        }
+        QueryUnit input = new QueryUnit();
+        input.setDatabase(table.getDatabase());
+        try {
+            QueryEditorPart editor =
+                    (QueryEditorPart) window.getActivePage().openEditor(input, QueryEditorPart.ID);
+            editor.connect(table.getDatabase());
 
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
-		QueryUnit input = new QueryUnit();
-		input.setDatabase(table.getDatabase());
-		try {
-			QueryEditorPart editor = (QueryEditorPart) window.getActivePage().openEditor(
-					input, QueryEditorPart.ID);
-			editor.connect(table.getDatabase());
-
-			String escapedTableName = QuerySyntax.escapeKeyword(table.getName()); // FIXME move this logic to core module
-			String sql = "SELECT " + cols + " FROM " + escapedTableName + ";";
-			editor.setQuery(sql, false, true, false);
-		} catch (PartInitException e) {
-			LOGGER.error(e.getMessage());
-		}
-	}
+            String escapedTableName =
+                    QuerySyntax.escapeKeyword(
+                            table.getName()); // FIXME move this logic to core module
+            String sql = "SELECT " + cols + " FROM " + escapedTableName + ";";
+            editor.setQuery(sql, false, true, false);
+        } catch (PartInitException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
 }

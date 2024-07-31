@@ -27,14 +27,12 @@
  */
 package com.nhn.dbtool.query.parser.sqlmap;
 
+import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapParameter;
+import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapQuery;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Node;
-
-import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapParameter;
-import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapQuery;
 
 /**
  * A parser to extract paramters of the sqlmap.
@@ -42,53 +40,53 @@ import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapQuery;
  * @author Bumsik, Jang
  */
 public class SqlMapParameterParser {
-	@SuppressWarnings("unused")
-	private Logger logger = Logger.getLogger(SqlMapParameterParser.class);
+    @SuppressWarnings("unused")
+    private Logger logger = Logger.getLogger(SqlMapParameterParser.class);
 
-	/**
-	 * Parse parameters
-	 *
-	 * @param node
-	 * @param query SqlMapQuery
-	 * @throws Exception
-	 */
-	public void parse(Node node, SqlMapQuery query) throws Exception {
-		// Element node인 경우 property attribute를 통해서 파라미터를 추출
-		if (node.getNodeType() == Node.ELEMENT_NODE) {
-			createDynamicParameter(node, query);
-		}
-		createStaticParameter(node.getText(), query);
-	}
+    /**
+     * Parse parameters
+     *
+     * @param node
+     * @param query SqlMapQuery
+     * @throws Exception
+     */
+    public void parse(Node node, SqlMapQuery query) throws Exception {
+        // Element node인 경우 property attribute를 통해서 파라미터를 추출
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            createDynamicParameter(node, query);
+        }
+        createStaticParameter(node.getText(), query);
+    }
 
-	/**
-	 * Element내의 text 내용에서 파라미터를 추출하여 SqlMapQuery의 ParameterList에 추가 한다.
-	 *
-	 * @param nodeText Element내의 text 내용
-	 * @param query 추출한 파라미터를  담을 SqlMapQuery 객체
-	 */
-	private void createStaticParameter(String nodeText, SqlMapQuery query) {
-		List<String> parameterList = SqlMapParserUtil.parseParameter(nodeText);
-		for (String parameterName : parameterList) {
-			SqlMapParameter newParameter = new SqlMapParameter();
-			newParameter.setName(parameterName);
-			newParameter.setDynamic(false);
-			query.addParameter(newParameter);
-		}
-	}
+    /**
+     * Element내의 text 내용에서 파라미터를 추출하여 SqlMapQuery의 ParameterList에 추가 한다.
+     *
+     * @param nodeText Element내의 text 내용
+     * @param query 추출한 파라미터를 담을 SqlMapQuery 객체
+     */
+    private void createStaticParameter(String nodeText, SqlMapQuery query) {
+        List<String> parameterList = SqlMapParserUtil.parseParameter(nodeText);
+        for (String parameterName : parameterList) {
+            SqlMapParameter newParameter = new SqlMapParameter();
+            newParameter.setName(parameterName);
+            newParameter.setDynamic(false);
+            query.addParameter(newParameter);
+        }
+    }
 
-	/**
-	 * Element node의 property attribute를 통해서 파라미터를 추출하여 SqlMapQuery의 ParameterList에 추가 한다.
-	 *
-	 * @param node Element node
-	 * @param query 추출한 파라미터를  담을 SqlMapQuery 객체
-	 */
-	private void createDynamicParameter(Node node, SqlMapQuery query) {
-		String parameterName = SqlMapParserUtil.getAttribute(node, "property");
-		if (StringUtils.isNotEmpty(parameterName)) {
-			SqlMapParameter newParameter = new SqlMapParameter();
-			newParameter.setName(parameterName);
-			newParameter.setDynamic(true);
-			query.addParameter(newParameter);
-		}
-	}
+    /**
+     * Element node의 property attribute를 통해서 파라미터를 추출하여 SqlMapQuery의 ParameterList에 추가 한다.
+     *
+     * @param node Element node
+     * @param query 추출한 파라미터를 담을 SqlMapQuery 객체
+     */
+    private void createDynamicParameter(Node node, SqlMapQuery query) {
+        String parameterName = SqlMapParserUtil.getAttribute(node, "property");
+        if (StringUtils.isNotEmpty(parameterName)) {
+            SqlMapParameter newParameter = new SqlMapParameter();
+            newParameter.setName(parameterName);
+            newParameter.setDynamic(true);
+            query.addParameter(newParameter);
+        }
+    }
 }

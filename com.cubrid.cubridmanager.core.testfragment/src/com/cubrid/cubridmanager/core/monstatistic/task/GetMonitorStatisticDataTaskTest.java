@@ -34,28 +34,27 @@ import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.Metri
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.StatisticType;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.TimeType;
 
-public class GetMonitorStatisticDataTaskTest extends
-		SetupEnvTestCase {
+public class GetMonitorStatisticDataTaskTest extends SetupEnvTestCase {
 
-	public void testExecute() {
-		StatisticType type = StatisticType.OS;
-		StatisticData statisticData = new StatisticData();
-		GetMonitorStatisticDataTask<StatisticData> task = new GetMonitorStatisticDataTask<StatisticData>(
-				serverInfo930, StatisticParamUtil.getSendMsgItems(type),
-				statisticData);
-		
-		String metric = MetricType.OS_CPU_USER.getMetric();
-		String dType = TimeType.WEEKLY.getType();
-		task.setMetric(metric);
-		task.setDateType(dType);
-		statisticData.setMetric(metric);
-		statisticData.setDtype(dType);
-		task.execute();
+    public void testExecute() {
+        StatisticType type = StatisticType.OS;
+        StatisticData statisticData = new StatisticData();
+        GetMonitorStatisticDataTask<StatisticData> task =
+                new GetMonitorStatisticDataTask<StatisticData>(
+                        serverInfo930, StatisticParamUtil.getSendMsgItems(type), statisticData);
 
-		assertNull(task.getErrorMsg());
-		statisticData = task.getResultModel();
-		assertNotNull(statisticData);
-		assertNotNull(statisticData.getData());
-		assertTrue(statisticData.getData().size() > 0);
-	}
+        String metric = MetricType.OS_CPU_USER.getMetric();
+        String dType = TimeType.WEEKLY.getType();
+        task.setMetric(metric);
+        task.setDateType(dType);
+        statisticData.setMetric(metric);
+        statisticData.setDtype(dType);
+        task.execute();
+
+        assertNull(task.getErrorMsg());
+        statisticData = task.getResultModel();
+        assertNotNull(statisticData);
+        assertNotNull(statisticData.getData());
+        assertTrue(statisticData.getData().size() > 0);
+    }
 }

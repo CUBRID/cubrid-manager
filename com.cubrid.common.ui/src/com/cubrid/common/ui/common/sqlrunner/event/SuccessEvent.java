@@ -29,32 +29,33 @@ package com.cubrid.common.ui.common.sqlrunner.event;
 
 /**
  * Success event
+ *
  * @author fulei
  */
 public class SuccessEvent extends RunSQLEvent {
-	private String fileName;
-	private int workSize;
-	private int sqlCount;
+    private String fileName;
+    private int workSize;
+    private int sqlCount;
 
-	public SuccessEvent(String fileName, int sqlCount, int workSize) {
-		this.fileName = fileName;
-		this.workSize = workSize;
-		this.sqlCount = sqlCount;
-	}
+    public SuccessEvent(String fileName, int sqlCount, int workSize) {
+        this.fileName = fileName;
+        this.workSize = workSize;
+        this.sqlCount = sqlCount;
+    }
 
-	public String getFileName() {
-		return this.fileName;
-	}
-	
-	public int getWorkSize() {
-		return workSize;
-	}
+    public String getFileName() {
+        return this.fileName;
+    }
 
-	public int getSqlCount() {
-		return sqlCount;
-	}
+    public int getWorkSize() {
+        return workSize;
+    }
 
-	public void setSqlCount(int sqlCount) {
-		this.sqlCount = sqlCount;
-	}
+    public int getSqlCount() {
+        return sqlCount;
+    }
+
+    public void setSqlCount(int sqlCount) {
+        this.sqlCount = sqlCount;
+    }
 }

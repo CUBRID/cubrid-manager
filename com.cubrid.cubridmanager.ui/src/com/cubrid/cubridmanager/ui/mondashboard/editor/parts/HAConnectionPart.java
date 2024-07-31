@@ -29,15 +29,14 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.parts;
 
+import com.cubrid.common.ui.spi.ResourceManager;
+import com.cubrid.cubridmanager.ui.mondashboard.editor.figure.HAConnectionFigure;
+import com.cubrid.cubridmanager.ui.mondashboard.editor.model.MonitorConnection;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ManhattanConnectionRouter;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.swt.graphics.Color;
-
-import com.cubrid.common.ui.spi.ResourceManager;
-import com.cubrid.cubridmanager.ui.mondashboard.editor.figure.HAConnectionFigure;
-import com.cubrid.cubridmanager.ui.mondashboard.editor.model.MonitorConnection;
 
 /**
  * monitor connection's edit part class.
@@ -45,41 +44,34 @@ import com.cubrid.cubridmanager.ui.mondashboard.editor.model.MonitorConnection;
  * @author cyl
  * @version 1.0 - 2010-6-8 created by cyl
  */
-public class HAConnectionPart extends
-		AbstractConnectionEditPart {
+public class HAConnectionPart extends AbstractConnectionEditPart {
 
-	public static final Color CONNECTION_DEFAULT_COLOR = ResourceManager.getColor(
-			7, 153, 0);
+    public static final Color CONNECTION_DEFAULT_COLOR = ResourceManager.getColor(7, 153, 0);
 
-	/**
-	 * create figure used by edit part.
-	 *
-	 * @return IFigure connectin figure
-	 */
-	protected IFigure createFigure() {
-		HAConnectionFigure conn = new HAConnectionFigure();
-		conn.setTargetDecoration(new PolygonDecoration());
-		conn.setConnectionRouter(new ManhattanConnectionRouter());
-		conn.setForegroundColor(CONNECTION_DEFAULT_COLOR);
-		conn.setLineWidth(3);
-		return conn;
-	}
+    /**
+     * create figure used by edit part.
+     *
+     * @return IFigure connectin figure
+     */
+    protected IFigure createFigure() {
+        HAConnectionFigure conn = new HAConnectionFigure();
+        conn.setTargetDecoration(new PolygonDecoration());
+        conn.setConnectionRouter(new ManhattanConnectionRouter());
+        conn.setForegroundColor(CONNECTION_DEFAULT_COLOR);
+        conn.setLineWidth(3);
+        return conn;
+    }
 
-	/**
-	 * create edit policies.
-	 */
-	protected void createEditPolicies() {
-		//No Edit Policies to be created.
-	}
+    /** create edit policies. */
+    protected void createEditPolicies() {
+        // No Edit Policies to be created.
+    }
 
-	/**
-	 * refresh Visuals
-	 */
-	protected void refreshVisuals() {
-		HAConnectionFigure conn = (HAConnectionFigure) getFigure();
-		MonitorConnection model = (MonitorConnection) getModel();
-		conn.setLabel(model.getLabel());
-		super.refreshVisuals();
-	}
-
+    /** refresh Visuals */
+    protected void refreshVisuals() {
+        HAConnectionFigure conn = (HAConnectionFigure) getFigure();
+        MonitorConnection model = (MonitorConnection) getModel();
+        conn.setLabel(model.getLabel());
+        super.refreshVisuals();
+    }
 }

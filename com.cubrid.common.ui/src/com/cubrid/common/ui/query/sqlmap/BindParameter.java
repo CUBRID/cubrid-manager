@@ -28,80 +28,74 @@
 package com.cubrid.common.ui.query.sqlmap;
 
 /**
- * <p>
  * The bind parameter class.
- * </p>
  *
- * <p>
- * In order to replace the parameter name with the user defined value,
- * this class might be used.
+ * <p>In order to replace the parameter name with the user defined value, this class might be used.
  * It try to wrap the value with single quotations depending on the type.
- * </p>
  *
  * @author CHOE JUNGYEON
  */
 public class BindParameter {
 
-	private String name;
-	private String value;
-	private BindParameterType type;
+    private String name;
+    private String value;
+    private BindParameterType type;
 
-	public BindParameter(String name, String value, BindParameterType type) {
-		setName(name);
-		setValue(value);
-		setType(type);
-	}
+    public BindParameter(String name, String value, BindParameterType type) {
+        setName(name);
+        setValue(value);
+        setType(type);
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public BindParameterType getType() {
-		return type;
-	}
+    public BindParameterType getType() {
+        return type;
+    }
 
-	public void setType(BindParameterType type) {
-		this.type = type;
-	}
+    public void setType(BindParameterType type) {
+        this.type = type;
+    }
 
-	public enum BindParameterType {
-		NUMBER("N") {
-			public String wrap(String string) {
-				return string;
-			}
-		},
-		STRING("S") {
-			public String wrap(String string) {
-				return "'" + string + "'";
-			}
-		},
-		FUNCTION("F") {
-			public String wrap(String string) {
-				return string;
-			}
-		};
+    public enum BindParameterType {
+        NUMBER("N") {
+            public String wrap(String string) {
+                return string;
+            }
+        },
+        STRING("S") {
+            public String wrap(String string) {
+                return "'" + string + "'";
+            }
+        },
+        FUNCTION("F") {
+            public String wrap(String string) {
+                return string;
+            }
+        };
 
-		public String wrap(String string) {
-			return string;
-		}
+        public String wrap(String string) {
+            return string;
+        }
 
-		String type;
+        String type;
 
-		BindParameterType(String type) {
-			this.type = type;
-		}
-	}
-
+        BindParameterType(String type) {
+            this.type = type;
+        }
+    }
 }

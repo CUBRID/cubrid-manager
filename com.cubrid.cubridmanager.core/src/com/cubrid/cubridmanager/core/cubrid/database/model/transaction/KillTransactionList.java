@@ -30,41 +30,39 @@ package com.cubrid.cubridmanager.core.cubrid.database.model.transaction;
 import com.cubrid.cubridmanager.core.common.model.IModel;
 
 /**
- * A model class that extends the IModel and includes the instance of
- * TransactionInfo
+ * A model class that extends the IModel and includes the instance of TransactionInfo
  *
  * @author sq
  * @version 1.0 - 2009-12-28 created by sq
  */
-public class KillTransactionList implements
-		IModel {
+public class KillTransactionList implements IModel {
 
-	private String dbname;
-	private TransactionInfo transationInfo;
+    private String dbname;
+    private TransactionInfo transationInfo;
 
-	public String getDbname() {
-		return dbname;
-	}
+    public String getDbname() {
+        return dbname;
+    }
 
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
-	}
+    public void setDbname(String dbname) {
+        this.dbname = dbname;
+    }
 
-	public String getTaskName() {
+    public String getTaskName() {
 
-		return "killtransaction";
-	}
+        return "killtransaction";
+    }
 
-	public TransactionInfo getTransationInfo() {
-		return transationInfo;
-	}
+    public TransactionInfo getTransationInfo() {
+        return transationInfo;
+    }
 
-	/**
-	 * Add the model to list by reflect method
-	 *
-	 * @param transationInfo TransactionInfo an instance of TransactionInfo
-	 */
-	public void addTransactionInfo(TransactionInfo transationInfo) {
-		this.transationInfo = transationInfo;
-	}
+    /**
+     * Add the model to list by reflect method
+     *
+     * @param transationInfo TransactionInfo an instance of TransactionInfo
+     */
+    public void addTransactionInfo(TransactionInfo transationInfo) {
+        this.transationInfo = transationInfo;
+    }
 }

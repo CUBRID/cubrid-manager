@@ -46,110 +46,106 @@ import java.sql.SQLException;
  * @author lcl
  */
 public final class Closer {
-	private Closer() {
-		noOp();
-	}
+    private Closer() {
+        noOp();
+    }
 
-	/**
-	 * close closeable object silently (will eat off exception, print to error
-	 * stream)
-	 *
-	 * @param co closeable object, can be null.
-	 */
-	public static void close(Closeable co) {
-		if (co == null) {
-			return;
-		}
+    /**
+     * close closeable object silently (will eat off exception, print to error stream)
+     *
+     * @param co closeable object, can be null.
+     */
+    public static void close(Closeable co) {
+        if (co == null) {
+            return;
+        }
 
-		try {
-			co.close();
-		} catch (IOException e) {
-			noOp();
-		}
-	}
+        try {
+            co.close();
+        } catch (IOException e) {
+            noOp();
+        }
+    }
 
-	/**
-	 * close socket silently (will eat off exception, print to error stream)
-	 *
-	 * @param sock socket object, can be null.
-	 */
-	public static void close(Socket sock) {
-		if (sock == null) {
-			return;
-		}
+    /**
+     * close socket silently (will eat off exception, print to error stream)
+     *
+     * @param sock socket object, can be null.
+     */
+    public static void close(Socket sock) {
+        if (sock == null) {
+            return;
+        }
 
-		try {
-			sock.close();
-		} catch (IOException e) {
-			noOp();
-		}
-	}
+        try {
+            sock.close();
+        } catch (IOException e) {
+            noOp();
+        }
+    }
 
-	/**
-	 * close server socket silently (will eat off exception, print to error
-	 * stream)
-	 *
-	 * @param sock server socket object, can be null.
-	 */
-	public static void close(ServerSocket sock) {
-		if (sock == null) {
-			return;
-		}
+    /**
+     * close server socket silently (will eat off exception, print to error stream)
+     *
+     * @param sock server socket object, can be null.
+     */
+    public static void close(ServerSocket sock) {
+        if (sock == null) {
+            return;
+        }
 
-		try {
-			sock.close();
-		} catch (IOException e) {
-			noOp();
-		}
-	}
+        try {
+            sock.close();
+        } catch (IOException e) {
+            noOp();
+        }
+    }
 
-	/**
-	 * close datagram socket silently (will eat off exception, print to error
-	 * stream)
-	 *
-	 * @param sock datagram socket object, can be null.
-	 */
-	public static void close(DatagramSocket sock) {
-		if (sock == null) {
-			return;
-		}
+    /**
+     * close datagram socket silently (will eat off exception, print to error stream)
+     *
+     * @param sock datagram socket object, can be null.
+     */
+    public static void close(DatagramSocket sock) {
+        if (sock == null) {
+            return;
+        }
 
-		sock.close();
-	}
+        sock.close();
+    }
 
-	/**
-	 * close selector silently (will eat off exception, print to error stream)
-	 *
-	 * @param selector selector object, can be null
-	 */
-	public static void close(Selector selector) {
+    /**
+     * close selector silently (will eat off exception, print to error stream)
+     *
+     * @param selector selector object, can be null
+     */
+    public static void close(Selector selector) {
 
-		if (selector == null) {
-			return;
-		}
+        if (selector == null) {
+            return;
+        }
 
-		try {
-			selector.close();
-		} catch (IOException e) {
-			noOp();
-		}
-	}
+        try {
+            selector.close();
+        } catch (IOException e) {
+            noOp();
+        }
+    }
 
-	/**
-	 * close database connection silently (will eat off exception, print to
-	 * error stream)
-	 *
-	 * @param conn db connection
-	 */
-	public static void close(Connection conn) {
-		if (conn == null) {
-			return;
-		}
+    /**
+     * close database connection silently (will eat off exception, print to error stream)
+     *
+     * @param conn db connection
+     */
+    public static void close(Connection conn) {
+        if (conn == null) {
+            return;
+        }
 
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			noOp();
-		}
-	}
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            noOp();
+        }
+    }
 }

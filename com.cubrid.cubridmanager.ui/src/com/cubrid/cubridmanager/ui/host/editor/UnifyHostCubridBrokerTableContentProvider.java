@@ -27,79 +27,71 @@
  */
 package com.cubrid.cubridmanager.ui.host.editor;
 
+import com.cubrid.common.ui.spi.persist.BrokerConfPersistUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.cubrid.common.ui.spi.persist.BrokerConfPersistUtil;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-2-17 created by fulei
  */
+public class UnifyHostCubridBrokerTableContentProvider implements IStructuredContentProvider {
+    /**
+     * Returns the elements to display in the viewer when its input is set to the given element.
+     *
+     * @param inputElement the input element
+     * @return the array of elements to display in the viewer
+     */
+    @SuppressWarnings("unchecked")
+    public Object[] getElements(Object inputElement) {
+        if (!(inputElement instanceof List)) {
+            return new Object[] {};
+        }
+        List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
+        // do not display the uniform broker property
+        for (Map<String, String> valueMap : (ArrayList<Map<String, String>>) inputElement) {
+            if (!isUniformBrokerProp(valueMap.get("0"))) {
+                newList.add(valueMap);
+            }
+        }
 
-public class UnifyHostCubridBrokerTableContentProvider implements
-IStructuredContentProvider {
-	/**
-	 * Returns the elements to display in the viewer when its input is set to
-	 * the given element.
-	 * 
-	 * @param inputElement the input element
-	 * @return the array of elements to display in the viewer
-	 */
-		@SuppressWarnings("unchecked")
-		public Object[] getElements(Object inputElement) {
-			if (!(inputElement instanceof List)) {
-				return new Object[] {};
-			}
-			List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
-			//do not display the uniform broker property
-			for (Map<String, String> valueMap : (ArrayList<Map<String, String>>) inputElement) {
-				if(!isUniformBrokerProp(valueMap.get("0"))) {
-					newList.add(valueMap);
-				}
-			}
-			
-			return newList.toArray();
-		}
-		
-		/**
-		 * Notifies this content provider that the given viewer's input has been
-		 * switched to a different element.
-		 * 
-		 * @param viewer the viewer
-		 * @param oldInput the old input element, or <code>null</code> if the viewer
-		 *        did not previously have an input
-		 * @param newInput the new input element, or <code>null</code> if the viewer
-		 *        does not have an input
-		 */
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			//empty
-		}
-		
-		/**
-		 * Disposes of this content provider. This is called by the viewer when it
-		 * is disposed.
-		 */
-		public void dispose() {
-			//empty
-		}
-		
-		/**
-		 * check whether a prop is a uniform prop
-		 * @param propName
-		 * @return
-		 */
-		public boolean isUniformBrokerProp (String propName) {
-			for (String uniformPropName : BrokerConfPersistUtil.UNIFORMCONFIG) {
-				if (uniformPropName.equalsIgnoreCase(propName)) {
-					return true;
-				}
-			}
-			return false;
-		}
+        return newList.toArray();
+    }
+
+    /**
+     * Notifies this content provider that the given viewer's input has been switched to a different
+     * element.
+     *
+     * @param viewer the viewer
+     * @param oldInput the old input element, or <code>null</code> if the viewer did not previously
+     *     have an input
+     * @param newInput the new input element, or <code>null</code> if the viewer does not have an
+     *     input
+     */
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        // empty
+    }
+
+    /** Disposes of this content provider. This is called by the viewer when it is disposed. */
+    public void dispose() {
+        // empty
+    }
+
+    /**
+     * check whether a prop is a uniform prop
+     *
+     * @param propName
+     * @return
+     */
+    public boolean isUniformBrokerProp(String propName) {
+        for (String uniformPropName : BrokerConfPersistUtil.UNIFORMCONFIG) {
+            if (uniformPropName.equalsIgnoreCase(propName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

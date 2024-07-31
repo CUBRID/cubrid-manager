@@ -35,14 +35,14 @@ import java.util.List;
  * @author CHOE JUNGYEON
  */
 public class ChooseTag extends SqlMapCondition {
-	private static final long serialVersionUID = 5071864812217053951L;
+    private static final long serialVersionUID = 5071864812217053951L;
 
-	public ChooseTag() {
-		this.setType("choose");
-	}
+    public ChooseTag() {
+        this.setType("choose");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return true;
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return true;
+    }
 }

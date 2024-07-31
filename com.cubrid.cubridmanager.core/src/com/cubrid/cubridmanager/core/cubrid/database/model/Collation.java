@@ -27,78 +27,73 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.database.model;
 
+import com.cubrid.common.core.util.LogUtil;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
+public class Collation implements Cloneable {
+    private static final Logger LOGGER = LogUtil.getLogger(Collation.class);
+    public static final String DEFAULT_COLLATION = "utf8_bin";
 
-public class Collation implements
-		Cloneable {
-	private static final Logger LOGGER = LogUtil.getLogger(Collation.class);
-	public static final String DEFAULT_COLLATION = "utf8_bin";
+    private String name;
+    private String charset;
 
-	private String name;
-	private String charset;
+    public Collation() {}
 
-	public Collation() {
+    public Collation(String name, String charset) {
+        this.name = name;
+        this.charset = charset;
+    }
 
-	}
+    public static List<Collation> getDefaultCollations() {
+        List<Collation> collationList = new LinkedList<Collation>();
+        Collation collation;
+        collation = new Collation("iso88591_bin", "iso88591");
+        collationList.add(collation);
+        collation = new Collation("utf8_bin", "utf8");
+        collationList.add(collation);
+        collation = new Collation("iso88591_en_cs", "iso88591");
+        collationList.add(collation);
+        collation = new Collation("iso88591_en_ci", "iso88591");
+        collationList.add(collation);
+        collation = new Collation("utf8_en_cs", "utf8");
+        collationList.add(collation);
+        collation = new Collation("utf8_en_ci", "utf8");
+        collationList.add(collation);
+        collation = new Collation("utf8_tr_cs", "utf8");
+        collationList.add(collation);
+        collation = new Collation("utf8_ko_cs", "utf8");
+        collationList.add(collation);
+        collation = new Collation("euckr_bin", "euckr");
+        collationList.add(collation);
 
-	public Collation(String name, String charset) {
-		this.name = name;
-		this.charset = charset;
-	}
+        return collationList;
+    }
 
-	public static List<Collation> getDefaultCollations() {
-		List<Collation> collationList = new LinkedList<Collation>();
-		Collation collation;
-		collation = new Collation("iso88591_bin", "iso88591");
-		collationList.add(collation);
-		collation = new Collation("utf8_bin", "utf8");
-		collationList.add(collation);
-		collation = new Collation("iso88591_en_cs", "iso88591");
-		collationList.add(collation);
-		collation = new Collation("iso88591_en_ci", "iso88591");
-		collationList.add(collation);
-		collation = new Collation("utf8_en_cs", "utf8");
-		collationList.add(collation);
-		collation = new Collation("utf8_en_ci", "utf8");
-		collationList.add(collation);
-		collation = new Collation("utf8_tr_cs", "utf8");
-		collationList.add(collation);
-		collation = new Collation("utf8_ko_cs", "utf8");
-		collationList.add(collation);
-		collation = new Collation("euckr_bin", "euckr");
-		collationList.add(collation);
+    public String getName() {
+        return name;
+    }
 
-		return collationList;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getCharset() {
+        return charset;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
 
-	public String getCharset() {
-		return charset;
-	}
-
-	public void setCharset(String charset) {
-		this.charset = charset;
-	}
-
-	public Collation clone() {
-		Collation collation = null;
-		try {
-			collation = (Collation) super.clone();
-		} catch (CloneNotSupportedException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-		return collation;
-	}
+    public Collation clone() {
+        Collation collation = null;
+        try {
+            collation = (Collation) super.clone();
+        } catch (CloneNotSupportedException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return collation;
+    }
 }

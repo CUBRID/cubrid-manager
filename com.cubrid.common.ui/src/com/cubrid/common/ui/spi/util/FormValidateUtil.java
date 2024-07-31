@@ -27,53 +27,52 @@
  */
 package com.cubrid.common.ui.spi.util;
 
+import com.cubrid.common.core.util.StringUtil;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.common.core.util.StringUtil;
-
 public class FormValidateUtil {
-	public static boolean isEmpty(Text text) {
-		if (text == null) {
-			return true;
-		}
+    public static boolean isEmpty(Text text) {
+        if (text == null) {
+            return true;
+        }
 
-		return StringUtil.isEmpty(text.getText());
-	}
+        return StringUtil.isEmpty(text.getText());
+    }
 
-	public static boolean isEmpty(Combo combo) {
-		if (combo == null) {
-			return true;
-		}
+    public static boolean isEmpty(Combo combo) {
+        if (combo == null) {
+            return true;
+        }
 
-		return StringUtil.isEmpty(combo.getText());
-	}
+        return StringUtil.isEmpty(combo.getText());
+    }
 
-	/**
-	 * return a string from Text widget.
-	 *
-	 * @param text
-	 * @return
-	 */
-	public static String getString(Text text) {
-		if (text == null) {
-			return null;
-		}
+    /**
+     * return a string from Text widget.
+     *
+     * @param text
+     * @return
+     */
+    public static String getString(Text text) {
+        if (text == null) {
+            return null;
+        }
 
-		return text.getText();
-	}
+        return text.getText();
+    }
 
-	/**
-	 * return a string from Combo widget.
-	 *
-	 * @param text
-	 * @return
-	 */
-	public static String getString(Combo text) {
-		if (text == null) {
-			return null;
-		}
+    /**
+     * return a string from Combo widget.
+     *
+     * @param text
+     * @return
+     */
+    public static String getString(Combo text) {
+        if (text == null) {
+            return null;
+        }
 
-		return text.getText();
-	}
+        return text.getText();
+    }
 }

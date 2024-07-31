@@ -27,10 +27,18 @@
  */
 package com.cubrid.common.ui.common.action;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.dialog.SetFileEncodingDialog;
+import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.QueryUnit;
+import com.cubrid.common.ui.spi.action.SelectionAction;
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.common.ui.spi.model.ISchemaNode;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -42,16 +50,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.query.dialog.SetFileEncodingDialog;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
-import com.cubrid.common.ui.query.editor.QueryUnit;
-import com.cubrid.common.ui.spi.action.SelectionAction;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.model.ISchemaNode;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * Show new query editor
  *
@@ -61,87 +59,90 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
  */
 public class OpenQueryAction extends SelectionAction {
 
-	public static final String ID = OpenQueryAction.class.getName();
-	private static final Logger LOGGER = LogUtil.getLogger(OpenQueryAction.class);
+    public static final String ID = OpenQueryAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(OpenQueryAction.class);
 
-	protected OpenQueryAction(Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		setId(ID);
-		setToolTipText(text);
-		setEnabled(true);
-	}
+    protected OpenQueryAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        setId(ID);
+        setToolTipText(text);
+        setEnabled(true);
+    }
 
-	public OpenQueryAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    public OpenQueryAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	protected void selectionChanged(ISelection selection) {
-		if (selection == null || selection.isEmpty()) {
-			setEnabled(true);
-			return;
-		}
-		super.selectionChanged(selection);
-	}
+    protected void selectionChanged(ISelection selection) {
+        if (selection == null || selection.isEmpty()) {
+            setEnabled(true);
+            return;
+        }
+        super.selectionChanged(selection);
+    }
 
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	public boolean isSupported(Object obj) {
-		return true;
-	}
+    public boolean isSupported(Object obj) {
+        return true;
+    }
 
-	private CubridDatabase[] handleSelectionObj(Object[] objs) {
-		List<CubridDatabase> returnArray = new ArrayList<CubridDatabase>();
-		for (Object obj : objs) {
-			if (obj instanceof ISchemaNode) {
-				CubridDatabase database = ((ISchemaNode) obj).getDatabase();
-				if (database != null) {
-					returnArray.add(database);
-				}
-			}
-		}
+    private CubridDatabase[] handleSelectionObj(Object[] objs) {
+        List<CubridDatabase> returnArray = new ArrayList<CubridDatabase>();
+        for (Object obj : objs) {
+            if (obj instanceof ISchemaNode) {
+                CubridDatabase database = ((ISchemaNode) obj).getDatabase();
+                if (database != null) {
+                    returnArray.add(database);
+                }
+            }
+        }
 
-		return returnArray.toArray(new CubridDatabase[0]);
-	}
+        return returnArray.toArray(new CubridDatabase[0]);
+    }
 
-	public void run() {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
+    public void run() {
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (window == null) {
+            return;
+        }
 
-		String fileName = null;
+        String fileName = null;
 
-		try {
-			SetFileEncodingDialog dialog = new SetFileEncodingDialog(
-					getShell(), StringUtil.getDefaultCharset(), true);
-			if (IDialogConstants.OK_ID != dialog.open()) {
-				return;
-			}
+        try {
+            SetFileEncodingDialog dialog =
+                    new SetFileEncodingDialog(getShell(), StringUtil.getDefaultCharset(), true);
+            if (IDialogConstants.OK_ID != dialog.open()) {
+                return;
+            }
 
-			fileName = dialog.getFilePath();
+            fileName = dialog.getFilePath();
 
-			IEditorPart editor = window.getActivePage().openEditor(new QueryUnit(), QueryEditorPart.ID);
-			if (editor == null) {
-				return;
-			}
+            IEditorPart editor =
+                    window.getActivePage().openEditor(new QueryUnit(), QueryEditorPart.ID);
+            if (editor == null) {
+                return;
+            }
 
-			QueryEditorPart queryEditor = (QueryEditorPart) editor;
-			queryEditor.getCombinedQueryComposite().getSqlEditorComp().open(
-					dialog.getFilePath(), dialog.getEncoding());
+            QueryEditorPart queryEditor = (QueryEditorPart) editor;
+            queryEditor
+                    .getCombinedQueryComposite()
+                    .getSqlEditorComp()
+                    .open(dialog.getFilePath(), dialog.getEncoding());
 
-			Object[] obj = this.getSelectedObj();
-			CubridDatabase[] cubridDatabases = handleSelectionObj(obj);
-			if (cubridDatabases.length > 0 && cubridDatabases[0] != null) {
-				((QueryEditorPart) editor).connect(cubridDatabases[0]);
-			}
-		} catch (PartInitException e) {
-			LOGGER.error("Can not initialize the query editor UI.", e);
-		} catch (IOException e) {
-			LOGGER.error("Can not open the {} file.", fileName, e);
-			CommonUITool.openErrorBox(e.getMessage()); //TODO: message localizing
-		}
-	}
-
+            Object[] obj = this.getSelectedObj();
+            CubridDatabase[] cubridDatabases = handleSelectionObj(obj);
+            if (cubridDatabases.length > 0 && cubridDatabases[0] != null) {
+                ((QueryEditorPart) editor).connect(cubridDatabases[0]);
+            }
+        } catch (PartInitException e) {
+            LOGGER.error("Can not initialize the query editor UI.", e);
+        } catch (IOException e) {
+            LOGGER.error("Can not open the {} file.", fileName, e);
+            CommonUITool.openErrorBox(e.getMessage()); // TODO: message localizing
+        }
+    }
 }

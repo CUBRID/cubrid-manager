@@ -27,6 +27,10 @@
  */
 package com.cubrid.cubridmanager.ui.replication.action;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.spi.action.SelectionAction;
+import com.cubrid.cubridmanager.ui.replication.editor.ReplicationEditor;
+import com.cubrid.cubridmanager.ui.replication.editor.ReplicationEditorInput;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -37,96 +41,83 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.spi.action.SelectionAction;
-import com.cubrid.cubridmanager.ui.replication.editor.ReplicationEditor;
-import com.cubrid.cubridmanager.ui.replication.editor.ReplicationEditorInput;
-
 /**
- *
  * This action is responsible for creating replication.
  *
  * @author pangqiren
  * @version 1.0 - 2009-11-26 created by pangqiren
  */
-public class CreateReplicationAction extends
-		SelectionAction {
+public class CreateReplicationAction extends SelectionAction {
 
-	private static final Logger LOGGER = LogUtil.getLogger(CreateReplicationAction.class);
-	public static final String ID = CreateReplicationAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(CreateReplicationAction.class);
+    public static final String ID = CreateReplicationAction.class.getName();
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public CreateReplicationAction(Shell shell, String text,
-			ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public CreateReplicationAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public CreateReplicationAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public CreateReplicationAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.SelectionAction#selectionChanged(org.eclipse.jface.viewers.ISelection)
-	 * @param selection ISelection
-	 */
-	protected void selectionChanged(ISelection selection) {
-		if (selection == null || selection.isEmpty()) {
-			setEnabled(true);
-			return;
-		}
-		super.selectionChanged(selection);
-	}
+    /**
+     * @see
+     *     com.cubrid.common.ui.spi.action.SelectionAction#selectionChanged(org.eclipse.jface.viewers.ISelection)
+     * @param selection ISelection
+     */
+    protected void selectionChanged(ISelection selection) {
+        if (selection == null || selection.isEmpty()) {
+            setEnabled(true);
+            return;
+        }
+        super.selectionChanged(selection);
+    }
 
-	/**
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj Object
-	 * @return boolean(whether to support)
-	 */
-	public boolean isSupported(Object obj) {
-		return true;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj Object
+     * @return boolean(whether to support)
+     */
+    public boolean isSupported(Object obj) {
+        return true;
+    }
 
-	/**
-	 * create replication
-	 */
-	public void run() {
-		try {
-			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			IWorkbenchPage page = window.getActivePage();
-			if (page != null) {
-				page.openEditor(new ReplicationEditorInput(""),
-						ReplicationEditor.ID);
-			}
-		} catch (PartInitException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-	}
-
+    /** create replication */
+    public void run() {
+        try {
+            IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            IWorkbenchPage page = window.getActivePage();
+            if (page != null) {
+                page.openEditor(new ReplicationEditorInput(""), ReplicationEditor.ID);
+            }
+        } catch (PartInitException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 }

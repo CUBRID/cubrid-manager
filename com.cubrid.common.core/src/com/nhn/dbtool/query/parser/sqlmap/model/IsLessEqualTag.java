@@ -30,41 +30,44 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of isLessEqual tag.
- * <isLessEqual property="" prepend="" open="" close="" removeFirstPrepend="true" compareProperty="" compareValue=""></isLessEqual>
+ * A definition of isLessEqual tag. <isLessEqual property="" prepend="" open="" close=""
+ * removeFirstPrepend="true" compareProperty="" compareValue=""></isLessEqual>
  *
  * @author Bumsik, Jang
  */
 public class IsLessEqualTag extends SqlMapCondition {
-	private static final long serialVersionUID = 7912248936308627959L;
+    private static final long serialVersionUID = 7912248936308627959L;
 
-	public IsLessEqualTag() {
-		this.setType("isLessEqual");
-	}
+    public IsLessEqualTag() {
+        this.setType("isLessEqual");
+    }
 
-	@Override
-	public String getExpectedCompareValue() {
-		return compareValue != null ? "<= " + compareValue
-				: (compareProperty != null ? "<= #" + compareProperty + "#" : null);
-	}
+    @Override
+    public String getExpectedCompareValue() {
+        return compareValue != null
+                ? "<= " + compareValue
+                : (compareProperty != null ? "<= #" + compareProperty + "#" : null);
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		for (String parameter : parameterList) {
-			if (parameter.startsWith(getProperty())) {
-				String[] value = parameter.split(":");
-				try {
-					if (value.length == 1 || (value.length == 2
-							&& (value[1].equals(this.getExpectedCompareValue())
-							|| Double.parseDouble(value[1]) <= Double.parseDouble(this.compareValue)))) {
-						return true;
-					}
-				} catch (Exception e) {
-					// ignore
-				}
-			}
-		}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        for (String parameter : parameterList) {
+            if (parameter.startsWith(getProperty())) {
+                String[] value = parameter.split(":");
+                try {
+                    if (value.length == 1
+                            || (value.length == 2
+                                    && (value[1].equals(this.getExpectedCompareValue())
+                                            || Double.parseDouble(value[1])
+                                                    <= Double.parseDouble(this.compareValue)))) {
+                        return true;
+                    }
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

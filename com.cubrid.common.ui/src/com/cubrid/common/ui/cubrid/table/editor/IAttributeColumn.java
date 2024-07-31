@@ -28,16 +28,16 @@
 package com.cubrid.common.ui.cubrid.table.editor;
 
 public interface IAttributeColumn {
-	public static final String COL_EMPTY="empty";
-	public static final String COL_FLAG = "flag";
-	public static final String COL_NAME = "name";
-	public static final String COL_DATATYPE = "data_type";
-	public static final String COL_DEFAULT = "default";
-	public static final String COL_AUTO_INCREMENT = "auto_increment";
-	public static final String COL_NOT_NULL = "not_null";
-	public static final String COL_PK = "pk";
-	public static final String COL_UK = "uk";
-	public static final String COL_SHARED = "shared";
-	public static final String COL_COLLATION = "collation";
-	public static final String COL_MEMO = "memo";
+    public static final String COL_EMPTY = "empty";
+    public static final String COL_FLAG = "flag";
+    public static final String COL_NAME = "name";
+    public static final String COL_DATATYPE = "data_type";
+    public static final String COL_DEFAULT = "default";
+    public static final String COL_AUTO_INCREMENT = "auto_increment";
+    public static final String COL_NOT_NULL = "not_null";
+    public static final String COL_PK = "pk";
+    public static final String COL_UK = "uk";
+    public static final String COL_SHARED = "shared";
+    public static final String COL_COLLATION = "collation";
+    public static final String COL_MEMO = "memo";
 }

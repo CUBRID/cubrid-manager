@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,18 +23,9 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.spi.model.loader.schema;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Display;
 
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.ui.common.preference.NavigatorPreference;
@@ -57,240 +48,260 @@ import com.cubrid.cubridmanager.core.cubrid.table.model.ClassInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.TableColumn;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetAllClassListTask;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetUserClassColumnsTask;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.widgets.Display;
 
 /**
- * 
  * This class is responsible to load the children of CUBRID tables folder
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-5-19 created by pangqiren
  */
-public class CubridTablesFolderLoader extends
-		CubridNodeLoader {
+public class CubridTablesFolderLoader extends CubridNodeLoader {
 
-	private static final String SYSTEM_TABLE_FOLDER_NAME = Messages.msgSystemTableFolderName;
-	public static final String SYSTEM_TABLE_FOLDER_ID = "#System Tables";
-	public static final String TABLES_FOLDER_ID = "Tables";
-	public static final String TABLES_FULL_FOLDER_SUFFIX_ID = ICubridNodeLoader.NODE_SEPARATOR + TABLES_FOLDER_ID;
+    private static final String SYSTEM_TABLE_FOLDER_NAME = Messages.msgSystemTableFolderName;
+    public static final String SYSTEM_TABLE_FOLDER_ID = "#System Tables";
+    public static final String TABLES_FOLDER_ID = "Tables";
+    public static final String TABLES_FULL_FOLDER_SUFFIX_ID =
+            ICubridNodeLoader.NODE_SEPARATOR + TABLES_FOLDER_ID;
 
-	/**
-	 * 
-	 * Load children object for parent
-	 * 
-	 * @param parent the parent node
-	 * @param monitor the IProgressMonitor object
-	 */
-	public void load(ICubridNode parent, final IProgressMonitor monitor) {
-		synchronized (this) {
-			if (isLoaded()) {
-				return;
-			}
-			CubridDatabase database = ((ISchemaNode) parent).getDatabase();
-			if (!database.isLogined()
-					|| database.getRunningType() == DbRunningType.STANDALONE) {
-				database.getDatabaseInfo().setUserTableInfoList(null);
-				database.getDatabaseInfo().setSysTableInfoList(null);
-				database.getDatabaseInfo().setPartitionedTableMap(null);
-				database.getDatabaseInfo().clearSchemas();
-				parent.removeAllChild();
-				CubridNodeManager.getInstance().fireCubridNodeChanged(
-						new CubridNodeChangedEvent(
-								(ICubridNode) parent,
-								CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
-				return;
-			}
-			DatabaseInfo databaseInfo = database.getDatabaseInfo();
-			final GetAllClassListTask task = new GetAllClassListTask(
-					databaseInfo);
-			monitorCancel(monitor, new ITask[] {task});
-			List<ClassInfo> allClassInfoList = task.getSchema(true, true);
-			final String errorMsg = task.getErrorMsg();
-			if (!monitor.isCanceled() && errorMsg != null
-					&& errorMsg.trim().length() > 0) {
-				parent.removeAllChild();
-				openErrorBox(errorMsg);
-				setLoaded(true);
-				return;
-			}
-			if (monitor.isCanceled()) {
-				setLoaded(true);
-				return;
-			}
-			// add system table folder
-			String systemTableFolderId = parent.getId() + NODE_SEPARATOR
-					+ SYSTEM_TABLE_FOLDER_ID;
-			ICubridNode systemTableFolder = parent.getChild(systemTableFolderId);
-			parent.removeAllChild();
-			if (systemTableFolder == null) {
-				systemTableFolder = new DefaultSchemaNode(systemTableFolderId,
-						SYSTEM_TABLE_FOLDER_NAME, SYSTEM_TABLE_FOLDER_NAME, "icons/navigator/folder_sys.png");
-				systemTableFolder.setType(NodeType.SYSTEM_TABLE_FOLDER);
-				systemTableFolder.setContainer(true);
-				ICubridNodeLoader loader = new CubridSystemTableFolderLoader();
-				loader.setLevel(getLevel());
-				systemTableFolder.setLoader(loader);
-				parent.addChild(systemTableFolder);
-				if (getLevel() == DEFINITE_LEVEL) {
-					systemTableFolder.getChildren(monitor);
-				}
-			} else {
-				parent.addChild(systemTableFolder);
-				if (systemTableFolder.getLoader() != null
-						&& systemTableFolder.getLoader().isLoaded()) {
-					systemTableFolder.getLoader().setLoaded(false);
-					systemTableFolder.getChildren(monitor);
-				}
-			}
-			if (allClassInfoList != null) {
-				createUserTableNodes(parent, allClassInfoList, getLevel(),
-						monitor);
-			}
-			database.getDatabaseInfo().setUserTableInfoList(allClassInfoList);
-			database.getDatabaseInfo().clearSchemas();
-			setLoaded(true);
-			CubridNodeManager.getInstance().fireCubridNodeChanged(
-					new CubridNodeChangedEvent((ICubridNode) parent,
-							CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
-		}
-	}
+    /**
+     * Load children object for parent
+     *
+     * @param parent the parent node
+     * @param monitor the IProgressMonitor object
+     */
+    public void load(ICubridNode parent, final IProgressMonitor monitor) {
+        synchronized (this) {
+            if (isLoaded()) {
+                return;
+            }
+            CubridDatabase database = ((ISchemaNode) parent).getDatabase();
+            if (!database.isLogined() || database.getRunningType() == DbRunningType.STANDALONE) {
+                database.getDatabaseInfo().setUserTableInfoList(null);
+                database.getDatabaseInfo().setSysTableInfoList(null);
+                database.getDatabaseInfo().setPartitionedTableMap(null);
+                database.getDatabaseInfo().clearSchemas();
+                parent.removeAllChild();
+                CubridNodeManager.getInstance()
+                        .fireCubridNodeChanged(
+                                new CubridNodeChangedEvent(
+                                        (ICubridNode) parent,
+                                        CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
+                return;
+            }
+            DatabaseInfo databaseInfo = database.getDatabaseInfo();
+            final GetAllClassListTask task = new GetAllClassListTask(databaseInfo);
+            monitorCancel(monitor, new ITask[] {task});
+            List<ClassInfo> allClassInfoList = task.getSchema(true, true);
+            final String errorMsg = task.getErrorMsg();
+            if (!monitor.isCanceled() && errorMsg != null && errorMsg.trim().length() > 0) {
+                parent.removeAllChild();
+                openErrorBox(errorMsg);
+                setLoaded(true);
+                return;
+            }
+            if (monitor.isCanceled()) {
+                setLoaded(true);
+                return;
+            }
+            // add system table folder
+            String systemTableFolderId = parent.getId() + NODE_SEPARATOR + SYSTEM_TABLE_FOLDER_ID;
+            ICubridNode systemTableFolder = parent.getChild(systemTableFolderId);
+            parent.removeAllChild();
+            if (systemTableFolder == null) {
+                systemTableFolder =
+                        new DefaultSchemaNode(
+                                systemTableFolderId,
+                                SYSTEM_TABLE_FOLDER_NAME,
+                                SYSTEM_TABLE_FOLDER_NAME,
+                                "icons/navigator/folder_sys.png");
+                systemTableFolder.setType(NodeType.SYSTEM_TABLE_FOLDER);
+                systemTableFolder.setContainer(true);
+                ICubridNodeLoader loader = new CubridSystemTableFolderLoader();
+                loader.setLevel(getLevel());
+                systemTableFolder.setLoader(loader);
+                parent.addChild(systemTableFolder);
+                if (getLevel() == DEFINITE_LEVEL) {
+                    systemTableFolder.getChildren(monitor);
+                }
+            } else {
+                parent.addChild(systemTableFolder);
+                if (systemTableFolder.getLoader() != null
+                        && systemTableFolder.getLoader().isLoaded()) {
+                    systemTableFolder.getLoader().setLoaded(false);
+                    systemTableFolder.getChildren(monitor);
+                }
+            }
+            if (allClassInfoList != null) {
+                createUserTableNodes(parent, allClassInfoList, getLevel(), monitor);
+            }
+            database.getDatabaseInfo().setUserTableInfoList(allClassInfoList);
+            database.getDatabaseInfo().clearSchemas();
+            setLoaded(true);
+            CubridNodeManager.getInstance()
+                    .fireCubridNodeChanged(
+                            new CubridNodeChangedEvent(
+                                    (ICubridNode) parent,
+                                    CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
+        }
+    }
 
-	/**
-	 * Create user table node
-	 * 
-	 * @param parent ICubridNode
-	 * @param allClassInfoList A list includes all the class info
-	 * @param level The load level
-	 * @param monitor The IProgressMonitor
-	 */
-	private void createUserTableNodes(ICubridNode parent,
-			List<ClassInfo> allClassInfoList, int level,
-			IProgressMonitor monitor) {
-		List<String> tables = new ArrayList<String>();
-		final int tablesFetchSize = Integer.valueOf(NavigatorPreference.getTablesFetchSize());
-		final int TABLE_COUNT = allClassInfoList.size() <= tablesFetchSize ? allClassInfoList.size() : tablesFetchSize;
-		for (int i = 0; i < TABLE_COUNT; i++) {
-			ClassInfo classInfo = allClassInfoList.get(i);
-			String id = parent.getId() + NODE_SEPARATOR
-					+ classInfo.getUniqueName();
-			ICubridNode classNode = createClassNode(id, classInfo, level);
-			parent.addChild(classNode);
-			tables.add(classInfo.getUniqueName());
-		}
-		if (allClassInfoList.size() > TABLE_COUNT) {
-			parent.addChild(createMoreNode(parent, TABLE_COUNT));
-		}
-		if (level == DEFINITE_LEVEL) {
-			CubridDatabase database = ((ISchemaNode) parent).getDatabase();
-			DatabaseInfo databaseInfo = database.getDatabaseInfo();
-			final GetUserClassColumnsTask task = new GetUserClassColumnsTask(
-					databaseInfo);
-			monitorCancel(monitor, new ITask[] {task});
-			Map<String, List<TableColumn>> columnsOfTable = task.getColumns(tables);
-			final String errorMsg = task.getErrorMsg();
-			if (!monitor.isCanceled() && !task.isInTransation()
-					&& errorMsg != null && errorMsg.trim().length() > 0) {
+    /**
+     * Create user table node
+     *
+     * @param parent ICubridNode
+     * @param allClassInfoList A list includes all the class info
+     * @param level The load level
+     * @param monitor The IProgressMonitor
+     */
+    private void createUserTableNodes(
+            ICubridNode parent,
+            List<ClassInfo> allClassInfoList,
+            int level,
+            IProgressMonitor monitor) {
+        List<String> tables = new ArrayList<String>();
+        final int tablesFetchSize = Integer.valueOf(NavigatorPreference.getTablesFetchSize());
+        final int TABLE_COUNT =
+                allClassInfoList.size() <= tablesFetchSize
+                        ? allClassInfoList.size()
+                        : tablesFetchSize;
+        for (int i = 0; i < TABLE_COUNT; i++) {
+            ClassInfo classInfo = allClassInfoList.get(i);
+            String id = parent.getId() + NODE_SEPARATOR + classInfo.getUniqueName();
+            ICubridNode classNode = createClassNode(id, classInfo, level);
+            parent.addChild(classNode);
+            tables.add(classInfo.getUniqueName());
+        }
+        if (allClassInfoList.size() > TABLE_COUNT) {
+            parent.addChild(createMoreNode(parent, TABLE_COUNT));
+        }
+        if (level == DEFINITE_LEVEL) {
+            CubridDatabase database = ((ISchemaNode) parent).getDatabase();
+            DatabaseInfo databaseInfo = database.getDatabaseInfo();
+            final GetUserClassColumnsTask task = new GetUserClassColumnsTask(databaseInfo);
+            monitorCancel(monitor, new ITask[] {task});
+            Map<String, List<TableColumn>> columnsOfTable = task.getColumns(tables);
+            final String errorMsg = task.getErrorMsg();
+            if (!monitor.isCanceled()
+                    && !task.isInTransation()
+                    && errorMsg != null
+                    && errorMsg.trim().length() > 0) {
 
-				Display display = Display.getDefault();
-				display.syncExec(new Runnable() {
-					public void run() {
-						CommonUITool.openErrorBox(errorMsg);
-					}
-				});
-				parent.removeAllChild();
-				setLoaded(true);
-				return;
+                Display display = Display.getDefault();
+                display.syncExec(
+                        new Runnable() {
+                            public void run() {
+                                CommonUITool.openErrorBox(errorMsg);
+                            }
+                        });
+                parent.removeAllChild();
+                setLoaded(true);
+                return;
+            }
+            if (monitor.isCanceled()) {
+                setLoaded(true);
+                return;
+            }
+            for (ClassInfo classInfo : allClassInfoList) {
+                String tableId = parent.getId() + NODE_SEPARATOR + classInfo.getUniqueName();
+                ICubridNode node = parent.getChild(tableId);
+                CubridUserTableLoader tableLoader = (CubridUserTableLoader) node.getLoader();
+                tableLoader.setColumns(columnsOfTable.get(classInfo.getUniqueName()));
+                node.getChildren(monitor);
+                tableLoader.setLoaded(true);
+            }
+        }
+    }
 
-			}
-			if (monitor.isCanceled()) {
-				setLoaded(true);
-				return;
-			}
-			for (ClassInfo classInfo : allClassInfoList) {
-				String tableId = parent.getId() + NODE_SEPARATOR
-						+ classInfo.getUniqueName();
-				ICubridNode node = parent.getChild(tableId);
-				CubridUserTableLoader tableLoader = (CubridUserTableLoader) node.getLoader();
-				tableLoader.setColumns(columnsOfTable.get(classInfo.getUniqueName()));
-				node.getChildren(monitor);
-				tableLoader.setLoaded(true);
-			}
+    public static ICubridNode createClassNode(String id, ClassInfo classInfo, int level) {
+        String tableName = classInfo.getUniqueName();
+        ICubridNode classNode;
+        if (classInfo.isSupportUserSchema()) {
+            classNode =
+                    new DefaultSchemaNode(
+                            id,
+                            "[" + classInfo.getOwnerName() + "] " + classInfo.getClassName(),
+                            tableName,
+                            "icons/navigator/schema_table_item.png");
+        } else {
+            classNode =
+                    new DefaultSchemaNode(
+                            id, tableName, tableName, "icons/navigator/schema_table_item.png");
+        }
+        classNode.setEditorId(SchemaInfoEditorPart.ID);
+        classNode.setContainer(true);
+        classNode.setModelObj(classInfo);
+        classNode.setType(NodeType.USER_TABLE);
 
-		}
-	}
+        ICubridNodeLoader loader = null;
+        if (classInfo.isPartitionedClass()) {
+            classNode.setType(NodeType.USER_PARTITIONED_TABLE_FOLDER);
+            classNode.setIconPath("icons/navigator/schema_table_partition.png");
+            classNode.setContainer(true);
+            loader = new CubridPartitionedTableLoader();
+        } else {
+            loader = new CubridUserTableLoader();
+        }
+        loader.setLevel(level);
+        classNode.setLoader(loader);
 
-	public static ICubridNode createClassNode(String id, ClassInfo classInfo, int level) {
-		String tableName = classInfo.getUniqueName();
-		ICubridNode classNode;
-		if (classInfo.isSupportUserSchema()) {
-			classNode = new DefaultSchemaNode(id,
-				"[" + classInfo.getOwnerName() + "] " + classInfo.getClassName(), 
-				tableName, "icons/navigator/schema_table_item.png");
-		} else {
-			classNode = new DefaultSchemaNode(id,
-				tableName, tableName,
-				"icons/navigator/schema_table_item.png");
-		}
-		classNode.setEditorId(SchemaInfoEditorPart.ID);
-		classNode.setContainer(true);
-		classNode.setModelObj(classInfo);
-		classNode.setType(NodeType.USER_TABLE);
+        return classNode;
+    }
 
-		ICubridNodeLoader loader = null;
-		if (classInfo.isPartitionedClass()) {
-			classNode.setType(NodeType.USER_PARTITIONED_TABLE_FOLDER);
-			classNode.setIconPath("icons/navigator/schema_table_partition.png");
-			classNode.setContainer(true);
-			loader = new CubridPartitionedTableLoader();
-		} else {
-			loader = new CubridUserTableLoader();
-		}
-		loader.setLevel(level);
-		classNode.setLoader(loader);
+    public static ICubridNode createMoreNode(ICubridNode parent, int endOfNodePosition) {
+        String id = parent.getId() + NODE_SEPARATOR + endOfNodePosition;
+        ICubridNode classNode =
+                new DefaultSchemaNode(
+                        id,
+                        Messages.moreNodeLabel,
+                        Messages.moreNodeLabel,
+                        "icons/navigator/schema_table_item.png");
+        classNode.setEditorId(SchemaInfoEditorPart.ID);
+        classNode.setType(NodeType.MORE);
+        classNode.setContainer(true);
+        classNode.setParent(parent);
+        CubridDatabase database = ((DefaultSchemaNode) parent).getDatabase();
+        ((DefaultSchemaNode) classNode).setDatabase(database);
+        ((DefaultSchemaNode) classNode).setServer(database.getServer());
+        return classNode;
+    }
 
-		return classNode;
-	}
+    /**
+     * Create user table node for other type
+     *
+     * @param parent ICubridNode
+     * @param id The node id
+     * @param classInfo The model object
+     * @param level The load level
+     * @param monitor The IProgressMonitor
+     * @return ICubridNode object
+     */
+    public static ICubridNode createUserTableNode(
+            ICubridNode parent,
+            String id,
+            ClassInfo classInfo,
+            int level,
+            IProgressMonitor monitor) {
+        ICubridNode classNode = createClassNode(id, classInfo, level);
+        parent.addChild(classNode);
+        if (level == DEFINITE_LEVEL) {
+            classNode.getChildren(monitor);
+        }
+        return classNode;
+    }
 
-	public static ICubridNode createMoreNode(ICubridNode parent, int endOfNodePosition) {
-		String id = parent.getId() + NODE_SEPARATOR + endOfNodePosition;
-		ICubridNode classNode = new DefaultSchemaNode(id,
-				Messages.moreNodeLabel, Messages.moreNodeLabel, "icons/navigator/schema_table_item.png");
-		classNode.setEditorId(SchemaInfoEditorPart.ID);
-		classNode.setType(NodeType.MORE);
-		classNode.setContainer(true);
-		classNode.setParent(parent);
-		CubridDatabase database = ((DefaultSchemaNode) parent).getDatabase();
-		((DefaultSchemaNode) classNode).setDatabase(database);
-		((DefaultSchemaNode) classNode).setServer(database.getServer());
-		return classNode;
-	}
-
-	/**
-	 * 
-	 * Create user table node for other type
-	 * 
-	 * @param parent ICubridNode
-	 * @param id The node id
-	 * @param classInfo The model object
-	 * @param level The load level
-	 * @param monitor The IProgressMonitor
-	 * @return ICubridNode object
-	 */
-	public static ICubridNode createUserTableNode(ICubridNode parent,
-			String id, ClassInfo classInfo, int level, IProgressMonitor monitor) {
-		ICubridNode classNode = createClassNode(id, classInfo, level);
-		parent.addChild(classNode);
-		if (level == DEFINITE_LEVEL) {
-			classNode.getChildren(monitor);
-		}
-		return classNode;
-	}
-
-	public static int moreNodeIndex(String input) {
-		Pattern pattern = Pattern.compile("\\/\\d+$");
-		Matcher matcher = pattern.matcher(input);
-		if (matcher.find()) {
-			return Integer.parseInt(matcher.group().substring(1));
-		}
-		return 0;
-	}
+    public static int moreNodeIndex(String input) {
+        Pattern pattern = Pattern.compile("\\/\\d+$");
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group().substring(1));
+        }
+        return 0;
+    }
 }

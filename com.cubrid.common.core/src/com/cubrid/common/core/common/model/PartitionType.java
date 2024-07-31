@@ -34,15 +34,17 @@ package com.cubrid.common.core.common.model;
  * @version 1.0 - 2009-12-29 created by sq
  */
 public enum PartitionType {
-	HASH("HASH"), LIST("LIST"), RANGE("RANGE");
+    HASH("HASH"),
+    LIST("LIST"),
+    RANGE("RANGE");
 
-	String text = null;
+    String text = null;
 
-	PartitionType(String text) {
-		this.text = text;
-	}
+    PartitionType(String text) {
+        this.text = text;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 }

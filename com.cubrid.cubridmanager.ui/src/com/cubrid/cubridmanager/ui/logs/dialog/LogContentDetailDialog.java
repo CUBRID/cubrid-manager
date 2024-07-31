@@ -27,6 +27,8 @@
  */
 package com.cubrid.cubridmanager.ui.logs.dialog;
 
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.cubridmanager.ui.logs.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -36,64 +38,61 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.cubridmanager.ui.logs.Messages;
-
 /**
- * @author fulei
- * display the log important content
+ * @author fulei display the log important content
  * @version 1.0 - 2012-11-30 created by fulei
  */
+public class LogContentDetailDialog extends CMTitleAreaDialog {
 
-public class LogContentDetailDialog extends CMTitleAreaDialog{
+    private StyledText contentText;
+    private final String content;
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     */
+    public LogContentDetailDialog(Shell parentShell, String content) {
+        super(parentShell);
+        this.content = content;
+    }
 
-	private StyledText contentText;
-	private final String content;
-	/**
-	 * The constructor
-	 * 
-	 * @param parentShell
-	 */
-	public LogContentDetailDialog(Shell parentShell, String content) {
-		super(parentShell);
-		this.content = content;
-	}
-	
-	/**
-	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 * @param parent The parent composite to contain the dialog area
-	 * @return the dialog area control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		
-		composite.setLayout(layout);
-		contentText = new StyledText(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		gridData.widthHint = 400;
-		gridData.heightHint = 200;
-		contentText.setLayoutData(gridData);
-		contentText.setEditable(false);
-		contentText.setText(content);
-	
-		getShell().setText(Messages.titleLogContentDialog);
-		setTitle(Messages.titleLogContentDialog);
-		return parentComp;
-	}
-	
-	/**
-	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
-	 * @param parent the button bar composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, com.cubrid.common.ui.spi.Messages.btnOk, true);
-	}
-	
+    /**
+     * @see
+     *     org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     * @param parent The parent composite to contain the dialog area
+     * @return the dialog area control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+
+        composite.setLayout(layout);
+        contentText = new StyledText(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.widthHint = 400;
+        gridData.heightHint = 200;
+        contentText.setLayoutData(gridData);
+        contentText.setEditable(false);
+        contentText.setText(content);
+
+        getShell().setText(Messages.titleLogContentDialog);
+        setTitle(Messages.titleLogContentDialog);
+        return parentComp;
+    }
+
+    /**
+     * @see
+     *     org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+     * @param parent the button bar composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, IDialogConstants.OK_ID, com.cubrid.common.ui.spi.Messages.btnOk, true);
+    }
 }

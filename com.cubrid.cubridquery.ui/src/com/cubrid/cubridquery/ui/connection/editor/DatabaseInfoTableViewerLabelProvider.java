@@ -30,78 +30,78 @@ package com.cubrid.cubridquery.ui.connection.editor;
 import static com.cubrid.common.core.util.NoOp.noOp;
 import static org.apache.commons.lang.StringUtils.defaultString;
 
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.cubridquery.ui.common.Messages;
+import com.cubrid.cubridquery.ui.spi.model.DatabaseUIWrapper;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.cubridquery.ui.common.Messages;
-import com.cubrid.cubridquery.ui.spi.model.DatabaseUIWrapper;
+public class DatabaseInfoTableViewerLabelProvider
+        implements ITableLabelProvider, ITableColorProvider {
+    @SuppressWarnings("unused")
+    private static final Image CHECK_IMAGE = CommonUIPlugin.getImage("icons/checked.gif");
 
-public class DatabaseInfoTableViewerLabelProvider implements
-		ITableLabelProvider,
-		ITableColorProvider {
-	@SuppressWarnings("unused")
-	private static final Image CHECK_IMAGE = CommonUIPlugin.getImage("icons/checked.gif");
-	@SuppressWarnings("unused")
-	private static final Image UNCHECK_IMAGE = CommonUIPlugin.getImage("icons/unchecked.gif");
+    @SuppressWarnings("unused")
+    private static final Image UNCHECK_IMAGE = CommonUIPlugin.getImage("icons/unchecked.gif");
 
-	public void addListener(ILabelProviderListener listener) {
-		noOp();
-	}
+    public void addListener(ILabelProviderListener listener) {
+        noOp();
+    }
 
-	public void dispose() {
-		noOp();
-	}
+    public void dispose() {
+        noOp();
+    }
 
-	public boolean isLabelProperty(Object element, String property) {
-		return false;
-	}
+    public boolean isLabelProperty(Object element, String property) {
+        return false;
+    }
 
-	public void removeListener(ILabelProviderListener listener) {
-		noOp();
-	}
+    public void removeListener(ILabelProviderListener listener) {
+        noOp();
+    }
 
-	public Image getColumnImage(Object element, int columnIndex) {
-		return null;
-	}
+    public Image getColumnImage(Object element, int columnIndex) {
+        return null;
+    }
 
-	public String getColumnText(Object element, int columnIndex) {
-		if (!(element instanceof DatabaseUIWrapper)) {
-			return "";
-		}
+    public String getColumnText(Object element, int columnIndex) {
+        if (!(element instanceof DatabaseUIWrapper)) {
+            return "";
+        }
 
-		DatabaseUIWrapper ui = (DatabaseUIWrapper) element;
-		switch (columnIndex) {
-		case 0:
-			return defaultString(ui.getName(), "");
-		case 1:
-			return defaultString(ui.getAddress(), "");
-		case 2:
-			return defaultString(ui.getPort(), "");
-		case 3:
-			if ("null".equals(ui.getJdbcDriverVersion())) {
-				return "";
-			} else {
-				return defaultString(ui.getJdbcDriverVersion(), "");
-			}
-		case 4:
-			return defaultString(ui.getUser(), "");
-		case 5:
-			return ui.isAutoSavePassword() ? Messages.passwordAutoSaveYes
-					: Messages.passwordAutoSaveNo;
-		default:
-			return "";
-		}
-	}
+        DatabaseUIWrapper ui = (DatabaseUIWrapper) element;
+        switch (columnIndex) {
+            case 0:
+                return defaultString(ui.getName(), "");
+            case 1:
+                return defaultString(ui.getAddress(), "");
+            case 2:
+                return defaultString(ui.getPort(), "");
+            case 3:
+                if ("null".equals(ui.getJdbcDriverVersion())) {
+                    return "";
+                } else {
+                    return defaultString(ui.getJdbcDriverVersion(), "");
+                }
+            case 4:
+                return defaultString(ui.getUser(), "");
+            case 5:
+                return ui.isAutoSavePassword()
+                        ? Messages.passwordAutoSaveYes
+                        : Messages.passwordAutoSaveNo;
+            default:
+                return "";
+        }
+    }
 
-	public Color getForeground(Object element, int columnIndex) {
-		return null;
-	}
+    public Color getForeground(Object element, int columnIndex) {
+        return null;
+    }
 
-	public Color getBackground(Object element, int columnIndex) {
-		return null;
-	}
+    public Color getBackground(Object element, int columnIndex) {
+        return null;
+    }
 }

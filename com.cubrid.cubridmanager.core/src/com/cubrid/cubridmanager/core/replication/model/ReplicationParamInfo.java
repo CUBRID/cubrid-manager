@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.replication.model;
@@ -32,59 +32,51 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
  * replication parameter information model class
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2009-4-3 created by wuyingshi
  */
 public class ReplicationParamInfo {
 
-	private Map<String, String> paramMap = null;
+    private Map<String, String> paramMap = null;
 
-	/**
-	 * 
-	 * Get the parameter value
-	 * 
-	 * @param key the key
-	 * @return the value
-	 */
-	public String getParamValue(String key) {
-		if (paramMap != null && key != null) {
-			return paramMap.get(key);
-		}
-		return null;
-	}
+    /**
+     * Get the parameter value
+     *
+     * @param key the key
+     * @return the value
+     */
+    public String getParamValue(String key) {
+        if (paramMap != null && key != null) {
+            return paramMap.get(key);
+        }
+        return null;
+    }
 
-	/**
-	 * 
-	 * Set param value
-	 * 
-	 * @param key the key
-	 * @param value the value
-	 */
-	public void setParamValue(String key, String value) {
-		if (key == null || key.trim().length() <= 0 || value == null) {
-			return;
-		}
-		if (paramMap == null) {
-			paramMap = new HashMap<String, String>();
-		}
-		paramMap.put(key, value);
-	}
+    /**
+     * Set param value
+     *
+     * @param key the key
+     * @param value the value
+     */
+    public void setParamValue(String key, String value) {
+        if (key == null || key.trim().length() <= 0 || value == null) {
+            return;
+        }
+        if (paramMap == null) {
+            paramMap = new HashMap<String, String>();
+        }
+        paramMap.put(key, value);
+    }
 
-	/**
-	 * @return the paramMap
-	 */
-	public Map<String, String> getParamMap() {
-		return paramMap;
-	}
+    /** @return the paramMap */
+    public Map<String, String> getParamMap() {
+        return paramMap;
+    }
 
-	/**
-	 * @param paramMap the paramMap to set
-	 */
-	public void setParamMap(Map<String, String> paramMap) {
-		this.paramMap = paramMap;
-	}
-
+    /** @param paramMap the paramMap to set */
+    public void setParamMap(Map<String, String> paramMap) {
+        this.paramMap = paramMap;
+    }
 }

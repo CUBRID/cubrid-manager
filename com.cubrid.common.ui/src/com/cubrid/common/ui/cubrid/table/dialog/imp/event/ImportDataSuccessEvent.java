@@ -30,56 +30,52 @@
 package com.cubrid.common.ui.cubrid.table.dialog.imp.event;
 
 /**
- *
- *
  * The Import Data Success Event
  *
  * @author Kevin.Wang
  * @version 1.0 - 2012-8-9 created by Kevin.Wang
  */
-public class ImportDataSuccessEvent extends
-		ImportDataEvent {
+public class ImportDataSuccessEvent extends ImportDataEvent {
 
-	private String tableName;
-	private long index = 0;
-	private int workedCount = 0;;
-	private int workedSize = 0;
+    private String tableName;
+    private long index = 0;
+    private int workedCount = 0;;
+    private int workedSize = 0;
 
-	public ImportDataSuccessEvent(String tableName, int workedCount) {
-		this.tableName = tableName;
-		this.workedCount = workedCount;
-	}
+    public ImportDataSuccessEvent(String tableName, int workedCount) {
+        this.tableName = tableName;
+        this.workedCount = workedCount;
+    }
 
-	public String getTableName() {
-		return tableName;
-	}
+    public String getTableName() {
+        return tableName;
+    }
 
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
-	public long getIndex() {
-		return index;
-	}
+    public long getIndex() {
+        return index;
+    }
 
-	public void setIndex(long index) {
-		this.index = index;
-	}
+    public void setIndex(long index) {
+        this.index = index;
+    }
 
-	public int getWorkedCount() {
-		return workedCount;
-	}
+    public int getWorkedCount() {
+        return workedCount;
+    }
 
-	public void setWorkedCount(int workedCount) {
-		this.workedCount = workedCount;
-	}
+    public void setWorkedCount(int workedCount) {
+        this.workedCount = workedCount;
+    }
 
-	public int getWorkedSize() {
-		return workedSize;
-	}
+    public int getWorkedSize() {
+        return workedSize;
+    }
 
-	public void setWorkedSize(int workedSize) {
-		this.workedSize = workedSize;
-	}
-
+    public void setWorkedSize(int workedSize) {
+        this.workedSize = workedSize;
+    }
 }

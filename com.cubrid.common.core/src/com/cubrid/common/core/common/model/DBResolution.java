@@ -30,133 +30,128 @@ package com.cubrid.common.core.common.model;
 
 import static com.cubrid.common.core.util.NoOp.noOp;
 
+import com.cubrid.common.core.util.LogUtil;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-
 /**
- * this class is to store information to choose inherit which column in super
- * classes when inheriting some super classes
+ * this class is to store information to choose inherit which column in super classes when
+ * inheriting some super classes
  *
  * @author moulinwang
  * @version 1.0 - 2009-6-5 created by moulinwang
  */
 public class DBResolution implements Cloneable {
-	private static final Logger LOGGER = LogUtil.getLogger(DBResolution.class);
-	private String name;
-	private String tableName;
-	private String alias;
-	private boolean isClassResolution;
+    private static final Logger LOGGER = LogUtil.getLogger(DBResolution.class);
+    private String name;
+    private String tableName;
+    private String alias;
+    private boolean isClassResolution;
 
-	public DBResolution(String name, String tableName, String alias) {
-		this.name = name;
-		this.tableName = tableName;
-		this.alias = alias;
-	}
+    public DBResolution(String name, String tableName, String alias) {
+        this.name = name;
+        this.tableName = tableName;
+        this.alias = alias;
+    }
 
-	/**
-	 * Override the method of Object
-	 *
-	 * @return DBResolution a clone of this instance.
-	 */
-	@Override
-	public DBResolution clone() {
-		try {
-			return (DBResolution) super.clone();
-		} catch (CloneNotSupportedException e) {
-			LOGGER.debug(e.getMessage(), e);
-		}
-		return null;
-	}
+    /**
+     * Override the method of Object
+     *
+     * @return DBResolution a clone of this instance.
+     */
+    @Override
+    public DBResolution clone() {
+        try {
+            return (DBResolution) super.clone();
+        } catch (CloneNotSupportedException e) {
+            LOGGER.debug(e.getMessage(), e);
+        }
+        return null;
+    }
 
-	public DBResolution() {
-		noOp();
-	}
+    public DBResolution() {
+        noOp();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getTableName() {
-		return tableName;
-	}
+    public String getTableName() {
+        return tableName;
+    }
 
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
-	/**
-	 * Get the alias
-	 *
-	 * @return String The alias
-	 */
-	public String getAlias() {
-		if (alias == null) {
-			return "";
-		}
-		return alias;
-	}
+    /**
+     * Get the alias
+     *
+     * @return String The alias
+     */
+    public String getAlias() {
+        if (alias == null) {
+            return "";
+        }
+        return alias;
+    }
 
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 
-	/**
-	 *@return int a hash code value for this object
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((tableName == null) ? 0 : tableName.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+    /** @return int a hash code value for this object */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((tableName == null) ? 0 : tableName.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
 
-	/**
-	 * @param obj Object the reference object with which to compare.
-	 * @return true if this object is the same as the obj argument; false
-	 *         otherwise.
-	 */
-	@Override
-	public boolean equals(Object obj) { // FIXME more simplify
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final DBResolution other = (DBResolution) obj;
-		if (tableName == null) {
-			if (other.tableName != null) {
-				return false;
-			}
-		} else if (!tableName.equals(other.tableName)) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * @param obj Object the reference object with which to compare.
+     * @return true if this object is the same as the obj argument; false otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) { // FIXME more simplify
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DBResolution other = (DBResolution) obj;
+        if (tableName == null) {
+            if (other.tableName != null) {
+                return false;
+            }
+        } else if (!tableName.equals(other.tableName)) {
+            return false;
+        }
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        return true;
+    }
 
-	public boolean isClassResolution() {
-		return isClassResolution;
-	}
+    public boolean isClassResolution() {
+        return isClassResolution;
+    }
 
-	public void setClassResolution(boolean isClassResolution) {
-		this.isClassResolution = isClassResolution;
-	}
+    public void setClassResolution(boolean isClassResolution) {
+        this.isClassResolution = isClassResolution;
+    }
 }

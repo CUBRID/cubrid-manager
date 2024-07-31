@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,10 +23,14 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.common.dialog;
 
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -37,121 +41,110 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
- * 
  * Assign editor name dialog
- * 
+ *
  * @author Kevin.Wang
  * @version 1.0 - 2012-05-08 created by Kevin.Wang
  */
-public class AssignEditorNameDialog extends
-		CMTitleAreaDialog {
+public class AssignEditorNameDialog extends CMTitleAreaDialog {
 
-	private Text nameText;
-	private final QueryEditorPart queryEditorPart;
+    private Text nameText;
+    private final QueryEditorPart queryEditorPart;
 
-	/**
-	 * The constructor
-	 * 
-	 * @param parentShell
-	 * @param queryEditorPart
-	 */
-	public AssignEditorNameDialog(Shell parentShell,
-			QueryEditorPart queryEditorPart) {
-		super(parentShell);
-		this.queryEditorPart = queryEditorPart;
-	}
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     * @param queryEditorPart
+     */
+    public AssignEditorNameDialog(Shell parentShell, QueryEditorPart queryEditorPart) {
+        super(parentShell);
+        this.queryEditorPart = queryEditorPart;
+    }
 
-	/**
-	 * Create the dialog area
-	 * 
-	 * @param parent Composite
-	 * @return Control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
+    /**
+     * Create the dialog area
+     *
+     * @param parent Composite
+     * @return Control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
 
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		Label nameLabel = new Label(composite, SWT.LEFT);
-		nameLabel.setText(Messages.lblEditorName);
-		nameLabel.setLayoutData(CommonUITool.createGridData(
-				GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 1, -1, -1));
+        Label nameLabel = new Label(composite, SWT.LEFT);
+        nameLabel.setText(Messages.lblEditorName);
+        nameLabel.setLayoutData(
+                CommonUITool.createGridData(GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 1, -1, -1));
 
-		nameText = new Text(composite, SWT.LEFT | SWT.BORDER);
-		nameText.setLayoutData(CommonUITool.createGridData(
-				GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-		nameText.setTextLimit(64);
+        nameText = new Text(composite, SWT.LEFT | SWT.BORDER);
+        nameText.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+        nameText.setTextLimit(64);
 
-		setTitle(Messages.titleAssignName);
-		setMessage(Messages.msgAssignName);
-		
-		return parentComp;
-	}
+        setTitle(Messages.titleAssignName);
+        setMessage(Messages.msgAssignName);
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		getShell().setSize(380, 220);
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.shellAssignName);
-	}
+        return parentComp;
+    }
 
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, Messages.btnOK, false);
-		createButton(parent, IDialogConstants.CANCEL_ID, Messages.btnCancel,
-				false);
-	}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        getShell().setSize(380, 220);
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.shellAssignName);
+    }
 
-	/**
-	 * Call this method when the button in button bar is pressed
-	 * 
-	 * @param buttonId the button id
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == IDialogConstants.OK_ID) {
-			if (!verify()) {
-				return;
-			}
-			queryEditorPart.assignName(nameText.getText(), true);
-		}
-		super.buttonPressed(buttonId);
-	}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, IDialogConstants.OK_ID, Messages.btnOK, false);
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.btnCancel, false);
+    }
 
-	private boolean verify() {
-		setErrorMessage(null);
+    /**
+     * Call this method when the button in button bar is pressed
+     *
+     * @param buttonId the button id
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+            if (!verify()) {
+                return;
+            }
+            queryEditorPart.assignName(nameText.getText(), true);
+        }
+        super.buttonPressed(buttonId);
+    }
 
-		String name = nameText.getText();
-		if (name.trim().length() == 0) {
-			setErrorMessage(Messages.errEditorNameEmpty);
-			return false;
-		}
+    private boolean verify() {
+        setErrorMessage(null);
 
-		if (name.trim().length() > 64) {
-			setErrorMessage(Messages.errEditorNameTooLong);
-			return false;
-		}
+        String name = nameText.getText();
+        if (name.trim().length() == 0) {
+            setErrorMessage(Messages.errEditorNameEmpty);
+            return false;
+        }
 
-		return true;
-	}
+        if (name.trim().length() > 64) {
+            setErrorMessage(Messages.errEditorNameTooLong);
+            return false;
+        }
+
+        return true;
+    }
 }

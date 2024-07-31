@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,53 +23,52 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.cubrid.jobauto.model.errlog;
 
 /**
  * A java bean that includes the info of backup error
- * 
+ *
  * @author lizhiqiang
  * @version 1.0 - 2009-12-28 created by lizhiqiang
  */
 public class BackUpErrorLog {
 
-	private String dbname;
-	private String backupid;
-	private String error_time;
-	private String error_desc;
+    private String dbname;
+    private String backupid;
+    private String error_time;
+    private String error_desc;
 
-	public String getDbname() {
-		return dbname;
-	}
+    public String getDbname() {
+        return dbname;
+    }
 
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
-	}
+    public void setDbname(String dbname) {
+        this.dbname = dbname;
+    }
 
-	public String getBackupid() {
-		return backupid;
-	}
+    public String getBackupid() {
+        return backupid;
+    }
 
-	public void setBackupid(String backupid) {
-		this.backupid = backupid;
-	}
+    public void setBackupid(String backupid) {
+        this.backupid = backupid;
+    }
 
-	public String getError_time() {
-		return error_time;
-	}
+    public String getError_time() {
+        return error_time;
+    }
 
-	public void setError_time(String errorTime) {
-		this.error_time = errorTime;
-	}
+    public void setError_time(String errorTime) {
+        this.error_time = errorTime;
+    }
 
-	public String getError_desc() {
-		return error_desc;
-	}
+    public String getError_desc() {
+        return error_desc;
+    }
 
-	public void setError_desc(String errorDesc) {
-		this.error_desc = errorDesc;
-	}
-
+    public void setError_desc(String errorDesc) {
+        this.error_desc = errorDesc;
+    }
 }

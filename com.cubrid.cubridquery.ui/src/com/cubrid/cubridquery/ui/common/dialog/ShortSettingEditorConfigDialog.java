@@ -29,6 +29,12 @@
  */
 package com.cubrid.cubridquery.ui.common.dialog;
 
+import com.cubrid.common.ui.common.control.SelectColorCombo;
+import com.cubrid.common.ui.query.editor.EditorConstance;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.model.DatabaseEditorConfig;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridquery.ui.common.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
@@ -39,95 +45,85 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.ui.common.control.SelectColorCombo;
-import com.cubrid.common.ui.query.editor.EditorConstance;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.model.DatabaseEditorConfig;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridquery.ui.common.Messages;
-
 /**
- *
  * The ShortSettingEditorConfigDialog class
  *
  * @author Kevin.Wang
  * @version 1.0 - 2012-3-21 created by Kevin.Wang
  */
-public class ShortSettingEditorConfigDialog extends
-		CMTitleAreaDialog {
-	private DatabaseEditorConfig editorConfig;
-	private SelectColorCombo colorCombo;
+public class ShortSettingEditorConfigDialog extends CMTitleAreaDialog {
+    private DatabaseEditorConfig editorConfig;
+    private SelectColorCombo colorCombo;
 
+    /** @param parentShell */
+    public ShortSettingEditorConfigDialog(Shell parentShell, DatabaseEditorConfig editorConfig) {
+        super(parentShell);
+        this.editorConfig = editorConfig;
+    }
 
-	/**
-	 * @param parentShell
-	 */
-	public ShortSettingEditorConfigDialog(Shell parentShell, DatabaseEditorConfig editorConfig) {
-		super(parentShell);
-		this.editorConfig = editorConfig;
-	}
+    protected Control createDialogArea(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 3;
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        composite.setLayout(layout);
 
-	protected Control createDialogArea(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
+        new Composite(composite, SWT.NONE).setLayoutData(CommonUITool.createGridData(1, 1, 20, 0));
 
-		new Composite(composite, SWT.NONE).setLayoutData(CommonUITool.createGridData(
-				1, 1, 20, 0));
+        Label backgroundLabel = new Label(composite, SWT.None);
+        backgroundLabel.setText(Messages.labBackground);
+        backgroundLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
 
-		Label backgroundLabel = new Label(composite, SWT.None);
-		backgroundLabel.setText(Messages.labBackground);
-		backgroundLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        colorCombo =
+                new SelectColorCombo(composite, SWT.BORDER, EditorConstance.getDefaultBackground());
+        colorCombo.setLayoutData(CommonUITool.createGridData(1, 1, 110, 20));
 
-		colorCombo = new SelectColorCombo(composite, SWT.BORDER, EditorConstance.getDefaultBackground());
-		colorCombo.setLayoutData(CommonUITool.createGridData(1, 1, 110, 20));
+        return composite;
+    }
 
-		return composite;
-	}
+    protected void okPressed() {
+        RGB selectedColor = colorCombo.getSelectedColor();
 
-	protected void okPressed() {
-		RGB selectedColor = colorCombo.getSelectedColor();
+        if (editorConfig == null) {
+            editorConfig = new DatabaseEditorConfig();
+        }
+        editorConfig.setBackGround(selectedColor);
 
-		if (editorConfig == null) {
-			editorConfig = new DatabaseEditorConfig();
-		}
-		editorConfig.setBackGround(selectedColor);
+        super.okPressed();
+    }
 
-		super.okPressed();
-	}
+    public DatabaseEditorConfig getEditorConfig() {
+        return editorConfig;
+    }
 
-	public DatabaseEditorConfig getEditorConfig() {
-		return editorConfig;
-	}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        getShell().setSize(360, 240);
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.titleSetEditorConfig);
+        setMessage(Messages.msgSetEditorConfig);
+        // Expand the color combo
+        this.getShell()
+                .getDisplay()
+                .asyncExec(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    Thread.sleep(300);
+                                } catch (InterruptedException e) {
+                                }
+                                colorCombo.expandMenu();
+                            }
+                        });
+    }
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		getShell().setSize(360, 240);
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.titleSetEditorConfig);
-		setMessage(Messages.msgSetEditorConfig);
-		// Expand the color combo
-		this.getShell().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-				}
-				colorCombo.expandMenu();
-			}
-		});
-	}
-
-	protected int getShellStyle() {
-		return SWT.CLOSE;
-	}
+    protected int getShellStyle() {
+        return SWT.CLOSE;
+    }
 }

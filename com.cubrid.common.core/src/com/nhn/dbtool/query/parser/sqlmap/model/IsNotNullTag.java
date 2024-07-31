@@ -27,17 +27,16 @@
  */
 package com.nhn.dbtool.query.parser.sqlmap.model;
 
-
 /**
- * A definition of isNotNull tag.
- * <isNotNull property="" prepend="" open="" close="" removeFirstPrepend="true"></isNotNull>
+ * A definition of isNotNull tag. <isNotNull property="" prepend="" open="" close=""
+ * removeFirstPrepend="true"></isNotNull>
  *
  * @author Bumsik, Jang
  */
 public class IsNotNullTag extends SqlMapCondition {
-	private static final long serialVersionUID = -5531458675218952715L;
+    private static final long serialVersionUID = -5531458675218952715L;
 
-	public IsNotNullTag() {
-		this.setType("isNotNull");
-	}
+    public IsNotNullTag() {
+        this.setType("isNotNull");
+    }
 }

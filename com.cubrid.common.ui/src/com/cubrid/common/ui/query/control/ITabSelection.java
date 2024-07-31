@@ -28,5 +28,5 @@
 package com.cubrid.common.ui.query.control;
 
 public interface ITabSelection {
-	public void select(int tabIndex, int subTabIndex);
+    public void select(int tabIndex, int subTabIndex);
 }

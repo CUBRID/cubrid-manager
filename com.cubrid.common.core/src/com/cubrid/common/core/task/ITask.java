@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2012 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,84 +23,81 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.core.task;
 
 /**
- * This task is responsible to communite with CUBRID Server by socket or
- * JDBC.All task must implement this interface
- * 
+ * This task is responsible to communite with CUBRID Server by socket or JDBC.All task must
+ * implement this interface
+ *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
 public interface ITask {
 
-	/**
-	 * Send request to Server
-	 */
-	public void execute();
+    /** Send request to Server */
+    public void execute();
 
-	public String getErrorMsg();
-	public void setErrorMsg(String errorMsg);
+    public String getErrorMsg();
 
-	public String getWarningMsg();
-	public void setWarningMsg(String waringMsg);
+    public void setErrorMsg(String errorMsg);
 
-	public String getTaskname();
-	public void setTaskname(String taskName);
+    public String getWarningMsg();
 
-	/**
-	 * Cancel this operation
-	 */
-	public void cancel();
+    public void setWarningMsg(String waringMsg);
 
-	/**
-	 * End this task and free resource
-	 */
-	public void finish();
+    public String getTaskname();
 
-	/**
-	 * Get the flag of is cancel of this task
-	 * 
-	 * @return boolean
-	 */
-	public boolean isCancel();
+    public void setTaskname(String taskName);
 
-	/**
-	 * Whether this task is success
-	 * 
-	 * @return boolean
-	 */
-	public boolean isSuccess();
+    /** Cancel this operation */
+    public void cancel();
 
-	/**
-	 * Whether this task done
-	 * 
-	 * @return boolean
-	 */
-	public boolean isDone();
+    /** End this task and free resource */
+    public void finish();
 
-	/**
-	 * Store a lot of values
-	 * 
-	 * @param key Object
-	 * @param value Object
-	 */
-	public void putData(Object key, Object value);
+    /**
+     * Get the flag of is cancel of this task
+     *
+     * @return boolean
+     */
+    public boolean isCancel();
 
-	/**
-	 * Get stored value by key
-	 * 
-	 * @param key Object
-	 * @return Object
-	 */
-	public Object getData(Object key);
+    /**
+     * Whether this task is success
+     *
+     * @return boolean
+     */
+    public boolean isSuccess();
 
-	/**
-	 * get the response status code
-	 * 
-	 * @return response status code
-	 */
-	int getStatusCode();
+    /**
+     * Whether this task done
+     *
+     * @return boolean
+     */
+    public boolean isDone();
+
+    /**
+     * Store a lot of values
+     *
+     * @param key Object
+     * @param value Object
+     */
+    public void putData(Object key, Object value);
+
+    /**
+     * Get stored value by key
+     *
+     * @param key Object
+     * @return Object
+     */
+    public Object getData(Object key);
+
+    /**
+     * get the response status code
+     *
+     * @return response status code
+     */
+    int getStatusCode();
 }

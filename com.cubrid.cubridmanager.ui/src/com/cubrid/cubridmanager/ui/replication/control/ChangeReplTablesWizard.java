@@ -27,16 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.replication.control;
 
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Display;
-
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.progress.JobFamily;
@@ -45,115 +35,122 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.replication.task.ChangeReplTablesTask;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.replication.Messages;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**
- *
  * Change Replication table wizard is responsible change replicated tables
  *
  * @author pangqiren
  * @version 1.0 - 2009-11-26 created by pangqiren
  */
-public class ChangeReplTablesWizard extends
-		Wizard {
+public class ChangeReplTablesWizard extends Wizard {
 
-	private SetDatabaseInfoPage setDatabaseInfoPage = null;
-	private ChangeTablesPage changeTablesPage = null;
-	private final ICubridNode replicationNode;
-	private WizardDialog dialog = null;
+    private SetDatabaseInfoPage setDatabaseInfoPage = null;
+    private ChangeTablesPage changeTablesPage = null;
+    private final ICubridNode replicationNode;
+    private WizardDialog dialog = null;
 
-	/**
-	 * The constructor
-	 */
-	public ChangeReplTablesWizard(ICubridNode node) {
-		setWindowTitle(Messages.titleChangeReplTables);
-		replicationNode = node;
-	}
+    /** The constructor */
+    public ChangeReplTablesWizard(ICubridNode node) {
+        setWindowTitle(Messages.titleChangeReplTables);
+        replicationNode = node;
+    }
 
-	/**
-	 * Add wizard pages
-	 */
-	public void addPages() {
-		setDatabaseInfoPage = new SetDatabaseInfoPage(replicationNode);
-		addPage(setDatabaseInfoPage);
-		changeTablesPage = new ChangeTablesPage(replicationNode);
-		addPage(changeTablesPage);
-		dialog = (WizardDialog) getContainer();
-		dialog.addPageChangedListener(changeTablesPage);
-	}
+    /** Add wizard pages */
+    public void addPages() {
+        setDatabaseInfoPage = new SetDatabaseInfoPage(replicationNode);
+        addPage(setDatabaseInfoPage);
+        changeTablesPage = new ChangeTablesPage(replicationNode);
+        addPage(changeTablesPage);
+        dialog = (WizardDialog) getContainer();
+        dialog.addPageChangedListener(changeTablesPage);
+    }
 
-	/**
-	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
-	 * @return boolean
-	 */
-	public boolean canFinish() {
-		return getContainer().getCurrentPage() == changeTablesPage;
-	}
+    /**
+     * @see org.eclipse.jface.wizard.Wizard#canFinish()
+     * @return boolean
+     */
+    public boolean canFinish() {
+        return getContainer().getCurrentPage() == changeTablesPage;
+    }
 
-	/**
-	 * Called when user clicks Finish
-	 *
-	 * @return boolean
-	 */
-	public boolean performFinish() {
-		String mdbName = setDatabaseInfoPage.getMasterDbName();
-		String distdbName = setDatabaseInfoPage.getDistributorDbName();
-		String distdbPassword = setDatabaseInfoPage.getDistdbPassword();
-		boolean isReplAllTables = changeTablesPage.isReplAllTables();
-		List<String> replTableList = changeTablesPage.getReplTableList();
-		TaskJobExecutor taskExcutor = new TaskJobExecutor() {
-			public void closeUI() {
-				Display.getDefault().syncExec(new Runnable() {
-					public void run() {
-						dialog.close();
-					}
-				});
-			}
+    /**
+     * Called when user clicks Finish
+     *
+     * @return boolean
+     */
+    public boolean performFinish() {
+        String mdbName = setDatabaseInfoPage.getMasterDbName();
+        String distdbName = setDatabaseInfoPage.getDistributorDbName();
+        String distdbPassword = setDatabaseInfoPage.getDistdbPassword();
+        boolean isReplAllTables = changeTablesPage.isReplAllTables();
+        List<String> replTableList = changeTablesPage.getReplTableList();
+        TaskJobExecutor taskExcutor =
+                new TaskJobExecutor() {
+                    public void closeUI() {
+                        Display.getDefault()
+                                .syncExec(
+                                        new Runnable() {
+                                            public void run() {
+                                                dialog.close();
+                                            }
+                                        });
+                    }
 
-			public void setVisible(final boolean isVisible) {
-				Display display = Display.getDefault();
-				display.syncExec(new Runnable() {
-					public void run() {
-						dialog.getShell().setVisible(isVisible);
-					}
-				});
-			}
+                    public void setVisible(final boolean isVisible) {
+                        Display display = Display.getDefault();
+                        display.syncExec(
+                                new Runnable() {
+                                    public void run() {
+                                        dialog.getShell().setVisible(isVisible);
+                                    }
+                                });
+                    }
 
-			public IStatus exec(final IProgressMonitor monitor) {
-				setVisible(false);
-				for (ITask task : taskList) {
-					task.execute();
-					if (monitor.isCanceled()) {
-						closeUI();
-						return Status.CANCEL_STATUS;
-					}
-					final String msg = task.getErrorMsg();
-					if (msg != null && msg.length() > 0
-							&& !monitor.isCanceled()) {
-						return new Status(IStatus.ERROR,
-								CubridManagerUIPlugin.PLUGIN_ID, msg);
-					}
-				}
-				closeUI();
-				return Status.OK_STATUS;
-			}
-		};
-		ServerInfo serverInfo = replicationNode.getServer().getServerInfo();
-		ChangeReplTablesTask task = new ChangeReplTablesTask(serverInfo);
-		task.setMdbName(mdbName);
-		task.setDistdbName(distdbName);
-		task.setDistdbPassword(distdbPassword);
-		task.setReplAllClasses(isReplAllTables);
-		task.setReplicatedClasses(replTableList);
-		taskExcutor.addTask(task);
+                    public IStatus exec(final IProgressMonitor monitor) {
+                        setVisible(false);
+                        for (ITask task : taskList) {
+                            task.execute();
+                            if (monitor.isCanceled()) {
+                                closeUI();
+                                return Status.CANCEL_STATUS;
+                            }
+                            final String msg = task.getErrorMsg();
+                            if (msg != null && msg.length() > 0 && !monitor.isCanceled()) {
+                                return new Status(
+                                        IStatus.ERROR, CubridManagerUIPlugin.PLUGIN_ID, msg);
+                            }
+                        }
+                        closeUI();
+                        return Status.OK_STATUS;
+                    }
+                };
+        ServerInfo serverInfo = replicationNode.getServer().getServerInfo();
+        ChangeReplTablesTask task = new ChangeReplTablesTask(serverInfo);
+        task.setMdbName(mdbName);
+        task.setDistdbName(distdbName);
+        task.setDistdbPassword(distdbPassword);
+        task.setReplAllClasses(isReplAllTables);
+        task.setReplicatedClasses(replTableList);
+        taskExcutor.addTask(task);
 
-		JobFamily jobFamily = new JobFamily();
-		String serverName = replicationNode.getServer().getName();
-		jobFamily.setServerName(serverName);
-		jobFamily.setDbName(distdbName);
+        JobFamily jobFamily = new JobFamily();
+        String serverName = replicationNode.getServer().getName();
+        jobFamily.setServerName(serverName);
+        jobFamily.setDbName(distdbName);
 
-		String jobName = Messages.bind(Messages.changeReplicationSchemaJobName,
-				new String[]{distdbName, serverName });
-		taskExcutor.schedule(jobName, jobFamily, true, Job.SHORT);
-		return false;
-	}
+        String jobName =
+                Messages.bind(
+                        Messages.changeReplicationSchemaJobName,
+                        new String[] {distdbName, serverName});
+        taskExcutor.schedule(jobName, jobFamily, true, Job.SHORT);
+        return false;
+    }
 }

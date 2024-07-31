@@ -30,48 +30,43 @@ package com.cubrid.common.ui.spi.action;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
 /**
- * 
- * Action ids for actions,group in the workbench menu bar, tool bar,popup menu
- * in the navigator
- * 
- * <p>
- * This interface contains constants only;it is not intended to be implemented
- * or extended.
- * </p>
+ * Action ids for actions,group in the workbench menu bar, tool bar,popup menu in the navigator
+ *
+ * <p>This interface contains constants only;it is not intended to be implemented or extended.
+ *
  * <h3>Standard menus</h3>
+ *
  * <ul>
- * <li>File menu</li>
- * <li>Edit menu</li>
- * <li>Tools menu</li>
- * <li>Action menu</li>
- * <li>Help menu</li>
+ *   <li>File menu
+ *   <li>Edit menu
+ *   <li>Tools menu
+ *   <li>Action menu
+ *   <li>Help menu
  * </ul>
- * 
+ *
  * @author Administrator
  * @version 1.0 - 2010-10-4 created by Administrator
- * 
  */
 public final class IActionConstants {
 
-	// menu bar
-	public static final String MENU_FILE = IWorkbenchActionConstants.M_FILE;
-	public static final String MENU_EDIT = IWorkbenchActionConstants.M_EDIT;
-	public static final String MENU_ACTION = "action";
-	public static final String MENU_TOOLS = "tools";
-	public static final String MENU_HELP = IWorkbenchActionConstants.M_HELP;
-	public static final String MENU_CUBRID = "CUBRID";
+    // menu bar
+    public static final String MENU_FILE = IWorkbenchActionConstants.M_FILE;
+    public static final String MENU_EDIT = IWorkbenchActionConstants.M_EDIT;
+    public static final String MENU_ACTION = "action";
+    public static final String MENU_TOOLS = "tools";
+    public static final String MENU_HELP = IWorkbenchActionConstants.M_HELP;
+    public static final String MENU_CUBRID = "CUBRID";
 
-	//tool bar
-	public static final String TOOL_NEW1 = "new1";
-	public static final String TOOL_NEW2 = "new2";
-	public static final String TOOL_SERVICE = "service";
-	public static final String TOOL_DATABASE1 = "database1";
-	public static final String TOOL_DATABASE2 = "database2";
-	public static final String TOOL_VERSION = "version";
-	public static final String TOOL_ISSUE = "issue";
-	public static final String TOOL_SEARCH = "search";
+    // tool bar
+    public static final String TOOL_NEW1 = "new1";
+    public static final String TOOL_NEW2 = "new2";
+    public static final String TOOL_SERVICE = "service";
+    public static final String TOOL_DATABASE1 = "database1";
+    public static final String TOOL_DATABASE2 = "database2";
+    public static final String TOOL_VERSION = "version";
+    public static final String TOOL_ISSUE = "issue";
+    public static final String TOOL_SEARCH = "search";
 
-	//group
-	public static final String GROUP_HOST = "host";
-
+    // group
+    public static final String GROUP_HOST = "host";
 }

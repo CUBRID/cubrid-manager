@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,7 +24,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.replication.model;
 
@@ -32,58 +32,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * The master information POJO
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-12-29 created by pangqiren
  */
 public class MasterInfo {
 
-	private String masterIp;
-	private String masterDbName;
-	private String replServerPort;
-	private List<String> replTableList = new ArrayList<String>();
-	private boolean isReplAllTable = false;
+    private String masterIp;
+    private String masterDbName;
+    private String replServerPort;
+    private List<String> replTableList = new ArrayList<String>();
+    private boolean isReplAllTable = false;
 
-	public String getMasterIp() {
-		return masterIp;
-	}
+    public String getMasterIp() {
+        return masterIp;
+    }
 
-	public void setMasterIp(String masterIp) {
-		this.masterIp = masterIp;
-	}
+    public void setMasterIp(String masterIp) {
+        this.masterIp = masterIp;
+    }
 
-	public String getMasterDbName() {
-		return masterDbName;
-	}
+    public String getMasterDbName() {
+        return masterDbName;
+    }
 
-	public void setMasterDbName(String masterDbName) {
-		this.masterDbName = masterDbName;
-	}
+    public void setMasterDbName(String masterDbName) {
+        this.masterDbName = masterDbName;
+    }
 
-	public String getReplServerPort() {
-		return replServerPort;
-	}
+    public String getReplServerPort() {
+        return replServerPort;
+    }
 
-	public void setReplServerPort(String replServerPort) {
-		this.replServerPort = replServerPort;
-	}
+    public void setReplServerPort(String replServerPort) {
+        this.replServerPort = replServerPort;
+    }
 
-	public List<String> getReplTableList() {
-		return replTableList;
-	}
+    public List<String> getReplTableList() {
+        return replTableList;
+    }
 
-	public void setReplTableList(List<String> replTableList) {
-		this.replTableList = replTableList;
-	}
+    public void setReplTableList(List<String> replTableList) {
+        this.replTableList = replTableList;
+    }
 
-	public boolean isReplAllTable() {
-		return isReplAllTable;
-	}
+    public boolean isReplAllTable() {
+        return isReplAllTable;
+    }
 
-	public void setReplAllTable(boolean isReplAllTable) {
-		this.isReplAllTable = isReplAllTable;
-	}
-
+    public void setReplAllTable(boolean isReplAllTable) {
+        this.isReplAllTable = isReplAllTable;
+    }
 }

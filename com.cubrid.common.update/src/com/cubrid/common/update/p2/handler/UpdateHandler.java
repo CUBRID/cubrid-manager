@@ -42,80 +42,81 @@ import org.eclipse.jface.wizard.WizardDialog;
  */
 @SuppressWarnings("restriction")
 public class UpdateHandler extends PreloadingRepositoryHandler {
-	private boolean isNoRepos = false;
-	private final boolean isAutoCheckUpdate;
+    private boolean isNoRepos = false;
+    private final boolean isAutoCheckUpdate;
 
-	public UpdateHandler() {
-		isAutoCheckUpdate = false;
-	}
+    public UpdateHandler() {
+        isAutoCheckUpdate = false;
+    }
 
-	public UpdateHandler(boolean isAutoUpdateCheck) {
-		this.isAutoCheckUpdate = isAutoUpdateCheck;
-	}
+    public UpdateHandler(boolean isAutoUpdateCheck) {
+        this.isAutoCheckUpdate = isAutoUpdateCheck;
+    }
 
-	protected void doExecute(LoadMetadataRepositoryJob job) {
-		if (isNoRepos) {
-			return;
-		}
+    protected void doExecute(LoadMetadataRepositoryJob job) {
+        if (isNoRepos) {
+            return;
+        }
 
-		UpdateOperation operation = getProvisioningUI().getUpdateOperation(null, null);
+        UpdateOperation operation = getProvisioningUI().getUpdateOperation(null, null);
 
-		// check for updates
-		IStatus status = operation.resolveModal(null);
+        // check for updates
+        IStatus status = operation.resolveModal(null);
 
-		// AUTO check update and there is not update
-		if (isAutoCheckUpdate) {
-			// user cancelled
-			if (status.getSeverity() == IStatus.CANCEL) {
-				return;
-			}
+        // AUTO check update and there is not update
+        if (isAutoCheckUpdate) {
+            // user cancelled
+            if (status.getSeverity() == IStatus.CANCEL) {
+                return;
+            }
 
-			// Special case those statuses where we would never want to open a wizard
-			if (status.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
-				return;
-			}
+            // Special case those statuses where we would never want to open a wizard
+            if (status.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
+                return;
+            }
 
-			// there is no plan, so we can't continue.  Report any reason found
-			if (operation.getProvisioningPlan() == null && !status.isOK()) {
-				return;
-			}
-		}
+            // there is no plan, so we can't continue.  Report any reason found
+            if (operation.getProvisioningPlan() == null && !status.isOK()) {
+                return;
+            }
+        }
 
-		if (getProvisioningUI().getPolicy().continueWorkingWithOperation(operation, getShell())) {
-			if (UpdateSingleIUWizard.validFor(operation)) {
-				// Special case for only updating a single root
-				UpdateSingleIUWizard wizard = new UpdateSingleIUWizard(getProvisioningUI(), operation);
-				WizardDialog dialog = new WizardDialog(getShell(), wizard);
-				dialog.create();
-				dialog.open();
-			} else {
-				// Open the normal version of the update wizard
-				getProvisioningUI().openUpdateWizard(false, operation, job);
-			}
-		}
-	}
+        if (getProvisioningUI().getPolicy().continueWorkingWithOperation(operation, getShell())) {
+            if (UpdateSingleIUWizard.validFor(operation)) {
+                // Special case for only updating a single root
+                UpdateSingleIUWizard wizard =
+                        new UpdateSingleIUWizard(getProvisioningUI(), operation);
+                WizardDialog dialog = new WizardDialog(getShell(), wizard);
+                dialog.create();
+                dialog.open();
+            } else {
+                // Open the normal version of the update wizard
+                getProvisioningUI().openUpdateWizard(false, operation, job);
+            }
+        }
+    }
 
-	/**
-	 * Return whether to preload repositories
-	 *
-	 * @return boolean
-	 */
-	protected boolean preloadRepositories() {
-		isNoRepos = false;
-		RepositoryTracker repoTracker = getProvisioningUI().getRepositoryTracker();
-		if (repoTracker.getKnownRepositories(getProvisioningUI().getSession()).length == 0) {
-			isNoRepos = true;
-			return false;
-		}
-		return true;
-	}
+    /**
+     * Return whether to preload repositories
+     *
+     * @return boolean
+     */
+    protected boolean preloadRepositories() {
+        isNoRepos = false;
+        RepositoryTracker repoTracker = getProvisioningUI().getRepositoryTracker();
+        if (repoTracker.getKnownRepositories(getProvisioningUI().getSession()).length == 0) {
+            isNoRepos = true;
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * Return whether to wait for preload
-	 *
-	 * @return boolean
-	 */
-	protected boolean waitForPreload() {
-		return true;
-	}
+    /**
+     * Return whether to wait for preload
+     *
+     * @return boolean
+     */
+    protected boolean waitForPreload() {
+        return true;
+    }
 }

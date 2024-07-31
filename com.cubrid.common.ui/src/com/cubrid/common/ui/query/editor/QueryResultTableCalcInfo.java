@@ -30,7 +30,6 @@ package com.cubrid.common.ui.query.editor;
 import java.math.BigDecimal;
 
 /**
- *
  * CUBRID Server node
  *
  * @author Santiago Wang
@@ -38,39 +37,36 @@ import java.math.BigDecimal;
  */
 public class QueryResultTableCalcInfo { // move ot core module
 
-	private int count = -1;
-	private BigDecimal average = null;
-	private BigDecimal summary = null;
-	private boolean isHasSum = false;
+    private int count = -1;
+    private BigDecimal average = null;
+    private BigDecimal summary = null;
+    private boolean isHasSum = false;
 
-	public QueryResultTableCalcInfo(int count, BigDecimal average,
-			BigDecimal summary) {
-		this.count = count;
-		this.average = average;
-		this.summary = summary;
-		this.isHasSum = true;
-	}
+    public QueryResultTableCalcInfo(int count, BigDecimal average, BigDecimal summary) {
+        this.count = count;
+        this.average = average;
+        this.summary = summary;
+        this.isHasSum = true;
+    }
 
-	public QueryResultTableCalcInfo(int count) {
-		this.count = count;
-		this.isHasSum = false;
-	}
+    public QueryResultTableCalcInfo(int count) {
+        this.count = count;
+        this.isHasSum = false;
+    }
 
-	public int getCount() {
-		return count;
-	}
+    public int getCount() {
+        return count;
+    }
 
-	public BigDecimal getAverage() {
-		return average;
-	}
+    public BigDecimal getAverage() {
+        return average;
+    }
 
-	public BigDecimal getSummary() {
-		return summary;
-	}
+    public BigDecimal getSummary() {
+        return summary;
+    }
 
-	public boolean isHasSum() {
-		return isHasSum;
-	}
-
-
+    public boolean isHasSum() {
+        return isHasSum;
+    }
 }

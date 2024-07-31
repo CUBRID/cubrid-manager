@@ -30,7 +30,6 @@
 package com.cubrid.common.ui.cubrid.table.dialog.imp.model;
 
 /**
- *
  * The ColumnData Description
  *
  * @author Kevin.Wang
@@ -38,47 +37,46 @@ package com.cubrid.common.ui.cubrid.table.dialog.imp.model;
  */
 public class ImportColumnData {
 
-	private String originData;
-	private int status = 0;
+    private String originData;
+    private int status = 0;
 
-	/**
-	 * The constructor
-	 *
-	 * @param originData
-	 */
-	public ImportColumnData(String originData) {
-		this.originData = originData;
-	}
+    /**
+     * The constructor
+     *
+     * @param originData
+     */
+    public ImportColumnData(String originData) {
+        this.originData = originData;
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param originData
-	 * @param isFormatSuccess
-	 */
-	public ImportColumnData(String originData, int status) {
-		this.originData = originData;
-		this.status = status;
-	}
+    /**
+     * The constructor
+     *
+     * @param originData
+     * @param isFormatSuccess
+     */
+    public ImportColumnData(String originData, int status) {
+        this.originData = originData;
+        this.status = status;
+    }
 
-	public String getOriginData() {
-		return originData;
-	}
+    public String getOriginData() {
+        return originData;
+    }
 
-	public void setOriginData(String originData) {
-		this.originData = originData;
-	}
+    public void setOriginData(String originData) {
+        this.originData = originData;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public String toString() {
-		return originData;
-	}
-
+    public String toString() {
+        return originData;
+    }
 }

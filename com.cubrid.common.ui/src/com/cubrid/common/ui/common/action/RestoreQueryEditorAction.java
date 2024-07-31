@@ -27,15 +27,6 @@
  */
 package com.cubrid.common.ui.common.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-
 import com.cubrid.common.ui.common.Messages;
 import com.cubrid.common.ui.common.query.autosave.CheckQueryEditorTask;
 import com.cubrid.common.ui.query.control.CombinedQueryEditorComposite;
@@ -46,64 +37,75 @@ import com.cubrid.common.ui.spi.contribution.StatusLineContrItem;
 import com.cubrid.common.ui.spi.model.RestorableQueryEditorInfo;
 import com.cubrid.common.ui.spi.persist.ApplicationPersistUtil;
 import com.cubrid.common.ui.spi.util.CommonUITool;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 public class RestoreQueryEditorAction extends Action {
-	public static final String ID = RestoreQueryEditorAction.class.getName();
+    public static final String ID = RestoreQueryEditorAction.class.getName();
 
-	public RestoreQueryEditorAction(String text, ImageDescriptor image) {
-		super(text);
-		setId(ID);
-		this.setToolTipText(text);
-		this.setImageDescriptor(image);
-	}
+    public RestoreQueryEditorAction(String text, ImageDescriptor image) {
+        super(text);
+        setId(ID);
+        this.setToolTipText(text);
+        this.setImageDescriptor(image);
+    }
 
-	public void run() {
-		ApplicationPersistUtil util = ApplicationPersistUtil.getInstance();
-		List<ArrayList<RestorableQueryEditorInfo>> restoreList = util.getEditorStatusListAtLastSession();
-		if (restoreList == null || restoreList.size() == 0) {
-			CommonUITool.openInformationBox(Messages.errNoRestoreQueryEditor);
-			return;
-		}
-		if (!CommonUITool.openConfirmBox(Messages.restoreQueryEditorConfirm)) {
-			return;
-		}
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			CommonUITool.openErrorBox(Messages.restoreQueryEditorRestoreFailed);
-			return;
-		}
-		for (List<RestorableQueryEditorInfo> editorStatusList : ApplicationPersistUtil.getInstance().getEditorStatusListAtLastSession()) {
-			QueryUnit input = new QueryUnit();
-			try {
-				QueryEditorPart editor = (QueryEditorPart) window.getActivePage().openEditor(input,
-						QueryEditorPart.ID);
-				if (editor == null) {
-					continue;
-				}
-				for (int i = 0; i < editorStatusList.size(); i++) {
-					RestorableQueryEditorInfo editorStatus = editorStatusList.get(i);
-					if (editorStatus == null) {
-						continue;
-					}
-					String sql = CheckQueryEditorTask.getQuery(editorStatus);
-					CombinedQueryEditorComposite combinedQueryComposite = null;
-					if (i == 0) {
-						combinedQueryComposite = editor.getCombinedQueryComposite();
-					} else {
-						combinedQueryComposite = editor.addEditorTab();
-					}
-					if (combinedQueryComposite != null) {
-						combinedQueryComposite.getSqlEditorComp().setQueries(sql);
-					}
-				}
-				editor.setCombinedQueryEditortabFolderSelecton(0);
-			} catch (PartInitException e) {
-				e.printStackTrace();
-			}
-		}
-		ApplicationPersistUtil.getInstance().clearRestorableQueryEditors();
-		StatusLineContrItem statusCont = LayoutManager.getInstance().getStatusLineContrItem();
-		statusCont.changeStuatusLineForNavigator(null);
-		CommonUITool.openInformationBox(Messages.restoreQueryEditorTitle, Messages.restoreQueryEditorRestoreSuccess);
-	}
+    public void run() {
+        ApplicationPersistUtil util = ApplicationPersistUtil.getInstance();
+        List<ArrayList<RestorableQueryEditorInfo>> restoreList =
+                util.getEditorStatusListAtLastSession();
+        if (restoreList == null || restoreList.size() == 0) {
+            CommonUITool.openInformationBox(Messages.errNoRestoreQueryEditor);
+            return;
+        }
+        if (!CommonUITool.openConfirmBox(Messages.restoreQueryEditorConfirm)) {
+            return;
+        }
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (window == null) {
+            CommonUITool.openErrorBox(Messages.restoreQueryEditorRestoreFailed);
+            return;
+        }
+        for (List<RestorableQueryEditorInfo> editorStatusList :
+                ApplicationPersistUtil.getInstance().getEditorStatusListAtLastSession()) {
+            QueryUnit input = new QueryUnit();
+            try {
+                QueryEditorPart editor =
+                        (QueryEditorPart)
+                                window.getActivePage().openEditor(input, QueryEditorPart.ID);
+                if (editor == null) {
+                    continue;
+                }
+                for (int i = 0; i < editorStatusList.size(); i++) {
+                    RestorableQueryEditorInfo editorStatus = editorStatusList.get(i);
+                    if (editorStatus == null) {
+                        continue;
+                    }
+                    String sql = CheckQueryEditorTask.getQuery(editorStatus);
+                    CombinedQueryEditorComposite combinedQueryComposite = null;
+                    if (i == 0) {
+                        combinedQueryComposite = editor.getCombinedQueryComposite();
+                    } else {
+                        combinedQueryComposite = editor.addEditorTab();
+                    }
+                    if (combinedQueryComposite != null) {
+                        combinedQueryComposite.getSqlEditorComp().setQueries(sql);
+                    }
+                }
+                editor.setCombinedQueryEditortabFolderSelecton(0);
+            } catch (PartInitException e) {
+                e.printStackTrace();
+            }
+        }
+        ApplicationPersistUtil.getInstance().clearRestorableQueryEditors();
+        StatusLineContrItem statusCont = LayoutManager.getInstance().getStatusLineContrItem();
+        statusCont.changeStuatusLineForNavigator(null);
+        CommonUITool.openInformationBox(
+                Messages.restoreQueryEditorTitle, Messages.restoreQueryEditorRestoreSuccess);
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,64 +24,59 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.logs.model;
 
+import com.cubrid.cubridmanager.core.common.model.IModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cubrid.cubridmanager.core.common.model.IModel;
-
 /**
- * 
  * This class is responsible to store all admin log information
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2009-4-3 created by wuyingshi
  */
-public class AdminLogInfoList implements
-		IModel {
+public class AdminLogInfoList implements IModel {
 
-	private List<LogInfo> adminLogInfoList = null;
+    private List<LogInfo> adminLogInfoList = null;
 
-	/**
-	 * The constructor
-	 */
-	public AdminLogInfoList() {
-		adminLogInfoList = new ArrayList<LogInfo>();
-	}
+    /** The constructor */
+    public AdminLogInfoList() {
+        adminLogInfoList = new ArrayList<LogInfo>();
+    }
 
-	/**
-	 * get task name.
-	 * 
-	 * @return String
-	 */
-	public String getTaskName() {
-		return "getadminloginfo";
-	}
+    /**
+     * get task name.
+     *
+     * @return String
+     */
+    public String getTaskName() {
+        return "getadminloginfo";
+    }
 
-	/**
-	 * add log informaton to the adminLogInfo List.
-	 * 
-	 * @param logInfo LogInfo
-	 */
-	public void addAdminLogInfo(LogInfo logInfo) {
-		if (adminLogInfoList == null) {
-			adminLogInfoList = new ArrayList<LogInfo>();
-		}
-		if (!adminLogInfoList.contains(logInfo)) {
-			adminLogInfoList.add(logInfo);
-		}
-	}
+    /**
+     * add log informaton to the adminLogInfo List.
+     *
+     * @param logInfo LogInfo
+     */
+    public void addAdminLogInfo(LogInfo logInfo) {
+        if (adminLogInfoList == null) {
+            adminLogInfoList = new ArrayList<LogInfo>();
+        }
+        if (!adminLogInfoList.contains(logInfo)) {
+            adminLogInfoList.add(logInfo);
+        }
+    }
 
-	/**
-	 * get the admin log information List.
-	 * 
-	 * @return List<LogInfo>
-	 */
-	public List<LogInfo> getAdminLogInfoList() {
-		return this.adminLogInfoList;
-	}
+    /**
+     * get the admin log information List.
+     *
+     * @return List<LogInfo>
+     */
+    public List<LogInfo> getAdminLogInfoList() {
+        return this.adminLogInfoList;
+    }
 }

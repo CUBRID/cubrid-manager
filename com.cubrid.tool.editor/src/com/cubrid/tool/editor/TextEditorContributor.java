@@ -29,10 +29,10 @@
  */
 package com.cubrid.tool.editor;
 
+import com.cubrid.tool.editor.action.ActionConstants;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -44,129 +44,120 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.part.EditorActionBarContributor;
 
-import com.cubrid.tool.editor.action.ActionConstants;
-
 /**
  * Default Text Editor Contributor.
  *
  * @author Kevin Cao
  * @version 1.0 - 2011-2-10 created by Kevin Cao
  */
-public class TextEditorContributor extends
-		EditorActionBarContributor {
-	/**
-	 * Current active text editor.
-	 */
-	protected IEditorPart textEditor;
+public class TextEditorContributor extends EditorActionBarContributor {
+    /** Current active text editor. */
+    protected IEditorPart textEditor;
 
-	/**
-	 * Retarget actions.
-	 */
-	protected Map<String, RetargetAction> actions = new HashMap<String, RetargetAction>();
+    /** Retarget actions. */
+    protected Map<String, RetargetAction> actions = new HashMap<String, RetargetAction>();
 
-	/**
-	 * TextEditorContributor constructor.
-	 */
-	public TextEditorContributor() {
-		RetargetAction redoAction = new RetargetAction(
-				ActionFactory.REDO.getId(), "&Redo@Ctrl+Y");
-		RetargetAction undoAction = new RetargetAction(
-				ActionFactory.UNDO.getId(), "&Undo@Ctrl+Z");
-		undoAction.setAccelerator(SWT.CTRL | 'z');
-		redoAction.setAccelerator(SWT.CTRL | 'y');
-		actions.put(ActionFactory.UNDO.getId(), undoAction);
-		actions.put(ActionFactory.REDO.getId(), redoAction);
+    /** TextEditorContributor constructor. */
+    public TextEditorContributor() {
+        RetargetAction redoAction = new RetargetAction(ActionFactory.REDO.getId(), "&Redo@Ctrl+Y");
+        RetargetAction undoAction = new RetargetAction(ActionFactory.UNDO.getId(), "&Undo@Ctrl+Z");
+        undoAction.setAccelerator(SWT.CTRL | 'z');
+        redoAction.setAccelerator(SWT.CTRL | 'y');
+        actions.put(ActionFactory.UNDO.getId(), undoAction);
+        actions.put(ActionFactory.REDO.getId(), redoAction);
 
-		actions.put(ActionFactory.CUT.getId(), new RetargetAction(
-				ActionFactory.CUT.getId(), "&Cut@Ctrl+X"));
-		actions.put(ActionFactory.COPY.getId(), new RetargetAction(
-				ActionFactory.COPY.getId(), "C&opy@Ctrl+C"));
-		actions.put(ActionFactory.PASTE.getId(), new RetargetAction(
-				ActionFactory.PASTE.getId(), "&Paste@Ctrl+V"));
+        actions.put(
+                ActionFactory.CUT.getId(),
+                new RetargetAction(ActionFactory.CUT.getId(), "&Cut@Ctrl+X"));
+        actions.put(
+                ActionFactory.COPY.getId(),
+                new RetargetAction(ActionFactory.COPY.getId(), "C&opy@Ctrl+C"));
+        actions.put(
+                ActionFactory.PASTE.getId(),
+                new RetargetAction(ActionFactory.PASTE.getId(), "&Paste@Ctrl+V"));
 
-		actions.put(ActionFactory.FIND.getId(), new RetargetAction(
-				ActionFactory.FIND.getId(), "Find/Replace@Ctrl+F"));
-		actions.put(ActionConstants.ACTION_FORMAT, new RetargetAction(
-				ActionConstants.ACTION_FORMAT, "Format@Ctrl+Shift+F"));
-	}
+        actions.put(
+                ActionFactory.FIND.getId(),
+                new RetargetAction(ActionFactory.FIND.getId(), "Find/Replace@Ctrl+F"));
+        actions.put(
+                ActionConstants.ACTION_FORMAT,
+                new RetargetAction(ActionConstants.ACTION_FORMAT, "Format@Ctrl+Shift+F"));
+    }
 
-	/**
-	 * Contributes to the given menu.
-	 *
-	 * @param menuManager the manager that controls the menu
-	 */
-	public void contributeToMenu(IMenuManager menuManager) {
-		super.contributeToMenu(menuManager);
-		MenuManager drawMenu = new MenuManager("&Edit",
-				IWorkbenchActionConstants.M_EDIT);
-		menuManager.add(drawMenu);
-		drawMenu.add(getAction(ActionFactory.UNDO.getId()));
-		drawMenu.add(getAction(ActionFactory.REDO.getId()));
-		drawMenu.add(new Separator());
-		drawMenu.add(getAction(ActionFactory.COPY.getId()));
-		drawMenu.add(getAction(ActionFactory.CUT.getId()));
-		drawMenu.add(getAction(ActionFactory.PASTE.getId()));
-		drawMenu.add(new Separator());
-		drawMenu.add(getAction(ActionFactory.FIND.getId()));
+    /**
+     * Contributes to the given menu.
+     *
+     * @param menuManager the manager that controls the menu
+     */
+    public void contributeToMenu(IMenuManager menuManager) {
+        super.contributeToMenu(menuManager);
+        MenuManager drawMenu = new MenuManager("&Edit", IWorkbenchActionConstants.M_EDIT);
+        menuManager.add(drawMenu);
+        drawMenu.add(getAction(ActionFactory.UNDO.getId()));
+        drawMenu.add(getAction(ActionFactory.REDO.getId()));
+        drawMenu.add(new Separator());
+        drawMenu.add(getAction(ActionFactory.COPY.getId()));
+        drawMenu.add(getAction(ActionFactory.CUT.getId()));
+        drawMenu.add(getAction(ActionFactory.PASTE.getId()));
+        drawMenu.add(new Separator());
+        drawMenu.add(getAction(ActionFactory.FIND.getId()));
 
-		IAction action = getAction(ActionConstants.ACTION_FORMAT);
-		if (action != null) {
-			drawMenu.add(new Separator());
-			drawMenu.add(getAction(ActionConstants.ACTION_FORMAT));
-		}
-	}
+        IAction action = getAction(ActionConstants.ACTION_FORMAT);
+        if (action != null) {
+            drawMenu.add(new Separator());
+            drawMenu.add(getAction(ActionConstants.ACTION_FORMAT));
+        }
+    }
 
-	/**
-	 * Retrieves the action registered by action id.
-	 *
-	 * @param id Action ID.
-	 * @return Registered action.
-	 */
-	protected IAction getAction(String id) {
-		return actions.get(id);
-	}
+    /**
+     * Retrieves the action registered by action id.
+     *
+     * @param id Action ID.
+     * @return Registered action.
+     */
+    protected IAction getAction(String id) {
+        return actions.get(id);
+    }
 
-	/**
-	 * Sets the active editor for the contributor.
-	 *
-	 * @param targetEditor the new target editor
-	 */
-	public void setActiveEditor(IEditorPart targetEditor) {
-		super.setActiveEditor(targetEditor);
-		if (targetEditor == null && textEditor != null) {
-			for (RetargetAction action : actions.values()) {
-				action.partClosed(textEditor);
-			}
-			textEditor = null;
-		} else if (targetEditor != null) {
-			textEditor = targetEditor;
-			Object adapter = textEditor.getAdapter(IAction.class);
-			if (adapter instanceof Map<?, ?>) {
-				registerActiveEditorActions((Map<?, ?>) adapter);
-			}
-			for (RetargetAction action : actions.values()) {
-				action.partActivated(textEditor);
-			}
-		}
-	}
+    /**
+     * Sets the active editor for the contributor.
+     *
+     * @param targetEditor the new target editor
+     */
+    public void setActiveEditor(IEditorPart targetEditor) {
+        super.setActiveEditor(targetEditor);
+        if (targetEditor == null && textEditor != null) {
+            for (RetargetAction action : actions.values()) {
+                action.partClosed(textEditor);
+            }
+            textEditor = null;
+        } else if (targetEditor != null) {
+            textEditor = targetEditor;
+            Object adapter = textEditor.getAdapter(IAction.class);
+            if (adapter instanceof Map<?, ?>) {
+                registerActiveEditorActions((Map<?, ?>) adapter);
+            }
+            for (RetargetAction action : actions.values()) {
+                action.partActivated(textEditor);
+            }
+        }
+    }
 
-	/**
-	 * Register Active Editor Actions to GlobalActionHandler of ActionBars.
-	 *
-	 * @param editorActions Map<String, IAction>
-	 */
-	protected void registerActiveEditorActions(Map<?, ?> editorActions) {
-		for (Entry<?, ?> key : editorActions.entrySet()) {
-			getActionBars().setGlobalActionHandler(key.getKey().toString(),
-					(IAction) key.getValue());
-		}
-	}
+    /**
+     * Register Active Editor Actions to GlobalActionHandler of ActionBars.
+     *
+     * @param editorActions Map<String, IAction>
+     */
+    protected void registerActiveEditorActions(Map<?, ?> editorActions) {
+        for (Entry<?, ?> key : editorActions.entrySet()) {
+            getActionBars()
+                    .setGlobalActionHandler(key.getKey().toString(), (IAction) key.getValue());
+        }
+    }
 
-	/**
-	 * Dispose.
-	 */
-	public void dispose() {
-		setActiveEditor(null);
-		super.dispose();
-	}
+    /** Dispose. */
+    public void dispose() {
+        setActiveEditor(null);
+        super.dispose();
+    }
 }

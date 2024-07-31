@@ -7,22 +7,19 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-
-})
+@XmlType(
+        name = "",
+        propOrder = {})
 @XmlRootElement(name = "Target_Server")
 public class TargetServer {
 
-	@XmlValue
-	protected String value;
+    @XmlValue protected String value;
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
-	
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

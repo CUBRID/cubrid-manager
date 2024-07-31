@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2013 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,53 +23,52 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.cubrid.trigger.task;
-
-import java.util.List;
 
 import com.cubrid.common.core.common.model.Trigger;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.socket.TreeNode;
 import com.cubrid.cubridmanager.core.utils.ModelUtil;
+import java.util.List;
 
 /**
  * This class is to get all triggers' information in CUBRID database.
- * 
- * Usage: You must first set fields by invoking setXXX(\<T\>) methods, then call
- * sendMsg() method to send a request message, the response message is the
- * information of the special class.
- * 
+ *
+ * <p>Usage: You must first set fields by invoking setXXX(\<T\>) methods, then call sendMsg() method
+ * to send a request message, the response message is the information of the special class.
+ *
  * @author moulinwang 2009-3-3
  */
 public class GetTriggerListTask extends SocketTask {
-	private final static String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dbname", };
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {
+                "task", "token", "dbname",
+            };
 
-	public GetTriggerListTask(ServerInfo serverInfo) {
-		super("gettriggerinfo", serverInfo, GetTriggerListTask.SEND_MSG_ITEMS);
-	}
+    public GetTriggerListTask(ServerInfo serverInfo) {
+        super("gettriggerinfo", serverInfo, GetTriggerListTask.SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * Set the key "dbname" in request message
-	 * 
-	 * @param dbname String
-	 */
-	public void setDbName(String dbname) {
-		this.setMsgItem("dbname", dbname);
-	}
+    /**
+     * Set the key "dbname" in request message
+     *
+     * @param dbname String
+     */
+    public void setDbName(String dbname) {
+        this.setMsgItem("dbname", dbname);
+    }
 
-	/**
-	 * Return whether adding trigger task is executed well
-	 * 
-	 * @return List<Trigger>
-	 */
-	public List<Trigger> getTriggerInfoList() {
-		TreeNode result = getResponse();
-		return ModelUtil.getTriggerList(result.getChildren().get(0));
-
-	}
+    /**
+     * Return whether adding trigger task is executed well
+     *
+     * @return List<Trigger>
+     */
+    public List<Trigger> getTriggerInfoList() {
+        TreeNode result = getResponse();
+        return ModelUtil.getTriggerList(result.getChildren().get(0));
+    }
 }

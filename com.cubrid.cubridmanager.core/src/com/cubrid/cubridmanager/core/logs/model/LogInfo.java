@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  *  - Neither the name of the <ORGANIZATION> nor the names of its contributors
  * may be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24,145 +24,143 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.logs.model;
 
 /**
- * 
  * Log information model class
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2009-4-3 created by wuyingshi
  */
 public class LogInfo {
 
-	private String path = null;
-	private String type = null;
-	private String owner = null;
-	private String size = null;
-	private String lastupdate = null;
-	private String filename = null;
+    private String path = null;
+    private String type = null;
+    private String owner = null;
+    private String size = null;
+    private String lastupdate = null;
+    private String filename = null;
 
-	/**
-	 * get the path.
-	 * 
-	 * @return String
-	 */
-	public String getPath() {
-		return path;
-	}
+    /**
+     * get the path.
+     *
+     * @return String
+     */
+    public String getPath() {
+        return path;
+    }
 
-	/**
-	 * set the path.
-	 * 
-	 * @param path String
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
+    /**
+     * set the path.
+     *
+     * @param path String
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	/**
-	 * get the owner.
-	 * 
-	 * @return String
-	 */
-	public String getOwner() {
-		return owner;
-	}
+    /**
+     * get the owner.
+     *
+     * @return String
+     */
+    public String getOwner() {
+        return owner;
+    }
 
-	/**
-	 * set the owner.
-	 * 
-	 * @param owner String
-	 */
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    /**
+     * set the owner.
+     *
+     * @param owner String
+     */
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
-	/**
-	 * get the size.
-	 * 
-	 * @return String
-	 */
-	public String getSize() {
-		return size;
-	}
+    /**
+     * get the size.
+     *
+     * @return String
+     */
+    public String getSize() {
+        return size;
+    }
 
-	/**
-	 * set the size.
-	 * 
-	 * @param size String
-	 */
-	public void setSize(String size) {
-		this.size = size;
-	}
+    /**
+     * set the size.
+     *
+     * @param size String
+     */
+    public void setSize(String size) {
+        this.size = size;
+    }
 
-	/**
-	 * get the lastupdate.
-	 * 
-	 * @return String
-	 */
-	public String getLastupdate() {
-		return lastupdate;
-	}
+    /**
+     * get the lastupdate.
+     *
+     * @return String
+     */
+    public String getLastupdate() {
+        return lastupdate;
+    }
 
-	/**
-	 * set the lastupdate.
-	 * 
-	 * @param lastupdate String
-	 */
-	public void setLastupdate(String lastupdate) {
-		this.lastupdate = lastupdate;
-	}
+    /**
+     * set the lastupdate.
+     *
+     * @param lastupdate String
+     */
+    public void setLastupdate(String lastupdate) {
+        this.lastupdate = lastupdate;
+    }
 
-	/**
-	 * get the type.
-	 * 
-	 * @return String
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * get the type.
+     *
+     * @return String
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * set the type.
-	 * 
-	 * @param type String
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * set the type.
+     *
+     * @param type String
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * get the name of file.
-	 * 
-	 * @return String
-	 */
-	public String getName() {
-		if (path != null && path.lastIndexOf("/") > 0) {
-			return path.substring(path.lastIndexOf("/") + 1);
-		}
-		return "";
-	}
+    /**
+     * get the name of file.
+     *
+     * @return String
+     */
+    public String getName() {
+        if (path != null && path.lastIndexOf("/") > 0) {
+            return path.substring(path.lastIndexOf("/") + 1);
+        }
+        return "";
+    }
 
-	/**
-	 * get the filename.
-	 * 
-	 * @return String
-	 */
-	public String getFilename() {
-		return filename;
-	}
+    /**
+     * get the filename.
+     *
+     * @return String
+     */
+    public String getFilename() {
+        return filename;
+    }
 
-	/**
-	 * set the filename.
-	 * 
-	 * @param filename String
-	 */
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-
+    /**
+     * set the filename.
+     *
+     * @param filename String
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 }

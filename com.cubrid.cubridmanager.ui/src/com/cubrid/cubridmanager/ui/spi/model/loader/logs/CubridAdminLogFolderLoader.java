@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,14 +23,9 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.spi.model.loader.logs;
-
-import java.util.Collections;
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.ui.spi.CubridNodeManager;
@@ -46,72 +41,74 @@ import com.cubrid.cubridmanager.core.logs.model.AdminLogInfoList;
 import com.cubrid.cubridmanager.core.logs.model.LogInfo;
 import com.cubrid.cubridmanager.ui.logs.editor.LogEditorPart;
 import com.cubrid.cubridmanager.ui.spi.model.CubridNodeType;
+import java.util.Collections;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * 
  * This class is responsible to load all admin logs of admin log folder
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-public class CubridAdminLogFolderLoader extends
-		CubridNodeLoader {
+public class CubridAdminLogFolderLoader extends CubridNodeLoader {
 
-	/**
-	 * 
-	 * Load children object for parent
-	 * 
-	 * @param parent the parent node
-	 * @param monitor the IProgressMonitor object
-	 */
-	public void load(ICubridNode parent, final IProgressMonitor monitor) {
-		synchronized (this) {
-			if (isLoaded()) {
-				return;
-			}
-			ServerInfo serverInfo = parent.getServer().getServerInfo();
-			AdminLogInfoList logInfoList = new AdminLogInfoList();
-			final CommonQueryTask<AdminLogInfoList> task = new CommonQueryTask<AdminLogInfoList>(
-					serverInfo, CommonSendMsg.getCommonSimpleSendMsg(),
-					logInfoList);
+    /**
+     * Load children object for parent
+     *
+     * @param parent the parent node
+     * @param monitor the IProgressMonitor object
+     */
+    public void load(ICubridNode parent, final IProgressMonitor monitor) {
+        synchronized (this) {
+            if (isLoaded()) {
+                return;
+            }
+            ServerInfo serverInfo = parent.getServer().getServerInfo();
+            AdminLogInfoList logInfoList = new AdminLogInfoList();
+            final CommonQueryTask<AdminLogInfoList> task =
+                    new CommonQueryTask<AdminLogInfoList>(
+                            serverInfo, CommonSendMsg.getCommonSimpleSendMsg(), logInfoList);
 
-			monitorCancel(monitor, new ITask[]{task });
-			task.execute();
-			final String errorMsg = task.getErrorMsg();
-			if (!monitor.isCanceled() && errorMsg != null
-					&& errorMsg.trim().length() > 0) {
-				parent.removeAllChild();
-				openErrorBox(errorMsg);
-				setLoaded(true);
-				return;
-			}
-			if (monitor.isCanceled()) {
-				setLoaded(true);
-				return;
-			}
-			parent.removeAllChild();
-			logInfoList = task.getResultModel();
-			if (logInfoList != null) {
-				List<LogInfo> list = logInfoList.getAdminLogInfoList();
-				if (list != null) {
-					for (LogInfo logInfo : list) {
-						DefaultCubridNode logInfoNode = new DefaultCubridNode(
-								parent.getId() + NODE_SEPARATOR
-										+ logInfo.getName(), logInfo.getName(),
-								"icons/navigator/log_item.png");
-						logInfoNode.setType(CubridNodeType.LOGS_BROKER_ADMIN_LOG);
-						logInfoNode.setContainer(false);
-						logInfoNode.setEditorId(LogEditorPart.ID);
-						logInfoNode.setModelObj(logInfo);
-						parent.addChild(logInfoNode);
-					}
-				}
-			}
-			Collections.sort(parent.getChildren());
-			setLoaded(true);
-			CubridNodeManager.getInstance().fireCubridNodeChanged(
-					new CubridNodeChangedEvent((ICubridNode) parent,
-							CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
-		}
-	}
+            monitorCancel(monitor, new ITask[] {task});
+            task.execute();
+            final String errorMsg = task.getErrorMsg();
+            if (!monitor.isCanceled() && errorMsg != null && errorMsg.trim().length() > 0) {
+                parent.removeAllChild();
+                openErrorBox(errorMsg);
+                setLoaded(true);
+                return;
+            }
+            if (monitor.isCanceled()) {
+                setLoaded(true);
+                return;
+            }
+            parent.removeAllChild();
+            logInfoList = task.getResultModel();
+            if (logInfoList != null) {
+                List<LogInfo> list = logInfoList.getAdminLogInfoList();
+                if (list != null) {
+                    for (LogInfo logInfo : list) {
+                        DefaultCubridNode logInfoNode =
+                                new DefaultCubridNode(
+                                        parent.getId() + NODE_SEPARATOR + logInfo.getName(),
+                                        logInfo.getName(),
+                                        "icons/navigator/log_item.png");
+                        logInfoNode.setType(CubridNodeType.LOGS_BROKER_ADMIN_LOG);
+                        logInfoNode.setContainer(false);
+                        logInfoNode.setEditorId(LogEditorPart.ID);
+                        logInfoNode.setModelObj(logInfo);
+                        parent.addChild(logInfoNode);
+                    }
+                }
+            }
+            Collections.sort(parent.getChildren());
+            setLoaded(true);
+            CubridNodeManager.getInstance()
+                    .fireCubridNodeChanged(
+                            new CubridNodeChangedEvent(
+                                    (ICubridNode) parent,
+                                    CubridNodeChangedEventType.CONTAINER_NODE_REFRESH));
+        }
+    }
 }

@@ -27,110 +27,108 @@
  */
 package com.cubrid.cubridmanager.ui.cubrid.jobauto.progress;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.BackupPlanInfo;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.model.QueryPlanInfo;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.task.GetBackupPlanListTask;
 import com.cubrid.cubridmanager.core.cubrid.jobauto.task.GetQueryPlanListTask;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-1-14 created by fulei
  */
 public class OpenJobAutomationInfoPartProgress implements IRunnableWithProgress {
 
-	private static final Logger LOGGER = LogUtil.getLogger(OpenJobAutomationInfoPartProgress.class);
-	private final CubridDatabase database;
-	private List<BackupPlanInfo> backupPlanInfoList;
-	private List<QueryPlanInfo> queryPlanInfoList;
+    private static final Logger LOGGER = LogUtil.getLogger(OpenJobAutomationInfoPartProgress.class);
+    private final CubridDatabase database;
+    private List<BackupPlanInfo> backupPlanInfoList;
+    private List<QueryPlanInfo> queryPlanInfoList;
 
-	private boolean success = false;
-	private boolean getBackupPlanInfo = false;
-	private boolean getQueryPlanInfo = false;
+    private boolean success = false;
+    private boolean getBackupPlanInfo = false;
+    private boolean getQueryPlanInfo = false;
 
-	public OpenJobAutomationInfoPartProgress (CubridDatabase database) {
-		this.database = database;
-		getBackupPlanInfo = true;
-		getQueryPlanInfo = true;
-	}
+    public OpenJobAutomationInfoPartProgress(CubridDatabase database) {
+        this.database = database;
+        getBackupPlanInfo = true;
+        getQueryPlanInfo = true;
+    }
 
-	public OpenJobAutomationInfoPartProgress (CubridDatabase database,
-			boolean getBackupPlanInfo, boolean getQueryPlanInfo) {
-		this.database = database;
-		this.getBackupPlanInfo = getBackupPlanInfo;
-		this.getQueryPlanInfo = getQueryPlanInfo;
-	}
+    public OpenJobAutomationInfoPartProgress(
+            CubridDatabase database, boolean getBackupPlanInfo, boolean getQueryPlanInfo) {
+        this.database = database;
+        this.getBackupPlanInfo = getBackupPlanInfo;
+        this.getQueryPlanInfo = getQueryPlanInfo;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,
-			InterruptedException {
-		if (getBackupPlanInfo) {
-			final GetBackupPlanListTask getBackupPlanInfoListTask = new GetBackupPlanListTask(
-					database.getServer().getServerInfo());
-			getBackupPlanInfoListTask.setDbName(database.getLabel());
-			getBackupPlanInfoListTask.execute();
-			if (getBackupPlanInfoListTask.isSuccess()) {
-				backupPlanInfoList = getBackupPlanInfoListTask.getBackupPlanInfoList();
-			} else {
-				backupPlanInfoList = new ArrayList<BackupPlanInfo>();
-			}
-		}
-		if (getQueryPlanInfo) {
-			final GetQueryPlanListTask getQueryPlanListTask = new GetQueryPlanListTask(
-					database.getServer().getServerInfo());
-			getQueryPlanListTask.setDbName(database.getLabel());
-			getQueryPlanListTask.execute();
-			if (getQueryPlanListTask.isSuccess()) {
-				queryPlanInfoList = getQueryPlanListTask.getQueryPlanInfoList();
-			} else {
-				queryPlanInfoList = new ArrayList<QueryPlanInfo>();
-			}
-		}
-		success = true;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+     */
+    public void run(IProgressMonitor monitor)
+            throws InvocationTargetException, InterruptedException {
+        if (getBackupPlanInfo) {
+            final GetBackupPlanListTask getBackupPlanInfoListTask =
+                    new GetBackupPlanListTask(database.getServer().getServerInfo());
+            getBackupPlanInfoListTask.setDbName(database.getLabel());
+            getBackupPlanInfoListTask.execute();
+            if (getBackupPlanInfoListTask.isSuccess()) {
+                backupPlanInfoList = getBackupPlanInfoListTask.getBackupPlanInfoList();
+            } else {
+                backupPlanInfoList = new ArrayList<BackupPlanInfo>();
+            }
+        }
+        if (getQueryPlanInfo) {
+            final GetQueryPlanListTask getQueryPlanListTask =
+                    new GetQueryPlanListTask(database.getServer().getServerInfo());
+            getQueryPlanListTask.setDbName(database.getLabel());
+            getQueryPlanListTask.execute();
+            if (getQueryPlanListTask.isSuccess()) {
+                queryPlanInfoList = getQueryPlanListTask.getQueryPlanInfoList();
+            } else {
+                queryPlanInfoList = new ArrayList<QueryPlanInfo>();
+            }
+        }
+        success = true;
+    }
 
-	/**
-	 * load loadJobAutomationInfoList list
-	 *
-	 * @return Catalog
-	 */
-	public void loadJobAutomationInfoList() {
-		Display display = Display.getDefault();
-		display.syncExec(new Runnable() {
-			public void run() {
-				try {
-					new ProgressMonitorDialog(null).run(true, false,
-							OpenJobAutomationInfoPartProgress.this);
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-				}
-			}
-		});
-	}
+    /**
+     * load loadJobAutomationInfoList list
+     *
+     * @return Catalog
+     */
+    public void loadJobAutomationInfoList() {
+        Display display = Display.getDefault();
+        display.syncExec(
+                new Runnable() {
+                    public void run() {
+                        try {
+                            new ProgressMonitorDialog(null)
+                                    .run(true, false, OpenJobAutomationInfoPartProgress.this);
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                        }
+                    }
+                });
+    }
 
-	public List<BackupPlanInfo> getBackupPlanInfoList() {
-		return backupPlanInfoList;
-	}
+    public List<BackupPlanInfo> getBackupPlanInfoList() {
+        return backupPlanInfoList;
+    }
 
-	public List<QueryPlanInfo> getQueryPlanInfoList() {
-		return queryPlanInfoList;
-	}
+    public List<QueryPlanInfo> getQueryPlanInfoList() {
+        return queryPlanInfoList;
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    public boolean isSuccess() {
+        return success;
+    }
 }

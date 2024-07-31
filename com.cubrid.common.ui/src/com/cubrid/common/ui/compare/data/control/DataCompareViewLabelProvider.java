@@ -25,8 +25,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- package com.cubrid.common.ui.compare.data.control;
+package com.cubrid.common.ui.compare.data.control;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.compare.data.model.CompareViewData;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -34,64 +36,62 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.compare.data.model.CompareViewData;
+public class DataCompareViewLabelProvider extends LabelProvider
+        implements ITableLabelProvider, ITableColorProvider {
+    private static final Color DIFFERENT_COLOR = new Color(Display.getCurrent(), 255, 32, 32);
+    private static final Color SOURCE_BG_COLOR = new Color(Display.getCurrent(), 255, 255, 255);
+    private static final Color TARGET_BG_COLOR = new Color(Display.getCurrent(), 250, 250, 250);
 
-public class DataCompareViewLabelProvider extends
-		LabelProvider implements
-		ITableLabelProvider, ITableColorProvider {
-	private static final Color DIFFERENT_COLOR = new Color(Display.getCurrent(), 255, 32, 32);
-	private static final Color SOURCE_BG_COLOR = new Color(Display.getCurrent(), 255, 255, 255);
-	private static final Color TARGET_BG_COLOR = new Color(Display.getCurrent(), 250, 250, 250);
-	
-	public Image getColumnImage(Object element, int columnIndex) {
-		return null;
-	}
+    public Image getColumnImage(Object element, int columnIndex) {
+        return null;
+    }
 
-	public String getColumnText(Object element, int columnIndex) {
-		if (element instanceof CompareViewData) {
-			CompareViewData comp = (CompareViewData) element;
-			if (comp.getData() != null && comp.getData().size() > columnIndex) {
-				if (columnIndex != 0 || comp.isSource()) {
-					return comp.getData().get(columnIndex);
-				}
-			}
-		}
+    public String getColumnText(Object element, int columnIndex) {
+        if (element instanceof CompareViewData) {
+            CompareViewData comp = (CompareViewData) element;
+            if (comp.getData() != null && comp.getData().size() > columnIndex) {
+                if (columnIndex != 0 || comp.isSource()) {
+                    return comp.getData().get(columnIndex);
+                }
+            }
+        }
 
-		return "";
-	}
-	
-	public Color getForeground(Object element, int columnIndex) {
-		if (element instanceof CompareViewData) {
-			CompareViewData comp = (CompareViewData) element;
-			
-			String curr = null;
-			if (comp.getData() != null && comp.getData().size() > columnIndex) {
-				curr = comp.getData().get(columnIndex);
-			}
-			String prev = null;
-			if (comp.getReferer() != null && comp.getReferer().getData() != null && comp.getReferer().getData().size() > columnIndex) {
-				prev = comp.getReferer().getData().get(columnIndex);
-			}
+        return "";
+    }
 
-			if (!StringUtil.isEqual(curr, prev)) {
-				return DIFFERENT_COLOR;
-			}
-		}
-		
-		return null;
-	}
+    public Color getForeground(Object element, int columnIndex) {
+        if (element instanceof CompareViewData) {
+            CompareViewData comp = (CompareViewData) element;
 
-	public Color getBackground(Object element, int columnIndex) {
-		if (element instanceof CompareViewData) {
-			CompareViewData comp = (CompareViewData) element;
-			if (comp.isSource()) {
-				return SOURCE_BG_COLOR;
-			} else {
-				return TARGET_BG_COLOR;
-			}
-		}
+            String curr = null;
+            if (comp.getData() != null && comp.getData().size() > columnIndex) {
+                curr = comp.getData().get(columnIndex);
+            }
+            String prev = null;
+            if (comp.getReferer() != null
+                    && comp.getReferer().getData() != null
+                    && comp.getReferer().getData().size() > columnIndex) {
+                prev = comp.getReferer().getData().get(columnIndex);
+            }
 
-		return null;
-	}
+            if (!StringUtil.isEqual(curr, prev)) {
+                return DIFFERENT_COLOR;
+            }
+        }
+
+        return null;
+    }
+
+    public Color getBackground(Object element, int columnIndex) {
+        if (element instanceof CompareViewData) {
+            CompareViewData comp = (CompareViewData) element;
+            if (comp.isSource()) {
+                return SOURCE_BG_COLOR;
+            } else {
+                return TARGET_BG_COLOR;
+            }
+        }
+
+        return null;
+    }
 }

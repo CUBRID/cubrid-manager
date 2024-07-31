@@ -29,6 +29,5 @@ package com.navercorp.dbtools.sqlmap.parser;
 
 public interface MapperParser {
 
-	public MapperFile parse(String queryXml) throws Exception;
-
+    public MapperFile parse(String queryXml) throws Exception;
 }

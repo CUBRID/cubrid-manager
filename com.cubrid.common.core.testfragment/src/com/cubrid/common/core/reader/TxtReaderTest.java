@@ -27,6 +27,8 @@
  */
 package com.cubrid.common.core.reader;
 
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.cubridmanager.core.SetupEnvTestCase;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,201 +38,190 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.cubridmanager.core.SetupEnvTestCase;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-21 created by fulei
  */
+public class TxtReaderTest extends SetupEnvTestCase {
+    private File file1;
+    private File file2;
 
-public class TxtReaderTest extends SetupEnvTestCase{
-	private File file1 ;
-	private File file2 ;
-	
-	protected void setUp () {
-		StringBuilder sb = new StringBuilder();
-		sb.append("20421,Wrestling,Greco-Roman 97kg,M,1");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("20420,Wrestling,Greco-Roman 96kg,M,1");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("20419,Wrestling,Greco-Roman 90kg,M,1");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("20418,Wrestling,Greco-Roman -90 kg,M,1");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("20417,Wrestling,Greco-Roman 85kg,M,1");
-		BufferedWriter fs = null;
-		
-		file1 = new File("file1");
-		try {
-			fs = getBufferedWriter(file1);
-			fs.write(sb.toString());
-			fs.flush();
-		} catch (Exception e) {
-			
-		} finally {
-			try {
-				if (fs != null) {
-					fs.close();
-					fs = null;
-				}
-			} catch (IOException e) {
-			}
-		}
-		
-		
-		sb = new StringBuilder();
-		sb.append("20421,Wrestling,Greco-Roman 97kg,M,1;20420,Wrestling,Greco-Roman 96kg,M,1;20419,Wrestling,Greco-Roman 90kg,M,1;20418,Wrestling,Greco-Roman -90 kg,M,1;20417,Wrestling,Greco-Roman 85kg,M,1;");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("20421,Wrestling,Greco-Roman 97kg,M,1;20420,Wrestling,Greco-Roman 96kg,M,1;20419,Wrestling,Greco-Roman 90kg,M,1;20418,Wrestling,Greco-Roman -90 kg,M,1;20417,Wrestling,Greco-Roman 85kg,M,1");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("20421,Wrestling,Greco-Roman 97kg,M,1;20420,Wrestling,Greco-Roman 96kg,M,1;20419,Wrestling,Greco-Roman 90kg,M,1;20418,Wrestling,Greco-Roman -90 kg,M,1;20417,Wrestling,Greco-Roman 85kg,M,1");
-		sb.append("20421,Wrestling,Greco-Roman 97kg,M,1;20420,Wrestling,Greco-Roman 96kg,M,1;20419,Wrestling,Greco");
-		sb.append(StringUtil.NEWLINE);
-		sb.append("-Roman 90kg,M,1;20418,Wrestling,Greco-Roman -90 kg,M,1;20417,Wrestling,Greco-Roman 85kg,M,1; 85kg,M,1");
-		file2 = new File("file2");
-		try {
-			fs = getBufferedWriter(file2);
-			fs.write(sb.toString());
-			fs.flush();
-		} catch (Exception e) {
-			
-		} finally {
-			try {
-				if (fs != null) {
-					fs.close();
-					fs = null;
-				}
-			} catch (IOException e) {
-			}
-		}
-		
-	}
-	
-	protected void tearDown () {
-		if (file1 !=null && file1.exists()) {
-			file1.delete();
-		}
-		
-		if (file2 !=null && file2.exists()) {
-			file2.delete();
-		}
-	}
-	
-	
-	public void testTxtReader () {
-		TxtReader txtReader = null;
-		try {
-			txtReader = new TxtReader(new FileReader(file1),
-					"," , StringUtil.NEWLINE);
+    protected void setUp() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("20421,Wrestling,Greco-Roman 97kg,M,1");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("20420,Wrestling,Greco-Roman 96kg,M,1");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("20419,Wrestling,Greco-Roman 90kg,M,1");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("20418,Wrestling,Greco-Roman -90 kg,M,1");
+        sb.append(StringUtil.NEWLINE);
+        sb.append("20417,Wrestling,Greco-Roman 85kg,M,1");
+        BufferedWriter fs = null;
 
-			String[] txtLine = txtReader.readNext();
-			assertTrue(txtLine.length > 0);
-			
-			String[] txtRow = txtReader.readNextRow();
-			assertTrue(txtRow.length > 0);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (txtReader != null) {
-				try {
-					txtReader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-	
-		try {
-			txtReader = new TxtReader(new FileReader(file1),
-				"," , StringUtil.NEWLINE);
-			assertTrue(txtReader.readAll().size() == 5);
-			String[] txtRow = txtReader.readNextRow();
-			assertNull(txtRow);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (txtReader != null) {
-				try {
-					txtReader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-		
-		try {
-			txtReader = new TxtReader(new FileReader(file2),
-					",", ";");
+        file1 = new File("file1");
+        try {
+            fs = getBufferedWriter(file1);
+            fs.write(sb.toString());
+            fs.flush();
+        } catch (Exception e) {
 
-			String[] txtLine = txtReader.readNext();
-			assertTrue(txtLine.length > 0);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (txtReader != null) {
-				try {
-					txtReader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-	
-		try {
-			txtReader = new TxtReader(new FileReader(file2),
-					",", ";");
+        } finally {
+            try {
+                if (fs != null) {
+                    fs.close();
+                    fs = null;
+                }
+            } catch (IOException e) {
+            }
+        }
 
-			String[] txtLine = txtReader.readNextRow();
-			assertTrue(txtLine.length > 0);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (txtReader != null) {
-				try {
-					txtReader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-		
-		try {
-			txtReader = new TxtReader(new FileReader(file2),
-					",", ";");
-			assertTrue(txtReader.readAll().size() > 0);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (txtReader != null) {
-				try {
-					txtReader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-		
-		try {
-			txtReader = new TxtReader(new FileReader(file2),
-					";");
-			assertTrue(txtReader.readNextRow().length > 0);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (txtReader != null) {
-				try {
-					txtReader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-	}
-	
+        sb = new StringBuilder();
+        sb.append(
+                "20421,Wrestling,Greco-Roman 97kg,M,1;20420,Wrestling,Greco-Roman 96kg,M,1;20419,Wrestling,Greco-Roman 90kg,M,1;20418,Wrestling,Greco-Roman -90 kg,M,1;20417,Wrestling,Greco-Roman 85kg,M,1;");
+        sb.append(StringUtil.NEWLINE);
+        sb.append(
+                "20421,Wrestling,Greco-Roman 97kg,M,1;20420,Wrestling,Greco-Roman 96kg,M,1;20419,Wrestling,Greco-Roman 90kg,M,1;20418,Wrestling,Greco-Roman -90 kg,M,1;20417,Wrestling,Greco-Roman 85kg,M,1");
+        sb.append(StringUtil.NEWLINE);
+        sb.append(
+                "20421,Wrestling,Greco-Roman 97kg,M,1;20420,Wrestling,Greco-Roman 96kg,M,1;20419,Wrestling,Greco-Roman 90kg,M,1;20418,Wrestling,Greco-Roman -90 kg,M,1;20417,Wrestling,Greco-Roman 85kg,M,1");
+        sb.append(
+                "20421,Wrestling,Greco-Roman 97kg,M,1;20420,Wrestling,Greco-Roman 96kg,M,1;20419,Wrestling,Greco");
+        sb.append(StringUtil.NEWLINE);
+        sb.append(
+                "-Roman 90kg,M,1;20418,Wrestling,Greco-Roman -90 kg,M,1;20417,Wrestling,Greco-Roman 85kg,M,1; 85kg,M,1");
+        file2 = new File("file2");
+        try {
+            fs = getBufferedWriter(file2);
+            fs.write(sb.toString());
+            fs.flush();
+        } catch (Exception e) {
 
-	private BufferedWriter getBufferedWriter(File file) throws UnsupportedEncodingException,
-			FileNotFoundException {
-		BufferedWriter fs = null;
-		fs = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(file)));
-		return fs;
-	}
+        } finally {
+            try {
+                if (fs != null) {
+                    fs.close();
+                    fs = null;
+                }
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    protected void tearDown() {
+        if (file1 != null && file1.exists()) {
+            file1.delete();
+        }
+
+        if (file2 != null && file2.exists()) {
+            file2.delete();
+        }
+    }
+
+    public void testTxtReader() {
+        TxtReader txtReader = null;
+        try {
+            txtReader = new TxtReader(new FileReader(file1), ",", StringUtil.NEWLINE);
+
+            String[] txtLine = txtReader.readNext();
+            assertTrue(txtLine.length > 0);
+
+            String[] txtRow = txtReader.readNextRow();
+            assertTrue(txtRow.length > 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (txtReader != null) {
+                try {
+                    txtReader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        try {
+            txtReader = new TxtReader(new FileReader(file1), ",", StringUtil.NEWLINE);
+            assertTrue(txtReader.readAll().size() == 5);
+            String[] txtRow = txtReader.readNextRow();
+            assertNull(txtRow);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (txtReader != null) {
+                try {
+                    txtReader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        try {
+            txtReader = new TxtReader(new FileReader(file2), ",", ";");
+
+            String[] txtLine = txtReader.readNext();
+            assertTrue(txtLine.length > 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (txtReader != null) {
+                try {
+                    txtReader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        try {
+            txtReader = new TxtReader(new FileReader(file2), ",", ";");
+
+            String[] txtLine = txtReader.readNextRow();
+            assertTrue(txtLine.length > 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (txtReader != null) {
+                try {
+                    txtReader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        try {
+            txtReader = new TxtReader(new FileReader(file2), ",", ";");
+            assertTrue(txtReader.readAll().size() > 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (txtReader != null) {
+                try {
+                    txtReader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        try {
+            txtReader = new TxtReader(new FileReader(file2), ";");
+            assertTrue(txtReader.readNextRow().length > 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (txtReader != null) {
+                try {
+                    txtReader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+    private BufferedWriter getBufferedWriter(File file)
+            throws UnsupportedEncodingException, FileNotFoundException {
+        BufferedWriter fs = null;
+        fs = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+        return fs;
+    }
 }

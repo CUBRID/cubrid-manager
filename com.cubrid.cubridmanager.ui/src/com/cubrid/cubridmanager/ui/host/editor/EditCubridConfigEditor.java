@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,77 +23,68 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.ui.host.editor;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
 
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.ui.host.action.ConfEditInput;
 import com.cubrid.cubridmanager.ui.host.dialog.ConfigType;
 import com.cubrid.cubridmanager.ui.spi.util.ConfigParaHelp;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 
 /**
  * This editor is responsible for edit cubrid property
- * 
+ *
  * @author lizhiqiang
  * @version 1.0 - 2011-3-24 created by lizhiqiang
  */
-public class EditCubridConfigEditor extends
-		EditConfigEditor {
-	public static final String ID = EditCubridConfigEditor.class.getName();
-	private ConfEditInput editorInput;
+public class EditCubridConfigEditor extends EditConfigEditor {
+    public static final String ID = EditCubridConfigEditor.class.getName();
+    private ConfEditInput editorInput;
 
-	/**
-	 * @see com.cubrid.common.ui.spi.part.CubridEditorPart#init(org.eclipse.ui.IEditorSite,
-	 *      org.eclipse.ui.IEditorInput)
-	 * @param site the editor site
-	 * @param input the editor input
-	 * @exception PartInitException if this editor was not initialized
-	 *            successfully
-	 */
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		super.init(site, input);
-		if (input instanceof ConfEditInput) {
-			editorInput = (ConfEditInput) input;
-			ServerInfo serverInfo = editorInput.getServerInfo();
-			contents = ConfigParaHelp.performGetCubridConf(serverInfo);
-		}
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.part.CubridEditorPart#init(org.eclipse.ui.IEditorSite,
+     *     org.eclipse.ui.IEditorInput)
+     * @param site the editor site
+     * @param input the editor input
+     * @exception PartInitException if this editor was not initialized successfully
+     */
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        super.init(site, input);
+        if (input instanceof ConfEditInput) {
+            editorInput = (ConfEditInput) input;
+            ServerInfo serverInfo = editorInput.getServerInfo();
+            contents = ConfigParaHelp.performGetCubridConf(serverInfo);
+        }
+    }
 
-	/**
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-	 * @param monitor IProgressMonitor
-	 */
-	public void doSave(IProgressMonitor monitor) {
-		if (editorInput == null) {
-			return;
-		}
-		if (!isSaveAllowed()) {
-			return;
-		}
-		String contents = propEditor.getDocument().get();
-		ConfigParaHelp.performImportCubridConf(editorInput.getServerInfo(),
-				contents);
-		super.doSave(monitor);
-	}
+    /**
+     * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
+     * @param monitor IProgressMonitor
+     */
+    public void doSave(IProgressMonitor monitor) {
+        if (editorInput == null) {
+            return;
+        }
+        if (!isSaveAllowed()) {
+            return;
+        }
+        String contents = propEditor.getDocument().get();
+        ConfigParaHelp.performImportCubridConf(editorInput.getServerInfo(), contents);
+        super.doSave(monitor);
+    }
 
-	/**
-	 * Do the import operation
-	 */
-	protected void doImport() {
-		doImport(ConfigType.CUBRID);
-	}
+    /** Do the import operation */
+    protected void doImport() {
+        doImport(ConfigType.CUBRID);
+    }
 
-	/**
-	 * Do the export operation
-	 */
-	protected void doExport() {
-		doExport(ConfigType.CUBRID);
-	}
-
+    /** Do the export operation */
+    protected void doExport() {
+        doExport(ConfigType.CUBRID);
+    }
 }

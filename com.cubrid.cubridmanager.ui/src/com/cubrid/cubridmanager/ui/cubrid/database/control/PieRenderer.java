@@ -28,7 +28,6 @@
 package com.cubrid.cubridmanager.ui.cubrid.database.control;
 
 import java.util.List;
-
 import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -39,31 +38,31 @@ import org.jfree.data.general.DefaultPieDataset;
  * @version 1.0 - 2009-12-28 created by lizhiqing
  */
 public class PieRenderer {
-	/*
-	 * Declaring an array of Color variables for storing a list of Colors
-	 */
-	private final java.awt.Color[] color;
+    /*
+     * Declaring an array of Color variables for storing a list of Colors
+     */
+    private final java.awt.Color[] color;
 
-	/* Constructor to initialize PieRenderer class */
-	public PieRenderer(java.awt.Color[] color) {
-		this.color = color;
-	}
+    /* Constructor to initialize PieRenderer class */
+    public PieRenderer(java.awt.Color[] color) {
+        this.color = color;
+    }
 
-	/**
-	 * * Set Method to set colors for pie sections based on our choice*
-	 *
-	 * @param plot PiePlot of PieChart*
-	 * @param dataset PieChart DataSet
-	 */
-	@SuppressWarnings("rawtypes")
-	public void setColor(PiePlot3D plot, DefaultPieDataset dataset) {
-		if (plot == null || dataset == null) {
-			return;
-		}
-		
-		List keys = dataset.getKeys();
-		for (int i = 0; i < keys.size(); i++) {
-			plot.setSectionPaint(dataset.getKey(i), this.color[i % this.color.length]);
-		}
-	}
+    /**
+     * * Set Method to set colors for pie sections based on our choice*
+     *
+     * @param plot PiePlot of PieChart*
+     * @param dataset PieChart DataSet
+     */
+    @SuppressWarnings("rawtypes")
+    public void setColor(PiePlot3D plot, DefaultPieDataset dataset) {
+        if (plot == null || dataset == null) {
+            return;
+        }
+
+        List keys = dataset.getKeys();
+        for (int i = 0; i < keys.size(); i++) {
+            plot.setSectionPaint(dataset.getKey(i), this.color[i % this.color.length]);
+        }
+    }
 }

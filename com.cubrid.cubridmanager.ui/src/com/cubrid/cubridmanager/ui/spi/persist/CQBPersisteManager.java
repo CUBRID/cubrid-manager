@@ -29,24 +29,27 @@ package com.cubrid.cubridmanager.ui.spi.persist;
 
 import com.cubrid.common.ui.common.persist.IPersisteManager;
 
-
 /**
  * PersisteManager
  *
  * @author Kevin.Wang
  * @version 1.0 - 2013-7-8 created by Kevin.Wang
  */
-public class CQBPersisteManager implements
-		IPersisteManager {
-	public void updateDBPassword(String serverName, String address, String monPort, String dbName,
-			String userName, String password, boolean isSavePassword) {
-	}
+public class CQBPersisteManager implements IPersisteManager {
+    public void updateDBPassword(
+            String serverName,
+            String address,
+            String monPort,
+            String dbName,
+            String userName,
+            String password,
+            boolean isSavePassword) {}
 
-	public void savaAllServers() {
-		CQBDBNodePersistManager.getInstance().saveDatabases();
-	}
+    public void savaAllServers() {
+        CQBDBNodePersistManager.getInstance().saveDatabases();
+    }
 
-	public void saveAllGroupNodes() {
-		CQBGroupNodePersistManager.getInstance().saveAllGroupNode();
-	}
+    public void saveAllGroupNodes() {
+        CQBGroupNodePersistManager.getInstance().saveAllGroupNode();
+    }
 }

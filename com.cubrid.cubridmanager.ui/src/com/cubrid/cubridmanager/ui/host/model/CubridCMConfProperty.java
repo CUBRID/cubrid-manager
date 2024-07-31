@@ -29,35 +29,35 @@ package com.cubrid.cubridmanager.ui.host.model;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-3-19 created by fulei
  */
-
 public class CubridCMConfProperty {
-	
-	private String CubridCMConfPropKey;
-	private String CubridCMConfPropValue;
-	private String CubridCMConfPropAnnotation;
-	
-	public String getCubridCMConfPropKey() {
-		return CubridCMConfPropKey;
-	}
-	public void setCubridCMConfPropKey(String cubridCMConfPropKey) {
-		CubridCMConfPropKey = cubridCMConfPropKey;
-	}
-	public String getCubridCMConfPropValue() {
-		return CubridCMConfPropValue;
-	}
-	public void setCubridCMConfPropValue(String cubridCMConfPropValue) {
-		CubridCMConfPropValue = cubridCMConfPropValue;
-	}
-	public String getCubridCMConfPropAnnotation() {
-		return CubridCMConfPropAnnotation;
-	}
-	public void setCubridCMConfPropAnnotation(String cubridCMConfPropAnnotation) {
-		CubridCMConfPropAnnotation = cubridCMConfPropAnnotation;
-	}
-	
-	
-	
+
+    private String CubridCMConfPropKey;
+    private String CubridCMConfPropValue;
+    private String CubridCMConfPropAnnotation;
+
+    public String getCubridCMConfPropKey() {
+        return CubridCMConfPropKey;
+    }
+
+    public void setCubridCMConfPropKey(String cubridCMConfPropKey) {
+        CubridCMConfPropKey = cubridCMConfPropKey;
+    }
+
+    public String getCubridCMConfPropValue() {
+        return CubridCMConfPropValue;
+    }
+
+    public void setCubridCMConfPropValue(String cubridCMConfPropValue) {
+        CubridCMConfPropValue = cubridCMConfPropValue;
+    }
+
+    public String getCubridCMConfPropAnnotation() {
+        return CubridCMConfPropAnnotation;
+    }
+
+    public void setCubridCMConfPropAnnotation(String cubridCMConfPropAnnotation) {
+        CubridCMConfPropAnnotation = cubridCMConfPropAnnotation;
+    }
 }

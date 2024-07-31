@@ -27,50 +27,43 @@
  */
 package com.cubrid.common.core.task.impl;
 
+import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
-
-
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-12-19 created by fulei
  */
-
 public class JDBCDriverDownloadTaskTest extends SetupJDBCTestCase {
-	String fileName = "CUBRID-8.4.1_jdbc.jar";
-	String dirPath = this.getFilePathInPlugin("/com/cubrid/common/core/task/impl");
-//	String dirPath = "d:" + File.separator;
-	public void testGetJDBCFileList() {
-		JDBCDriverDownloadTask task = new JDBCDriverDownloadTask();
-		task.getDriverList();
-		assertNull(task.getErrorMsg());
-		try {
-			assertFalse(task.getJDBCFileList().isEmpty());
-		} catch(Exception ignore) {
-			
-		}
-	}
-	
-	public void testDownloadDriver() {
-		List<String> driverList = new ArrayList<String>();
-		driverList.add(fileName);
+    String fileName = "CUBRID-8.4.1_jdbc.jar";
+    String dirPath = this.getFilePathInPlugin("/com/cubrid/common/core/task/impl");
+    //	String dirPath = "d:" + File.separator;
+    public void testGetJDBCFileList() {
+        JDBCDriverDownloadTask task = new JDBCDriverDownloadTask();
+        task.getDriverList();
+        assertNull(task.getErrorMsg());
+        try {
+            assertFalse(task.getJDBCFileList().isEmpty());
+        } catch (Exception ignore) {
 
-		JDBCDriverDownloadTask task = new JDBCDriverDownloadTask(driverList, dirPath,
-				"", "");
-		task.execute();
-		assertTrue(task.isSuccess());
-		
-	}
-	
-	protected void tearDown() throws Exception {
-		File file = new File(dirPath + File.separator + fileName);
-		if (file.exists()) {
-			file.delete();
-		}
-	}
+        }
+    }
+
+    public void testDownloadDriver() {
+        List<String> driverList = new ArrayList<String>();
+        driverList.add(fileName);
+
+        JDBCDriverDownloadTask task = new JDBCDriverDownloadTask(driverList, dirPath, "", "");
+        task.execute();
+        assertTrue(task.isSuccess());
+    }
+
+    protected void tearDown() throws Exception {
+        File file = new File(dirPath + File.separator + fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
 }

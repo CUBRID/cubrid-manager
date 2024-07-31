@@ -29,21 +29,18 @@ package com.cubrid.common.ui.compare.schema.action;
 
 import static com.cubrid.common.ui.spi.util.CommonUITool.openWarningBox;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.common.Messages;
 import com.cubrid.common.ui.compare.schema.dialog.SchemaCompareDialog;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Open the data compare wizard
@@ -52,52 +49,52 @@ import com.cubrid.cubridmanager.core.common.model.DbRunningType;
  * @version 1.0 - 2013-01-22 created by PCraft
  */
 public class SchemaCompareWizardAction extends SelectionAction {
-	public static final String ID = SchemaCompareWizardAction.class.getName();
+    public static final String ID = SchemaCompareWizardAction.class.getName();
 
-	public SchemaCompareWizardAction(Shell shell, String text, ImageDescriptor icon) {
-		super(shell, null, text, icon);
-		this.setId(ID);
-	}
+    public SchemaCompareWizardAction(Shell shell, String text, ImageDescriptor icon) {
+        super(shell, null, text, icon);
+        this.setId(ID);
+    }
 
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	public boolean isSupported(Object obj) {
-		return true;
-	}
+    public boolean isSupported(Object obj) {
+        return true;
+    }
 
-	public void run() {
-		Object[] objs = this.getSelectedObj();
-		if (objs == null || objs.length != 2) {
-			openWarningBox(Messages.errSelectOverTwoDb);
-			return;
-		}
+    public void run() {
+        Object[] objs = this.getSelectedObj();
+        if (objs == null || objs.length != 2) {
+            openWarningBox(Messages.errSelectOverTwoDb);
+            return;
+        }
 
-		List<ICubridNode> selections = new ArrayList<ICubridNode>();
-		Set<CubridDatabase> addedDatabaseSet = new HashSet<CubridDatabase>();
+        List<ICubridNode> selections = new ArrayList<ICubridNode>();
+        Set<CubridDatabase> addedDatabaseSet = new HashSet<CubridDatabase>();
 
-		for (Object obj : objs) {
-			if (obj instanceof CubridDatabase) {
-				CubridDatabase db = (CubridDatabase) obj;
-				if(db.getRunningType() == DbRunningType.STANDALONE){
-					openWarningBox(Messages.errSelectNonRunningDb);
-					return;
-				}
+        for (Object obj : objs) {
+            if (obj instanceof CubridDatabase) {
+                CubridDatabase db = (CubridDatabase) obj;
+                if (db.getRunningType() == DbRunningType.STANDALONE) {
+                    openWarningBox(Messages.errSelectNonRunningDb);
+                    return;
+                }
 
-				if (addedDatabaseSet.contains(obj)) {
-					continue;
-				}
+                if (addedDatabaseSet.contains(obj)) {
+                    continue;
+                }
 
-				if (!db.isLogined()) {
-					openWarningBox(Messages.errSelectNonRunningDb);
-					return;
-				}
+                if (!db.isLogined()) {
+                    openWarningBox(Messages.errSelectNonRunningDb);
+                    return;
+                }
 
-				selections.add((ICubridNode) obj);
-			}
-		}
+                selections.add((ICubridNode) obj);
+            }
+        }
 
-		new SchemaCompareDialog(getShell(), selections).open();
-	}
+        new SchemaCompareDialog(getShell(), selections).open();
+    }
 }

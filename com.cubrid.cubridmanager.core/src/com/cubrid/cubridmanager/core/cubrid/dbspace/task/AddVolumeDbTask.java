@@ -32,79 +32,84 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 
 /**
- *
  * A task that add volume DB
  *
  * @author lizhiqiang
  * @version 1.0 - 2009-4-22 created lizhiqiang
  */
-public class AddVolumeDbTask extends
-		SocketTask {
-	private static final String[] SEND_MSG_ITEMS = new String[] { "task", "token", "dbname",
-			"volname", "purpose", "path", "numberofpages", "size_need_mb" };
+public class AddVolumeDbTask extends SocketTask {
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {
+                "task",
+                "token",
+                "dbname",
+                "volname",
+                "purpose",
+                "path",
+                "numberofpages",
+                "size_need_mb"
+            };
 
-	/**
-	 * The constructor
-	 *
-	 * @param serverInfo
-	 */
-	public AddVolumeDbTask(ServerInfo serverInfo) {
-		super("addvoldb", serverInfo, SEND_MSG_ITEMS);
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public AddVolumeDbTask(ServerInfo serverInfo) {
+        super("addvoldb", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	}
+    /**
+     * Set database name
+     *
+     * @param dbname String database name
+     */
+    public void setDbname(String dbname) {
+        super.setMsgItem("dbname", dbname);
+    }
 
-	/**
-	 * Set database name
-	 *
-	 * @param dbname String database name
-	 */
-	public void setDbname(String dbname) {
-		super.setMsgItem("dbname", dbname);
-	}
+    /**
+     * set volume name
+     *
+     * @param volname String volume name
+     */
+    public void setVolname(String volname) {
+        super.setMsgItem("volname", volname);
+    }
 
-	/**
-	 * set volume name
-	 *
-	 * @param volname String volume name
-	 */
-	public void setVolname(String volname) {
-		super.setMsgItem("volname", volname);
-	}
+    /**
+     * Set purpose
+     *
+     * @param purpose String purpose
+     */
+    public void setPurpose(String purpose) {
+        super.setMsgItem("purpose", purpose);
+    }
 
-	/**
-	 * Set purpose
-	 *
-	 * @param purpose String purpose
-	 */
-	public void setPurpose(String purpose) {
-		super.setMsgItem("purpose", purpose);
-	}
+    /**
+     * Set the path of volume
+     *
+     * @param path String th path of volume
+     */
+    public void setPath(String path) {
+        super.setMsgItem("path", path);
+    }
 
-	/**
-	 *
-	 * Set the path of volume
-	 *
-	 * @param path String th path of volume
-	 */
-	public void setPath(String path) {
-		super.setMsgItem("path", path);
-	}
+    /**
+     * Set number of page
+     *
+     * @param numberofpages String number of pages
+     */
+    public void setNumberofpages(String numberofpages) {
+        super.setMsgItem("numberofpages", numberofpages);
+    }
 
-	/**
-	 * Set number of page
-	 *
-	 * @param numberofpages String number of pages
-	 */
-	public void setNumberofpages(String numberofpages) {
-		super.setMsgItem("numberofpages", numberofpages);
-	}
-
-	/**
-	 * Set the size of need, which units is mb
-	 *
-	 * @param sizeNeedMb String the sized of need
-	 */
-	public void setSizeNeedMb(String sizeNeedMb) {
-		super.setMsgItem("size_need_mb", sizeNeedMb);
-	}
+    /**
+     * Set the size of need, which units is mb
+     *
+     * @param sizeNeedMb String the sized of need
+     */
+    public void setSizeNeedMb(String sizeNeedMb) {
+        super.setMsgItem("size_need_mb", sizeNeedMb);
+    }
 }

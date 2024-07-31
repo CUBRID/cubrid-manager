@@ -8,91 +8,81 @@ import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.common.task.CommonTaskName;
 import com.cubrid.cubridmanager.core.common.task.CommonUpdateTask;
 
-public class StopDbTaskTest extends
-		SetupEnvTestCase {
+public class StopDbTaskTest extends SetupEnvTestCase {
 
-	public void testStopDbDemo() {
+    public void testStopDbDemo() {
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		System.out.println("<database.stopdb.001.req.txt>");
+        System.out.println("<database.stopdb.001.req.txt>");
 
-		CommonUpdateTask task = new CommonUpdateTask(
-				CommonTaskName.STOP_DB_TASK_NAME,
-				ServerManager.getInstance().getServer(host, monport, userName),
-				CommonSendMsg.getCommonDatabaseSendMsg());
+        CommonUpdateTask task =
+                new CommonUpdateTask(
+                        CommonTaskName.STOP_DB_TASK_NAME,
+                        ServerManager.getInstance().getServer(host, monport, userName),
+                        CommonSendMsg.getCommonDatabaseSendMsg());
 
-		task.setDbName("demodb");
-		task.execute();
+        task.setDbName("demodb");
+        task.execute();
 
-		assertTrue(task.isSuccess());
-		assertNull(task.getErrorMsg());
+        assertTrue(task.isSuccess());
+        assertNull(task.getErrorMsg());
+    }
 
-	}
+    public void testStopDbNotExist() {
 
-	public void testStopDbNotExist() {
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        System.out.println("<database.stopdb.002.req.txt>");
 
-		System.out.println("<database.stopdb.002.req.txt>");
+        CommonUpdateTask task =
+                new CommonUpdateTask(
+                        CommonTaskName.STOP_DB_TASK_NAME,
+                        ServerManager.getInstance().getServer(host, monport, userName),
+                        CommonSendMsg.getCommonDatabaseSendMsg());
 
-		CommonUpdateTask task = new CommonUpdateTask(
-				CommonTaskName.STOP_DB_TASK_NAME,
-				ServerManager.getInstance().getServer(host, monport, userName),
-				CommonSendMsg.getCommonDatabaseSendMsg());
+        task.setDbName("notexistdb");
+        task.execute();
 
-		task.setDbName("notexistdb");
-		task.execute();
+        assertTrue(task.isSuccess());
+        assertNull(task.getErrorMsg());
+    }
 
-		assertTrue(task.isSuccess());
-		assertNull(task.getErrorMsg());
+    public void testStopDbNotActive() {
 
-	}
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-	public void testStopDbNotActive() {
+        System.out.println("<database.stopdb.003.req.txt>");
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        CommonUpdateTask task =
+                new CommonUpdateTask(
+                        CommonTaskName.STOP_DB_TASK_NAME,
+                        ServerManager.getInstance().getServer(host, monport, userName),
+                        CommonSendMsg.getCommonDatabaseSendMsg());
 
-		System.out.println("<database.stopdb.003.req.txt>");
+        task.setDbName("notactivedb");
+        task.execute();
 
-		CommonUpdateTask task = new CommonUpdateTask(
-				CommonTaskName.STOP_DB_TASK_NAME,
-				ServerManager.getInstance().getServer(host, monport, userName),
-				CommonSendMsg.getCommonDatabaseSendMsg());
+        assertTrue(task.isSuccess());
+        assertNull(task.getErrorMsg());
+    }
 
-		task.setDbName("notactivedb");
-		task.execute();
+    public void testStopDbEmpty() {
 
-		assertTrue(task.isSuccess());
-		assertNull(task.getErrorMsg());
+        if (StringUtil.isEqual(SystemParameter.getParameterValue("useMockTest"), "n")) return;
 
-	}
+        System.out.println("<database.stopdb.004.req.txt>");
 
-	public void testStopDbEmpty() {
+        CommonUpdateTask task =
+                new CommonUpdateTask(
+                        CommonTaskName.STOP_DB_TASK_NAME,
+                        ServerManager.getInstance().getServer(host, monport, userName),
+                        CommonSendMsg.getCommonDatabaseSendMsg());
 
-		if (StringUtil.isEqual(
-				SystemParameter.getParameterValue("useMockTest"), "n"))
-			return;
+        task.setDbName(null);
+        task.execute();
 
-		System.out.println("<database.stopdb.004.req.txt>");
-
-		CommonUpdateTask task = new CommonUpdateTask(
-				CommonTaskName.STOP_DB_TASK_NAME,
-				ServerManager.getInstance().getServer(host, monport, userName),
-				CommonSendMsg.getCommonDatabaseSendMsg());
-
-		task.setDbName(null);
-		task.execute();
-
-		assertFalse(task.isSuccess());
-		assertNotNull(task.getErrorMsg());
-
-	}
-
+        assertFalse(task.isSuccess());
+        assertNotNull(task.getErrorMsg());
+    }
 }

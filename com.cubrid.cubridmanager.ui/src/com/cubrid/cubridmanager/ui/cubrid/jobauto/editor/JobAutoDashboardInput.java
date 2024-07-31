@@ -27,92 +27,89 @@
  */
 package com.cubrid.cubridmanager.ui.cubrid.jobauto.editor;
 
+import com.cubrid.common.ui.spi.model.CubridDatabase;
+import com.cubrid.cubridmanager.core.cubrid.jobauto.model.BackupPlanInfo;
+import com.cubrid.cubridmanager.core.cubrid.jobauto.model.QueryPlanInfo;
+import com.cubrid.cubridmanager.ui.cubrid.jobauto.Messages;
 import java.util.List;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.cubridmanager.core.cubrid.jobauto.model.BackupPlanInfo;
-import com.cubrid.cubridmanager.core.cubrid.jobauto.model.QueryPlanInfo;
-import com.cubrid.cubridmanager.ui.cubrid.jobauto.Messages;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-1-14 created by fulei
  */
-
 public class JobAutoDashboardInput implements IEditorInput {
-	
-	private final CubridDatabase database;
-	private final List<BackupPlanInfo> backupPlanInfoList; 
-	private final List<QueryPlanInfo> queryPlanInfoList; 
-	
-	
-	public JobAutoDashboardInput(CubridDatabase database,
-			List<BackupPlanInfo> backupPlanInfoList, List<QueryPlanInfo> queryPlanInfoList) {
-		this.database = database;
-		this.backupPlanInfoList = backupPlanInfoList;
-		this.queryPlanInfoList = queryPlanInfoList;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(CubridDatabase.class)) {
-			return database;
-		}
-		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#exists()
-	 */
-	public boolean exists() {
-		return false;
-	}
+    private final CubridDatabase database;
+    private final List<BackupPlanInfo> backupPlanInfoList;
+    private final List<QueryPlanInfo> queryPlanInfoList;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-	 */
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    public JobAutoDashboardInput(
+            CubridDatabase database,
+            List<BackupPlanInfo> backupPlanInfoList,
+            List<QueryPlanInfo> queryPlanInfoList) {
+        this.database = database;
+        this.backupPlanInfoList = backupPlanInfoList;
+        this.queryPlanInfoList = queryPlanInfoList;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getName()
-	 */
-	public String getName() {
-		return Messages.jobAutoDetailInfoPartTitle;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+     */
+    public Object getAdapter(Class adapter) {
+        if (adapter.equals(CubridDatabase.class)) {
+            return database;
+        }
+        return Platform.getAdapterManager().getAdapter(this, adapter);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getPersistable()
-	 */
-	public IPersistableElement getPersistable() {
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#exists()
+     */
+    public boolean exists() {
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
-	 */
-	public String getToolTipText() {
-		return this.getName();
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
+     */
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	public CubridDatabase getDatabase() {
-		return database;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getName()
+     */
+    public String getName() {
+        return Messages.jobAutoDetailInfoPartTitle;
+    }
 
-	public List<BackupPlanInfo> getBackupPlanInfoList() {
-		return backupPlanInfoList;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getPersistable()
+     */
+    public IPersistableElement getPersistable() {
+        return null;
+    }
 
-	public List<QueryPlanInfo> getQueryPlanInfoList() {
-		return queryPlanInfoList;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IEditorInput#getToolTipText()
+     */
+    public String getToolTipText() {
+        return this.getName();
+    }
+
+    public CubridDatabase getDatabase() {
+        return database;
+    }
+
+    public List<BackupPlanInfo> getBackupPlanInfoList() {
+        return backupPlanInfoList;
+    }
+
+    public List<QueryPlanInfo> getQueryPlanInfoList() {
+        return queryPlanInfoList;
+    }
 }

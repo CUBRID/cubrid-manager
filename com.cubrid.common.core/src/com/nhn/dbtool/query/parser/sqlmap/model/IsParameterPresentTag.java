@@ -27,17 +27,16 @@
  */
 package com.nhn.dbtool.query.parser.sqlmap.model;
 
-
 /**
- * A definition of isParameterPresent tag.
- * <isParameterPresent prepend="" open="" close="" removeFirstPrepend="true"></isParameterPresent>
+ * A definition of isParameterPresent tag. <isParameterPresent prepend="" open="" close=""
+ * removeFirstPrepend="true"></isParameterPresent>
  *
  * @author Bumsik, Jang
  */
 public class IsParameterPresentTag extends SqlMapCondition {
-	private static final long serialVersionUID = -7055569989066091817L;
+    private static final long serialVersionUID = -7055569989066091817L;
 
-	public IsParameterPresentTag() {
-		this.setType("isParameterPresent");
-	}
+    public IsParameterPresentTag() {
+        this.setType("isParameterPresent");
+    }
 }

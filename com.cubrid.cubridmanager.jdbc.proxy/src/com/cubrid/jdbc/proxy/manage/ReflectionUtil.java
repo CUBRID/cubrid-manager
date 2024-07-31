@@ -37,181 +37,167 @@ import java.sql.SQLException;
  * The reflection util
  *
  * @author robinhood
- *
  */
 public final class ReflectionUtil {
 
-	private ReflectionUtil() {
-	}
+    private ReflectionUtil() {}
 
-	/**
-	 *
-	 * Invoke the method of this object by reflection
-	 *
-	 * @param objSrc the invoked object
-	 * @param methodName the invoked method
-	 * @return the object
-	 * @throws CUBRIDProxySQLException exception
-	 */
-	public static Object invoke(Object objSrc, String methodName) throws CUBRIDProxySQLException {
-		try {
+    /**
+     * Invoke the method of this object by reflection
+     *
+     * @param objSrc the invoked object
+     * @param methodName the invoked method
+     * @return the object
+     * @throws CUBRIDProxySQLException exception
+     */
+    public static Object invoke(Object objSrc, String methodName) throws CUBRIDProxySQLException {
+        try {
 
-			Method m = objSrc.getClass().getMethod(methodName);
-			return m.invoke(objSrc);
-		} catch (SecurityException e) {
-			throw e;
-		} catch (NoSuchMethodException e) {
-			throw new CUBRIDProxySQLException(e, -90000);
-		} catch (IllegalArgumentException e) {
-			throw e;
-		} catch (IllegalAccessException e) {
-			throw new CUBRIDProxySQLException(e, -90001);
-		} catch (InvocationTargetException e) {
-			if (e.getTargetException() instanceof SQLException) {
-				throw new CUBRIDProxySQLException(e,
-						(SQLException) e.getTargetException());
-			} else {
-				throw new CUBRIDProxySQLException(e, e.getTargetException(),
-						-90002);
-			}
-		}
-	}
+            Method m = objSrc.getClass().getMethod(methodName);
+            return m.invoke(objSrc);
+        } catch (SecurityException e) {
+            throw e;
+        } catch (NoSuchMethodException e) {
+            throw new CUBRIDProxySQLException(e, -90000);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw new CUBRIDProxySQLException(e, -90001);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof SQLException) {
+                throw new CUBRIDProxySQLException(e, (SQLException) e.getTargetException());
+            } else {
+                throw new CUBRIDProxySQLException(e, e.getTargetException(), -90002);
+            }
+        }
+    }
 
-	/**
-	 *
-	 * Invoke the method of this object by reflection
-	 *
-	 * @param objSrc the invoked object
-	 * @param methodName the method name
-	 * @param clazz method parameter type
-	 * @param obj method parameter object
-	 * @return the object
-	 * @throws CUBRIDProxySQLException exception
-	 */
-	public static Object invoke(Object objSrc, String methodName,
-			Class<?> clazz, Object obj) throws CUBRIDProxySQLException {
-		try {
-			Method m = objSrc.getClass().getMethod(methodName,
-					new Class<?>[] {clazz });
-			return m.invoke(objSrc, new Object[] {obj });
-		} catch (SecurityException e) {
-			throw e;
-		} catch (NoSuchMethodException e) {
-			throw new CUBRIDProxySQLException(e, -90000);
-		} catch (IllegalArgumentException e) {
-			throw e;
-		} catch (IllegalAccessException e) {
-			throw new CUBRIDProxySQLException(e, -90001);
-		} catch (InvocationTargetException e) {
-			if (e.getTargetException() instanceof SQLException) {
-				throw new CUBRIDProxySQLException(e,
-						(SQLException) e.getTargetException());
-			} else {
-				throw new CUBRIDProxySQLException(e, e.getTargetException(),
-						-90002);
-			}
-		}
-	}
+    /**
+     * Invoke the method of this object by reflection
+     *
+     * @param objSrc the invoked object
+     * @param methodName the method name
+     * @param clazz method parameter type
+     * @param obj method parameter object
+     * @return the object
+     * @throws CUBRIDProxySQLException exception
+     */
+    public static Object invoke(Object objSrc, String methodName, Class<?> clazz, Object obj)
+            throws CUBRIDProxySQLException {
+        try {
+            Method m = objSrc.getClass().getMethod(methodName, new Class<?>[] {clazz});
+            return m.invoke(objSrc, new Object[] {obj});
+        } catch (SecurityException e) {
+            throw e;
+        } catch (NoSuchMethodException e) {
+            throw new CUBRIDProxySQLException(e, -90000);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw new CUBRIDProxySQLException(e, -90001);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof SQLException) {
+                throw new CUBRIDProxySQLException(e, (SQLException) e.getTargetException());
+            } else {
+                throw new CUBRIDProxySQLException(e, e.getTargetException(), -90002);
+            }
+        }
+    }
 
-	/**
-	 *
-	 * Invoke the method of this object by reflection
-	 *
-	 * @param <T> the template type
-	 * @param objSrc the invoked object
-	 * @param methodName the invoked method
-	 * @param parametersType the parameters type
-	 * @param parameters the parameters object
-	 * @return the object
-	 * @throws CUBRIDProxySQLException the exception
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T invoke(Object objSrc, String methodName,
-			Class<?>[] parametersType, Object[] parameters) throws CUBRIDProxySQLException {
-		try {
-			Method m = objSrc.getClass().getMethod(methodName, parametersType);
-			return (T) m.invoke(objSrc, parameters);
-		} catch (SecurityException e) {
-			throw e;
-		} catch (NoSuchMethodException e) {
-			throw new CUBRIDProxySQLException(e, -90000);
-		} catch (IllegalArgumentException e) {
+    /**
+     * Invoke the method of this object by reflection
+     *
+     * @param <T> the template type
+     * @param objSrc the invoked object
+     * @param methodName the invoked method
+     * @param parametersType the parameters type
+     * @param parameters the parameters object
+     * @return the object
+     * @throws CUBRIDProxySQLException the exception
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T invoke(
+            Object objSrc, String methodName, Class<?>[] parametersType, Object[] parameters)
+            throws CUBRIDProxySQLException {
+        try {
+            Method m = objSrc.getClass().getMethod(methodName, parametersType);
+            return (T) m.invoke(objSrc, parameters);
+        } catch (SecurityException e) {
+            throw e;
+        } catch (NoSuchMethodException e) {
+            throw new CUBRIDProxySQLException(e, -90000);
+        } catch (IllegalArgumentException e) {
 
-			throw e;
-		} catch (IllegalAccessException e) {
-			throw new CUBRIDProxySQLException(e, -90001);
-		} catch (InvocationTargetException e) {
-			if (e.getTargetException() instanceof SQLException) {
-				throw new CUBRIDProxySQLException(e,
-						(SQLException) e.getTargetException());
-			} else {
-				throw new CUBRIDProxySQLException(e, e.getTargetException(),
-						-90002);
-			}
-		}
-	}
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw new CUBRIDProxySQLException(e, -90001);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof SQLException) {
+                throw new CUBRIDProxySQLException(e, (SQLException) e.getTargetException());
+            } else {
+                throw new CUBRIDProxySQLException(e, e.getTargetException(), -90002);
+            }
+        }
+    }
 
-	/**
-	 *
-	 * Invoke the static method of this class by reflection
-	 *
-	 * @param clazzSrc the invoked class
-	 * @param methodName the invoked method name
-	 * @param parametersType the invoked parameters type
-	 * @param parameters the invoked parameters object
-	 * @return the object
-	 * @throws CUBRIDProxySQLException the exception
-	 */
-	public static Object invokeStaticMethod(Class<?> clazzSrc,
-			String methodName, Class<?>[] parametersType, Object[] parameters) throws CUBRIDProxySQLException {
-		try {
-			// clazzSrc.getMethods()
-			Method m = clazzSrc.getMethod(methodName, parametersType);
+    /**
+     * Invoke the static method of this class by reflection
+     *
+     * @param clazzSrc the invoked class
+     * @param methodName the invoked method name
+     * @param parametersType the invoked parameters type
+     * @param parameters the invoked parameters object
+     * @return the object
+     * @throws CUBRIDProxySQLException the exception
+     */
+    public static Object invokeStaticMethod(
+            Class<?> clazzSrc, String methodName, Class<?>[] parametersType, Object[] parameters)
+            throws CUBRIDProxySQLException {
+        try {
+            // clazzSrc.getMethods()
+            Method m = clazzSrc.getMethod(methodName, parametersType);
 
-			return m.invoke(null, parameters);
+            return m.invoke(null, parameters);
 
-		} catch (SecurityException e) {
-			throw e;
-		} catch (IllegalArgumentException e) {
-			throw e;
-		} catch (IllegalAccessException e) {
-			throw new CUBRIDProxySQLException(e, -90001);
-		} catch (InvocationTargetException e) {
-			if (e.getTargetException() instanceof SQLException) {
-				throw new CUBRIDProxySQLException(e,
-						(SQLException) e.getTargetException());
-			} else {
-				throw new CUBRIDProxySQLException(e, e.getTargetException(),
-						-90002);
-			}
-		} catch (NoSuchMethodException e) {
-			throw new CUBRIDProxySQLException(e, -90003);
-		}
-	}
+        } catch (SecurityException e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw new CUBRIDProxySQLException(e, -90001);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof SQLException) {
+                throw new CUBRIDProxySQLException(e, (SQLException) e.getTargetException());
+            } else {
+                throw new CUBRIDProxySQLException(e, e.getTargetException(), -90002);
+            }
+        } catch (NoSuchMethodException e) {
+            throw new CUBRIDProxySQLException(e, -90003);
+        }
+    }
 
-	/**
-	 *
-	 * Get static field value
-	 *
-	 * @param fieldName the field name
-	 * @param clazz the class
-	 * @return the value
-	 * @throws CUBRIDProxySQLException the exception
-	 */
-	public static int getStaticFieldValue(String fieldName, Class<?> clazz) throws CUBRIDProxySQLException {
+    /**
+     * Get static field value
+     *
+     * @param fieldName the field name
+     * @param clazz the class
+     * @return the value
+     * @throws CUBRIDProxySQLException the exception
+     */
+    public static int getStaticFieldValue(String fieldName, Class<?> clazz)
+            throws CUBRIDProxySQLException {
 
-		try {
-			Field field = clazz.getField(fieldName);
-			return field.getInt(clazz);
-		} catch (IllegalArgumentException e) {
-			throw e;
-		} catch (IllegalAccessException e) {
-			throw new CUBRIDProxySQLException(e, -90001);
-		} catch (SecurityException e) {
-			throw e;
-		} catch (NoSuchFieldException e) {
-			throw new CUBRIDProxySQLException(e, -90004);
-		}
-	}
-
+        try {
+            Field field = clazz.getField(fieldName);
+            return field.getInt(clazz);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw new CUBRIDProxySQLException(e, -90001);
+        } catch (SecurityException e) {
+            throw e;
+        } catch (NoSuchFieldException e) {
+            throw new CUBRIDProxySQLException(e, -90004);
+        }
+    }
 }

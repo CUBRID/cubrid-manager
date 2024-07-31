@@ -7,200 +7,136 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DefaultPropsList", propOrder = {
-
-})
+@XmlType(
+        name = "DefaultPropsList",
+        propOrder = {})
 public class DefaultPropsList {
 
-	@XmlElement(name = "Name")
-	protected DefaultPropsList.Name name;
-	@XmlElement(name = "LogicalDefault_Value")
-	protected DefaultPropsList.LogicalDefaultValue logicalDefaultValue;
-	@XmlElement(name = "Physical_Name")
-	protected DefaultPropsList.PhysicalName physicalName;
-	@XmlElement(name = "Server_Value")
-	protected DefaultPropsList.ServerValue serverValue;
+    @XmlElement(name = "Name")
+    protected DefaultPropsList.Name name;
 
-	/**
-	 * 
-	 * @return possible object is {@link DefaultPropsList.Name }
-	 * 
-	 */
-	public DefaultPropsList.Name getName() {
-		return name;
-	}
+    @XmlElement(name = "LogicalDefault_Value")
+    protected DefaultPropsList.LogicalDefaultValue logicalDefaultValue;
 
-	/**
-	 * 
-	 * @param value allowed object is {@link DefaultPropsList.Name }
-	 * 
-	 */
-	public void setName(DefaultPropsList.Name value) {
-		this.name = value;
-	}
+    @XmlElement(name = "Physical_Name")
+    protected DefaultPropsList.PhysicalName physicalName;
 
-	/**
-	 * 
-	 * @return possible object is {@link DefaultPropsList.LogicalDefaultValue }
-	 * 
-	 */
-	public DefaultPropsList.LogicalDefaultValue getLogicalDefaultValue() {
-		return logicalDefaultValue;
-	}
+    @XmlElement(name = "Server_Value")
+    protected DefaultPropsList.ServerValue serverValue;
 
-	/**
-	 * 
-	 * @param value allowed object is
-	 *        {@link DefaultPropsList.LogicalDefaultValue }
-	 * 
-	 */
-	public void setLogicalDefaultValue(
-			DefaultPropsList.LogicalDefaultValue value) {
-		this.logicalDefaultValue = value;
-	}
+    /** @return possible object is {@link DefaultPropsList.Name } */
+    public DefaultPropsList.Name getName() {
+        return name;
+    }
 
-	/**
-	 * 
-	 * @return possible object is {@link DefaultPropsList.PhysicalName }
-	 * 
-	 */
-	public DefaultPropsList.PhysicalName getPhysicalName() {
-		return physicalName;
-	}
+    /** @param value allowed object is {@link DefaultPropsList.Name } */
+    public void setName(DefaultPropsList.Name value) {
+        this.name = value;
+    }
 
-	/**
-	 * 
-	 * @param value allowed object is {@link DefaultPropsList.PhysicalName }
-	 * 
-	 */
-	public void setPhysicalName(DefaultPropsList.PhysicalName value) {
-		this.physicalName = value;
-	}
+    /** @return possible object is {@link DefaultPropsList.LogicalDefaultValue } */
+    public DefaultPropsList.LogicalDefaultValue getLogicalDefaultValue() {
+        return logicalDefaultValue;
+    }
 
-	/**
-	 * 
-	 * @return possible object is {@link DefaultPropsList.ServerValue }
-	 * 
-	 */
-	public DefaultPropsList.ServerValue getServerValue() {
-		return serverValue;
-	}
+    /** @param value allowed object is {@link DefaultPropsList.LogicalDefaultValue } */
+    public void setLogicalDefaultValue(DefaultPropsList.LogicalDefaultValue value) {
+        this.logicalDefaultValue = value;
+    }
 
-	/**
-	 * 
-	 * @param value allowed object is {@link DefaultPropsList.ServerValue }
-	 * 
-	 */
-	public void setServerValue(DefaultPropsList.ServerValue value) {
-		this.serverValue = value;
-	}
+    /** @return possible object is {@link DefaultPropsList.PhysicalName } */
+    public DefaultPropsList.PhysicalName getPhysicalName() {
+        return physicalName;
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class LogicalDefaultValue {
+    /** @param value allowed object is {@link DefaultPropsList.PhysicalName } */
+    public void setPhysicalName(DefaultPropsList.PhysicalName value) {
+        this.physicalName = value;
+    }
 
-		@XmlValue
-		protected String value;
+    /** @return possible object is {@link DefaultPropsList.ServerValue } */
+    public DefaultPropsList.ServerValue getServerValue() {
+        return serverValue;
+    }
 
-		/**
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+    /** @param value allowed object is {@link DefaultPropsList.ServerValue } */
+    public void setServerValue(DefaultPropsList.ServerValue value) {
+        this.serverValue = value;
+    }
 
-		/**
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class LogicalDefaultValue {
 
-	}
+        @XmlValue protected String value;
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class Name {
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-		@XmlValue
-		protected String value;
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-		/**
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class Name {
 
-		/**
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        @XmlValue protected String value;
 
-	}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class PhysicalName {
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-		@XmlValue
-		protected String value;
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class PhysicalName {
 
-		/**
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        @XmlValue protected String value;
 
-		/**
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-	}
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class ServerValue {
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class ServerValue {
 
-		@XmlValue
-		protected String value;
+        @XmlValue protected String value;
 
-		/**
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-		/**
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
-
-	}
-
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 }

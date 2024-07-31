@@ -27,69 +27,65 @@
  */
 package com.cubrid.cubridmanager.ui.host.editor;
 
+import com.cubrid.cubridmanager.core.common.model.ConfConstants;
 import java.util.HashMap;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import com.cubrid.cubridmanager.core.common.model.ConfConstants;
-
 /**
  * @author fulei
- *
  * @version 1.0 - 2013-3-4 created by fulei
  */
-
 public class BrokerConfTableViewerSorter extends ViewerSorter {
-	private final int UNIMPORTANTINDEXVALUE = 10000;
-	
-	/**
-	 * Compares the object for sorting
-	 * 
-	 * @param viewer the Viewer object
-	 * @param e1 the object
-	 * @param e2 the object
-	 * @return the compared value
-	 */
-	@SuppressWarnings("unchecked")
-	public int compare(Viewer viewer, Object e1, Object e2) {
-		HashMap<String, String> valueMap1 = null;
-		HashMap<String, String> valueMap2 = null;
-		
-		if (e1 instanceof HashMap 
-				&& e2 instanceof HashMap) {
-			valueMap1 = (HashMap<String, String>)e1;
-			valueMap2 = (HashMap<String, String>)e2;
-			int brokerNameIndex1 = getNameIndexOrder(valueMap1.get("0"));
-			int brokerNameIndex2 = getNameIndexOrder(valueMap2.get("0"));
-			if (brokerNameIndex1 == brokerNameIndex2) {
-				return 0;
-			}
-			return brokerNameIndex1 < brokerNameIndex2 ? -1 : 1;
-		}
-		return 0;
-	}
-	
-	/**
-	 * get broker name index
-	 * @param name
-	 * @return
-	 */
-	public int getNameIndexOrder (String name) {
-		//SERVICENAMECOLUMNTITLE is the first data
-		if (UnifyHostConfigEditor.SERVERNAMECOLUMNTITLE.equals(name)) {
-			return -1;
-		}
-		//BROKERNAMECOLUMNTITLE is the second data
-		if (UnifyHostConfigEditor.BROKERNAMECOLUMNTITLE.equals(name)) {
-			return -1;
-		}
-		for (int i = 0 ;i < ConfConstants.brokerParameters.length; i ++) {
-			String brokerNameInbrokerParameters = ConfConstants.brokerParameters[i][0];
-			if (brokerNameInbrokerParameters.equals(name)) {
-				return i;
-			}
-		}
-		return UNIMPORTANTINDEXVALUE;
-	}
+    private final int UNIMPORTANTINDEXVALUE = 10000;
+
+    /**
+     * Compares the object for sorting
+     *
+     * @param viewer the Viewer object
+     * @param e1 the object
+     * @param e2 the object
+     * @return the compared value
+     */
+    @SuppressWarnings("unchecked")
+    public int compare(Viewer viewer, Object e1, Object e2) {
+        HashMap<String, String> valueMap1 = null;
+        HashMap<String, String> valueMap2 = null;
+
+        if (e1 instanceof HashMap && e2 instanceof HashMap) {
+            valueMap1 = (HashMap<String, String>) e1;
+            valueMap2 = (HashMap<String, String>) e2;
+            int brokerNameIndex1 = getNameIndexOrder(valueMap1.get("0"));
+            int brokerNameIndex2 = getNameIndexOrder(valueMap2.get("0"));
+            if (brokerNameIndex1 == brokerNameIndex2) {
+                return 0;
+            }
+            return brokerNameIndex1 < brokerNameIndex2 ? -1 : 1;
+        }
+        return 0;
+    }
+
+    /**
+     * get broker name index
+     *
+     * @param name
+     * @return
+     */
+    public int getNameIndexOrder(String name) {
+        // SERVICENAMECOLUMNTITLE is the first data
+        if (UnifyHostConfigEditor.SERVERNAMECOLUMNTITLE.equals(name)) {
+            return -1;
+        }
+        // BROKERNAMECOLUMNTITLE is the second data
+        if (UnifyHostConfigEditor.BROKERNAMECOLUMNTITLE.equals(name)) {
+            return -1;
+        }
+        for (int i = 0; i < ConfConstants.brokerParameters.length; i++) {
+            String brokerNameInbrokerParameters = ConfConstants.brokerParameters[i][0];
+            if (brokerNameInbrokerParameters.equals(name)) {
+                return i;
+            }
+        }
+        return UNIMPORTANTINDEXVALUE;
+    }
 }

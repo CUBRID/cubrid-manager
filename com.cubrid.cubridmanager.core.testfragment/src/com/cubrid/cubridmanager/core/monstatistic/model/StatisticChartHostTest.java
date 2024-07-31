@@ -29,60 +29,57 @@ package com.cubrid.cubridmanager.core.monstatistic.model;
 
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.monstatistic.model.StatisticParamUtil.MetricType;
-
 import junit.framework.TestCase;
 
-public class StatisticChartHostTest extends TestCase{
+public class StatisticChartHostTest extends TestCase {
 
-	public void testStatisticChartHost() {
-		String cubridServerId = "monitor_statistic_01";
-		StatisticChartHost statisticChartHost = new StatisticChartHost(
-				cubridServerId);
-		assertEquals(statisticChartHost.getCubridServerId(), cubridServerId);
+    public void testStatisticChartHost() {
+        String cubridServerId = "monitor_statistic_01";
+        StatisticChartHost statisticChartHost = new StatisticChartHost(cubridServerId);
+        assertEquals(statisticChartHost.getCubridServerId(), cubridServerId);
 
-		String brokerName = "query_editor";
-		statisticChartHost.setBrokerName(brokerName);
-		assertEquals(statisticChartHost.getBrokerName(), brokerName);
+        String brokerName = "query_editor";
+        statisticChartHost.setBrokerName(brokerName);
+        assertEquals(statisticChartHost.getBrokerName(), brokerName);
 
-		String dbName = "demodb";
-		statisticChartHost.setDbName(dbName);
-		assertEquals(statisticChartHost.getDbName(), dbName);
+        String dbName = "demodb";
+        statisticChartHost.setDbName(dbName);
+        assertEquals(statisticChartHost.getDbName(), dbName);
 
-		String ip = "127.0.0.1";
-		statisticChartHost.setIp(ip);
-		assertEquals(statisticChartHost.getIp(), ip);
+        String ip = "127.0.0.1";
+        statisticChartHost.setIp(ip);
+        assertEquals(statisticChartHost.getIp(), ip);
 
-		int port = 8001;
-		statisticChartHost.setPort(port);
-		assertEquals(statisticChartHost.getPort(), port);
+        int port = 8001;
+        statisticChartHost.setPort(port);
+        assertEquals(statisticChartHost.getPort(), port);
 
-		String user = "admin";
-		statisticChartHost.setUser(user);
-		assertEquals(statisticChartHost.getUser(), user);
+        String user = "admin";
+        statisticChartHost.setUser(user);
+        assertEquals(statisticChartHost.getUser(), user);
 
-		String password = "123456";
-		statisticChartHost.setPassword(password);
-		assertEquals(statisticChartHost.getPassword(), password);
+        String password = "123456";
+        statisticChartHost.setPassword(password);
+        assertEquals(statisticChartHost.getPassword(), password);
 
-		String metric = MetricType.OS_CPU_IDLE.getMetric();
-		statisticChartHost.setMetric(metric);
-		assertEquals(statisticChartHost.getMetric(), metric);
+        String metric = MetricType.OS_CPU_IDLE.getMetric();
+        statisticChartHost.setMetric(metric);
+        assertEquals(statisticChartHost.getMetric(), metric);
 
-		ServerInfo serverInfo = new ServerInfo();
-		serverInfo.setHostAddress(ip);
-		serverInfo.setHostMonPort(port);
-		statisticChartHost.setServerInfo(serverInfo);
-		assertEquals(statisticChartHost.getServerInfo(), serverInfo);
+        ServerInfo serverInfo = new ServerInfo();
+        serverInfo.setHostAddress(ip);
+        serverInfo.setHostMonPort(port);
+        statisticChartHost.setServerInfo(serverInfo);
+        assertEquals(statisticChartHost.getServerInfo(), serverInfo);
 
-		String volName = "demodb_lgat";
-		statisticChartHost.setVolName(volName);
-		assertEquals(statisticChartHost.getVolName(), volName);
+        String volName = "demodb_lgat";
+        statisticChartHost.setVolName(volName);
+        assertEquals(statisticChartHost.getVolName(), volName);
 
-		StatisticChartHost statisticChartHost2 = new StatisticChartHost(ip,
-				port, user, password);
-		assertEquals(statisticChartHost2.getIp(), ip);
-		assertEquals(statisticChartHost2.getPort(), port);
-		assertEquals(statisticChartHost2.getUser(), user);
-		assertEquals(statisticChartHost2.getPassword(), password);
-	}
+        StatisticChartHost statisticChartHost2 = new StatisticChartHost(ip, port, user, password);
+        assertEquals(statisticChartHost2.getIp(), ip);
+        assertEquals(statisticChartHost2.getPort(), port);
+        assertEquals(statisticChartHost2.getUser(), user);
+        assertEquals(statisticChartHost2.getPassword(), password);
+    }
 }

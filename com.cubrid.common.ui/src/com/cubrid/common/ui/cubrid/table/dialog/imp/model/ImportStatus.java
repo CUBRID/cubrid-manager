@@ -30,18 +30,17 @@
 package com.cubrid.common.ui.cubrid.table.dialog.imp.model;
 
 /**
- *
  * The IStatus Description
  *
  * @author Kevin.Wang
  * @version 1.0 - 2012-8-11 created by Kevin.Wang
  */
 public interface ImportStatus {
-	public static int STATUS_ORIGIN = 0;
-	public static int STATUS_FORMAT_SUCCESS = 1;
-	public static int STATUS_FORMAT_FAILED = -1;
-	public static int STATUS_PREPARED_SUCCESS = 2;
-	public static int STATUS_PREPARED_FAILED = -2;
-	public static int STATUS_COMMIT_SUCCESS = 4;
-	public static int STATUS_COMMIT_FAILED = 4;
+    public static int STATUS_ORIGIN = 0;
+    public static int STATUS_FORMAT_SUCCESS = 1;
+    public static int STATUS_FORMAT_FAILED = -1;
+    public static int STATUS_PREPARED_SUCCESS = 2;
+    public static int STATUS_PREPARED_FAILED = -2;
+    public static int STATUS_COMMIT_SUCCESS = 4;
+    public static int STATUS_COMMIT_FAILED = 4;
 }

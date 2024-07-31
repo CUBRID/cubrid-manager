@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,90 +23,85 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.cubrid.table.action;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
 
 import com.cubrid.common.ui.cubrid.table.dialog.InsertTableDataDialog;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.ISchemaNode;
 import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.util.ActionSupportUtil;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * This action is responsible to insert table data.
- * 
+ *
  * @author robin 2009-6-4
  */
-public class InsertTableDataAction extends
-		SelectionAction {
+public class InsertTableDataAction extends SelectionAction {
 
-	public static final String ID = InsertTableDataAction.class.getName();
+    public static final String ID = InsertTableDataAction.class.getName();
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public InsertTableDataAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public InsertTableDataAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 * 
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public InsertTableDataAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public InsertTableDataAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 * Sets this action support to select multi-object
-	 * 
-	 * @see org.eclipse.jface.action.IAction.ISelectionAction
-	 * @return boolean
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * Sets this action support to select multi-object
+     *
+     * @see org.eclipse.jface.action.IAction.ISelectionAction
+     * @return boolean
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 * Sets this action support this object
-	 * 
-	 * @see org.eclipse.jface.action.IAction.ISelectionAction
-	 * @param obj Object
-	 * @return boolean
-	 */
-	public boolean isSupported(Object obj) {
-		return ActionSupportUtil.isSupportSingleSelection(obj, new String[]{
-				NodeType.USER_TABLE, NodeType.USER_PARTITIONED_TABLE_FOLDER });
-	}
+    /**
+     * Sets this action support this object
+     *
+     * @see org.eclipse.jface.action.IAction.ISelectionAction
+     * @param obj Object
+     * @return boolean
+     */
+    public boolean isSupported(Object obj) {
+        return ActionSupportUtil.isSupportSingleSelection(
+                obj, new String[] {NodeType.USER_TABLE, NodeType.USER_PARTITIONED_TABLE_FOLDER});
+    }
 
-	/**
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		if (!isSupported(obj)) {
-			setEnabled(false);
-			return;
-		}
-		ISchemaNode table = (ISchemaNode) obj[0];
-		InsertTableDataDialog dialog = new InsertTableDataDialog(getShell(),
-				table);
-		dialog.open();
-	}
+    /** @see org.eclipse.jface.action.Action#run() */
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        if (!isSupported(obj)) {
+            setEnabled(false);
+            return;
+        }
+        ISchemaNode table = (ISchemaNode) obj[0];
+        InsertTableDataDialog dialog = new InsertTableDataDialog(getShell(), table);
+        dialog.open();
+    }
 }

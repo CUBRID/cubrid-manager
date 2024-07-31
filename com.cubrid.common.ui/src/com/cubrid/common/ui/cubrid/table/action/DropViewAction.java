@@ -27,15 +27,6 @@
  */
 package com.cubrid.common.ui.cubrid.table.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.query.editor.QueryEditorUtil;
 import com.cubrid.common.ui.spi.action.SelectionAction;
@@ -49,106 +40,112 @@ import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.ActionSupportUtil;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.cubrid.table.task.DropTableOrViewTask;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * This action is responsible to drop table .
- * 
+ *
  * @author robin 2009-6-4
  */
 public class DropViewAction extends SelectionAction {
-	public static final String ID = DropViewAction.class.getName();
-	private boolean canceledTask = false;
-	
-	public DropViewAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    public static final String ID = DropViewAction.class.getName();
+    private boolean canceledTask = false;
 
-	public DropViewAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-	}
+    public DropViewAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	public boolean allowMultiSelections() {
-		return true;
-	}
+    public DropViewAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+    }
 
-	public boolean isSupported(Object obj) {
-		return ActionSupportUtil.isSupportMultiSelection(obj,
-						new String[]{NodeType.USER_VIEW }, false);
-	}
+    public boolean allowMultiSelections() {
+        return true;
+    }
 
-	public void run(ISchemaNode[] nodeArray) {
-		if (nodeArray == null || nodeArray.length == 0) {
-			return;
-		}
+    public boolean isSupported(Object obj) {
+        return ActionSupportUtil.isSupportMultiSelection(
+                obj, new String[] {NodeType.USER_VIEW}, false);
+    }
 
-		int selectedCount = nodeArray.length;
-		ISchemaNode table =  nodeArray[0];
-		String type = table.getType();
-		String message = null;
+    public void run(ISchemaNode[] nodeArray) {
+        if (nodeArray == null || nodeArray.length == 0) {
+            return;
+        }
 
-		if (NodeType.USER_VIEW.equals(type)) {
-			message = Messages.bind(Messages.dropView, selectedCount);
-		}
+        int selectedCount = nodeArray.length;
+        ISchemaNode table = nodeArray[0];
+        String type = table.getType();
+        String message = null;
 
-		boolean ret = CommonUITool.openConfirmBox(message);
-		if (!ret) {
-			canceledTask = true;
-			return;
-		}
+        if (NodeType.USER_VIEW.equals(type)) {
+            message = Messages.bind(Messages.dropView, selectedCount);
+        }
 
-		String taskName = Messages.bind(Messages.dropTableTaskName, selectedCount);
-		TaskExecutor taskExecutor = new CommonTaskExec(taskName);
-		DropTableOrViewTask task = new DropTableOrViewTask(
-				table.getDatabase().getDatabaseInfo());
-		List<String> viewNameList = new ArrayList<String>();
-		for (int i = 0; i < selectedCount; i++) {
-			table = (DefaultSchemaNode) nodeArray[i];
-			type = table.getType();
-			if (NodeType.USER_VIEW.equals(type)) {
-				viewNameList.add(table.getName());
-			} 
-		}
+        boolean ret = CommonUITool.openConfirmBox(message);
+        if (!ret) {
+            canceledTask = true;
+            return;
+        }
 
-		String[] viewNames = new String[viewNameList.size()];
-		viewNames = viewNameList.toArray(viewNames);
-		task.setViewName(viewNames);
-		taskExecutor.addTask(task);
-		new ExecTaskWithProgress(taskExecutor).exec();
+        String taskName = Messages.bind(Messages.dropTableTaskName, selectedCount);
+        TaskExecutor taskExecutor = new CommonTaskExec(taskName);
+        DropTableOrViewTask task = new DropTableOrViewTask(table.getDatabase().getDatabaseInfo());
+        List<String> viewNameList = new ArrayList<String>();
+        for (int i = 0; i < selectedCount; i++) {
+            table = (DefaultSchemaNode) nodeArray[i];
+            type = table.getType();
+            if (NodeType.USER_VIEW.equals(type)) {
+                viewNameList.add(table.getName());
+            }
+        }
 
-		if (taskExecutor.isSuccess()) {
-			ISelectionProvider provider = this.getSelectionProvider();
-			final TreeViewer viewer = (TreeViewer) provider;
-			ICubridNode parent = table.getParent();
-			table.getDatabase().getDatabaseInfo().removeSchema(table.getName());
-			for (int i = 0; i < selectedCount; i++) {
-				parent.removeChild(nodeArray[i]);				
-				/*Broadcast the view changed*/
-				QueryEditorUtil.fireSchemaNodeChanged(nodeArray[i]);
-			}
-			viewer.remove(parent, nodeArray);
-			viewer.setSelection(new StructuredSelection(parent), true);
-			CommonUITool.updateFolderNodeLabelIncludingChildrenCount(viewer, parent);
-		}
-	}
+        String[] viewNames = new String[viewNameList.size()];
+        viewNames = viewNameList.toArray(viewNames);
+        task.setViewName(viewNames);
+        taskExecutor.addTask(task);
+        new ExecTaskWithProgress(taskExecutor).exec();
 
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		if (!isSupported(obj)) {
-			setEnabled(false);
-			return;
-		}
+        if (taskExecutor.isSuccess()) {
+            ISelectionProvider provider = this.getSelectionProvider();
+            final TreeViewer viewer = (TreeViewer) provider;
+            ICubridNode parent = table.getParent();
+            table.getDatabase().getDatabaseInfo().removeSchema(table.getName());
+            for (int i = 0; i < selectedCount; i++) {
+                parent.removeChild(nodeArray[i]);
+                /*Broadcast the view changed*/
+                QueryEditorUtil.fireSchemaNodeChanged(nodeArray[i]);
+            }
+            viewer.remove(parent, nodeArray);
+            viewer.setSelection(new StructuredSelection(parent), true);
+            CommonUITool.updateFolderNodeLabelIncludingChildrenCount(viewer, parent);
+        }
+    }
 
-		ISchemaNode nodeArray[] = new ISchemaNode[obj.length];
-		for (int i = 0 ; i < obj.length; i ++) {
-			nodeArray[i] = (ISchemaNode)obj[i];
-		}
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        if (!isSupported(obj)) {
+            setEnabled(false);
+            return;
+        }
 
-		run(nodeArray);
-	}
+        ISchemaNode nodeArray[] = new ISchemaNode[obj.length];
+        for (int i = 0; i < obj.length; i++) {
+            nodeArray[i] = (ISchemaNode) obj[i];
+        }
 
-	public boolean isCanceledTask() {
-		return canceledTask;
-	}
+        run(nodeArray);
+    }
+
+    public boolean isCanceledTask() {
+        return canceledTask;
+    }
 }

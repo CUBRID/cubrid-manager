@@ -27,41 +27,35 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.user.task;
 
-import java.util.Map;
-
 import com.cubrid.cubridmanager.core.SetupJDBCTestCase;
 import com.cubrid.cubridmanager.core.cubrid.table.model.ClassAuthorizations;
+import java.util.Map;
 
 /**
  * @author fulei
- *
  * @version 1.0 - 2012-11-30 created by fulei
  */
+public class GetUserAuthorizationsTaskTest extends SetupJDBCTestCase {
 
-public class GetUserAuthorizationsTaskTest  extends
-SetupJDBCTestCase {
+    public void testGetUserAuthorizations() {
+        Map<String, ClassAuthorizations> authMap = null;
+        GetUserAuthorizationsTask task = new GetUserAuthorizationsTask(databaseInfo);
+        try {
+            authMap = task.getUserAuthorizations("public");
+        } catch (Exception ignore) {
 
-	public void testGetUserAuthorizations () {
-		Map<String, ClassAuthorizations> authMap = null;
-		GetUserAuthorizationsTask task = new GetUserAuthorizationsTask(databaseInfo);
-		try {
-			authMap = task.getUserAuthorizations("public");
-		} catch (Exception ignore) {
-			
-		}
-		assertNotNull (authMap);
-		
-		
-	}
-	
-	public void testGetViewAuthorizationsByViewName () {
-		Map<String, ClassAuthorizations> authMap = null;
-		GetUserAuthorizationsTask task = new GetUserAuthorizationsTask(databaseInfo);
-		try {
-			authMap = task.getViewAuthorizationsByViewName("dba", "db_index");
-		} catch (Exception ignore) {
-			
-		}
-		assertNotNull (authMap);
-	}
+        }
+        assertNotNull(authMap);
+    }
+
+    public void testGetViewAuthorizationsByViewName() {
+        Map<String, ClassAuthorizations> authMap = null;
+        GetUserAuthorizationsTask task = new GetUserAuthorizationsTask(databaseInfo);
+        try {
+            authMap = task.getViewAuthorizationsByViewName("dba", "db_index");
+        } catch (Exception ignore) {
+
+        }
+        assertNotNull(authMap);
+    }
 }

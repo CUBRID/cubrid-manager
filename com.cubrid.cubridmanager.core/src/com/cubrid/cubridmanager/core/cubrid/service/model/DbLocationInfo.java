@@ -27,86 +27,85 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.service.model;
 
+import com.cubrid.common.core.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.cubrid.common.core.util.StringUtil;
-
 public class DbLocationInfo { // FIXME description
 
-	private String dbName;
-	private String volPath;
-	private final List<String> dbHosts = new ArrayList<String>();
-	private String logPath;
-	private String lobBasePath;
+    private String dbName;
+    private String volPath;
+    private final List<String> dbHosts = new ArrayList<String>();
+    private String logPath;
+    private String lobBasePath;
 
-	public String getDbName() {
-		return dbName;
-	}
+    public String getDbName() {
+        return dbName;
+    }
 
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-	}
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
 
-	public String getVolPath() {
-		return volPath;
-	}
+    public String getVolPath() {
+        return volPath;
+    }
 
-	public void setVolPath(String volPath) {
-		this.volPath = volPath;
-	}
+    public void setVolPath(String volPath) {
+        this.volPath = volPath;
+    }
 
-	public String getLogPath() {
-		return logPath;
-	}
+    public String getLogPath() {
+        return logPath;
+    }
 
-	public void setLogPath(String logPath) {
-		this.logPath = logPath;
-	}
+    public void setLogPath(String logPath) {
+        this.logPath = logPath;
+    }
 
-	public String getLobBasePath() {
-		return lobBasePath;
-	}
+    public String getLobBasePath() {
+        return lobBasePath;
+    }
 
-	public void setLobBasePath(String lobBasePath) {
-		this.lobBasePath = lobBasePath;
-	}
+    public void setLobBasePath(String lobBasePath) {
+        this.lobBasePath = lobBasePath;
+    }
 
-	public List<String> getDbHosts() {
-		return dbHosts;
-	}
+    public List<String> getDbHosts() {
+        return dbHosts;
+    }
 
-	public boolean addDbHost(String host) {
-		if (StringUtil.isEmpty(host) || dbHosts.contains(host)) {
-			return false;
-		}
+    public boolean addDbHost(String host) {
+        if (StringUtil.isEmpty(host) || dbHosts.contains(host)) {
+            return false;
+        }
 
-		dbHosts.add(host);
-		return true;
-	}
+        dbHosts.add(host);
+        return true;
+    }
 
-	public boolean addAllDbHosts(String[] hosts) {
-		if (hosts == null) {
-			return false;
-		}
+    public boolean addAllDbHosts(String[] hosts) {
+        if (hosts == null) {
+            return false;
+        }
 
-		dbHosts.addAll(Arrays.asList(hosts));
-		return true;
-	}
+        dbHosts.addAll(Arrays.asList(hosts));
+        return true;
+    }
 
-	public boolean findHost(String host) {
-		return dbHosts.contains(host);
-	}
+    public boolean findHost(String host) {
+        return dbHosts.contains(host);
+    }
 
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("dbname=").append(dbName).append(",");
-		sb.append("vol_path=").append(volPath).append(",");
-		sb.append("db_hosts=").append(dbHosts).append(",");
-		sb.append("log_path=").append(logPath).append(",");
-		sb.append("lob_base_path=").append(lobBasePath);
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("dbname=").append(dbName).append(",");
+        sb.append("vol_path=").append(volPath).append(",");
+        sb.append("db_hosts=").append(dbHosts).append(",");
+        sb.append("log_path=").append(logPath).append(",");
+        sb.append("lob_base_path=").append(lobBasePath);
 
-		return sb.toString();
-	};
+        return sb.toString();
+    };
 }

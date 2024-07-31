@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,58 +23,51 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.common.ui.cubrid.table.control;
 
+import com.cubrid.common.core.common.model.PartitionInfo;
 import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.cubrid.common.core.common.model.PartitionInfo;
-
 /**
- * 
  * Partition content provider
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2010-3-16 created by pangqiren
  */
-public class PartitionContentProvider implements
-		IStructuredContentProvider {
+public class PartitionContentProvider implements IStructuredContentProvider {
 
-	/**
-	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-	 * @param inputElement the input element
-	 * @return the array of elements to display in the viewer
-	 */
-	@SuppressWarnings("unchecked")
-	public Object[] getElements(Object inputElement) {
+    /**
+     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+     * @param inputElement the input element
+     * @return the array of elements to display in the viewer
+     */
+    @SuppressWarnings("unchecked")
+    public Object[] getElements(Object inputElement) {
 
-		List<PartitionInfo> partItemList = (List<PartitionInfo>) inputElement;
+        List<PartitionInfo> partItemList = (List<PartitionInfo>) inputElement;
 
-		return partItemList.toArray(new PartitionInfo[partItemList.size()]);
-	}
+        return partItemList.toArray(new PartitionInfo[partItemList.size()]);
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-	 */
-	public void dispose() {
-		//empty
-	}
+    /** @see org.eclipse.jface.viewers.IContentProvider#dispose() */
+    public void dispose() {
+        // empty
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-	 *      java.lang.Object, java.lang.Object)
-	 * @param arg0 the viewer
-	 * @param arg1 the old input element, or <code>null</code> if the viewer did
-	 *        not previously have an input
-	 * @param arg2 the new input element, or <code>null</code> if the viewer
-	 *        does not have an input
-	 */
-	public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-		//empty
-	}
-
+    /**
+     * @see
+     *     org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+     *     java.lang.Object, java.lang.Object)
+     * @param arg0 the viewer
+     * @param arg1 the old input element, or <code>null</code> if the viewer did not previously have
+     *     an input
+     * @param arg2 the new input element, or <code>null</code> if the viewer does not have an input
+     */
+    public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+        // empty
+    }
 }

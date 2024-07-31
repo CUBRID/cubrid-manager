@@ -7,122 +7,90 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Key_GroupPropsList", propOrder = {
-
-})
+@XmlType(
+        name = "Key_GroupPropsList",
+        propOrder = {})
 public class KeyGroupPropsList {
 
-	@XmlElement(name = "Key_Group_Type")
-	protected KeyGroupPropsList.KeyGroupType keyGroupType;
-	@XmlElement(name = "Key_Group_Relationship_Pointer")
-	protected KeyGroupPropsList.KeyGroupRelationPointer keyGroupRelationPointer;
+    @XmlElement(name = "Key_Group_Type")
+    protected KeyGroupPropsList.KeyGroupType keyGroupType;
 
-	/**
-	 * 
-	 * @return possible object is {@link KeyGroupPropsList.KeyGroupType }
-	 * 
-	 */
-	public KeyGroupPropsList.KeyGroupType getKeyGroupType() {
-		return keyGroupType;
-	}
+    @XmlElement(name = "Key_Group_Relationship_Pointer")
+    protected KeyGroupPropsList.KeyGroupRelationPointer keyGroupRelationPointer;
 
-	/**
-	 * 
-	 * @param value allowed object is {@link KeyGroupPropsList.KeyGroupType }
-	 * 
-	 */
-	public void setKeyGroupType(KeyGroupPropsList.KeyGroupType value) {
-		this.keyGroupType = value;
-	}
+    /** @return possible object is {@link KeyGroupPropsList.KeyGroupType } */
+    public KeyGroupPropsList.KeyGroupType getKeyGroupType() {
+        return keyGroupType;
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class KeyGroupType {
+    /** @param value allowed object is {@link KeyGroupPropsList.KeyGroupType } */
+    public void setKeyGroupType(KeyGroupPropsList.KeyGroupType value) {
+        this.keyGroupType = value;
+    }
 
-		@XmlValue
-		protected String value;
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class KeyGroupType {
 
-		/**
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        @XmlValue protected String value;
 
-		/**
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-	}
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class PhysicalName {
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class PhysicalName {
 
-		@XmlValue
-		protected String value;
+        @XmlValue protected String value;
 
-		/**
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-		/**
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
-	}
+    public KeyGroupPropsList.KeyGroupRelationPointer getKeyGroupRelationPointer() {
+        return keyGroupRelationPointer;
+    }
 
-	public KeyGroupPropsList.KeyGroupRelationPointer getKeyGroupRelationPointer() {
-		return keyGroupRelationPointer;
-	}
+    public void setKeyGroupRelationPointer(
+            KeyGroupPropsList.KeyGroupRelationPointer keyGroupRelationPointer) {
+        this.keyGroupRelationPointer = keyGroupRelationPointer;
+    }
 
-	public void setKeyGroupRelationPointer(
-			KeyGroupPropsList.KeyGroupRelationPointer keyGroupRelationPointer) {
-		this.keyGroupRelationPointer = keyGroupRelationPointer;
-	}
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(
+            name = "",
+            propOrder = {"value"})
+    public static class KeyGroupRelationPointer {
 
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = { "value" })
-	public static class KeyGroupRelationPointer {
+        @XmlValue protected String value;
 
-		@XmlValue
-		protected String value;
+        /** @return possible object is {@link String } */
+        public String getValue() {
+            return value;
+        }
 
-		/**
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
-
-		/**
-		 * 
-		 * @param value allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
-
-	}
-
+        /** @param value allowed object is {@link String } */
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 }

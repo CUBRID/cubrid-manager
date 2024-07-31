@@ -28,23 +28,23 @@
 package com.cubrid.cubridmanager.core.cubrid.sp.model;
 
 /**
- *
  * Stored procedure arg type
  *
  * @author pangqiren
  * @version 1.0 - 2009-5-8 created by pangqiren
  */
 public enum SPArgsType {
+    OUT("OUT"),
+    IN("IN"),
+    INOUT("INOUT");
 
-	OUT("OUT"), IN("IN"), INOUT("INOUT");
+    String text = null;
 
-	String text = null;
+    SPArgsType(String text) {
+        this.text = text;
+    }
 
-	SPArgsType(String text) {
-		this.text = text;
-	}
-
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 }

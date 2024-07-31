@@ -32,20 +32,14 @@ package com.cubrid.common.ui.spi.table.celleditor;
 import com.cubrid.common.ui.spi.table.CellValue;
 import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
 
-/**
- *
- *
- * The ICellPopupDialog Description : Author : Kevin.Wang Create date :
- * 2014-2-13
- *
- */
+/** The ICellPopupDialog Description : Author : Kevin.Wang Create date : 2014-2-13 */
 public interface ICellPopupEditor {
-	public static final String NULL_VALUE = DataType.NULL_EXPORT_FORMAT;
-	public static final String BLOB_VALUE = DataType.BLOB_EXPORT_FORMAT;
-	public static final String BIT_VALUE = DataType.BIT_EXPORT_FORMAT;
-	public static final String CLOB_VALUE = DataType.CLOB_EXPORT_FORMAT;
+    public static final String NULL_VALUE = DataType.NULL_EXPORT_FORMAT;
+    public static final String BLOB_VALUE = DataType.BLOB_EXPORT_FORMAT;
+    public static final String BIT_VALUE = DataType.BIT_EXPORT_FORMAT;
+    public static final String CLOB_VALUE = DataType.CLOB_EXPORT_FORMAT;
 
-	public CellValue getValue();
+    public CellValue getValue();
 
-	public int show();
+    public int show();
 }

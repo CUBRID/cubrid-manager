@@ -29,8 +29,12 @@
  */
 package com.cubrid.common.ui.query.action;
 
+import com.cubrid.common.core.util.QueryUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.Messages;
+import com.cubrid.common.ui.spi.action.FocusAction;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.util.Vector;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.Clipboard;
@@ -39,108 +43,97 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.core.util.QueryUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.spi.action.FocusAction;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * action to create sql code script
  *
  * @author Isaiah Choe 2012-05-03
  */
-public class CreateSqlPhpCodeAction extends
-		FocusAction {
+public class CreateSqlPhpCodeAction extends FocusAction {
 
-	public static final String ID = "sqlphpcode";
+    public static final String ID = "sqlphpcode";
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param focusProvider
-	 * @param text
-	 * @param icon
-	 */
-	protected CreateSqlPhpCodeAction(Shell shell, Control focusProvider, String text,
-			ImageDescriptor icon) {
-		super(shell, focusProvider, text, icon);
-		this.setId(ID);
-		setEnabled(true);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param focusProvider
+     * @param text
+     * @param icon
+     */
+    protected CreateSqlPhpCodeAction(
+            Shell shell, Control focusProvider, String text, ImageDescriptor icon) {
+        super(shell, focusProvider, text, icon);
+        this.setId(ID);
+        setEnabled(true);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public CreateSqlPhpCodeAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public CreateSqlPhpCodeAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	public void run() { // FIXME move this logic to core module
-		Control control = getFocusProvider();
-		if (control instanceof StyledText) {
-			StyledText stext = (StyledText) control;
-			String data = stext.getSelectionText();
-			if (StringUtil.isNotEmpty(data)) {
-				StringBuilder res = new StringBuilder();
-				Vector<String> list = QueryUtil.queriesToQuery(data);
-				for (int i = 0; i < list.size(); i++) {
-					String row = list.get(i);
+    /** @see org.eclipse.jface.action.Action#run() */
+    public void run() { // FIXME move this logic to core module
+        Control control = getFocusProvider();
+        if (control instanceof StyledText) {
+            StyledText stext = (StyledText) control;
+            String data = stext.getSelectionText();
+            if (StringUtil.isNotEmpty(data)) {
+                StringBuilder res = new StringBuilder();
+                Vector<String> list = QueryUtil.queriesToQuery(data);
+                for (int i = 0; i < list.size(); i++) {
+                    String row = list.get(i);
 
-					if (res.length() > 0) {
-						res.append("\n\n");
-					}
-					res.append(parseToPhpCode(row));
-				}
+                    if (res.length() > 0) {
+                        res.append("\n\n");
+                    }
+                    res.append(parseToPhpCode(row));
+                }
 
-				if (res.length() == 0) {
-					CommonUITool.openErrorBox(Messages.errCreatedSqlNotSelected);
-					return;
-				}
+                if (res.length() == 0) {
+                    CommonUITool.openErrorBox(Messages.errCreatedSqlNotSelected);
+                    return;
+                }
 
-				Clipboard clipboard = CommonUITool.getClipboard();
-				TextTransfer textTransfer = TextTransfer.getInstance();
-				clipboard.setContents(new Object[] { res.toString() },
-						new Transfer[] { textTransfer });
+                Clipboard clipboard = CommonUITool.getClipboard();
+                TextTransfer textTransfer = TextTransfer.getInstance();
+                clipboard.setContents(new Object[] {res.toString()}, new Transfer[] {textTransfer});
 
-				CommonUITool.openInformationBox(Messages.titleCreateCode,
-						Messages.msgCreatedSqlPhpCode);
-			} else {
-				CommonUITool.openErrorBox(Messages.errCreatedSqlNotSelected);
-			}
-		}
-	}
+                CommonUITool.openInformationBox(
+                        Messages.titleCreateCode, Messages.msgCreatedSqlPhpCode);
+            } else {
+                CommonUITool.openErrorBox(Messages.errCreatedSqlNotSelected);
+            }
+        }
+    }
 
-	private String parseToPhpCode(String sql) { // FIXME move this logic to core module
-		StringBuilder sb = new StringBuilder();
+    private String parseToPhpCode(String sql) { // FIXME move this logic to core module
+        StringBuilder sb = new StringBuilder();
 
-		String[] arr = sql.split("[\\r\\n]");
-		for (int i = 0; i < arr.length; i++) {
-			if (arr[i] != null && arr[i].trim().length() == 0) {
-				continue;
-			}
+        String[] arr = sql.split("[\\r\\n]");
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != null && arr[i].trim().length() == 0) {
+                continue;
+            }
 
-			String row = arr[i].replaceAll("\"", "\\\\\"");
+            String row = arr[i].replaceAll("\"", "\\\\\"");
 
-			if (sb.length() == 0) {
-				sb.append("$sql = \"");
-			} else {
-				sb.append("\n     . \"");
-			}
+            if (sb.length() == 0) {
+                sb.append("$sql = \"");
+            } else {
+                sb.append("\n     . \"");
+            }
 
-			sb.append(row).append("\\n\"");
-		}
-		sb.append(";\n");
+            sb.append(row).append("\\n\"");
+        }
+        sb.append(";\n");
 
-		return sb.toString();
-	}
-
+        return sb.toString();
+    }
 }

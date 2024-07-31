@@ -32,45 +32,49 @@ import static com.cubrid.common.core.util.NoOp.noOp;
 import com.cubrid.common.ui.spi.model.NodeType;
 
 /**
- *
  * This class is responsible to manage cubrid node type
  *
  * @author pangqiren
  * @version 1.0 - 2009-7-14 created by pangqiren
  */
 public final class CubridNodeTypeManager {
-	private CubridNodeTypeManager() {
-		noOp();
-	}
+    private CubridNodeTypeManager() {
+        noOp();
+    }
 
-	final static String[] CAN_REFRESH_NODE_TYPE_ARR = {NodeType.DATABASE,
-			NodeType.TABLE_FOLDER, NodeType.USER_PARTITIONED_TABLE_FOLDER,
-			NodeType.USER_PARTITIONED_TABLE, NodeType.VIEW_FOLDER,
-			NodeType.SYSTEM_TABLE_FOLDER, NodeType.SYSTEM_TABLE,
-			NodeType.USER_TABLE, NodeType.SYSTEM_VIEW_FOLDER,
-			NodeType.SYSTEM_VIEW, NodeType.USER_VIEW,
-			NodeType.STORED_PROCEDURE_FOLDER,
-			NodeType.STORED_PROCEDURE_FUNCTION_FOLDER,
-			NodeType.STORED_PROCEDURE_PROCEDURE_FOLDER,
-			NodeType.TRIGGER_FOLDER, 
-			NodeType.SYNONYM_FOLDER,
-			NodeType.SERIAL_FOLDER,
-			NodeType.USER_FOLDER};
+    static final String[] CAN_REFRESH_NODE_TYPE_ARR = {
+        NodeType.DATABASE,
+        NodeType.TABLE_FOLDER,
+        NodeType.USER_PARTITIONED_TABLE_FOLDER,
+        NodeType.USER_PARTITIONED_TABLE,
+        NodeType.VIEW_FOLDER,
+        NodeType.SYSTEM_TABLE_FOLDER,
+        NodeType.SYSTEM_TABLE,
+        NodeType.USER_TABLE,
+        NodeType.SYSTEM_VIEW_FOLDER,
+        NodeType.SYSTEM_VIEW,
+        NodeType.USER_VIEW,
+        NodeType.STORED_PROCEDURE_FOLDER,
+        NodeType.STORED_PROCEDURE_FUNCTION_FOLDER,
+        NodeType.STORED_PROCEDURE_PROCEDURE_FOLDER,
+        NodeType.TRIGGER_FOLDER,
+        NodeType.SYNONYM_FOLDER,
+        NodeType.SERIAL_FOLDER,
+        NodeType.USER_FOLDER
+    };
 
-	/**
-	 *
-	 * Return whether this node type can be refresh
-	 *
-	 * @param nodeType the String
-	 * @return <code>true</code> if it can be refreshed;<code>false</code>
-	 *         otherwise
-	 */
-	public static boolean isCanRefresh(String nodeType) {
-		for (String type : CAN_REFRESH_NODE_TYPE_ARR) {
-			if (type.equals(nodeType)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Return whether this node type can be refresh
+     *
+     * @param nodeType the String
+     * @return <code>true</code> if it can be refreshed;<code>false</code> otherwise
+     */
+    public static boolean isCanRefresh(String nodeType) {
+        for (String type : CAN_REFRESH_NODE_TYPE_ARR) {
+            if (type.equals(nodeType)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

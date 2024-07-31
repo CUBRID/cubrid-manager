@@ -29,6 +29,10 @@ package com.cubrid.common.ui.query.sqlmap;
 
 import static com.cubrid.common.core.util.StringUtil.nvl;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.ui.query.sqlmap.BindParameter.BindParameterType;
+import com.navercorp.dbtools.sqlmap.parser.MapperFile;
+import com.navercorp.dbtools.sqlmap.parser.QueryCondition;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,208 +42,197 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.query.sqlmap.BindParameter.BindParameterType;
-import com.navercorp.dbtools.sqlmap.parser.MapperFile;
-import com.navercorp.dbtools.sqlmap.parser.QueryCondition;
-
 /**
- * <p>
  * Persistence data utility of SQLMAPs runner.
- * </p>
  *
  * @author CHOE JUNGYEON
  */
 public class SqlmapPersistUtil {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LogUtil.getLogger(SqlmapPersistUtil.class);
-	private static SqlmapPersistUtil instance = null;
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LogUtil.getLogger(SqlmapPersistUtil.class);
 
-	/**
-	 * All conditions list by separated using the query id.
-	 */
-	private final Map<String, List<QueryCondition>> condValues = new ConcurrentHashMap<String, List<QueryCondition>>();
+    private static SqlmapPersistUtil instance = null;
 
-	/**
-	 * Bind parameters by separated using the query id.
-	 */
-	private final Map<String, Map<String, BindParameter>> paramValues = new ConcurrentHashMap<String, Map<String, BindParameter>>();
+    /** All conditions list by separated using the query id. */
+    private final Map<String, List<QueryCondition>> condValues =
+            new ConcurrentHashMap<String, List<QueryCondition>>();
 
-	/**
-	 * Used conditions set which is separated by the query id.
-	 */
-	private final Map<String, Set<String>> usedConditions = new ConcurrentHashMap<String, Set<String>>();
+    /** Bind parameters by separated using the query id. */
+    private final Map<String, Map<String, BindParameter>> paramValues =
+            new ConcurrentHashMap<String, Map<String, BindParameter>>();
 
-	private SqlmapPersistUtil() {
-	}
+    /** Used conditions set which is separated by the query id. */
+    private final Map<String, Set<String>> usedConditions =
+            new ConcurrentHashMap<String, Set<String>>();
 
-	public static SqlmapPersistUtil getInstance() {
-		if (instance == null) {
-			instance = new SqlmapPersistUtil();
-		}
+    private SqlmapPersistUtil() {}
 
-		return instance;
-	}
+    public static SqlmapPersistUtil getInstance() {
+        if (instance == null) {
+            instance = new SqlmapPersistUtil();
+        }
 
-	public void setConditions(String queryId, List<QueryCondition> queryConditions) {
-		condValues.put(queryId, queryConditions);
+        return instance;
+    }
 
-		Set<String> oldUsedConditions = usedConditions.get(queryId);
-		Set<String> newUsedConditions = new HashSet<String>();
-		for (QueryCondition condition : queryConditions) {
-			String conditionValue = condition.getConditionKey() + ":"
-					+ condition.getConditionBody();
-			if (oldUsedConditions != null && oldUsedConditions.contains(conditionValue)) {
-				newUsedConditions.add(conditionValue);
-			}
-		}
-		usedConditions.put(queryId, newUsedConditions);
-	}
+    public void setConditions(String queryId, List<QueryCondition> queryConditions) {
+        condValues.put(queryId, queryConditions);
 
-	public List<QueryCondition> getConditions(String queryId) {
-		return condValues.get(queryId);
-	}
+        Set<String> oldUsedConditions = usedConditions.get(queryId);
+        Set<String> newUsedConditions = new HashSet<String>();
+        for (QueryCondition condition : queryConditions) {
+            String conditionValue =
+                    condition.getConditionKey() + ":" + condition.getConditionBody();
+            if (oldUsedConditions != null && oldUsedConditions.contains(conditionValue)) {
+                newUsedConditions.add(conditionValue);
+            }
+        }
+        usedConditions.put(queryId, newUsedConditions);
+    }
 
-	public void toggleUsedCondition(String queryId, String condition) {
-		boolean isUsed = isUsedCondition(queryId, condition);
-		changeUsedCondition(queryId, condition, !isUsed);
-	}
+    public List<QueryCondition> getConditions(String queryId) {
+        return condValues.get(queryId);
+    }
 
-	public boolean isUsedCondition(String queryId, String condition) {
-		if (condition == null) {
-			return false;
-		}
+    public void toggleUsedCondition(String queryId, String condition) {
+        boolean isUsed = isUsedCondition(queryId, condition);
+        changeUsedCondition(queryId, condition, !isUsed);
+    }
 
-		Set<String> condSet = usedConditions.get(queryId);
-		if (condSet == null) {
-			return false;
-		}
+    public boolean isUsedCondition(String queryId, String condition) {
+        if (condition == null) {
+            return false;
+        }
 
-		return condSet.contains(condition);
-	}
+        Set<String> condSet = usedConditions.get(queryId);
+        if (condSet == null) {
+            return false;
+        }
 
-	public void changeUsedCondition(String queryId, String condition, boolean needToUse) {
-		if (condition == null) {
-			return;
-		}
+        return condSet.contains(condition);
+    }
 
-		List<QueryCondition> queryConditions = condValues.get(queryId);
-		if (queryConditions == null) {
-			return;
-		}
+    public void changeUsedCondition(String queryId, String condition, boolean needToUse) {
+        if (condition == null) {
+            return;
+        }
 
-		boolean found = false;
-		for (QueryCondition queryCondition : queryConditions) {
-			if (condition.equals(queryCondition.getConditionKey() + ":"
-					+ queryCondition.getConditionBody())) {
-				found = true;
-				break;
-			}
-		}
+        List<QueryCondition> queryConditions = condValues.get(queryId);
+        if (queryConditions == null) {
+            return;
+        }
 
-		if (!found) {
-			return;
-		}
+        boolean found = false;
+        for (QueryCondition queryCondition : queryConditions) {
+            if (condition.equals(
+                    queryCondition.getConditionKey() + ":" + queryCondition.getConditionBody())) {
+                found = true;
+                break;
+            }
+        }
 
-		Set<String> condSet = usedConditions.get(queryId);
-		if (needToUse) {
-			condSet.add(condition);
-		} else {
-			condSet.remove(condition);
-		}
-	}
+        if (!found) {
+            return;
+        }
 
-	public boolean isChanged(String queryId, List<QueryCondition> queryConditions) {
-		List<QueryCondition> oldConditions = condValues.get(queryId);
-		if (oldConditions == null || queryConditions == null
-				|| oldConditions.size() != queryConditions.size()) {
-			return true;
-		}
+        Set<String> condSet = usedConditions.get(queryId);
+        if (needToUse) {
+            condSet.add(condition);
+        } else {
+            condSet.remove(condition);
+        }
+    }
 
-		Set<String> currentConditionNameSet = new HashSet<String>();
-		for (QueryCondition queryCondition : oldConditions) {
-			String condition = queryCondition.getConditionKey() + ":"
-					+ queryCondition.getConditionBody();
-			currentConditionNameSet.add(condition);
-		}
+    public boolean isChanged(String queryId, List<QueryCondition> queryConditions) {
+        List<QueryCondition> oldConditions = condValues.get(queryId);
+        if (oldConditions == null
+                || queryConditions == null
+                || oldConditions.size() != queryConditions.size()) {
+            return true;
+        }
 
-		for (int i = 0; i < queryConditions.size(); i++) {
-			QueryCondition newCondition = queryConditions.get(i);
-			String condition = newCondition.getConditionKey() + ":"
-					+ newCondition.getConditionBody();
-			if (!currentConditionNameSet.contains(condition)) {
-				return true;
-			}
-		}
+        Set<String> currentConditionNameSet = new HashSet<String>();
+        for (QueryCondition queryCondition : oldConditions) {
+            String condition =
+                    queryCondition.getConditionKey() + ":" + queryCondition.getConditionBody();
+            currentConditionNameSet.add(condition);
+        }
 
-		return false;
-	}
+        for (int i = 0; i < queryConditions.size(); i++) {
+            QueryCondition newCondition = queryConditions.get(i);
+            String condition =
+                    newCondition.getConditionKey() + ":" + newCondition.getConditionBody();
+            if (!currentConditionNameSet.contains(condition)) {
+                return true;
+            }
+        }
 
-	private List<String> getUsedConditionList(String queryId) {
-		List<String> params = new ArrayList<String>();
+        return false;
+    }
 
-		Set<String> condSet = usedConditions.get(queryId);
-		if (condSet != null) {
-			Iterator<String> iter = condSet.iterator();
-			while (iter.hasNext()) {
-				params.add(iter.next());
-			}
-		}
+    private List<String> getUsedConditionList(String queryId) {
+        List<String> params = new ArrayList<String>();
 
-		return params;
-	}
+        Set<String> condSet = usedConditions.get(queryId);
+        if (condSet != null) {
+            Iterator<String> iter = condSet.iterator();
+            while (iter.hasNext()) {
+                params.add(iter.next());
+            }
+        }
 
-	public void addOrModifyBindParameter(String queryId, String name, String value, String type) {
-		Map<String, BindParameter> map = paramValues.get(queryId);
-		if (map == null) {
-			map = new HashMap<String, BindParameter>();
-			paramValues.put(queryId, map);
-		}
+        return params;
+    }
 
-		if (!map.containsKey(name)) {
-			map.put(name, new BindParameter(name, nvl(value), BindParameterType.valueOf(type)));
-		} else {
-			BindParameter bindValue = map.get(name);
-			if (value != null) {
-				bindValue.setValue(nvl(value));
-				bindValue.setType(BindParameterType.valueOf(type));
-				map.put(name, bindValue);
-			}
-		}
-	}
+    public void addOrModifyBindParameter(String queryId, String name, String value, String type) {
+        Map<String, BindParameter> map = paramValues.get(queryId);
+        if (map == null) {
+            map = new HashMap<String, BindParameter>();
+            paramValues.put(queryId, map);
+        }
 
-	public void removeBindParameter(String queryId, String name) {
-		Map<String, BindParameter> map = paramValues.get(queryId);
-		if (map == null) {
-			return;
-		}
-		map.remove(name);
-	}
+        if (!map.containsKey(name)) {
+            map.put(name, new BindParameter(name, nvl(value), BindParameterType.valueOf(type)));
+        } else {
+            BindParameter bindValue = map.get(name);
+            if (value != null) {
+                bindValue.setValue(nvl(value));
+                bindValue.setType(BindParameterType.valueOf(type));
+                map.put(name, bindValue);
+            }
+        }
+    }
 
-	public Map<String, BindParameter> getBindParameters(String queryId) {
-		Map<String, BindParameter> values = paramValues.get(queryId);
-		if (values == null) {
-			return Collections.emptyMap();
-		}
-		return new HashMap<String, BindParameter>(values);
-	}
+    public void removeBindParameter(String queryId, String name) {
+        Map<String, BindParameter> map = paramValues.get(queryId);
+        if (map == null) {
+            return;
+        }
+        map.remove(name);
+    }
 
-	public BindParameter getBindParameter(String queryId, String parameterName) {
-		Map<String, BindParameter> paramValue = paramValues.get(queryId);
-		if (paramValue == null) {
-			return null;
-		}
-		return paramValue.get(parameterName);
-	}
+    public Map<String, BindParameter> getBindParameters(String queryId) {
+        Map<String, BindParameter> values = paramValues.get(queryId);
+        if (values == null) {
+            return Collections.emptyMap();
+        }
+        return new HashMap<String, BindParameter>(values);
+    }
 
-	public String generateQuery(MapperFile mapperFile, String queryId) {
-		List<String> params = getUsedConditionList(queryId);
-		String generatedQuery = mapperFile.generateQuery(queryId, params);
-		return generatedQuery;
-	}
+    public BindParameter getBindParameter(String queryId, String parameterName) {
+        Map<String, BindParameter> paramValue = paramValues.get(queryId);
+        if (paramValue == null) {
+            return null;
+        }
+        return paramValue.get(parameterName);
+    }
 
+    public String generateQuery(MapperFile mapperFile, String queryId) {
+        List<String> params = getUsedConditionList(queryId);
+        String generatedQuery = mapperFile.generateQuery(queryId, params);
+        return generatedQuery;
+    }
 }

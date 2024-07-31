@@ -35,14 +35,14 @@ import java.util.List;
  * @author CHOE JUNGYEON
  */
 public class BindTag extends SqlMapCondition {
-	private static final long serialVersionUID = 5071864812217053951L;
+    private static final long serialVersionUID = 5071864812217053951L;
 
-	public BindTag() {
-		this.setType("bind");
-	}
+    public BindTag() {
+        this.setType("bind");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return false;
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return false;
+    }
 }

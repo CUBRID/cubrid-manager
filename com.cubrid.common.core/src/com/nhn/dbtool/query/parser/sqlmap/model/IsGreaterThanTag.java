@@ -30,49 +30,51 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of isGreaterThan tag.
- * <isGreaterThan property="" prepend="" open="" close="" removeFirstPrepend="true" compareProperty="" compareValue=""></isGreaterThan>
+ * A definition of isGreaterThan tag. <isGreaterThan property="" prepend="" open="" close=""
+ * removeFirstPrepend="true" compareProperty="" compareValue=""></isGreaterThan>
  *
  * @author Bumsik, Jang
  */
 public class IsGreaterThanTag extends SqlMapCondition {
-	private static final long serialVersionUID = 6693608168146150612L;
+    private static final long serialVersionUID = 6693608168146150612L;
 
-	public IsGreaterThanTag() {
-		this.setType("isGreaterThan");
-	}
+    public IsGreaterThanTag() {
+        this.setType("isGreaterThan");
+    }
 
-	@Override
-	public String getExpectedCompareValue() {
-		return compareValue != null ? "> " + compareValue
-				: (compareProperty != null ? "> #" + compareProperty + "#" : null);
-	}
+    @Override
+    public String getExpectedCompareValue() {
+        return compareValue != null
+                ? "> " + compareValue
+                : (compareProperty != null ? "> #" + compareProperty + "#" : null);
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		for (String parameter : parameterList) {
-			if (!parameter.startsWith(getProperty())) {
-				continue;
-			}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        for (String parameter : parameterList) {
+            if (!parameter.startsWith(getProperty())) {
+                continue;
+            }
 
-			String[] value = parameter.split(":");
-			try {
-				if (value.length == 0) {
-					return false;
-				} else if (value.length == 1) {
-					return true;
-				} else if (value[1].equals(this.getExpectedCompareValue()) || greaterThan(value[1], compareValue)) {
-					return true;
-				}
-			} catch (Exception ignored) {
-				// ignore
-			}
-		}
+            String[] value = parameter.split(":");
+            try {
+                if (value.length == 0) {
+                    return false;
+                } else if (value.length == 1) {
+                    return true;
+                } else if (value[1].equals(this.getExpectedCompareValue())
+                        || greaterThan(value[1], compareValue)) {
+                    return true;
+                }
+            } catch (Exception ignored) {
+                // ignore
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	private boolean greaterThan(String value, String compareValue) {
-		return Double.parseDouble(value) > Double.parseDouble(compareValue);
-	}
+    private boolean greaterThan(String value, String compareValue) {
+        return Double.parseDouble(value) > Double.parseDouble(compareValue);
+    }
 }

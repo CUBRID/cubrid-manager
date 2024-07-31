@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,96 +23,94 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.cubrid.user.model;
 
+import com.cubrid.cubridmanager.core.common.model.IModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cubrid.cubridmanager.core.common.model.IModel;
-
 /**
  * This class is a java bean model and represents the info of DB user
- * 
+ *
  * @author sq
  * @version 1.0 - 2009-12-29 created by sq
  */
-public class DbUserInfoList implements
-		IModel {
+public class DbUserInfoList implements IModel {
 
-	private String dbname;
-	private List<DbUserInfo> userList;
+    private String dbname;
+    private List<DbUserInfo> userList;
 
-	private Map<String, DbUserInfo> userMap;
+    private Map<String, DbUserInfo> userMap;
 
-	public String getTaskName() {
-		return "userinfo";
-	}
+    public String getTaskName() {
+        return "userinfo";
+    }
 
-	public String getDbname() {
-		return dbname;
-	}
+    public String getDbname() {
+        return dbname;
+    }
 
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
-	}
+    public void setDbname(String dbname) {
+        this.dbname = dbname;
+    }
 
-	public List<DbUserInfo> getUserList() {
-		return userList;
-	}
+    public List<DbUserInfo> getUserList() {
+        return userList;
+    }
 
-	/**
-	 * add user
-	 * 
-	 * @param user DbUserInfo
-	 */
-	public void addUser(DbUserInfo user) {
-		synchronized (this) {
-			if (userList == null) {
-				userList = new ArrayList<DbUserInfo>();
-			}
-			if (!userList.contains(user)) {
-				userList.add(user);
-			}
-		}
-	}
+    /**
+     * add user
+     *
+     * @param user DbUserInfo
+     */
+    public void addUser(DbUserInfo user) {
+        synchronized (this) {
+            if (userList == null) {
+                userList = new ArrayList<DbUserInfo>();
+            }
+            if (!userList.contains(user)) {
+                userList.add(user);
+            }
+        }
+    }
 
-	/**
-	 * remove user
-	 * 
-	 * @param user DbUserInfo
-	 */
-	public void removeUser(DbUserInfo user) {
-		synchronized (this) {
-			if (userList != null) {
-				userList.remove(user);
-			}
-		}
-	}
+    /**
+     * remove user
+     *
+     * @param user DbUserInfo
+     */
+    public void removeUser(DbUserInfo user) {
+        synchronized (this) {
+            if (userList != null) {
+                userList.remove(user);
+            }
+        }
+    }
 
-	/**
-	 * Get the user map
-	 * 
-	 * @return Map<String, DbUserInfo>
-	 */
-	public Map<String, DbUserInfo> getUserMap() {
-		synchronized (this) {
-			if (userList == null || userList.isEmpty()) {
-				return new HashMap<String, DbUserInfo>();
-			}
-			if (userMap == null) {
-				userMap = new HashMap<String, DbUserInfo>();
-			}
-			for (DbUserInfo bean : userList) {
-				if (!userMap.containsKey(bean.getName())) {
-					userMap.put(bean.getName(), bean);
-				}
-			}
-			return userMap;
-		}
-	}
+    /**
+     * Get the user map
+     *
+     * @return Map<String, DbUserInfo>
+     */
+    public Map<String, DbUserInfo> getUserMap() {
+        synchronized (this) {
+            if (userList == null || userList.isEmpty()) {
+                return new HashMap<String, DbUserInfo>();
+            }
+            if (userMap == null) {
+                userMap = new HashMap<String, DbUserInfo>();
+            }
+            for (DbUserInfo bean : userList) {
+                if (!userMap.containsKey(bean.getName())) {
+                    userMap.put(bean.getName(), bean);
+                }
+            }
+            return userMap;
+        }
+    }
 }

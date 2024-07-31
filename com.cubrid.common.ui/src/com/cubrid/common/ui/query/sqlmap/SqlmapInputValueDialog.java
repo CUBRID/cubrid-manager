@@ -31,6 +31,8 @@ import static com.cubrid.common.core.util.StringUtil.isEmpty;
 import static com.cubrid.common.core.util.StringUtil.nvl;
 import static com.cubrid.common.ui.spi.util.CommonUITool.openErrorBox;
 
+import com.cubrid.common.ui.query.Messages;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -42,123 +44,116 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-
 /**
- * <p>
  * SQLMaps input value dialog.
- * </p>
  *
  * @author CHOE JUNGYEON
  */
-public class SqlmapInputValueDialog extends
-		CMTitleAreaDialog {
+public class SqlmapInputValueDialog extends CMTitleAreaDialog {
 
-	private Text txtName;
-	private Text txtValue;
-	private Combo cbDataTypes;
+    private Text txtName;
+    private Text txtValue;
+    private Combo cbDataTypes;
 
-	private String name;
-	private String value;
-	private String type;
+    private String name;
+    private String value;
+    private String type;
 
-	public SqlmapInputValueDialog(Shell parentShell, String name, String value, String type) {
-		super(parentShell);
+    public SqlmapInputValueDialog(Shell parentShell, String name, String value, String type) {
+        super(parentShell);
 
-		this.name = name;
-		this.value = value;
-		this.type = type;
-	}
+        this.name = name;
+        this.value = value;
+        this.type = type;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		getShell().setText(Messages.titleSqlmapDefineBindValue);
+    @Override
+    protected Control createDialogArea(Composite parent) {
+        getShell().setText(Messages.titleSqlmapDefineBindValue);
 
-		setTitle(Messages.msgSqlmapDefineBindValue);
-		setMessage("");
+        setTitle(Messages.msgSqlmapDefineBindValue);
+        setMessage("");
 
-		Composite comp = new Composite(parent, SWT.BORDER);
-		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		comp.setLayout(new GridLayout(2, false));
+        Composite comp = new Composite(parent, SWT.BORDER);
+        comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        comp.setLayout(new GridLayout(2, false));
 
-		createInputForm(comp);
+        createInputForm(comp);
 
-		return parent;
-	}
+        return parent;
+    }
 
-	private void createInputForm(Composite parent) {
-		Label lblName = new Label(parent, SWT.NONE);
-		lblName.setText(Messages.lblSqlmapInputVariableName);
+    private void createInputForm(Composite parent) {
+        Label lblName = new Label(parent, SWT.NONE);
+        lblName.setText(Messages.lblSqlmapInputVariableName);
 
-		txtName = new Text(parent, SWT.BORDER);
-		txtName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		if (name != null) {
-			txtName.setEditable(false);
-			txtName.setEnabled(false);
-		}
-		txtName.setText(nvl(name));
+        txtName = new Text(parent, SWT.BORDER);
+        txtName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        if (name != null) {
+            txtName.setEditable(false);
+            txtName.setEnabled(false);
+        }
+        txtName.setText(nvl(name));
 
-		Label lblValue = new Label(parent, SWT.NONE);
-		lblValue.setText(Messages.lblSqlmapInputVariableValue);
+        Label lblValue = new Label(parent, SWT.NONE);
+        lblValue.setText(Messages.lblSqlmapInputVariableValue);
 
-		txtValue = new Text(parent, SWT.BORDER);
-		txtValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		txtValue.setText(nvl(value));
+        txtValue = new Text(parent, SWT.BORDER);
+        txtValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        txtValue.setText(nvl(value));
 
-		Label lblDataTypes = new Label(parent, SWT.NONE);
-		lblDataTypes.setText(Messages.lblSqlmapInputVariableType);
+        Label lblDataTypes = new Label(parent, SWT.NONE);
+        lblDataTypes.setText(Messages.lblSqlmapInputVariableType);
 
-		cbDataTypes = new Combo(parent, SWT.READ_ONLY);
-		cbDataTypes.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		cbDataTypes.add("STRING");
-		cbDataTypes.add("NUMBER");
-		cbDataTypes.add("FUNCTION");
+        cbDataTypes = new Combo(parent, SWT.READ_ONLY);
+        cbDataTypes.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        cbDataTypes.add("STRING");
+        cbDataTypes.add("NUMBER");
+        cbDataTypes.add("FUNCTION");
 
-		int index = 0;
-		for (String dataType : cbDataTypes.getItems()) {
-			if (dataType.equals(type)) {
-				cbDataTypes.select(index);
-			}
-			index++;
-		}
-		if (cbDataTypes.getSelectionIndex() == -1) {
-			cbDataTypes.select(0);
-		}
-	}
+        int index = 0;
+        for (String dataType : cbDataTypes.getItems()) {
+            if (dataType.equals(type)) {
+                cbDataTypes.select(index);
+            }
+            index++;
+        }
+        if (cbDataTypes.getSelectionIndex() == -1) {
+            cbDataTypes.select(0);
+        }
+    }
 
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == IDialogConstants.OK_ID) {
-			this.name = txtName.getText();
-			this.value = txtValue.getText();
-			this.type = cbDataTypes.getText();
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+            this.name = txtName.getText();
+            this.value = txtValue.getText();
+            this.type = cbDataTypes.getText();
 
-			String errorMsg = null;
-			if (isEmpty(name)) {
-				errorMsg = Messages.msgSqlmapInputVariableName;
-			} else if (isEmpty(type)) {
-				errorMsg = Messages.msgSqlmapInputVariableType;
-			}
+            String errorMsg = null;
+            if (isEmpty(name)) {
+                errorMsg = Messages.msgSqlmapInputVariableName;
+            } else if (isEmpty(type)) {
+                errorMsg = Messages.msgSqlmapInputVariableType;
+            }
 
-			if (errorMsg != null) {
-				openErrorBox(errorMsg);
-				return;
-			}
-		}
+            if (errorMsg != null) {
+                openErrorBox(errorMsg);
+                return;
+            }
+        }
 
-		super.buttonPressed(buttonId);
-	}
-
+        super.buttonPressed(buttonId);
+    }
 }

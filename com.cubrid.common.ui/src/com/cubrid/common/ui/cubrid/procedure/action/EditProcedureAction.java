@@ -28,13 +28,6 @@
 
 package com.cubrid.common.ui.cubrid.procedure.action;
 
-import java.util.List;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.widgets.Shell;
-
 import com.cubrid.common.ui.cubrid.procedure.Messages;
 import com.cubrid.common.ui.cubrid.procedure.dialog.EditProcedureDialog;
 import com.cubrid.common.ui.spi.action.ActionManager;
@@ -49,116 +42,112 @@ import com.cubrid.common.ui.spi.util.ActionSupportUtil;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.cubrid.sp.model.SPInfo;
 import com.cubrid.cubridmanager.core.cubrid.sp.task.GetSPInfoListTask;
+import java.util.List;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * This action is responsible to edit procedure
  *
  * @author robin 2009-3-18
  */
-public class EditProcedureAction extends
-		SelectionAction {
+public class EditProcedureAction extends SelectionAction {
 
-	public static final String ID = EditProcedureAction.class.getName();
+    public static final String ID = EditProcedureAction.class.getName();
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public EditProcedureAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public EditProcedureAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 */
-	public EditProcedureAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-		this.setToolTipText(text);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     */
+    public EditProcedureAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+        this.setToolTipText(text);
+    }
 
-	/**
-	 *
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections
-	 *      ()
-	 * @return false
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#allowMultiSelections ()
+     * @return false
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 *
-	 * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java
-	 *      .lang.Object)
-	 * @param obj the Object
-	 * @return <code>true</code> if support this obj;<code>false</code>
-	 *         otherwise
-	 */
-	public boolean isSupported(Object obj) {
-		return ActionSupportUtil.isSupportSinSelCheckDbUser(obj,
-				NodeType.STORED_PROCEDURE_PROCEDURE);
-	}
+    /**
+     * @see com.cubrid.common.ui.spi.action.ISelectionAction#isSupported(java .lang.Object)
+     * @param obj the Object
+     * @return <code>true</code> if support this obj;<code>false</code> otherwise
+     */
+    public boolean isSupported(Object obj) {
+        return ActionSupportUtil.isSupportSinSelCheckDbUser(
+                obj, NodeType.STORED_PROCEDURE_PROCEDURE);
+    }
 
-	/**
-	 * Open the EditProcedureDialog and edit procedure
-	 */
-	public void run() { // FIXME logic code move to core module
-		Object[] objArr = this.getSelectedObj();
-		if (!isSupported(objArr)) {
-			this.setEnabled(false);
-			return;
-		}
+    /** Open the EditProcedureDialog and edit procedure */
+    public void run() { // FIXME logic code move to core module
+        Object[] objArr = this.getSelectedObj();
+        if (!isSupported(objArr)) {
+            this.setEnabled(false);
+            return;
+        }
 
-		Shell shell = getShell();
-		CubridDatabase database = null;
-		ISchemaNode node = null;
-		if (objArr[0] instanceof ISchemaNode
-				&& NodeType.STORED_PROCEDURE_PROCEDURE.equals(((ISchemaNode) objArr[0]).getType())) {
-			node = (ISchemaNode) objArr[0];
-			database = node.getDatabase();
-		}
-		if (database == null || node == null) {
-			CommonUITool.openErrorBox(shell, Messages.errSelectProcedure);
-			return;
-		}
+        Shell shell = getShell();
+        CubridDatabase database = null;
+        ISchemaNode node = null;
+        if (objArr[0] instanceof ISchemaNode
+                && NodeType.STORED_PROCEDURE_PROCEDURE.equals(
+                        ((ISchemaNode) objArr[0]).getType())) {
+            node = (ISchemaNode) objArr[0];
+            database = node.getDatabase();
+        }
+        if (database == null || node == null) {
+            CommonUITool.openErrorBox(shell, Messages.errSelectProcedure);
+            return;
+        }
 
-		final GetSPInfoListTask task = new GetSPInfoListTask(
-				database.getDatabaseInfo());
-		task.setSpName(node.getName());
+        final GetSPInfoListTask task = new GetSPInfoListTask(database.getDatabaseInfo());
+        task.setSpName(node.getName());
 
-		TaskExecutor taskExcutor = new CommonTaskExec(null);
-		taskExcutor.addTask(task);
-		new ExecTaskWithProgress(taskExcutor).busyCursorWhile();
-		if (!taskExcutor.isSuccess()) {
-			return;
-		}
+        TaskExecutor taskExcutor = new CommonTaskExec(null);
+        taskExcutor.addTask(task);
+        new ExecTaskWithProgress(taskExcutor).busyCursorWhile();
+        if (!taskExcutor.isSuccess()) {
+            return;
+        }
 
-		List<SPInfo> list = task.getSPInfoList();
-		if (list.size() > 1) {
-			CommonUITool.openErrorBox(shell, Messages.errDuplicateName);
-			return;
-		}
-		if (list.isEmpty()) {
-			CommonUITool.openErrorBox(shell, Messages.errNotExistName);
-			return;
-		}
+        List<SPInfo> list = task.getSPInfoList();
+        if (list.size() > 1) {
+            CommonUITool.openErrorBox(shell, Messages.errDuplicateName);
+            return;
+        }
+        if (list.isEmpty()) {
+            CommonUITool.openErrorBox(shell, Messages.errNotExistName);
+            return;
+        }
 
-		EditProcedureDialog dlg = new EditProcedureDialog(shell);
-		dlg.setDatabase(database);
-		dlg.setNewFlag(false);
-		dlg.setSpInfo(list.get(0));
-		if (dlg.open() == IDialogConstants.OK_ID) {
-			ActionManager.getInstance().fireSelectionChanged(getSelection());
-		}
-
-	}
+        EditProcedureDialog dlg = new EditProcedureDialog(shell);
+        dlg.setDatabase(database);
+        dlg.setNewFlag(false);
+        dlg.setSpInfo(list.get(0));
+        if (dlg.open() == IDialogConstants.OK_ID) {
+            ActionManager.getInstance().fireSelectionChanged(getSelection());
+        }
+    }
 }

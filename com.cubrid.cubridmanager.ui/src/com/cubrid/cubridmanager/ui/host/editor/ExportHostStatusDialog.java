@@ -27,9 +27,14 @@
  */
 package com.cubrid.cubridmanager.ui.host.editor;
 
+import com.cubrid.common.core.util.LogUtil;
+import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.persist.QueryOptions;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
 import java.io.File;
 import java.io.IOException;
-
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.format.Border;
@@ -41,7 +46,6 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -61,294 +65,288 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.persist.QueryOptions;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.ui.cubrid.database.Messages;
-
 /**
  * Export host information to excel
- * 
+ *
  * @author Kevin.Wang
- * 
  * @version 1.0 - 2012-10-11 created by fulKevin.Wangei
  */
+public class ExportHostStatusDialog extends CMTitleAreaDialog {
+    private static final Logger LOGGER = LogUtil.getLogger(ExportHostStatusDialog.class);
 
-public class ExportHostStatusDialog extends
-		CMTitleAreaDialog {
-	private static final Logger LOGGER = LogUtil.getLogger(ExportHostStatusDialog.class);
+    private Combo fileCharsetCombo;
+    private Text saveExcelPath;
+    private Text saveExcelName;
+    private Button saveExcelBtn;
 
-	private Combo fileCharsetCombo;
-	private Text saveExcelPath;
-	private Text saveExcelName;
-	private Button saveExcelBtn;
+    private HostDashboardEditor editor;
+    private WritableWorkbook wwb;
 
-	private HostDashboardEditor editor;
-	private WritableWorkbook wwb;
+    /**
+     * The constructor
+     *
+     * @param parentShell
+     * @param editor
+     */
+    public ExportHostStatusDialog(Shell parentShell, HostDashboardEditor editor) {
+        super(parentShell);
+        setShellStyle(SWT.APPLICATION_MODAL);
+        this.editor = editor;
+    }
 
-	/**
-	 * The constructor
-	 * @param parentShell
-	 * @param editor
-	 */
-	public ExportHostStatusDialog(Shell parentShell, HostDashboardEditor editor) {
-		super(parentShell);
-		setShellStyle(SWT.APPLICATION_MODAL);
-		this.editor = editor;
-	}
+    protected Control createDialogArea(Composite parent) {
+        getShell().setText(Messages.exportDashboardDialogTitle);
 
-	protected Control createDialogArea(Composite parent) {
-		getShell().setText(Messages.exportDashboardDialogTitle);
+        setTitle(Messages.exportDashboardDialogTitle);
+        setMessage(Messages.exportDashboardDialogMessage);
 
-		setTitle(Messages.exportDashboardDialogTitle);
-		setMessage(Messages.exportDashboardDialogMessage);
+        Composite comp = new Composite(parent, SWT.BORDER);
+        comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        comp.setLayout(new GridLayout(1, false));
 
-		Composite comp = new Composite(parent, SWT.BORDER);
-		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		comp.setLayout(new GridLayout(1, false));
+        Composite charsetComp = new Composite(comp, SWT.NONE);
+        charsetComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        charsetComp.setLayout(new GridLayout(2, false));
 
-		Composite charsetComp = new Composite(comp, SWT.NONE);
-		charsetComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		charsetComp.setLayout(new GridLayout(2, false));
+        new Label(charsetComp, SWT.NONE)
+                .setText(com.cubrid.common.ui.cubrid.table.Messages.lblFileCharset);
+        fileCharsetCombo = new Combo(charsetComp, SWT.NONE);
+        {
+            GridData gridData = new GridData(GridData.BEGINNING);
+            fileCharsetCombo.setLayoutData(gridData);
+            fileCharsetCombo.setItems(QueryOptions.getAllCharset(null));
+            fileCharsetCombo.select(0);
+        }
 
-		new Label(charsetComp, SWT.NONE).setText(com.cubrid.common.ui.cubrid.table.Messages.lblFileCharset);
-		fileCharsetCombo = new Combo(charsetComp, SWT.NONE);
-		{
-			GridData gridData = new GridData(GridData.BEGINNING);
-			fileCharsetCombo.setLayoutData(gridData);
-			fileCharsetCombo.setItems(QueryOptions.getAllCharset(null));
-			fileCharsetCombo.select(0);
-		}
+        Composite excelNameComp = new Composite(comp, SWT.NONE);
+        excelNameComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        excelNameComp.setLayout(new GridLayout(2, false));
 
-		Composite excelNameComp = new Composite(comp, SWT.NONE);
-		excelNameComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		excelNameComp.setLayout(new GridLayout(2, false));
+        new Label(excelNameComp, SWT.NONE).setText(Messages.exportDashboardDialogLblFileName);
+        saveExcelName = new Text(excelNameComp, SWT.BORDER);
+        GridData saveExcelNameGd = new GridData();
+        saveExcelNameGd.widthHint = 150;
+        saveExcelName.setLayoutData(saveExcelNameGd);
+        saveExcelName.setText(editor.getServerInfo().getServerName());
 
-		new Label(excelNameComp, SWT.NONE).setText(Messages.exportDashboardDialogLblFileName);
-		saveExcelName = new Text(excelNameComp, SWT.BORDER);
-		GridData saveExcelNameGd = new GridData();
-		saveExcelNameGd.widthHint = 150;
-		saveExcelName.setLayoutData(saveExcelNameGd);
-		saveExcelName.setText(editor.getServerInfo().getServerName());
+        Composite exlComp = new Composite(comp, SWT.NONE);
+        exlComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        exlComp.setLayout(new GridLayout(3, false));
 
-		Composite exlComp = new Composite(comp, SWT.NONE);
-		exlComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		exlComp.setLayout(new GridLayout(3, false));
+        new Label(exlComp, SWT.NONE)
+                .setText(com.cubrid.common.ui.common.Messages.runSQLDialogExcelPathLabel);
 
-		new Label(exlComp, SWT.NONE).setText(com.cubrid.common.ui.common.Messages.runSQLDialogExcelPathLabel);
+        saveExcelPath = new Text(exlComp, SWT.BORDER);
+        saveExcelPath.setLayoutData(new GridData(GridData.FILL_BOTH));
+        saveExcelPath.setEditable(false);
 
-		saveExcelPath = new Text(exlComp, SWT.BORDER);
-		saveExcelPath.setLayoutData(new GridData(GridData.FILL_BOTH));
-		saveExcelPath.setEditable(false);
+        saveExcelBtn = new Button(exlComp, SWT.NONE);
+        saveExcelBtn.setText(com.cubrid.common.ui.common.Messages.brokerLogTopMergeOpenBtn);
+        saveExcelBtn.addSelectionListener(
+                new SelectionAdapter() {
+                    public void widgetSelected(final SelectionEvent event) {
+                        DirectoryDialog dialog =
+                                new DirectoryDialog(
+                                        PlatformUI.getWorkbench().getDisplay().getActiveShell());
+                        dialog.setFilterPath(saveExcelPath.getText());
 
-		saveExcelBtn = new Button(exlComp, SWT.NONE);
-		saveExcelBtn.setText(com.cubrid.common.ui.common.Messages.brokerLogTopMergeOpenBtn);
-		saveExcelBtn.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(final SelectionEvent event) {
-				DirectoryDialog dialog = new DirectoryDialog(
-						PlatformUI.getWorkbench().getDisplay().getActiveShell());
-				dialog.setFilterPath(saveExcelPath.getText());
+                        String dir = dialog.open();
+                        if (dir != null) {
+                            if (!dir.endsWith(File.separator)) {
+                                dir += File.separator;
+                            }
+                            saveExcelPath.setText(dir);
+                        }
+                    }
+                });
 
-				String dir = dialog.open();
-				if (dir != null) {
-					if (!dir.endsWith(File.separator)) {
-						dir += File.separator;
-					}
-					saveExcelPath.setText(dir);
-				}
-			}
-		});
+        return parent;
+    }
 
-		return parent;
-	}
+    /**
+     * When press button,call it
+     *
+     * @param buttonId the button id
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+            if (StringUtil.isEmpty(saveExcelPath.getText())) {
+                CommonUITool.openErrorBox(Messages.exportDashboardDialogErrMessage);
+                return;
+            }
+            if (StringUtil.isEmpty(saveExcelName.getText())) {
+                CommonUITool.openErrorBox(Messages.exportDashboardDialogErrMessage2);
+                return;
+            }
 
-	/**
-	 * When press button,call it
-	 * 
-	 * @param buttonId the button id
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == IDialogConstants.OK_ID) {
-			if (StringUtil.isEmpty(saveExcelPath.getText())) {
-				CommonUITool.openErrorBox(Messages.exportDashboardDialogErrMessage);
-				return;
-			}
-			if (StringUtil.isEmpty(saveExcelName.getText())) {
-				CommonUITool.openErrorBox(Messages.exportDashboardDialogErrMessage2);
-				return;
-			}
+            try {
+                if (saveAllData()) {
+                    CommonUITool.openInformationBox(
+                            Messages.titleSuccess, Messages.exportDashboardSucessMessage);
+                }
+            } catch (Exception e) {
+                CommonUITool.openErrorBox(e.getMessage());
+                return;
+            }
+        }
 
-			try {
-				if (saveAllData()) {
-					CommonUITool.openInformationBox(Messages.titleSuccess,
-							Messages.exportDashboardSucessMessage);
-				}
-			} catch (Exception e) {
-				CommonUITool.openErrorBox(e.getMessage());
-				return;
-			}
-		}
-		
-		setReturnCode(buttonId);
-		close();
-	}
+        setReturnCode(buttonId);
+        close();
+    }
 
-	private boolean saveAllData() {
-		String fileName = saveExcelPath.getText() + saveExcelName.getText()
-				+ ".xls";
-		WorkbookSettings workbookSettings = new WorkbookSettings();
-		workbookSettings.setEncoding(fileCharsetCombo.getText());
-		boolean isOK = true;
-		try {
-			wwb = Workbook.createWorkbook(new File(fileName), workbookSettings);
-			/*System info*/
-			saveTableData(
-					com.cubrid.cubridmanager.ui.host.Messages.titleServerInfo,
-					editor.getDbServerInfoText().getText(),
-					com.cubrid.cubridmanager.ui.host.Messages.titleServerInfo,
-					0);
-			/*DB info*/
-			saveDBInfoData(editor.getDatabaseTable(),
-					com.cubrid.cubridmanager.ui.host.Messages.titleDBInfo, 1);
-			/*DB volume info*/
-			saveTableData(editor.getVolumeTableViewer().getTable(),
-					com.cubrid.cubridmanager.ui.host.Messages.titleVolumeInfo,
-					2);
-			/*Broker info*/
-			saveTableData(editor.getBrokerTableViewer().getTable(),
-					com.cubrid.cubridmanager.ui.host.Messages.titleBrokerInfo,
-					3);
-			/*System status*/
-			saveTableData(editor.getServerTableViewer().getTable(),
-					com.cubrid.cubridmanager.ui.host.Messages.titleSystemInfo,
-					4);
+    private boolean saveAllData() {
+        String fileName = saveExcelPath.getText() + saveExcelName.getText() + ".xls";
+        WorkbookSettings workbookSettings = new WorkbookSettings();
+        workbookSettings.setEncoding(fileCharsetCombo.getText());
+        boolean isOK = true;
+        try {
+            wwb = Workbook.createWorkbook(new File(fileName), workbookSettings);
+            /*System info*/
+            saveTableData(
+                    com.cubrid.cubridmanager.ui.host.Messages.titleServerInfo,
+                    editor.getDbServerInfoText().getText(),
+                    com.cubrid.cubridmanager.ui.host.Messages.titleServerInfo,
+                    0);
+            /*DB info*/
+            saveDBInfoData(
+                    editor.getDatabaseTable(),
+                    com.cubrid.cubridmanager.ui.host.Messages.titleDBInfo,
+                    1);
+            /*DB volume info*/
+            saveTableData(
+                    editor.getVolumeTableViewer().getTable(),
+                    com.cubrid.cubridmanager.ui.host.Messages.titleVolumeInfo,
+                    2);
+            /*Broker info*/
+            saveTableData(
+                    editor.getBrokerTableViewer().getTable(),
+                    com.cubrid.cubridmanager.ui.host.Messages.titleBrokerInfo,
+                    3);
+            /*System status*/
+            saveTableData(
+                    editor.getServerTableViewer().getTable(),
+                    com.cubrid.cubridmanager.ui.host.Messages.titleSystemInfo,
+                    4);
 
-			wwb.write();
-		} catch (IOException e) {
-			isOK = false;
-			LOGGER.error("Export to error", e);
-		} catch (RowsExceededException e) {
-			isOK = false;
-			LOGGER.error("Export to error", e);
-		} catch (WriteException e) {
-			isOK = false;
-			LOGGER.error("Export to error", e);
-		} finally {
-			if (wwb != null) {
-				try {
-					wwb.close();
-				} catch (Exception ex) {
-					LOGGER.error("close excel stream error", ex);
-				}
-			}
-		}
-		
-		return isOK;
-	}
+            wwb.write();
+        } catch (IOException e) {
+            isOK = false;
+            LOGGER.error("Export to error", e);
+        } catch (RowsExceededException e) {
+            isOK = false;
+            LOGGER.error("Export to error", e);
+        } catch (WriteException e) {
+            isOK = false;
+            LOGGER.error("Export to error", e);
+        } finally {
+            if (wwb != null) {
+                try {
+                    wwb.close();
+                } catch (Exception ex) {
+                    LOGGER.error("close excel stream error", ex);
+                }
+            }
+        }
 
-	private void saveTableData(String columnName, String content,
-			String sheetName, int sheetIndex) throws RowsExceededException,
-			WriteException {
-		WritableCellFormat normalCellStyle = getNormalCell();
-		WritableSheet ws = wwb.createSheet(sheetName, sheetIndex);
+        return isOK;
+    }
 
-		ws.addCell(new jxl.write.Label(0, 0, columnName, normalCellStyle));
-		ws.setColumnView(0, 30);
+    private void saveTableData(String columnName, String content, String sheetName, int sheetIndex)
+            throws RowsExceededException, WriteException {
+        WritableCellFormat normalCellStyle = getNormalCell();
+        WritableSheet ws = wwb.createSheet(sheetName, sheetIndex);
 
-		ws.addCell(new jxl.write.Label(0, 1, content, normalCellStyle));
-	}
+        ws.addCell(new jxl.write.Label(0, 0, columnName, normalCellStyle));
+        ws.setColumnView(0, 30);
 
-	private void saveTableData(Table table, String sheetName, int sheetIndex) throws RowsExceededException,
-			WriteException {
-		WritableCellFormat normalCellStyle = getNormalCell();
-		WritableSheet ws = wwb.createSheet(sheetName, sheetIndex);
-		int rowIndex = 0;
-		//title
-		for (int j = 0; j < table.getColumnCount(); j++) {
-			String cellString = table.getColumn(j).getText();
-			ws.addCell(new jxl.write.Label(j, rowIndex, cellString,
-					normalCellStyle));
-			ws.setColumnView(j, 30);
-		}
-		rowIndex++;
-		//row
-		for (int j = 0; j < table.getItemCount(); j++) {
-			TableItem tableItem = table.getItem(j);
-			for (int k = 0; k < table.getColumnCount(); k++) {
-				String cellString = tableItem.getText(k);
-				ws.addCell(new jxl.write.Label(k, rowIndex, cellString,
-						normalCellStyle));
-			}
-			rowIndex++;
-		}
-	}
+        ws.addCell(new jxl.write.Label(0, 1, content, normalCellStyle));
+    }
 
-	private void saveDBInfoData(Table dbInfoTable, String sheetName,
-			int sheetIndex) throws RowsExceededException, WriteException {
-		WritableCellFormat normalCellStyle = getNormalCell();
-		WritableSheet ws = wwb.createSheet(sheetName, sheetIndex);
-		int rowIndex = 0;
-		//title
-		for (int j = 0; j < dbInfoTable.getColumnCount(); j++) {
-			String cellString = dbInfoTable.getColumn(j).getText();
-			ws.addCell(new jxl.write.Label(j, rowIndex, cellString,
-					normalCellStyle));
-			ws.setColumnView(j, 30);
-		}
-		rowIndex++;
-		//row
-		for (int j = 0; j < dbInfoTable.getItemCount(); j++) {
-			TableItem tableItem = dbInfoTable.getItem(j);
-			for (int k = 0; k < dbInfoTable.getColumnCount(); k++) {
-				String cellString = tableItem.getText(k);
-				if (k == 1) {
-					if ((Boolean) tableItem.getData("isChecked")) {
-						cellString = "Y";
-					} else {
-						cellString = "N";
-					}
-				}
-				ws.addCell(new jxl.write.Label(k, rowIndex, cellString,
-						normalCellStyle));
-			}
-			rowIndex++;
-		}
-	}
+    private void saveTableData(Table table, String sheetName, int sheetIndex)
+            throws RowsExceededException, WriteException {
+        WritableCellFormat normalCellStyle = getNormalCell();
+        WritableSheet ws = wwb.createSheet(sheetName, sheetIndex);
+        int rowIndex = 0;
+        // title
+        for (int j = 0; j < table.getColumnCount(); j++) {
+            String cellString = table.getColumn(j).getText();
+            ws.addCell(new jxl.write.Label(j, rowIndex, cellString, normalCellStyle));
+            ws.setColumnView(j, 30);
+        }
+        rowIndex++;
+        // row
+        for (int j = 0; j < table.getItemCount(); j++) {
+            TableItem tableItem = table.getItem(j);
+            for (int k = 0; k < table.getColumnCount(); k++) {
+                String cellString = tableItem.getText(k);
+                ws.addCell(new jxl.write.Label(k, rowIndex, cellString, normalCellStyle));
+            }
+            rowIndex++;
+        }
+    }
 
-	/**
-	 * getNormalCell
-	 * 
-	 * @return WritableCellFormat
-	 */
-	public static WritableCellFormat getNormalCell() {
-		WritableFont font = new WritableFont(WritableFont.TIMES, 11);
-		WritableCellFormat format = new WritableCellFormat(font);
-		try {
-			format.setAlignment(jxl.format.Alignment.LEFT);
-			format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);
-			format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-			format.setWrap(true);
-		} catch (WriteException e) {
-			e.printStackTrace();
-		}
-		return format;
-	}
+    private void saveDBInfoData(Table dbInfoTable, String sheetName, int sheetIndex)
+            throws RowsExceededException, WriteException {
+        WritableCellFormat normalCellStyle = getNormalCell();
+        WritableSheet ws = wwb.createSheet(sheetName, sheetIndex);
+        int rowIndex = 0;
+        // title
+        for (int j = 0; j < dbInfoTable.getColumnCount(); j++) {
+            String cellString = dbInfoTable.getColumn(j).getText();
+            ws.addCell(new jxl.write.Label(j, rowIndex, cellString, normalCellStyle));
+            ws.setColumnView(j, 30);
+        }
+        rowIndex++;
+        // row
+        for (int j = 0; j < dbInfoTable.getItemCount(); j++) {
+            TableItem tableItem = dbInfoTable.getItem(j);
+            for (int k = 0; k < dbInfoTable.getColumnCount(); k++) {
+                String cellString = tableItem.getText(k);
+                if (k == 1) {
+                    if ((Boolean) tableItem.getData("isChecked")) {
+                        cellString = "Y";
+                    } else {
+                        cellString = "N";
+                    }
+                }
+                ws.addCell(new jxl.write.Label(k, rowIndex, cellString, normalCellStyle));
+            }
+            rowIndex++;
+        }
+    }
 
-	public Combo getFileCharsetCombo() {
-		return fileCharsetCombo;
-	}
+    /**
+     * getNormalCell
+     *
+     * @return WritableCellFormat
+     */
+    public static WritableCellFormat getNormalCell() {
+        WritableFont font = new WritableFont(WritableFont.TIMES, 11);
+        WritableCellFormat format = new WritableCellFormat(font);
+        try {
+            format.setAlignment(jxl.format.Alignment.LEFT);
+            format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE);
+            format.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+            format.setWrap(true);
+        } catch (WriteException e) {
+            e.printStackTrace();
+        }
+        return format;
+    }
 
-	public void setFileCharsetCombo(Combo fileCharsetCombo) {
-		this.fileCharsetCombo = fileCharsetCombo;
-	}
+    public Combo getFileCharsetCombo() {
+        return fileCharsetCombo;
+    }
 
-	public Text getSaveErrExcelPath() {
-		return saveExcelPath;
-	}
+    public void setFileCharsetCombo(Combo fileCharsetCombo) {
+        this.fileCharsetCombo = fileCharsetCombo;
+    }
 
-	public void setSaveErrExcelPath(Text saveExcelPath) {
-		this.saveExcelPath = saveExcelPath;
-	}
+    public Text getSaveErrExcelPath() {
+        return saveExcelPath;
+    }
+
+    public void setSaveErrExcelPath(Text saveExcelPath) {
+        this.saveExcelPath = saveExcelPath;
+    }
 }

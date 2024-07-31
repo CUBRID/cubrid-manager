@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2013 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package com.cubrid.cubridmanager.core.cubrid.trigger.task;
@@ -35,54 +35,53 @@ import com.cubrid.cubridmanager.core.utils.ModelUtil.TriggerStatus;
 
 /**
  * This class is to alter a trigger in CUBRID database.
- * 
- * Usage: You must first set fields by invoking setXXX(\<T\>) methods, then call
- * sendMsg() method to send a request message, the response message is the
- * information of the special class.
- * 
+ *
+ * <p>Usage: You must first set fields by invoking setXXX(\<T\>) methods, then call sendMsg() method
+ * to send a request message, the response message is the information of the special class.
+ *
  * @author moulinwang 2009-3-3
  */
 public class AlterTriggerTask extends SocketTask {
-	private final static String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dbname", "triggername", "status", "priority" };
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {"task", "token", "dbname", "triggername", "status", "priority"};
 
-	public AlterTriggerTask(ServerInfo serverInfo) {
-		super("altertrigger", serverInfo, AlterTriggerTask.SEND_MSG_ITEMS);
-	}
+    public AlterTriggerTask(ServerInfo serverInfo) {
+        super("altertrigger", serverInfo, AlterTriggerTask.SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * Set the key "dbname" in request message
-	 * 
-	 * @param dbname String
-	 */
-	public void setDbName(String dbname) {
-		this.setMsgItem("dbname", dbname);
-	}
+    /**
+     * Set the key "dbname" in request message
+     *
+     * @param dbname String
+     */
+    public void setDbName(String dbname) {
+        this.setMsgItem("dbname", dbname);
+    }
 
-	/**
-	 * Set the key "triggername" in request message
-	 * 
-	 * @param triggerName String
-	 */
-	public void setTriggerName(String triggerName) {
-		this.setMsgItem("triggername", triggerName);
-	}
+    /**
+     * Set the key "triggername" in request message
+     *
+     * @param triggerName String
+     */
+    public void setTriggerName(String triggerName) {
+        this.setMsgItem("triggername", triggerName);
+    }
 
-	/**
-	 * Set the key "status" in request message
-	 * 
-	 * @param status TriggerStatus
-	 */
-	public void setStatus(TriggerStatus status) {
-		this.setMsgItem("status", status.getText());
-	}
+    /**
+     * Set the key "status" in request message
+     *
+     * @param status TriggerStatus
+     */
+    public void setStatus(TriggerStatus status) {
+        this.setMsgItem("status", status.getText());
+    }
 
-	/**
-	 * Set the key "priority" in request message
-	 * 
-	 * @param priority String
-	 */
-	public void setPriority(String priority) {
-		this.setMsgItem("priority", Trigger.formatPriority(priority));
-	}
+    /**
+     * Set the key "priority" in request message
+     *
+     * @param priority String
+     */
+    public void setPriority(String priority) {
+        this.setMsgItem("priority", Trigger.formatPriority(priority));
+    }
 }

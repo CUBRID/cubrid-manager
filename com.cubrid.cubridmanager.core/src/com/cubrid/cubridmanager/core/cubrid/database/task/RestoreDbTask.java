@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.cubrid.database.task;
 
@@ -31,87 +31,82 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 
 /**
- * 
  * This task is responsible to restore database
- * 
+ *
  * @author pangqiren
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
-public class RestoreDbTask extends
-		SocketTask {
+public class RestoreDbTask extends SocketTask {
 
-	private static final String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dbname", "date", "level", "partial", "pathname",
-			"recoverypath" };
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {
+                "task", "token", "dbname", "date", "level", "partial", "pathname", "recoverypath"
+            };
 
-	/**
-	 * The constructor
-	 * 
-	 * @param serverInfo
-	 */
-	public RestoreDbTask(ServerInfo serverInfo) {
-		super("restoredb", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public RestoreDbTask(ServerInfo serverInfo) {
+        super("restoredb", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * Set the database name
-	 * 
-	 * @param dbName the database name
-	 */
-	public void setDbName(String dbName) {
-		super.setMsgItem("dbname", dbName);
-	}
+    /**
+     * Set the database name
+     *
+     * @param dbName the database name
+     */
+    public void setDbName(String dbName) {
+        super.setMsgItem("dbname", dbName);
+    }
 
-	/**
-	 * 
-	 * Set restored date
-	 * 
-	 * @param date String the date info
-	 */
-	public void setDate(String date) {
-		super.setMsgItem("date", date);
-	}
+    /**
+     * Set restored date
+     *
+     * @param date String the date info
+     */
+    public void setDate(String date) {
+        super.setMsgItem("date", date);
+    }
 
-	/**
-	 * 
-	 * Set restored level
-	 * 
-	 * @param level String the restore level
-	 */
-	public void setLevel(String level) {
-		super.setMsgItem("level", level);
-	}
+    /**
+     * Set restored level
+     *
+     * @param level String the restore level
+     */
+    public void setLevel(String level) {
+        super.setMsgItem("level", level);
+    }
 
-	/**
-	 * Set whether it is partial
-	 * 
-	 * @param isPartial boolean whether is partial
-	 */
-	public void setPartial(boolean isPartial) {
-		if (isPartial) {
-			super.setMsgItem("partial", "y");
-		} else {
-			super.setMsgItem("partial", "n");
-		}
-	}
+    /**
+     * Set whether it is partial
+     *
+     * @param isPartial boolean whether is partial
+     */
+    public void setPartial(boolean isPartial) {
+        if (isPartial) {
+            super.setMsgItem("partial", "y");
+        } else {
+            super.setMsgItem("partial", "n");
+        }
+    }
 
-	/**
-	 * 
-	 * Set restored level file path
-	 * 
-	 * @param str String the path name
-	 */
-	public void setPathName(String str) {
-		super.setMsgItem("pathname", str);
-	}
+    /**
+     * Set restored level file path
+     *
+     * @param str String the path name
+     */
+    public void setPathName(String str) {
+        super.setMsgItem("pathname", str);
+    }
 
-	/**
-	 * 
-	 * Set recovery path
-	 * 
-	 * @param str String the recovery path
-	 */
-	public void setRecoveryPath(String str) {
-		super.setMsgItem("recoverypath", str);
-	}
+    /**
+     * Set recovery path
+     *
+     * @param str String the recovery path
+     */
+    public void setRecoveryPath(String str) {
+        super.setMsgItem("recoverypath", str);
+    }
 }

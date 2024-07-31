@@ -29,14 +29,6 @@
  */
 package com.cubrid.cubridquery.ui.connection.action;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
 import com.cubrid.common.ui.spi.CubridNodeManager;
@@ -54,6 +46,13 @@ import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.CQBGroupNodePersistManager;
 import com.cubrid.cubridquery.ui.common.navigator.CubridQueryNavigatorView;
 import com.cubrid.cubridquery.ui.connection.dialog.RenameConnectionDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
 
 /**
  * Rename Connection Action
@@ -61,133 +60,130 @@ import com.cubrid.cubridquery.ui.connection.dialog.RenameConnectionDialog;
  * @author Kevin.Wang
  * @version 1.0 - 2013-1-16 created by Kevin.Wang
  */
-public class RenameConnectionAction extends
-		SelectionAction {
-	private static final Logger LOGGER = LogUtil.getLogger(RenameConnectionAction.class);
-	public static final String ID = RenameConnectionAction.class.getName();
+public class RenameConnectionAction extends SelectionAction {
+    private static final Logger LOGGER = LogUtil.getLogger(RenameConnectionAction.class);
+    public static final String ID = RenameConnectionAction.class.getName();
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param text
-	 * @param icon
-	 */
-	public RenameConnectionAction(Shell shell, String text, ImageDescriptor icon) {
-		this(shell, null, text, icon);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param text
+     * @param icon
+     */
+    public RenameConnectionAction(Shell shell, String text, ImageDescriptor icon) {
+        this(shell, null, text, icon);
+    }
 
-	/**
-	 * The constructor
-	 *
-	 * @param shell
-	 * @param provider
-	 * @param text
-	 * @param icon
-	 */
-	public RenameConnectionAction(Shell shell, ISelectionProvider provider,
-			String text, ImageDescriptor icon) {
-		super(shell, provider, text, icon);
-		this.setId(ID);
-	}
+    /**
+     * The constructor
+     *
+     * @param shell
+     * @param provider
+     * @param text
+     * @param icon
+     */
+    public RenameConnectionAction(
+            Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
+        super(shell, provider, text, icon);
+        this.setId(ID);
+    }
 
-	/**
-	 * Sets this action support to select multi-object
-	 *
-	 * @see org.eclipse.jface.action.IAction.ISelectionAction
-	 * @return boolean
-	 */
-	public boolean allowMultiSelections() {
-		return false;
-	}
+    /**
+     * Sets this action support to select multi-object
+     *
+     * @see org.eclipse.jface.action.IAction.ISelectionAction
+     * @return boolean
+     */
+    public boolean allowMultiSelections() {
+        return false;
+    }
 
-	/**
-	 * Sets this action support this object
-	 *
-	 * @see org.eclipse.jface.action.IAction.ISelectionAction
-	 * @param obj Object
-	 * @return boolean
-	 */
-	public boolean isSupported(Object obj) {
-		return ActionSupportUtil.isSupportSingleSelection(obj,
-				new String[]{NodeType.DATABASE });
-	}
+    /**
+     * Sets this action support this object
+     *
+     * @see org.eclipse.jface.action.IAction.ISelectionAction
+     * @param obj Object
+     * @return boolean
+     */
+    public boolean isSupported(Object obj) {
+        return ActionSupportUtil.isSupportSingleSelection(obj, new String[] {NodeType.DATABASE});
+    }
 
-	/**
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	public void run() {
-		Object[] obj = this.getSelectedObj();
-		if (!isSupported(obj)) {
-			setEnabled(false);
-			return;
-		}
+    /** @see org.eclipse.jface.action.Action#run() */
+    public void run() {
+        Object[] obj = this.getSelectedObj();
+        if (!isSupported(obj)) {
+            setEnabled(false);
+            return;
+        }
 
-		CubridDatabase database = (CubridDatabase) obj[0];
+        CubridDatabase database = (CubridDatabase) obj[0];
 
-		doRun(database);
-	}
+        doRun(database);
+    }
 
-	/**
-	 * Run
-	 *
-	 * @param server
-	 */
-	public void run(CubridDatabase database) {
-		doRun(database);
-	}
+    /**
+     * Run
+     *
+     * @param server
+     */
+    public void run(CubridDatabase database) {
+        doRun(database);
+    }
 
-	/**
-	 * Perform rename Table
-	 *
-	 * @param cubridDatabase
-	 * @param table
-	 */
-	private void doRun(CubridDatabase database) {
+    /**
+     * Perform rename Table
+     *
+     * @param cubridDatabase
+     * @param table
+     */
+    private void doRun(CubridDatabase database) {
 
-		RenameConnectionDialog dlg = new RenameConnectionDialog(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-				database);
-		int ret = dlg.open();
-		if (ret == IDialogConstants.OK_ID) {
-			/*Fire the database logout*/
-			try {
-				CubridDatabase orignDatabase = database.clone();
-				CubridNodeManager.getInstance().fireCubridNodeChanged(
-						new CubridNodeChangedEvent(orignDatabase,
-								CubridNodeChangedEventType.DATABASE_LOGOUT));
-			} catch (CloneNotSupportedException e) {
-				LOGGER.error(e.getMessage());
-			}
+        RenameConnectionDialog dlg =
+                new RenameConnectionDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), database);
+        int ret = dlg.open();
+        if (ret == IDialogConstants.OK_ID) {
+            /*Fire the database logout*/
+            try {
+                CubridDatabase orignDatabase = database.clone();
+                CubridNodeManager.getInstance()
+                        .fireCubridNodeChanged(
+                                new CubridNodeChangedEvent(
+                                        orignDatabase, CubridNodeChangedEventType.DATABASE_LOGOUT));
+            } catch (CloneNotSupportedException e) {
+                LOGGER.error(e.getMessage());
+            }
 
-			database.setLabel(dlg.getNewName());
-			database.setUniqueName(dlg.getNewName());
-			database.setLogined(false);
+            database.setLabel(dlg.getNewName());
+            database.setUniqueName(dlg.getNewName());
+            database.setLogined(false);
 
-			CubridNavigatorView navigatorView = CubridNavigatorView.getNavigatorView(CubridQueryNavigatorView.ID);
-			TreeViewer treeViewer = navigatorView == null ? null
-					: navigatorView.getViewer();
-			if (treeViewer == null) {
-				LOGGER.error("Error: Can't find the navigator view:"
-						+ CubridQueryNavigatorView.ID);
-				return;
-			}
-			// Refresh the tree view
-			database.removeAllChild();
-			treeViewer.refresh(database, true);
-			treeViewer.expandToLevel(database, 1);
-			setEnabled(false);
+            CubridNavigatorView navigatorView =
+                    CubridNavigatorView.getNavigatorView(CubridQueryNavigatorView.ID);
+            TreeViewer treeViewer = navigatorView == null ? null : navigatorView.getViewer();
+            if (treeViewer == null) {
+                LOGGER.error("Error: Can't find the navigator view:" + CubridQueryNavigatorView.ID);
+                return;
+            }
+            // Refresh the tree view
+            database.removeAllChild();
+            treeViewer.refresh(database, true);
+            treeViewer.expandToLevel(database, 1);
+            setEnabled(false);
 
-			// Save the data
-			ServerInfo preServerInfo = (database == null || database.getServer() == null) ? null
-					: database.getServer().getServerInfo();
-			QueryOptions.removePref(preServerInfo);
-			CQBGroupNodePersistManager.getInstance().saveAllGroupNode();
-			CQBDBNodePersistManager.getInstance().saveDatabases();
+            // Save the data
+            ServerInfo preServerInfo =
+                    (database == null || database.getServer() == null)
+                            ? null
+                            : database.getServer().getServerInfo();
+            QueryOptions.removePref(preServerInfo);
+            CQBGroupNodePersistManager.getInstance().saveAllGroupNode();
+            CQBDBNodePersistManager.getInstance().saveDatabases();
 
-			ActionManager.getInstance().fireSelectionChanged(getSelection());
-			LayoutManager.getInstance().fireSelectionChanged(getSelection());
-
-		}
-	}
+            ActionManager.getInstance().fireSelectionChanged(getSelection());
+            LayoutManager.getInstance().fireSelectionChanged(getSelection());
+        }
+    }
 }

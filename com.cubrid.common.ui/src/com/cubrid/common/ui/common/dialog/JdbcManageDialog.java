@@ -27,6 +27,10 @@
  */
 package com.cubrid.common.ui.common.dialog;
 
+import com.cubrid.common.ui.common.Messages;
+import com.cubrid.common.ui.common.preference.JdbcManageComposite;
+import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
+import com.cubrid.common.ui.spi.util.CommonUITool;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -35,92 +39,80 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cubrid.common.ui.common.Messages;
-import com.cubrid.common.ui.common.preference.JdbcManageComposite;
-import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-
 /**
  * JDBC driver management dialog
- * 
+ *
  * @author robin 2009-3-11
  */
-public class JdbcManageDialog extends
-		CMTitleAreaDialog {
+public class JdbcManageDialog extends CMTitleAreaDialog {
 
-	private JdbcManageComposite container;
-	private String selectedJdbcVersion = null;
+    private JdbcManageComposite container;
+    private String selectedJdbcVersion = null;
 
-	/**
-	 * 
-	 * @param parentShell
-	 */
-	public JdbcManageDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    /** @param parentShell */
+    public JdbcManageDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	/**
-	 * Create dialog area content
-	 * 
-	 * @param parent the parent composite
-	 * @return the control
-	 */
-	protected Control createDialogArea(Composite parent) {
-		Composite parentComp = (Composite) super.createDialogArea(parent);
+    /**
+     * Create dialog area content
+     *
+     * @param parent the parent composite
+     * @return the control
+     */
+    protected Control createDialogArea(Composite parent) {
+        Composite parentComp = (Composite) super.createDialogArea(parent);
 
-		Composite composite = new Composite(parentComp, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite composite = new Composite(parentComp, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        layout.horizontalSpacing =
+                convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		container = new JdbcManageComposite(composite);
-		container.loadPreference();
+        container = new JdbcManageComposite(composite);
+        container.loadPreference();
 
-		setTitle(Messages.titleJdbcManagementDialog);
-		setMessage(Messages.msgJdbcManagementDialog);
+        setTitle(Messages.titleJdbcManagementDialog);
+        setMessage(Messages.msgJdbcManagementDialog);
 
-		return parentComp;
-	}
+        return parentComp;
+    }
 
-	/**
-	 * Constrain the shell size
-	 */
-	protected void constrainShellSize() {
-		super.constrainShellSize();
-		CommonUITool.centerShell(getShell());
-		getShell().setText(Messages.titleJdbcManagementDialog);
-	}
+    /** Constrain the shell size */
+    protected void constrainShellSize() {
+        super.constrainShellSize();
+        CommonUITool.centerShell(getShell());
+        getShell().setText(Messages.titleJdbcManagementDialog);
+    }
 
-	/**
-	 * Create buttons for button bar
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, Messages.btnOK, false);
-		createButton(parent, IDialogConstants.CANCEL_ID, Messages.btnCancel,
-				false);
-	}
+    /**
+     * Create buttons for button bar
+     *
+     * @param parent the parent composite
+     */
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, IDialogConstants.OK_ID, Messages.btnOK, false);
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.btnCancel, false);
+    }
 
-	/**
-	 * Call this method when the button in button bar is pressed
-	 * 
-	 * @param buttonId the button id
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == IDialogConstants.OK_ID) {
-			container.save();
-			selectedJdbcVersion = container.getSelectedJdbcVersion();
-		}
-		super.buttonPressed(buttonId);
-	}
+    /**
+     * Call this method when the button in button bar is pressed
+     *
+     * @param buttonId the button id
+     */
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+            container.save();
+            selectedJdbcVersion = container.getSelectedJdbcVersion();
+        }
+        super.buttonPressed(buttonId);
+    }
 
-	public String getSelectedJdbcVersion() {
-		return selectedJdbcVersion;
-	}
-
+    public String getSelectedJdbcVersion() {
+        return selectedJdbcVersion;
+    }
 }

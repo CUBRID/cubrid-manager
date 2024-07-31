@@ -30,88 +30,85 @@
 package com.cubrid.common.core.queryplan.model;
 
 /**
- *
  * Plan Table model class
  *
- * PlanTable Description
+ * <p>PlanTable Description
  *
  * @author pcraft
  * @version 1.0 - 2009. 06. 06 created by pcraft
  */
 public class PlanTable {
-	private String name = null;
-	private String[] partitions = null;
-	private int card = 0;
-	private int page = 0;
+    private String name = null;
+    private String[] partitions = null;
+    private int card = 0;
+    private int page = 0;
 
-	/**
-	 * Convert to string
-	 *
-	 * @return string
-	 */
-	public String toString() { // FIXME use ToStringBuilder
-		StringBuilder out = new StringBuilder();
-		out.append("PlanTable[ ");
-		out.append("name=").append(name);
-		out.append(", card=").append(card);
-		out.append(", page=").append(page);
-		out.append(" ]");
+    /**
+     * Convert to string
+     *
+     * @return string
+     */
+    public String toString() { // FIXME use ToStringBuilder
+        StringBuilder out = new StringBuilder();
+        out.append("PlanTable[ ");
+        out.append("name=").append(name);
+        out.append(", card=").append(card);
+        out.append(", page=").append(page);
+        out.append(" ]");
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getCard() {
-		return card;
-	}
+    public int getCard() {
+        return card;
+    }
 
-	public void setCard(int card) {
-		this.card = card;
-	}
+    public void setCard(int card) {
+        this.card = card;
+    }
 
-	public int getPage() {
-		return page;
-	}
+    public int getPage() {
+        return page;
+    }
 
-	public void setPage(int page) {
-		this.page = page;
-	}
+    public void setPage(int page) {
+        this.page = page;
+    }
 
-	public String[] getPartitions() {
-		return partitions == null ? null : (String[]) (partitions.clone());
-	}
+    public String[] getPartitions() {
+        return partitions == null ? null : (String[]) (partitions.clone());
+    }
 
-	/**
-	 *
-	 * Get text partitions
-	 *
-	 * @return the text partitions
-	 */
-	public String getTextPartitions() {
-		if (partitions == null || partitions.length == 0) {
-			return "";
-		}
+    /**
+     * Get text partitions
+     *
+     * @return the text partitions
+     */
+    public String getTextPartitions() {
+        if (partitions == null || partitions.length == 0) {
+            return "";
+        }
 
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0, len = partitions.length; i < len; i++) {
-			if (i > 0) {
-				sb.append(", ");
-			}
-			sb.append(partitions[i]);
-		}
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0, len = partitions.length; i < len; i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(partitions[i]);
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	public void setPartitions(String[] partitions) {
-		this.partitions = partitions == null ? null
-				: (String[]) (partitions.clone());
-	}
+    public void setPartitions(String[] partitions) {
+        this.partitions = partitions == null ? null : (String[]) (partitions.clone());
+    }
 }

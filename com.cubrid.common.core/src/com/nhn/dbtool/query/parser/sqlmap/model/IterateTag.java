@@ -30,20 +30,20 @@ package com.nhn.dbtool.query.parser.sqlmap.model;
 import java.util.List;
 
 /**
- * A definition of iterate tag.
- * <iterate property="" prepend="" open="" close="" removeFirstPrepend="true" conjunction=""></iterate>
+ * A definition of iterate tag. <iterate property="" prepend="" open="" close=""
+ * removeFirstPrepend="true" conjunction=""></iterate>
  *
  * @author Bumsik, Jang
  */
 public class IterateTag extends SqlMapCondition {
-	private static final long serialVersionUID = 8552601716312329015L;
+    private static final long serialVersionUID = 8552601716312329015L;
 
-	public IterateTag() {
-		this.setType("iterate");
-	}
+    public IterateTag() {
+        this.setType("iterate");
+    }
 
-	@Override
-	public boolean isMatchCondition(List<String> parameterList) {
-		return true;
-	}
+    @Override
+    public boolean isMatchCondition(List<String> parameterList) {
+        return true;
+    }
 }

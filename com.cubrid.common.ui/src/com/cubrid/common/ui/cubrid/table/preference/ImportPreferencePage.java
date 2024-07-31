@@ -29,9 +29,13 @@
  */
 package com.cubrid.common.ui.cubrid.table.preference;
 
+import com.cubrid.common.ui.CommonUIPlugin;
+import com.cubrid.common.ui.cubrid.table.Messages;
+import com.cubrid.common.ui.spi.persist.PersistUtils;
+import com.cubrid.common.ui.spi.util.CommonUITool;
+import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -47,355 +51,337 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.cubrid.table.Messages;
-import com.cubrid.common.ui.spi.persist.PersistUtils;
-import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
-
 /**
  * Preference page for query options
  *
  * @author Kevin 2011-3-23
  */
-public class ImportPreferencePage extends
-		PreferencePage implements
-		IWorkbenchPreferencePage {
+public class ImportPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	private static final String NULLVALUES_KEY = "com.cubrid.table.import.nullvalues";
-	private static final String EXPORT_NULL_VALUE_KEY = "com.cubrid.table.export.nullvalue";
+    private static final String NULLVALUES_KEY = "com.cubrid.table.import.nullvalues";
+    private static final String EXPORT_NULL_VALUE_KEY = "com.cubrid.table.export.nullvalue";
 
-	public final static String ID = "com.cubrid.common.ui.preference.ImportPreferencePage";
+    public static final String ID = "com.cubrid.common.ui.preference.ImportPreferencePage";
 
-	public final static String[] NULL_LIST = new String[]{"NULL", "(NULL)",
-			"\\N" };
-	private final static String EMPTY = "EMPTY";
+    public static final String[] NULL_LIST = new String[] {"NULL", "(NULL)", "\\N"};
+    private static final String EMPTY = "EMPTY";
 
-	private final List<Button> btnList = new ArrayList<Button>();
+    private final List<Button> btnList = new ArrayList<Button>();
 
-	private Text importOthersText;
+    private Text importOthersText;
 
-	private Button exportNullButton;
-	private Button exportBracketNullButton;
-	private Button exportNButton;
-	private Button exportOtherButton;
-	private Text exportOtherText;
+    private Button exportNullButton;
+    private Button exportBracketNullButton;
+    private Button exportNButton;
+    private Button exportOtherButton;
+    private Text exportOtherText;
 
-	public ImportPreferencePage() {
-		super(Messages.importSetupTitle, null);
-	}
+    public ImportPreferencePage() {
+        super(Messages.importSetupTitle, null);
+    }
 
-	/**
-	 * Retrieves the null value list setup.
-	 *
-	 * @return String array.
-	 */
-	public static String[] getImportNULLValueList() {
-		String values = PersistUtils.getPreferenceValue(
-				CommonUIPlugin.PLUGIN_ID, NULLVALUES_KEY);
-		if (values.trim().length() == 0) {
-			return NULL_LIST.clone();
-		}
-		return EMPTY.equals(values) ? new String[]{} : values.split(",");
-	}
+    /**
+     * Retrieves the null value list setup.
+     *
+     * @return String array.
+     */
+    public static String[] getImportNULLValueList() {
+        String values = PersistUtils.getPreferenceValue(CommonUIPlugin.PLUGIN_ID, NULLVALUES_KEY);
+        if (values.trim().length() == 0) {
+            return NULL_LIST.clone();
+        }
+        return EMPTY.equals(values) ? new String[] {} : values.split(",");
+    }
 
-	/**
-	 * Get the null value for the export data
-	 *
-	 * @return
-	 */
-	public static String getExportNullValue() {
-		String nullValue = PersistUtils.getPreferenceValue(
-				CommonUIPlugin.PLUGIN_ID, EXPORT_NULL_VALUE_KEY);
-		if(nullValue.length() == 0) {
-			nullValue = "NULL";
-		}
-		return nullValue;
-	}
+    /**
+     * Get the null value for the export data
+     *
+     * @return
+     */
+    public static String getExportNullValue() {
+        String nullValue =
+                PersistUtils.getPreferenceValue(CommonUIPlugin.PLUGIN_ID, EXPORT_NULL_VALUE_KEY);
+        if (nullValue.length() == 0) {
+            nullValue = "NULL";
+        }
+        return nullValue;
+    }
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 * @param workbench the workbench
-	 */
-	public void init(IWorkbench workbench) {
-		//empty
-	}
+    /**
+     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     * @param workbench the workbench
+     */
+    public void init(IWorkbench workbench) {
+        // empty
+    }
 
-	/**
-	 * load the preference data
-	 *
-	 */
-	private void loadPreference() { // FIXME move this logic to core module
-		/*Import Options*/
-		String[] valueList = getImportNULLValueList();
-		StringBuffer sb = new StringBuffer();
-		for (String value : valueList) {
-			boolean isDefault = false;
-			for (Button btn : btnList) {
-				if (value.equals(btn.getData().toString())) {
-					btn.setSelection(true);
-					isDefault = true;
-					break;
-				}
-			}
-			if (!isDefault) {
-				if (sb.length() > 0) {
-					sb.append(",");
-				}
-				sb.append(value);
-			}
-		}
-		importOthersText.setText(sb.toString());
+    /** load the preference data */
+    private void loadPreference() { // FIXME move this logic to core module
+        /*Import Options*/
+        String[] valueList = getImportNULLValueList();
+        StringBuffer sb = new StringBuffer();
+        for (String value : valueList) {
+            boolean isDefault = false;
+            for (Button btn : btnList) {
+                if (value.equals(btn.getData().toString())) {
+                    btn.setSelection(true);
+                    isDefault = true;
+                    break;
+                }
+            }
+            if (!isDefault) {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(value);
+            }
+        }
+        importOthersText.setText(sb.toString());
 
-		/*Export Options*/
-		String nullValue = getExportNullValue();
-		if("NULL".equals(nullValue)) {
-			exportNullButton.setSelection(true);
+        /*Export Options*/
+        String nullValue = getExportNullValue();
+        if ("NULL".equals(nullValue)) {
+            exportNullButton.setSelection(true);
 
-			exportBracketNullButton.setSelection(false);
-			exportNButton.setSelection(false);
-			exportOtherButton.setSelection(false);
-			exportOtherText.setEnabled(false);
-		}else if("(NULL)".equals(nullValue)) {
-			exportNullButton.setSelection(false);
+            exportBracketNullButton.setSelection(false);
+            exportNButton.setSelection(false);
+            exportOtherButton.setSelection(false);
+            exportOtherText.setEnabled(false);
+        } else if ("(NULL)".equals(nullValue)) {
+            exportNullButton.setSelection(false);
 
-			exportBracketNullButton.setSelection(true);
+            exportBracketNullButton.setSelection(true);
 
-			exportNButton.setSelection(false);
-			exportOtherButton.setSelection(false);
-			exportOtherText.setEnabled(false);
-		}else if("\\N".equals(nullValue)) {
-			exportNullButton.setSelection(false);
-			exportBracketNullButton.setSelection(false);
+            exportNButton.setSelection(false);
+            exportOtherButton.setSelection(false);
+            exportOtherText.setEnabled(false);
+        } else if ("\\N".equals(nullValue)) {
+            exportNullButton.setSelection(false);
+            exportBracketNullButton.setSelection(false);
 
-			exportNButton.setSelection(true);
+            exportNButton.setSelection(true);
 
-			exportOtherButton.setSelection(false);
-			exportOtherText.setEnabled(false);
-		}else{
-			exportNullButton.setSelection(false);
-			exportBracketNullButton.setSelection(false);
-			exportNButton.setSelection(false);
+            exportOtherButton.setSelection(false);
+            exportOtherText.setEnabled(false);
+        } else {
+            exportNullButton.setSelection(false);
+            exportBracketNullButton.setSelection(false);
+            exportNButton.setSelection(false);
 
-			exportOtherButton.setSelection(true);
+            exportOtherButton.setSelection(true);
 
-			exportOtherText.setText(nullValue);
-			exportOtherText.setEnabled(true);
-		}
-	}
+            exportOtherText.setText(nullValue);
+            exportOtherText.setEnabled(true);
+        }
+    }
 
-	/**
-	 * @see org.eclipse.jface.preference.PreferencePage#performOk()
-	 * @return boolean
-	 */
-	public boolean performOk() {
-		performApply();
-		return true;
-	}
+    /**
+     * @see org.eclipse.jface.preference.PreferencePage#performOk()
+     * @return boolean
+     */
+    public boolean performOk() {
+        performApply();
+        return true;
+    }
 
-	/**
-	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-	 * @param parent the parent composite
-	 * @return the new control
-	 */
-	protected Control createContents(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
-		container.setLayout(new GridLayout());
-		container.setLayoutData(new GridData(GridData.FILL_BOTH));
+    /**
+     * @see
+     *     org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
+     * @param parent the parent composite
+     * @return the new control
+     */
+    protected Control createContents(Composite parent) {
+        Composite container = new Composite(parent, SWT.NONE);
+        container.setLayout(new GridLayout());
+        container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		/*Import Options*/
-		Group importGroup = new Group(container, SWT.NONE);
-		importGroup.setText(Messages.txtImportGroup);
-		importGroup.setLayout(new GridLayout(1, true));
-		importGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        /*Import Options*/
+        Group importGroup = new Group(container, SWT.NONE);
+        importGroup.setText(Messages.txtImportGroup);
+        importGroup.setLayout(new GridLayout(1, true));
+        importGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		Label labelHint = new Label(importGroup, SWT.LEFT);
-		labelHint.setLayoutData(new GridData(SWT.END));
-		labelHint.setText(Messages.importSetupLabel);
+        Label labelHint = new Label(importGroup, SWT.LEFT);
+        labelHint.setLayoutData(new GridData(SWT.END));
+        labelHint.setText(Messages.importSetupLabel);
 
-		Composite btnComp = new Composite(importGroup, SWT.NONE);
-		btnComp.setLayout(new GridLayout(3, true));
-		btnComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite btnComp = new Composite(importGroup, SWT.NONE);
+        btnComp.setLayout(new GridLayout(3, true));
+        btnComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		for (String ns : NULL_LIST) {
-			Button btnNull = new Button(btnComp, SWT.CHECK);
-			btnNull.setText("'" + ns + "'");
-			btnNull.setData(ns);
-			btnList.add(btnNull);
-		}
+        for (String ns : NULL_LIST) {
+            Button btnNull = new Button(btnComp, SWT.CHECK);
+            btnNull.setText("'" + ns + "'");
+            btnNull.setData(ns);
+            btnList.add(btnNull);
+        }
 
-		Composite otherValueComp = new Composite(importGroup, SWT.NONE);
-		otherValueComp.setLayout(new GridLayout(2, false));
-		otherValueComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite otherValueComp = new Composite(importGroup, SWT.NONE);
+        otherValueComp.setLayout(new GridLayout(2, false));
+        otherValueComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		Label lblLabel = new Label(otherValueComp, SWT.NONE);
-		lblLabel.setText(Messages.lblOtherValue);
-		GridData layoutData = new GridData(GridData.BEGINNING);
-		lblLabel.setLayoutData(layoutData);
+        Label lblLabel = new Label(otherValueComp, SWT.NONE);
+        lblLabel.setText(Messages.lblOtherValue);
+        GridData layoutData = new GridData(GridData.BEGINNING);
+        lblLabel.setLayoutData(layoutData);
 
-		importOthersText = new Text(otherValueComp, SWT.BORDER);
-		importOthersText.setText("");
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		layoutData.widthHint = 150;
-		importOthersText.setLayoutData(layoutData);
-		importOthersText.setTextLimit(256);
+        importOthersText = new Text(otherValueComp, SWT.BORDER);
+        importOthersText.setText("");
+        layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.widthHint = 150;
+        importOthersText.setLayoutData(layoutData);
+        importOthersText.setTextLimit(256);
 
-		/*Export options*/
-		Group exportGroup = new Group(container, SWT.NONE);
-		exportGroup.setText(Messages.txtExportGroup);
-		exportGroup.setLayout(new GridLayout(1, true));
-		exportGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        /*Export options*/
+        Group exportGroup = new Group(container, SWT.NONE);
+        exportGroup.setText(Messages.txtExportGroup);
+        exportGroup.setLayout(new GridLayout(1, true));
+        exportGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		Label exportHint = new Label(exportGroup, SWT.LEFT);
-		exportHint.setLayoutData(new GridData(SWT.END));
-		exportHint.setText(Messages.exportSetupLabel1);
+        Label exportHint = new Label(exportGroup, SWT.LEFT);
+        exportHint.setLayoutData(new GridData(SWT.END));
+        exportHint.setText(Messages.exportSetupLabel1);
 
-		Composite exportBtnComp = new Composite(exportGroup, SWT.NONE);
-		exportBtnComp.setLayout(new GridLayout(5, false));
-		exportBtnComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite exportBtnComp = new Composite(exportGroup, SWT.NONE);
+        exportBtnComp.setLayout(new GridLayout(5, false));
+        exportBtnComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		exportNullButton = new Button(exportBtnComp, SWT.RADIO);
-		exportNullButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
-		exportNullButton.setText("\'" + "NULL" + "\'");
-		exportNullButton.setSelection(true);
+        exportNullButton = new Button(exportBtnComp, SWT.RADIO);
+        exportNullButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        exportNullButton.setText("\'" + "NULL" + "\'");
+        exportNullButton.setSelection(true);
 
-		exportBracketNullButton = new Button(exportBtnComp, SWT.RADIO);
-		exportBracketNullButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
-		exportBracketNullButton.setText("\'" + "(NULL)" + "\'");
-		exportBracketNullButton.setSelection(false);
+        exportBracketNullButton = new Button(exportBtnComp, SWT.RADIO);
+        exportBracketNullButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        exportBracketNullButton.setText("\'" + "(NULL)" + "\'");
+        exportBracketNullButton.setSelection(false);
 
-		exportNButton = new Button(exportBtnComp, SWT.RADIO);
-		exportNButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
-		exportNButton.setText("\'" + "\\N" + "\'");
-		exportNButton.setSelection(false);
+        exportNButton = new Button(exportBtnComp, SWT.RADIO);
+        exportNButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        exportNButton.setText("\'" + "\\N" + "\'");
+        exportNButton.setSelection(false);
 
-		exportOtherButton = new Button(exportBtnComp, SWT.RADIO);
-		exportOtherButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
-		exportOtherButton.setText(Messages.exportOtherValue);
-		exportOtherButton.setSelection(false);
+        exportOtherButton = new Button(exportBtnComp, SWT.RADIO);
+        exportOtherButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        exportOtherButton.setText(Messages.exportOtherValue);
+        exportOtherButton.setSelection(false);
 
-		exportOtherButton.addSelectionListener(new SelectionListener(){
+        exportOtherButton.addSelectionListener(
+                new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
-				widgetDefaultSelected(e);
-			}
-			public void widgetDefaultSelected(SelectionEvent e) {
-				if(exportOtherButton.getSelection()) {
-					exportOtherText.setEnabled(true);
-				}else{
-					exportOtherText.setEnabled(false);
-				}
-			}
-		});
+                    public void widgetSelected(SelectionEvent e) {
+                        widgetDefaultSelected(e);
+                    }
 
-		exportOtherText = new Text(exportBtnComp, SWT.BORDER);
-		exportOtherText.setText("");
-		exportOtherText.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-		exportOtherText.setTextLimit(64);
-		exportOtherText.setEnabled(false);
+                    public void widgetDefaultSelected(SelectionEvent e) {
+                        if (exportOtherButton.getSelection()) {
+                            exportOtherText.setEnabled(true);
+                        } else {
+                            exportOtherText.setEnabled(false);
+                        }
+                    }
+                });
 
-		loadPreference();
-		return container;
-	}
+        exportOtherText = new Text(exportBtnComp, SWT.BORDER);
+        exportOtherText.setText("");
+        exportOtherText.setLayoutData(
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+        exportOtherText.setTextLimit(64);
+        exportOtherText.setEnabled(false);
 
-	/**
-	 * Save setup.
-	 */
-	protected void performApply() { // FIXME move this logic to core module
-		setErrorMessage(null);
+        loadPreference();
+        return container;
+    }
 
-		List<String> tl = new ArrayList<String>();
+    /** Save setup. */
+    protected void performApply() { // FIXME move this logic to core module
+        setErrorMessage(null);
 
-		for (Button btn : btnList) {
-			if (btn.getSelection()) {
-				tl.add(btn.getData().toString());
-			}
-		}
-		if (importOthersText.getText().length() > 0) {
-			String[] others = importOthersText.getText().split(",");
-			for (String value : others) {
-				if (tl.indexOf(value) < 0) {
-					tl.add(value);
-				}
-			}
-		}
+        List<String> tl = new ArrayList<String>();
 
-		StringBuffer sb = new StringBuffer();
-		for (String value : tl) {
-			sb.append(',').append(value);
-		}
+        for (Button btn : btnList) {
+            if (btn.getSelection()) {
+                tl.add(btn.getData().toString());
+            }
+        }
+        if (importOthersText.getText().length() > 0) {
+            String[] others = importOthersText.getText().split(",");
+            for (String value : others) {
+                if (tl.indexOf(value) < 0) {
+                    tl.add(value);
+                }
+            }
+        }
 
-		if (tl.isEmpty()) {
-			sb.append(EMPTY);
-		} else {
-			sb = sb.replace(0, 1, "");
-		}
-		PersistUtils.setPreferenceValue(CommonUIPlugin.PLUGIN_ID,
-				NULLVALUES_KEY, sb.toString());
-		DataType.setNULLValuesForImport(getImportNULLValueList());
+        StringBuffer sb = new StringBuffer();
+        for (String value : tl) {
+            sb.append(',').append(value);
+        }
 
+        if (tl.isEmpty()) {
+            sb.append(EMPTY);
+        } else {
+            sb = sb.replace(0, 1, "");
+        }
+        PersistUtils.setPreferenceValue(CommonUIPlugin.PLUGIN_ID, NULLVALUES_KEY, sb.toString());
+        DataType.setNULLValuesForImport(getImportNULLValueList());
 
-		/*Export options*/
-		String exportNullValue = getSettingNullValue();
+        /*Export options*/
+        String exportNullValue = getSettingNullValue();
 
-		if(exportOtherButton.getSelection()) {
-			if(exportOtherText.getText().trim().length() == 0) {
-				setErrorMessage(Messages.msgErrorOtherValueEmpty);
-				return;
-			}
+        if (exportOtherButton.getSelection()) {
+            if (exportOtherText.getText().trim().length() == 0) {
+                setErrorMessage(Messages.msgErrorOtherValueEmpty);
+                return;
+            }
 
-			if(exportOtherText.getText().indexOf(",") >= 0) {
-				setErrorMessage(Messages.msgErrorContainsComma);
-				return;
-			}
-		}
+            if (exportOtherText.getText().indexOf(",") >= 0) {
+                setErrorMessage(Messages.msgErrorContainsComma);
+                return;
+            }
+        }
 
+        PersistUtils.setPreferenceValue(
+                CommonUIPlugin.PLUGIN_ID, EXPORT_NULL_VALUE_KEY, exportNullValue);
+        loadPreference();
+    }
 
-		PersistUtils.setPreferenceValue(CommonUIPlugin.PLUGIN_ID,
-				EXPORT_NULL_VALUE_KEY, exportNullValue);
-		loadPreference();
+    /**
+     * Get the export null value which is in export options
+     *
+     * @return
+     */
+    private String getSettingNullValue() { // FIXME move this logic to core module
+        if (exportNullButton.getSelection()) {
+            return "NULL";
+        }
 
-	}
+        if (exportBracketNullButton.getSelection()) {
+            return "(NULL)";
+        }
 
-	/**
-	 * Get the export null value which is in export options
-	 *
-	 * @return
-	 */
-	private String getSettingNullValue() { // FIXME move this logic to core module
-		if(exportNullButton.getSelection()) {
-			return "NULL";
-		}
+        if (exportNButton.getSelection()) {
+            return "\\N";
+        }
 
-		if(exportBracketNullButton.getSelection()) {
-			return "(NULL)";
-		}
+        if (exportOtherButton.getSelection()) {
+            return exportOtherText.getText();
+        }
 
-		if(exportNButton.getSelection()) {
-			return "\\N";
-		}
+        return "";
+    }
 
-		if(exportOtherButton.getSelection()) {
-			return exportOtherText.getText();
-		}
+    /** Performs special processing when this page's Defaults button has been pressed. */
+    protected void performDefaults() {
+        for (Button btn : btnList) {
+            btn.setSelection(true);
+        }
 
-		return "";
-	}
-
-	/**
-	 * Performs special processing when this page's Defaults button has been
-	 * pressed.
-	 */
-	protected void performDefaults() {
-		for (Button btn : btnList) {
-			btn.setSelection(true);
-		}
-
-		exportNullButton.setSelection(true);
-		exportBracketNullButton.setSelection(false);
-		exportNButton.setSelection(false);
-		exportOtherButton.setSelection(false);
-		exportOtherText.setEnabled(false);
-		exportOtherText.setText("");
-	}
+        exportNullButton.setSelection(true);
+        exportBracketNullButton.setSelection(false);
+        exportNButton.setSelection(false);
+        exportOtherButton.setSelection(false);
+        exportOtherText.setEnabled(false);
+        exportOtherText.setText("");
+    }
 }

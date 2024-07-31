@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Search
  * Solution.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
  * Redistributions of source code must retain the above copyright notice, this
@@ -11,7 +11,7 @@
  * with the distribution. - Neither the name of the <ORGANIZATION> nor the names
  * of its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.cubrid.cubridmanager.core.cubrid.database.task;
 
@@ -34,74 +34,71 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.PlanDumpInfo;
 import com.cubrid.cubridmanager.core.utils.ModelUtil.YesNoType;
 
 /**
- * 
  * A task that defined the task of "plandump"
- * 
+ *
  * @author wuyingshi
  * @version 1.0 - 2010-3-24 created by wuyingshi
  */
-public class PlanDumpTask extends
-		SocketTask {
+public class PlanDumpTask extends SocketTask {
 
-	private static final String[] SEND_MSG_ITEMS = new String[]{"task",
-			"token", "dbname", "plandrop" };
+    private static final String[] SEND_MSG_ITEMS =
+            new String[] {"task", "token", "dbname", "plandrop"};
 
-	/**
-	 * The constructor
-	 * 
-	 * @param serverInfo
-	 */
-	public PlanDumpTask(ServerInfo serverInfo) {
-		super("plandump", serverInfo, SEND_MSG_ITEMS);
-	}
+    /**
+     * The constructor
+     *
+     * @param serverInfo
+     */
+    public PlanDumpTask(ServerInfo serverInfo) {
+        super("plandump", serverInfo, SEND_MSG_ITEMS);
+    }
 
-	/**
-	 * set dbname into msg
-	 * 
-	 * @param dbName String
-	 */
-	public void setDbName(String dbName) {
-		super.setMsgItem("dbname", dbName);
-	}
+    /**
+     * set dbname into msg
+     *
+     * @param dbName String
+     */
+    public void setDbName(String dbName) {
+        super.setMsgItem("dbname", dbName);
+    }
 
-	/**
-	 * set plandrop
-	 * 
-	 * @param type YesNoType The given object of YesNoType
-	 */
-	public void setPlanDrop(YesNoType type) {
-		super.setMsgItem("plandrop", type.toString().toLowerCase());
-	}
-	
-	/**
-	 * get result from the response.
-	 * 
-	 * @return LogContentInfo
-	 */
-	public PlanDumpInfo getContent() {
-		TreeNode response = getResponse();
-		if (response == null
-				|| (this.getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
-			return null;
-		}
-		PlanDumpInfo planDumpInfo = new PlanDumpInfo();
-		String path = response.getValue("path");
-		planDumpInfo.setPath(path);
-		for (int i = 0; i < response.childrenSize(); i++) {
-			TreeNode node = response.getChildren().get(i);
-			if (node != null && node.getValue("open") != null
-					&& node.getValue("open").equals("log")) {
-				String[] lines = node.getValues("line");
-				for (int j = 0; j < lines.length; j++) {
-					String str = lines[j];
-					if (str != null) {
-						planDumpInfo.addLine(str);
-					}
-				}
-			}
-		}
+    /**
+     * set plandrop
+     *
+     * @param type YesNoType The given object of YesNoType
+     */
+    public void setPlanDrop(YesNoType type) {
+        super.setMsgItem("plandrop", type.toString().toLowerCase());
+    }
 
-		return planDumpInfo;
-	}
+    /**
+     * get result from the response.
+     *
+     * @return LogContentInfo
+     */
+    public PlanDumpInfo getContent() {
+        TreeNode response = getResponse();
+        if (response == null || (this.getErrorMsg() != null && getErrorMsg().trim().length() > 0)) {
+            return null;
+        }
+        PlanDumpInfo planDumpInfo = new PlanDumpInfo();
+        String path = response.getValue("path");
+        planDumpInfo.setPath(path);
+        for (int i = 0; i < response.childrenSize(); i++) {
+            TreeNode node = response.getChildren().get(i);
+            if (node != null
+                    && node.getValue("open") != null
+                    && node.getValue("open").equals("log")) {
+                String[] lines = node.getValues("line");
+                for (int j = 0; j < lines.length; j++) {
+                    String str = lines[j];
+                    if (str != null) {
+                        planDumpInfo.addLine(str);
+                    }
+                }
+            }
+        }
 
+        return planDumpInfo;
+    }
 }

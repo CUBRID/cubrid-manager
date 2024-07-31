@@ -25,56 +25,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- package com.cubrid.common.ui.compare.data.control;
+package com.cubrid.common.ui.compare.data.control;
 
+import com.cubrid.common.ui.compare.data.model.DataCompare;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.cubrid.common.ui.compare.data.model.DataCompare;
-
 public class DataCompareCellModifier implements ICellModifier {
-	private DataCompareEditorPart dataCompareEditorPart;
+    private DataCompareEditorPart dataCompareEditorPart;
 
-	public DataCompareCellModifier(DataCompareEditorPart dataCompareEditorPart) {
-		super();
-		this.dataCompareEditorPart = dataCompareEditorPart;
-	}
+    public DataCompareCellModifier(DataCompareEditorPart dataCompareEditorPart) {
+        super();
+        this.dataCompareEditorPart = dataCompareEditorPart;
+    }
 
-	public boolean canModify(Object element, String property) {
-		if (!dataCompareEditorPart.isOffline()) {
-			return false;
-		}
+    public boolean canModify(Object element, String property) {
+        if (!dataCompareEditorPart.isOffline()) {
+            return false;
+        }
 
-		int index = dataCompareEditorPart.getColumnNames().indexOf(property);
-		return index == 0;
-	}
+        int index = dataCompareEditorPart.getColumnNames().indexOf(property);
+        return index == 0;
+    }
 
-	public Object getValue(Object element, String property) {
-		Object result = null;
-		DataCompare dataCompare = (DataCompare) element;
-		int index = dataCompareEditorPart.getColumnNames().indexOf(property);
-		if (index == 0) {
-			result = new Boolean(dataCompare.isUse());
-		} else {
-			result = "";
-		}
-		return result;
-	}
+    public Object getValue(Object element, String property) {
+        Object result = null;
+        DataCompare dataCompare = (DataCompare) element;
+        int index = dataCompareEditorPart.getColumnNames().indexOf(property);
+        if (index == 0) {
+            result = new Boolean(dataCompare.isUse());
+        } else {
+            result = "";
+        }
+        return result;
+    }
 
-	public void modify(Object element, String property, Object value) {
-		if (!dataCompareEditorPart.isOffline()) {
-			return;
-		}
+    public void modify(Object element, String property, Object value) {
+        if (!dataCompareEditorPart.isOffline()) {
+            return;
+        }
 
-		boolean use = ((Boolean) value).booleanValue();
+        boolean use = ((Boolean) value).booleanValue();
 
-		final TableItem item = (TableItem) element;
-		DataCompare dataCompare = (DataCompare) item.getData();
-		int index = dataCompareEditorPart.getColumnNames().indexOf(property);
-		if (index == 0) {
-			dataCompare.setUse(use);
-		}
+        final TableItem item = (TableItem) element;
+        DataCompare dataCompare = (DataCompare) item.getData();
+        int index = dataCompareEditorPart.getColumnNames().indexOf(property);
+        if (index == 0) {
+            dataCompare.setUse(use);
+        }
 
-		dataCompareEditorPart.reloadInput();
-	}
+        dataCompareEditorPart.reloadInput();
+    }
 }

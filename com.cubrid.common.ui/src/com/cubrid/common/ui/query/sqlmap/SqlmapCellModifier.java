@@ -27,63 +27,57 @@
  */
 package com.cubrid.common.ui.query.sqlmap;
 
+import com.cubrid.common.core.util.LogUtil;
 import java.util.Map;
-
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
 
-import com.cubrid.common.core.util.LogUtil;
-
 /**
- * <p>
  * The editor of SQLMap conditions list.
- * </p>
  *
  * @author CHOE JUNGYEON
  */
-public class SqlmapCellModifier implements
-		ICellModifier {
+public class SqlmapCellModifier implements ICellModifier {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LogUtil.getLogger(SqlmapCellModifier.class);
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LogUtil.getLogger(SqlmapCellModifier.class);
 
-	private SqlmapNavigatorView parentView;
+    private SqlmapNavigatorView parentView;
 
-	public SqlmapCellModifier(SqlmapNavigatorView sqlmapNavigatorView) {
-		this.parentView = sqlmapNavigatorView;
-	}
+    public SqlmapCellModifier(SqlmapNavigatorView sqlmapNavigatorView) {
+        this.parentView = sqlmapNavigatorView;
+    }
 
-	public boolean canModify(Object element, String property) {
-		if (!(element instanceof Map)) {
-			return false;
-		}
-		return true;
-	}
+    public boolean canModify(Object element, String property) {
+        if (!(element instanceof Map)) {
+            return false;
+        }
+        return true;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getValue(Object element, String property) {
-		if (!(element instanceof Map)) {
-			return false;
-		}
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object getValue(Object element, String property) {
+        if (!(element instanceof Map)) {
+            return false;
+        }
 
-		Map<String, String> data = (Map<String, String>) element;
-		return parentView.isUseCondition(data.get("1"));
-	}
+        Map<String, String> data = (Map<String, String>) element;
+        return parentView.isUseCondition(data.get("1"));
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void modify(Object element, String property, Object value) {
-		if (!(element instanceof TableItem)) {
-			return;
-		}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void modify(Object element, String property, Object value) {
+        if (!(element instanceof TableItem)) {
+            return;
+        }
 
-		TableItem tableItem = (TableItem) element;
-		Map<String, String> data = (Map<String, String>) tableItem.getData();
+        TableItem tableItem = (TableItem) element;
+        Map<String, String> data = (Map<String, String>) tableItem.getData();
 
-		parentView.changeUseCondition(data.get("1"), (Boolean) value);
-		parentView.refreshView();
-	}
-
+        parentView.changeUseCondition(data.get("1"), (Boolean) value);
+        parentView.refreshView();
+    }
 }

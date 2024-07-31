@@ -29,13 +29,12 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.editor.command;
 
-import org.eclipse.gef.commands.Command;
-import org.eclipse.ui.PlatformUI;
-
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.ui.mondashboard.Messages;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.Dashboard;
 import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * command to delete database monitor figure from dashboard.
@@ -43,61 +42,52 @@ import com.cubrid.cubridmanager.ui.mondashboard.editor.model.HostNode;
  * @author cyl
  * @version 1.0 - 2010-6-4 created by cyl
  */
-public class DeleteHostMonitorCommand extends
-		Command {
+public class DeleteHostMonitorCommand extends Command {
 
-	private HostNode nodeToDelete;
+    private HostNode nodeToDelete;
 
-	private Dashboard dashboard;
+    private Dashboard dashboard;
 
-	public DeleteHostMonitorCommand() {
-		//default constructor
-	}
+    public DeleteHostMonitorCommand() {
+        // default constructor
+    }
 
-	/**
-	 * get the node to be deleted.
-	 *
-	 * @return the nodeToDelete
-	 */
-	public HostNode getNodeToDelete() {
-		return nodeToDelete;
-	}
+    /**
+     * get the node to be deleted.
+     *
+     * @return the nodeToDelete
+     */
+    public HostNode getNodeToDelete() {
+        return nodeToDelete;
+    }
 
-	/**
-	 * @param nodeToDelete the nodeToDelete to set
-	 */
-	public void setNodeToDelete(HostNode nodeToDelete) {
-		this.nodeToDelete = nodeToDelete;
-	}
+    /** @param nodeToDelete the nodeToDelete to set */
+    public void setNodeToDelete(HostNode nodeToDelete) {
+        this.nodeToDelete = nodeToDelete;
+    }
 
-	/**
-	 * remove current database node from dashboard
-	 */
-	public void execute() {
-		if (null == nodeToDelete || null == dashboard) {
-			return;
-		}
-		boolean isDelete = CommonUITool.openConfirmBox(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-				Messages.bind(Messages.msgConfirmDeleteHost,
-						nodeToDelete.getName()));
-		if (!isDelete) {
-			return;
-		}
-		dashboard.removeNode(nodeToDelete);
-	}
+    /** remove current database node from dashboard */
+    public void execute() {
+        if (null == nodeToDelete || null == dashboard) {
+            return;
+        }
+        boolean isDelete =
+                CommonUITool.openConfirmBox(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        Messages.bind(Messages.msgConfirmDeleteHost, nodeToDelete.getName()));
+        if (!isDelete) {
+            return;
+        }
+        dashboard.removeNode(nodeToDelete);
+    }
 
-	/**
-	 * @return the dashboard
-	 */
-	public Dashboard getDashboard() {
-		return dashboard;
-	}
+    /** @return the dashboard */
+    public Dashboard getDashboard() {
+        return dashboard;
+    }
 
-	/**
-	 * @param dashboard the dashboard to set
-	 */
-	public void setDashboard(Dashboard dashboard) {
-		this.dashboard = dashboard;
-	}
+    /** @param dashboard the dashboard to set */
+    public void setDashboard(Dashboard dashboard) {
+        this.dashboard = dashboard;
+    }
 }
