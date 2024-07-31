@@ -151,7 +151,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
 
         Composite buttonComp = new Composite(composite, SWT.None);
         buttonComp.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, 24));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
 
         Composite dataComp = new Composite(composite, SWT.None);
         dataComp.setLayout(new FillLayout());

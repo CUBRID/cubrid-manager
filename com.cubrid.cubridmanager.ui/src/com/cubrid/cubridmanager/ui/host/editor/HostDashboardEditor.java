@@ -157,6 +157,10 @@ public class HostDashboardEditor extends CubridEditorPart {
     private long freespaceOnStorage = -1;
     private ExpandBar bar = null;
 
+    private boolean isPackedVolume = false;
+    private boolean isPackedBroker = false;
+    private boolean isPackedDBinfo = false;
+
     public void createPartControl(Composite parent) {
         Composite composite = new Composite(parent, SWT.None);
         GridLayout layout = new GridLayout();
@@ -165,7 +169,7 @@ public class HostDashboardEditor extends CubridEditorPart {
 
         Composite buttonComp = new Composite(composite, SWT.None);
         buttonComp.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, 20));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
 
         Composite dataComp = new Composite(composite, SWT.None);
         dataComp.setLayout(new FillLayout());
@@ -475,7 +479,7 @@ public class HostDashboardEditor extends CubridEditorPart {
         TableColumn freespaceColumn = new TableColumn(serverTableViewer.getTable(), SWT.LEFT);
         freespaceColumn.setText(Messages.columnFreespace);
         freespaceColumn.setToolTipText(Messages.tipFreespace);
-        freespaceColumn.setWidth(100);
+        freespaceColumn.setWidth(150);
 
         TableColumn cpuColumn = new TableColumn(serverTableViewer.getTable(), SWT.LEFT);
         cpuColumn.setText(Messages.columnCpu);
@@ -496,30 +500,6 @@ public class HostDashboardEditor extends CubridEditorPart {
         serverInfoItem.setExpanded(true);
         serverInfoItem.setControl(serverComposite);
     }
-    //
-    //	public void setServerInfo(ServerInfo serverInfo) {
-    //
-    //		this.serverInfo = serverInfo;
-    //
-    //		brokerTableViewer.setContentProvider(new BrokersStatusContentProvider());
-    //		BrokersStatusLabelProvider brokersStatusLabelProvider = new BrokersStatusLabelProvider();
-    //		brokersStatusLabelProvider.setServerInfo(serverInfo);
-    //		brokerTableViewer.setLabelProvider(brokersStatusLabelProvider);
-    //
-    //		if (bar != null && bar.getItemCount() > 2) {
-    //			int height = brokerTableViewer.getTable().computeSize(SWT.DEFAULT,
-    //					SWT.DEFAULT).y;
-    //			if (height < 80) {
-    //				height = 80;
-    //			}
-    //			bar.getItem(1).setHeight(height);
-    //		}
-    //
-    //		if (dataGeneratorThread != null) {
-    //			dataGeneratorThread.setRunFlag(false);
-    //			dataGeneratorThread = null;
-    //		}
-    //	}
 
     public ServerInfo getServerInfo() {
         return serverInfo;
@@ -706,6 +686,10 @@ public class HostDashboardEditor extends CubridEditorPart {
                                 setVolumeData(dbVolumeSpaceInfoList);
                                 finishedCount++;
                                 updateToolBar();
+                                if (!isPackedVolume) {
+                                    CommonUITool.packTableOnly(volumeTableViewer);
+                                    isPackedVolume = true;
+                                }
                             }
 
                             public IStatus postTaskFinished(ITask task) {
@@ -745,6 +729,10 @@ public class HostDashboardEditor extends CubridEditorPart {
                                 setBrokerData(newBrokerInfoList);
                                 finishedCount++;
                                 updateToolBar();
+                                if (!isPackedBroker) {
+                                    CommonUITool.packTableOnly(brokerTableViewer);
+                                    isPackedBroker = true;
+                                }
                             }
 
                             public IStatus postTaskFinished(ITask task) {
@@ -781,6 +769,22 @@ public class HostDashboardEditor extends CubridEditorPart {
                                 infoLable.setText(
                                         Messages.bind(
                                                 Messages.lblHostInfo, serverInfo.getServerName()));
+                                if (bar != null && bar.getItemCount() > 4) {
+                                    final int line = dbServerInfoText.getLineCount();
+                                    final int startOffset = dbServerInfoText.getOffsetAtLine(0);
+                                    final int endOffset = dbServerInfoText.getText().length() - 1;
+                                    int height =
+                                            dbServerInfoText.getTextBounds(startOffset, endOffset)
+                                                    .height;
+                                    height = height + (height / line - 1);
+
+                                    if (height < 110) {
+                                        height = 110;
+                                    } else if (height > 1000) {
+                                        height = 1000;
+                                    }
+                                    bar.getItem(4).setHeight(height);
+                                }
                             }
                         });
     }
@@ -803,6 +807,8 @@ public class HostDashboardEditor extends CubridEditorPart {
                                                     .y;
                                     if (height < 80) {
                                         height = 80;
+                                    } else if (height > 1000) {
+                                        height = 1000;
                                     }
                                     bar.getItem(0).setHeight(height);
                                 }
@@ -882,9 +888,13 @@ public class HostDashboardEditor extends CubridEditorPart {
                 int height = databaseTable.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
                 if (height < 80) {
                     height = 80;
+                } else if (height > 1000) {
+                    height = 1000;
                 }
                 bar.getItem(3).setHeight(height);
             }
+
+            CommonUITool.packTableOnly(databaseTable);
         }
     }
 
@@ -955,13 +965,18 @@ public class HostDashboardEditor extends CubridEditorPart {
                                     return;
                                 }
                                 brokerTableViewer.setInput(brokerInfoList);
-                                CommonUITool.packTable(brokerTableViewer.getTable(), 0, 200);
+                                brokerTableViewer.refresh();
 
                                 if (bar != null && bar.getItemCount() > 2) {
                                     int height =
-                                            databaseTable.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-                                    if (height < 80) {
-                                        height = 80;
+                                            brokerTableViewer
+                                                    .getTable()
+                                                    .computeSize(SWT.DEFAULT, SWT.DEFAULT)
+                                                    .y;
+                                    if (height < 120) {
+                                        height = 120;
+                                    } else if (height > 1000) {
+                                        height = 1000;
                                     }
                                     bar.getItem(1).setHeight(height);
                                 }
@@ -981,6 +996,18 @@ public class HostDashboardEditor extends CubridEditorPart {
 
     public TableViewer getServerTableViewer() {
         return serverTableViewer;
+    }
+
+    public void setisPackedVolume(boolean packed) {
+        isPackedDBinfo = packed;
+    }
+
+    public boolean isPackedServerTable() {
+        return isPackedDBinfo;
+    }
+
+    public ExpandBar getExpandBar() {
+        return bar;
     }
 
     /** Perform node change event */
@@ -1166,6 +1193,12 @@ class DataGeneratorThread extends Thread {
                                                     .isDisposed()) {
                                         editorPart.getServerTableViewer().setInput(serverDataList);
                                         editorPart.getServerTableViewer().refresh();
+                                        if (!editorPart.isPackedServerTable()) {
+                                            updateServerStatItemSize();
+                                            CommonUITool.packTableOnly(
+                                                    editorPart.getServerTableViewer());
+                                            editorPart.setisPackedVolume(true);
+                                        }
                                     }
                                 }
                             });
@@ -1175,6 +1208,31 @@ class DataGeneratorThread extends Thread {
             } catch (Exception e) {
             }
         }
+    }
+
+    public void updateServerStatItemSize() {
+        Display.getDefault()
+                .syncExec(
+                        new Runnable() {
+                            public void run() {
+                                if (editorPart.getServerTableViewer().getTable().isDisposed()) {
+                                    return;
+                                }
+
+                                int height =
+                                        editorPart
+                                                .getServerTableViewer()
+                                                .getTable()
+                                                .computeSize(SWT.DEFAULT, SWT.DEFAULT)
+                                                .y;
+                                if (height < 80) {
+                                    height = 80;
+                                } else if (height > 1000) {
+                                    height = 1000;
+                                }
+                                editorPart.getExpandBar().getItem(2).setHeight(height);
+                            }
+                        });
     }
 
     /**

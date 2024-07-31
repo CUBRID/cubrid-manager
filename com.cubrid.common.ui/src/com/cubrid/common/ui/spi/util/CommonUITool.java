@@ -721,6 +721,18 @@ public final class CommonUITool {
         }
     }
 
+    public static void packTableOnly(TableViewer tv) {
+        for (int i = 0; i < tv.getTable().getColumnCount(); i++) {
+            tv.getTable().getColumn(i).pack();
+        }
+    }
+
+    public static void packTableOnly(Table table) {
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumns()[i].pack();
+        }
+    }
+
     /**
      * Reload the children of this node and restore the expanded status
      *

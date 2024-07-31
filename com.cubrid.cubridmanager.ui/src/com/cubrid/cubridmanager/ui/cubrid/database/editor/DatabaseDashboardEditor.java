@@ -211,7 +211,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
 
         Composite buttonComp = new Composite(composite, SWT.None);
         buttonComp.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, 20));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
 
         Composite dataComp = new Composite(composite, SWT.None);
         dataComp.setLayout(new FillLayout());
@@ -230,7 +230,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
         createBrokerComposite(bar, index++);
         createLockAndTransactionComposite(bar, index++);
 
-        loadData();
+        loadData(true);
     }
 
     /**
@@ -869,13 +869,53 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
      *
      * @return <code>true</code> whether it is successful;<code>false</code> otherwise
      */
-    public boolean loadData() {
-
+    public boolean loadData(boolean isInit) {
         loadVolumnsInfo();
         loadBrokerInfo();
         loadDatabaseInfo();
         loadTransactionInfo();
+
+        if (isInit) {
+            packTableAll();
+        }
+
         return true;
+    }
+
+    private void packTableAll() {
+        CommonUITool.packTableOnly(dbInfoTableViewer);
+        CommonUITool.packTableOnly(volumnInfoTableViewer);
+        CommonUITool.packTableOnly(brokerInfoTableViewer);
+        CommonUITool.packTableOnly(lockAndTransactionTableViewer);
+        CommonUITool.packTableOnly(lockAndTransactionTable);
+        CommonUITool.packTableOnly(brokerInfoTable);
+    }
+
+    private void setDataBaseInfoData() {
+        Display.getDefault()
+                .syncExec(
+                        new Runnable() {
+                            public void run() {
+                                if (dbInfoTableViewer.getTable().isDisposed()) {
+                                    return;
+                                }
+                                dbInfoTableViewer.refresh();
+
+                                int height =
+                                        dbInfoTableViewer
+                                                .getTable()
+                                                .computeSize(SWT.DEFAULT, SWT.DEFAULT)
+                                                .y;
+                                if (height < 80) {
+                                    height = 80;
+                                } else if (height > 1000) {
+                                    height = 1000;
+                                }
+
+                                bar.getItem(tableViewOnBarIndexMap.get(dbInfoTableViewer))
+                                        .setHeight(height);
+                            }
+                        });
     }
 
     private void setVolumnInfoData() {
@@ -895,7 +935,10 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                                 .y;
                                 if (height < 130) {
                                     height = 130;
+                                } else if (height > 1000) {
+                                    height = 1000;
                                 }
+
                                 bar.getItem(tableViewOnBarIndexMap.get(volumnInfoTableViewer))
                                         .setHeight(height);
                             }
@@ -919,6 +962,8 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                                 .y;
                                 if (height < 130) {
                                     height = 130;
+                                } else if (height > 1000) {
+                                    height = 1000;
                                 }
                                 bar.getItem(tableViewOnBarIndexMap.get(brokerInfoTableViewer))
                                         .setHeight(height);
@@ -943,6 +988,8 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                                 .y;
                                 if (height < 130) {
                                     height = 130;
+                                } else if (height > 1000) {
+                                    height = 1000;
                                 }
                                 bar.getItem(
                                                 tableViewOnBarIndexMap.get(
@@ -1488,6 +1535,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
         dbInfoListData.add(dbMap);
         // start thread to compute cpu/memory information at first time or thread is stop
         new DatabaseDataGenerator().start();
+        setDataBaseInfoData();
     }
 
     /**
