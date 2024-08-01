@@ -972,6 +972,13 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
         }*/
     }
 
+    public boolean isIntegratedVolume() {
+        if (CompatibleUtil.compareVersion(getServerVersionKey(), "10.1.0") >= 0) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Check whether the database or the server is HA Mode. if the dbName is null, return this
      * server HA mode, otherwise, return this database HA mode

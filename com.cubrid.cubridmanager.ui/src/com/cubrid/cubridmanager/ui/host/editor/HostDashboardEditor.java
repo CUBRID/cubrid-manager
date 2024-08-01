@@ -341,7 +341,8 @@ public class HostDashboardEditor extends CubridEditorPart {
         volumeTableViewer = new TableViewer(volumeComposite, SWT.BORDER | SWT.FULL_SELECTION);
         volumeTableViewer.getTable().setHeaderVisible(true);
         volumeTableViewer.getTable().setLinesVisible(true);
-        volumeTableViewer.setLabelProvider(new DBSpaceLabelProvider());
+        volumeTableViewer.setLabelProvider(
+                new DBSpaceLabelProvider(serverInfo.isIntegratedVolume()));
         volumeTableViewer.setContentProvider(new TableContentProvider());
 
         TableColumn dbNameColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
@@ -383,6 +384,15 @@ public class HostDashboardEditor extends CubridEditorPart {
 
         volumeInfoItem.setHeight(100);
         volumeInfoItem.setExpanded(true);
+
+        if (serverInfo.isIntegratedVolume()) {
+            dataColumn.setResizable(false);
+            indexColumn.setResizable(false);
+            dataColumn.setText("");
+            indexColumn.setText("");
+            genericColumn.setText(Messages.columnPermanent);
+            genericColumn.setToolTipText(Messages.columnPermanentTip);
+        }
     }
 
     private void createBrokerInfoItem(ExpandBar bar, int index) {
@@ -1655,9 +1665,14 @@ class DBSpaceLabelProvider implements ITableLabelProvider, ITableColorProvider {
 
     private double noticeThreshold = 0.15;
     private double warningThreshold = 0.05;
+    private boolean isIntegratedVolume = false;;
 
     static {
         formater.setMaximumFractionDigits(1);
+    }
+
+    public DBSpaceLabelProvider(final boolean isIntegratedVolume) {
+        this.isIntegratedVolume = isIntegratedVolume;
     }
 
     public void addListener(ILabelProviderListener arg0) {}
@@ -1685,8 +1700,14 @@ class DBSpaceLabelProvider implements ITableLabelProvider, ITableColorProvider {
                 case 2:
                     return getVolumeString(volumeSpaceInfo, VolumeType.INDEX.getText());
                 case 3:
+                    if (isIntegratedVolume) {
+                        return getVolumeString(volumeSpaceInfo, VolumeType.TEMPORARY.getText());
+                    }
                     return getVolumeString(volumeSpaceInfo, VolumeType.TEMP.getText());
                 case 4:
+                    if (isIntegratedVolume) {
+                        return getVolumeString(volumeSpaceInfo, VolumeType.PERMANENT.getText());
+                    }
                     return getVolumeString(volumeSpaceInfo, VolumeType.GENERIC.getText());
                 case 5:
                     return getLogString(volumeSpaceInfo, VolumeType.ACTIVE_LOG.getText());
@@ -1709,17 +1730,6 @@ class DBSpaceLabelProvider implements ITableLabelProvider, ITableColorProvider {
             for (DbSpaceInfo dbSpaceInfo : dbSpaceInfoList) {
                 totalPage += dbSpaceInfo.getTotalpage();
                 freePage += dbSpaceInfo.getFreepage();
-                Date createDate = null;
-                try {
-                    createDate = DateUtil.getDateFormat("yyyyMMdd").parse(dbSpaceInfo.getDate());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                if (createDate != null
-                        && (lastCreateDate == null
-                                || lastCreateDate.getTime() < createDate.getTime())) {
-                    lastCreateDate = createDate;
-                }
             }
         }
 
@@ -1781,10 +1791,18 @@ class DBSpaceLabelProvider implements ITableLabelProvider, ITableColorProvider {
                 type = VolumeType.INDEX.getText();
                 break;
             case 3:
-                type = VolumeType.TEMP.getText();
+                if (isIntegratedVolume) {
+                    type = VolumeType.TEMPORARY.getText();
+                } else {
+                    type = VolumeType.TEMP.getText();
+                }
                 break;
             case 4:
-                type = VolumeType.GENERIC.getText();
+                if (isIntegratedVolume) {
+                    type = VolumeType.PERMANENT.getText();
+                } else {
+                    type = VolumeType.GENERIC.getText();
+                }
                 break;
         }
 
