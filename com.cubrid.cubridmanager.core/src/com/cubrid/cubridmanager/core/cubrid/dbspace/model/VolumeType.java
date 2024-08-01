@@ -42,7 +42,9 @@ public enum VolumeType {
     ACTIVE_LOG("Active_log"),
     PP("PERMANENT PERMANENT DATA"),
     PT("PERMANENT TEMPORARY DATA"),
-    TT("TEMPORARY TEMPORARY DATA");
+    TT("TEMPORARY TEMPORARY DATA"),
+    PERMANENT("PERMANENT"),
+    TEMPORARY("TEMPORARY");
 
     String text = null;
 
