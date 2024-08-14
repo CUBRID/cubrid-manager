@@ -64,7 +64,12 @@ public class GetAllPartitionClassTask extends JDBCTask {
                 return;
             }
 
-            String sql = "SELECT partition_class_name FROM db_partition";
+            String sql;
+            if (databaseInfo.isSupportUserSchema()) {
+              sql = "SELECT partition_class_name, owner_name FROM db_partition";
+            } else {
+              sql = "SELECT partition_class_name FROM db_partition";
+            }
 
             // [TOOLS-2425]Support shard broker
             sql = databaseInfo.wrapShardQuery(sql);
