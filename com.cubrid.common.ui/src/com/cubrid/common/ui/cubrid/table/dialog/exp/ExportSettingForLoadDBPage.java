@@ -589,6 +589,8 @@ public class ExportSettingForLoadDBPage extends ExportWizardPage {
         fileCharsetCombo.select(index);
 
         updateDialogStatus();
+
+        getShell().setMinimumSize(820, 500);
     }
 
     /** load tables and columns */
@@ -874,6 +876,7 @@ public class ExportSettingForLoadDBPage extends ExportWizardPage {
             init();
             isFirstVisible = false;
         }
+        getShell().setMinimumSize(820, 500);
     }
 
     /**

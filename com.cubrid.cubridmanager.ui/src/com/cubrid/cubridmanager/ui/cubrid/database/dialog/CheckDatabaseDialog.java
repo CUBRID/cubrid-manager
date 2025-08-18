@@ -150,7 +150,7 @@ public class CheckDatabaseDialog extends CMTitleAreaDialog implements ITaskExecu
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(400, 400);
+        getShell().setMinimumSize(400, 400);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleCheckDbDialog);
     }

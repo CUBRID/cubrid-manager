@@ -100,6 +100,8 @@ public class ImportDataConfirmPage extends CMWizardPage {
         }
 
         infoTest.setText(confirmInfo == null ? "" : confirmInfo);
+        
+        getShell().setMinimumSize(880, 500);
     }
 
     private String makeExcelConfirmInfoText() {

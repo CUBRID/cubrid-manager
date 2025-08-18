@@ -67,7 +67,7 @@ public class ExportERDataDialog extends CMTitleAreaDialog {
 
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(300, 293);
+        getShell().setMinimumSize(300, 293);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleChoose);
     }

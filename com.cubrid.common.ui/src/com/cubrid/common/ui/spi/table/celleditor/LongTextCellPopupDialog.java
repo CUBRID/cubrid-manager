@@ -368,7 +368,7 @@ public class LongTextCellPopupDialog extends CMTitleAreaDialog implements ICellP
 
     /** Constrain the shell size */
     protected void constrainShellSize() {
-        getShell().setSize(640, 480);
+        getShell().setMinimumSize(640, 480);
         super.constrainShellSize();
         if (isEditable) {
             getShell().setText(Messages.titleEditData);

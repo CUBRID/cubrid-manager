@@ -217,7 +217,7 @@ public class LockInfoDetailDialog extends CMTitleAreaDialog {
     protected void constrainShellSize() {
         super.constrainShellSize();
         CommonUITool.centerShell(getShell());
-        getShell().setSize(500, 600);
+        getShell().setMinimumSize(500, 600);
         getShell().setText(Messages.titleLockInfoDetailDialog);
     }
 

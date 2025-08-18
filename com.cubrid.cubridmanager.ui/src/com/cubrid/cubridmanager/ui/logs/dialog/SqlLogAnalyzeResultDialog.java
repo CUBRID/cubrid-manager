@@ -537,7 +537,7 @@ public class SqlLogAnalyzeResultDialog extends CMTitleAreaDialog {
                                                 logPath, CasRunnerConfigDialog.getDbname(), node);
                                         casRunnerResultViewDialog.setTotalResultNum(
                                                 Integer.parseInt(totalResultNum));
-                                        casRunnerResultViewDialog.getShell().setSize(665, 555);
+                                        casRunnerResultViewDialog.getShell().setMinimumSize(665, 555);
                                         casRunnerResultViewDialog.open();
                                     }
                                 }

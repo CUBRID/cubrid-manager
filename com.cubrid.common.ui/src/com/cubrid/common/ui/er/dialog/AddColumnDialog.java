@@ -91,7 +91,7 @@ public class AddColumnDialog extends CMTitleAreaDialog {
 
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(420, 255);
+        getShell().setMinimumSize(420, 255);
         CommonUITool.centerShell(getShell());
         getShell()
                 .setText(

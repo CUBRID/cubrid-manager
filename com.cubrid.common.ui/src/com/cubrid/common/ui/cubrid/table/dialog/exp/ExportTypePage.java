@@ -309,6 +309,8 @@ public class ExportTypePage extends ExportWizardPage {
         historyCombo.setEnabled(false);
         renameButton.setEnabled(false);
         deleteButton.setEnabled(false);
+        
+        getShell().setMinimumSize(800, 600);
     }
 
     /**

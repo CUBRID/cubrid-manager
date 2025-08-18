@@ -247,7 +247,7 @@ public class GenCertDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(500, 430);
+        getShell().setMinimumSize(500, 430);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleGenCertDialog);
     }

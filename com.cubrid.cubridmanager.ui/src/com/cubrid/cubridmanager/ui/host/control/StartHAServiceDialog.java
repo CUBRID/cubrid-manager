@@ -183,7 +183,7 @@ public class StartHAServiceDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(700, 500);
+        getShell().setMinimumSize(700, 500);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleStartHAService);
     }

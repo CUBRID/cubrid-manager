@@ -147,7 +147,7 @@ public class ChangeMasterDbDialog extends CMTitleAreaDialog implements ModifyLis
     protected void constrainShellSize() {
         super.constrainShellSize();
         CommonUITool.centerShell(getShell());
-        getShell().setSize(400, 300);
+        getShell().setMinimumSize(400, 300);
         getShell().setText(Messages.chmsdb0titleChangeMasterDbDialog);
     }
 

@@ -235,7 +235,7 @@ public class ViewSQLLogDialog extends TrayDialog {
     protected void constrainShellSize() {
         super.constrainShellSize();
         getShell().setText(Messages.titleViewSQLLog);
-        getShell().setSize(900, 600);
+        getShell().setMinimumSize(900, 600);
         CommonUITool.centerShell(getShell());
     }
 

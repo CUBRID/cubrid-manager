@@ -132,7 +132,7 @@ public class ExportWizardAction extends SelectionAction {
         }
         ExportDataWizardDialog dlg =
                 new ExportDataWizardDialog(getShell(), new ExportDataWizard(database, tableList));
-        dlg.setPageSize(800, Util.isMac() ? 480 : 455);
+        dlg.setPageSize(800, Util.isMac() ? 500 : 475);
         dlg.open();
     }
 }

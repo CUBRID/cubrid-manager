@@ -181,7 +181,7 @@ public class SchemaCompareDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(600, 400);
+        getShell().setMinimumSize(600, 400);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleSchemaComparison);
     }

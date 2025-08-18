@@ -134,7 +134,7 @@ public class AddQueryDialog extends CMTitleAreaDialog {
     /** @see com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog#constrainShellSize() */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(400, 480);
+        getShell().setMinimumSize(400, 480);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.msgAddQueryDialog);
     }

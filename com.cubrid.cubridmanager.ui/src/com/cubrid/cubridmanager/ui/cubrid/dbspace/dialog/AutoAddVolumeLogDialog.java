@@ -161,7 +161,7 @@ public class AutoAddVolumeLogDialog extends CMTitleAreaDialog {
     protected void constrainShellSize() {
         super.constrainShellSize();
         CommonUITool.centerShell(getShell());
-        getShell().setSize(640, 500);
+        getShell().setMinimumSize(640, 500);
         getShell().setText(SHELL_VOLUME_LOG_TITLE);
     }
 

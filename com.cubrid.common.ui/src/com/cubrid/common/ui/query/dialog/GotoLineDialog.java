@@ -116,11 +116,12 @@ public final class GotoLineDialog extends Dialog {
     }
 
     protected void createContents() {
-        shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
         final GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         shell.setLayout(gridLayout);
-        shell.setSize(450, 100);
+        shell.setSize(300, 150);
+        shell.setMinimumSize(300, 150);
         shell.setText(Messages.gotoLineTitle);
 
         final Composite composite = new Composite(shell, SWT.NONE);

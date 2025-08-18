@@ -42,6 +42,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -514,6 +516,12 @@ public class ImportSettingSQLPage extends AbsImportSettingPage
     /** clear all options */
     public void clearOptions() {
         this.setInited(false);
+    }
+    
+    @Override
+    protected void afterShowCurrentPage(PageChangedEvent event) {
+        super.afterShowCurrentPage(event);
+        getShell().setMinimumSize(880, 420);
     }
 }
 

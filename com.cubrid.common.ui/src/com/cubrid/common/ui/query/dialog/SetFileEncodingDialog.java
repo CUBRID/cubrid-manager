@@ -154,7 +154,7 @@ public class SetFileEncodingDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(430, 240);
+        getShell().setMinimumSize(430, 240);
         if (isOpened) {
             getShell().setText(Messages.titleOpenFileDialog);
             setTitle(Messages.titleOpenFileDialogDetail);

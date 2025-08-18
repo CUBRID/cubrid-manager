@@ -431,7 +431,7 @@ public class CreateOrEditSerialDialog extends CMTitleAreaDialog implements Modif
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(500, 600);
+        getShell().setMinimumSize(500, 600);
         CommonUITool.centerShell(getShell());
         if (editedNode == null) {
             getShell().setText(Messages.titleCreateSerialDialog);

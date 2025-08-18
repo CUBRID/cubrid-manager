@@ -339,6 +339,7 @@ public class ImportTypePage extends AbsImportSettingPage {
                         }
                     });
         }
+        getShell().setMinimumSize(880, 550);
     }
 
     /** Verify the setting */
@@ -382,6 +383,8 @@ public class ImportTypePage extends AbsImportSettingPage {
         deleteButton.setEnabled(false);
 
         validate();
+        
+        getShell().setMinimumSize(880, 550);
     }
 
     protected void handlePageLeaving(PageChangingEvent event) {
