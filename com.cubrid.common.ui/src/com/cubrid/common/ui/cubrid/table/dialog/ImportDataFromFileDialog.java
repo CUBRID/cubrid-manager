@@ -122,7 +122,7 @@ public class ImportDataFromFileDialog extends PstmtDataDialog {
 
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setMinimumSize(640, 700);
+        getShell().setMinimumSize(640, 770);
     }
 
     /**

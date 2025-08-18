@@ -192,5 +192,7 @@ public class ExportDataConfirmPage extends ExportWizardPage {
             info.append(NEW_LINE);
         }
         infoTest.setText(info.toString().trim());
+        
+        getShell().setMinimumSize(800, 600);
     }
 }

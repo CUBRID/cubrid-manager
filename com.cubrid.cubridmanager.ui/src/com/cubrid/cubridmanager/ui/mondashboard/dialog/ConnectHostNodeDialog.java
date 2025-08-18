@@ -187,7 +187,7 @@ public class ConnectHostNodeDialog extends CMTitleAreaDialog implements ModifyLi
     protected void constrainShellSize() {
         super.constrainShellSize();
         CommonUITool.centerShell(getShell());
-        getShell().setSize(500, 400);
+        getShell().setMinimumSize(500, 400);
         getShell().setText(Messages.titileHostInfoPage);
     }
 

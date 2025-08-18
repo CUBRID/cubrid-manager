@@ -114,11 +114,12 @@ public final class ReformatColumnsAliasDialog extends Dialog {
     }
 
     protected void createContents() {
-        shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
         final GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         shell.setLayout(gridLayout);
-        shell.setSize(450, 100);
+        shell.setSize(500, 150);
+        shell.setMinimumSize(500, 150);
         shell.setText(Messages.reformatTableAliasTitle);
 
         final Composite composite = new Composite(shell, SWT.NONE);

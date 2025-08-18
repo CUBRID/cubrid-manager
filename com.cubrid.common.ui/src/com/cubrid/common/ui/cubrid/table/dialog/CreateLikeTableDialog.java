@@ -183,7 +183,7 @@ public class CreateLikeTableDialog extends CMTitleAreaDialog implements ModifyLi
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(450, 240);
+        getShell().setMinimumSize(450, 240);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleCreateLikeTableDialog);
     }

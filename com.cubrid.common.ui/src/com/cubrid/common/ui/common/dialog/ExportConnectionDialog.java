@@ -250,7 +250,7 @@ public class ExportConnectionDialog extends CMTitleAreaDialog {
 
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(640, 480);
+        getShell().setMinimumSize(640, 480);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleExportConnection);
     }

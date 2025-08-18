@@ -67,7 +67,7 @@ public class AddQueryToFavoriteDialog extends CMTitleAreaDialog {
 
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(400, 240);
+        getShell().setMinimumSize(400, 240);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleSqlFavorite);
         setTitle(Messages.titleSqlFavoriteDetail);

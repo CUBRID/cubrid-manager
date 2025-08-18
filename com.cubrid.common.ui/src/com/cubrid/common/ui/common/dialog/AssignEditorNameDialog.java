@@ -101,7 +101,7 @@ public class AssignEditorNameDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(380, 220);
+        getShell().setMinimumSize(380, 220);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.shellAssignName);
     }

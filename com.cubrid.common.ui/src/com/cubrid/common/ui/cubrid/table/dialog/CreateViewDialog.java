@@ -841,7 +841,7 @@ public class CreateViewDialog extends CMTitleAreaDialog {
 
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(600, 700);
+        getShell().setMinimumSize(600, 700);
         CommonUITool.centerShell(getShell());
     }
 

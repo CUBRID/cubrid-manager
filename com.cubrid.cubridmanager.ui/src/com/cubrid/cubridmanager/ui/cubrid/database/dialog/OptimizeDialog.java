@@ -180,7 +180,7 @@ public class OptimizeDialog extends CMTitleAreaDialog {
     protected void constrainShellSize() {
         super.constrainShellSize();
 
-        getShell().setSize(400, 520);
+        getShell().setMinimumSize(400, 520);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleOptimizeDbDialog);
     }

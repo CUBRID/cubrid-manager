@@ -1210,6 +1210,8 @@ public class ExportSettingPage extends ExportWizardPage {
             isFirstVisible = false;
         }
         updateDialogStatus(null);
+        
+        getShell().setMinimumSize(1000, 690);
     }
 
     /**

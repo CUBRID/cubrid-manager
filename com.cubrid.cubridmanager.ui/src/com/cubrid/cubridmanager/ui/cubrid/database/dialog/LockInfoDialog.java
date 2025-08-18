@@ -271,7 +271,7 @@ public class LockInfoDialog extends CMTrayDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(650, 500);
+        getShell().setMinimumSize(650, 500);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleLockInfoDialog);
     }

@@ -1055,7 +1055,7 @@ public class BLOBCellPopupDialog extends CMTitleAreaDialog implements ICellPopup
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(720, 540);
+        getShell().setMinimumSize(720, 540);
         getShell()
                 .addDisposeListener(
                         new DisposeListener() {

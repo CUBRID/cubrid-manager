@@ -155,7 +155,7 @@ public class ChangePasswordDialog extends CMTitleAreaDialog implements ModifyLis
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(500, 400);
+        getShell().setMinimumSize(500, 400);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleChangePasswordDialog);
     }

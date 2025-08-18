@@ -185,7 +185,7 @@ public class SetHostInfoDialog extends CMTitleAreaDialog implements ModifyListen
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(400, 300);
+        getShell().setMinimumSize(400, 300);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleSetHostInfoDialog);
     }

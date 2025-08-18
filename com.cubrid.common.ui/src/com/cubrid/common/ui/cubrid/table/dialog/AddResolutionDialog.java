@@ -205,7 +205,7 @@ public class AddResolutionDialog extends CMTitleAreaDialog implements ModifyList
     protected void constrainShellSize() {
         super.constrainShellSize();
         getShell().setText(Messages.titleTitleSetResolution);
-        getShell().setSize(500, 400);
+        getShell().setMinimumSize(500, 400);
     }
 
     /**

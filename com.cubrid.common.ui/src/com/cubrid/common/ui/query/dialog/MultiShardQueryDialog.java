@@ -110,7 +110,7 @@ public class MultiShardQueryDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(430, 210);
+        getShell().setMinimumSize(430, 210);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.shardMultiQueryDialogTitle);
     }

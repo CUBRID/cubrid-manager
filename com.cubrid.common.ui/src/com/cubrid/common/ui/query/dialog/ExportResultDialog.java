@@ -237,7 +237,7 @@ public class ExportResultDialog extends CMTitleAreaDialog implements ModifyListe
     protected void constrainShellSize() {
         super.constrainShellSize();
         getShell().setText(Messages.exportShellTitle);
-        getShell().setSize(550, 280);
+        getShell().setMinimumSize(550, 280);
     }
 
     /**

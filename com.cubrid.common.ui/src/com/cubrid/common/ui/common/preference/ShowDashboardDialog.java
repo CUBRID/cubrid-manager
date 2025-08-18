@@ -150,7 +150,7 @@ public class ShowDashboardDialog extends Dialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(380, 150);
+        getShell().setMinimumSize(380, 150);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleShowDashboard);
     }

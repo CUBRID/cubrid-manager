@@ -204,7 +204,7 @@ public class ReplServerDialog extends CMTitleAreaDialog implements ModifyListene
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(400, 380);
+        getShell().setMinimumSize(400, 380);
         CommonUITool.centerShell(getShell());
         if (this.isStartReplServer) {
             getShell().setText(Messages.titleStartReplServer);

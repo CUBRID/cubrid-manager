@@ -38,6 +38,8 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -466,5 +468,11 @@ public class ImportSettingExcelPage extends AbsImportSettingPage
     /** clear all options */
     public void clearOptions() {
         this.setInited(false);
+    }
+    
+    @Override
+    protected void afterShowCurrentPage(PageChangedEvent event) {
+        super.afterShowCurrentPage(event);
+        getShell().setMinimumSize(880, 600);
     }
 }

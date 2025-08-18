@@ -103,7 +103,7 @@ public class SetPhysicalLogicaMapDialog extends CMTitleAreaDialog
 
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(370, 420);
+        getShell().setMinimumSize(370, 420);
         getShell().setText(Messages.namePhysicalLogicalMapDlg);
     }
 

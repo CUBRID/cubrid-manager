@@ -115,7 +115,7 @@ public class DeleteDatabaseConfirmDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setSize(500, 220);
+        getShell().setMinimumSize(500, 220);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleDeleteDbConfirmDialog);
     }

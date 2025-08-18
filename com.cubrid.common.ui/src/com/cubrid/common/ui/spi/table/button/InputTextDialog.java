@@ -96,7 +96,7 @@ public class InputTextDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        this.getShell().setSize(450, 200);
+        this.getShell().setMinimumSize(450, 200);
         CommonUITool.centerShell(getShell());
         getShell().setText(title);
     }

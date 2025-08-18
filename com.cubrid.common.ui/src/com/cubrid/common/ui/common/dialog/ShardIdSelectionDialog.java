@@ -210,7 +210,7 @@ public class ShardIdSelectionDialog extends CMTitleAreaDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        this.getShell().setSize(450, 250);
+        this.getShell().setMinimumSize(450, 250);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleChooseShardIdDialog);
     }
