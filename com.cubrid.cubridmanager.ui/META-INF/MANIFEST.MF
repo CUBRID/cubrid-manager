@@ -28,6 +28,7 @@ Bundle-ClassPath: .,
  lib/jcommon-1.0.16.jar,
  lib/commons-lang-2.6.jar
 Export-Package: com.cubrid.cubridmanager.ui,
+ com.cubrid.cubridmanager.ui.cubrid.user.editor,
  com.cubrid.cubridmanager.ui.broker.action,
  com.cubrid.cubridmanager.ui.broker.editor,
  com.cubrid.cubridmanager.ui.broker.editor.internal,

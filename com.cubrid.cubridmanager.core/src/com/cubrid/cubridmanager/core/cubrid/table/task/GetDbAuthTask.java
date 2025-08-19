@@ -27,6 +27,7 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.task;
 
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.cubridmanager.core.Messages;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
@@ -74,7 +75,11 @@ public class GetDbAuthTask extends JDBCTask {
                 DbAuth dbAuth = new DbAuth();
                 dbAuth.setGrantorName(rs.getString("grantor_name"));
                 dbAuth.setGranteeName(rs.getString("grantee_name"));
-                dbAuth.setClassName(rs.getString("class_name"));
+                if (CompatibleUtil.isAfter114(databaseInfo)) {
+                    dbAuth.setClassName(rs.getString("object_name"));
+                } else {
+                    dbAuth.setClassName(rs.getString("class_name"));
+                }
                 dbAuth.setAuthType(rs.getString("auth_type"));
                 dbAuth.setGrantable(rs.getString("is_grantable"));
                 dbAuthList.add(dbAuth);

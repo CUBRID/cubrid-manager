@@ -87,7 +87,7 @@ import org.slf4j.Logger;
  */
 public class CQBUserEditor extends CubridEditorPart {
     private static final Logger LOGGER = LogUtil.getLogger(EditUserAction.class);
-    public static final String ID = "com.cubrid.cubridquery.ui.common.editor.UserEditor";
+    public static final String ID = "com.cubrid.cubridmanager.ui.cubrid.user.editor.CQBUserEditor";
     private final List<Map<String, Object>> authListData = new ArrayList<Map<String, Object>>();
     private final List<Map<String, String>> ownerClassListData =
             new ArrayList<Map<String, String>>();

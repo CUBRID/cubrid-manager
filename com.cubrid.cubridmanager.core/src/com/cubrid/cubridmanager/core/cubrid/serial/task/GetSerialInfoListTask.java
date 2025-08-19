@@ -91,7 +91,12 @@ public class GetSerialInfoListTask extends JDBCTask {
                 String cyclic = rs.getString("cyclic");
                 String startVal = rs.getString("started");
                 String className = rs.getString("class_name");
-                String attName = rs.getString("att_name");
+                String attrName = "";
+                if (CompatibleUtil.isAfter114(databaseInfo)) {
+                    attrName = rs.getString("attr_name");
+                } else {
+                    attrName = rs.getString("att_name");
+                }
                 boolean isCycle = false;
                 if (cyclic != null && cyclic.equals("1")) {
                     isCycle = true;
@@ -112,7 +117,7 @@ public class GetSerialInfoListTask extends JDBCTask {
                                 startVal,
                                 cacheCount,
                                 className,
-                                attName);
+                                attrName);
                 serialInfoList.add(serialInfo);
             }
         } catch (SQLException e) {

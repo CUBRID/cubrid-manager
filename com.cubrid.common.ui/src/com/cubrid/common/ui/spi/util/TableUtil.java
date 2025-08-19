@@ -138,7 +138,12 @@ public final class TableUtil {
                 String cyclic = rs.getString("cyclic");
                 String startVal = rs.getString("started");
                 String className = rs.getString("class_name");
-                String attName = rs.getString("att_name");
+                String attrName = "";
+                if (CompatibleUtil.isAfter114(database.getDatabaseInfo())) {
+                    attrName = rs.getString("attr_name");
+                } else {
+                    attrName = rs.getString("att_name");
+                }
                 String cacheCount = null;
                 if (isSupportCache) {
                     cacheCount = rs.getString("cached_num");
@@ -159,7 +164,7 @@ public final class TableUtil {
                                 startVal,
                                 cacheCount,
                                 className,
-                                attName);
+                                attrName);
                 serialInfoList.add(serialInfo);
             }
 

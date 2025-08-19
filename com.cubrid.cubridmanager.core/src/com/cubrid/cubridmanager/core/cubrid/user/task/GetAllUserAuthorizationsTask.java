@@ -29,6 +29,7 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.user.task;
 
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.ConstantsUtil;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
@@ -68,8 +69,14 @@ public class GetAllUserAuthorizationsTask extends JDBCTask {
     }
 
     public void execute() {
-        String sql =
-                "SELECT grantor_name, grantee_name, class_name, auth_type, is_grantable FROM db_auth";
+        String sql;
+
+        if (CompatibleUtil.isAfter114(databaseInfo)) {
+            sql = "SELECT grantor_name, grantee_name, object_name AS o_name, auth_type, is_grantable FROM db_auth";
+        } else {
+            sql = "SELECT grantor_name, grantee_name, class_name AS o_name, auth_type, is_grantable FROM db_auth";
+        }
+
         sql = databaseInfo.wrapShardQuery(sql);
 
         try {
@@ -78,7 +85,7 @@ public class GetAllUserAuthorizationsTask extends JDBCTask {
             while (rs.next()) {
                 // String grantorName = rs.getString("grantor_name");
                 String granteeName = rs.getString("grantee_name");
-                String className = rs.getString("class_name");
+                String className = rs.getString("o_name");
                 String authType = rs.getString("auth_type");
                 boolean isGrantable = StringUtil.booleanValueWithYN(rs.getString("is_grantable"));
 
