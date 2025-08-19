@@ -484,7 +484,7 @@ public class CubridDatabaseLoader extends CubridNodeLoader {
                             userFolderId, USERS_FOLDER_NAME, "icons/navigator/user_group.png");
             userFolder.setType(CubridNodeType.USER_FOLDER);
             userFolder.setContainer(true);
-            ICubridNodeLoader loader = new CubridDbUsersFolderLoader();
+            ICubridNodeLoader loader = new CQBDbUsersFolderLoader();
             loader.setLevel(getLevel());
             userFolder.setLoader(loader);
             database.addChild(userFolder);

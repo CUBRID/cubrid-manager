@@ -32,4 +32,5 @@ Bundle-ClassPath: .,
  lib/commons-lang-2.6.jar
 Import-Package: com.cubrid.cubridmanager.ui.spi.model.loader,
  com.cubrid.cubridmanager.ui.spi.persist,
- com.cubrid.cubridmanager.ui.spi.util
+ com.cubrid.cubridmanager.ui.spi.util,
+ com.cubrid.cubridmanager.ui.cubrid.user.editor

@@ -1042,7 +1042,7 @@ public class EditUserDialog extends CMTrayDialog {
                     continue;
                 }
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("0", bean.getUniqueName());
+                map.put("0", bean.getClassName());
                 map.put("1", Messages.msgUserSchema);
                 map.put("2", bean.getOwnerName());
                 map.put(

@@ -29,6 +29,7 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.user.task;
 
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.ClassAuthorizations;
@@ -71,9 +72,20 @@ public class GetUserAuthorizationsTask extends JDBCTask {
         }
 
         String sql;
-        if (databaseInfo.isSupportUserSchema()) {
+
+        if (CompatibleUtil.isAfter114(databaseInfo)) {
             sql =
-                    "SELECT a.class_name, a.auth_type, a.is_grantable, a.owner_name"
+                    "SELECT a.object_name AS o_name, a.auth_type, a.is_grantable, a.owner_name"
+                            + " FROM db_auth a"
+                            + " WHERE a.grantee_name=UPPER('"
+                            + userName
+                            + "')"
+                            + " AND NOT EXISTS (SELECT 1 FROM db_partition p"
+                            + " WHERE a.object_name=LOWER(p.partition_class_name)"
+                            + " AND a.owner_name=p.owner_name)";
+        } else if (databaseInfo.isSupportUserSchema()) {
+            sql =
+                    "SELECT a.class_name AS o_name, a.auth_type, a.is_grantable, a.owner_name"
                             + " FROM db_auth a"
                             + " WHERE a.grantee_name=UPPER('"
                             + userName
@@ -83,7 +95,7 @@ public class GetUserAuthorizationsTask extends JDBCTask {
                             + " AND a.owner_name=p.owner_name)";
         } else {
             sql =
-                    "SELECT a.class_name, a.auth_type, a.is_grantable"
+                    "SELECT a.class_name AS o_name, a.auth_type, a.is_grantable"
                             + " FROM db_auth a"
                             + " WHERE a.grantee_name=UPPER('"
                             + userName
@@ -99,18 +111,21 @@ public class GetUserAuthorizationsTask extends JDBCTask {
             stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                String className = rs.getString("class_name");
+                String className = rs.getString("o_name");
                 String type = rs.getString("auth_type");
                 String grantable = rs.getString("is_grantable");
                 if (className == null || className.trim().length() == 0) {
                     continue;
                 }
                 String ownerName = "";
+                ClassAuthorizations auth;
                 if (databaseInfo.isSupportUserSchema()) {
                     ownerName = rs.getString("owner_name");
+                    auth = userAuthMap.get(ownerName + "." + className);
+                } else {
+                    auth = userAuthMap.get(className);
                 }
 
-                ClassAuthorizations auth = userAuthMap.get(className);
                 if (auth == null) {
                     auth = new ClassAuthorizations();
                     auth.setClassName(className);
@@ -146,9 +161,22 @@ public class GetUserAuthorizationsTask extends JDBCTask {
 
         Map<String, ClassAuthorizations> userAuthMap = new HashMap<String, ClassAuthorizations>();
         String sql;
-        if (databaseInfo.isSupportUserSchema()) {
+
+        if (CompatibleUtil.isAfter114(databaseInfo)) {
             sql =
-                    "SELECT a.auth_type, a.grantee_name, a.class_name, a.is_grantable, a.owner_name"
+                    "SELECT a.auth_type, a.grantee_name, a.object_name AS o_name, a.is_grantable, a.owner_name"
+                            + " FROM db_auth a, db_vclass v"
+                            + " WHERE a.object_name=v.vclass_name"
+                            + " AND a.owner_name=v.owner_name"
+                            + " AND a.grantee_name<>UPPER('"
+                            + userName
+                            + "')"
+                            + " AND a.object_name='"
+                            + viewName
+                            + "'";
+        } else if (databaseInfo.isSupportUserSchema()) {
+            sql =
+                    "SELECT a.auth_type, a.grantee_name, a.class_name AS o_name, a.is_grantable, a.owner_name"
                             + " FROM db_auth a, db_vclass v"
                             + " WHERE a.class_name=v.vclass_name"
                             + " AND a.owner_name=v.owner_name"
@@ -160,7 +188,7 @@ public class GetUserAuthorizationsTask extends JDBCTask {
                             + "'";
         } else {
             sql =
-                    "SELECT a.auth_type, a.grantee_name, a.class_name, a.is_grantable"
+                    "SELECT a.auth_type, a.grantee_name, a.class_name AS o_name, a.is_grantable"
                             + " FROM db_auth a, db_vclass v"
                             + " WHERE a.class_name=v.vclass_name"
                             + " AND a.grantee_name<>UPPER('"
@@ -181,7 +209,7 @@ public class GetUserAuthorizationsTask extends JDBCTask {
                 String type = rs.getString("auth_type");
                 String grantable = rs.getString("is_grantable");
                 String granteeName = rs.getString("grantee_name");
-                String className = rs.getString("class_name");
+                String className = rs.getString("o_name");
 
                 if (granteeName == null || granteeName.trim().length() == 0) {
                     continue;

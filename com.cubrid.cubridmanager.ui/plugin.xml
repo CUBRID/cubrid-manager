@@ -39,10 +39,10 @@
                name="%volInfoEditorName">
          </editor>
          <editor
-               class="com.cubrid.cubridmanager.ui.cubrid.user.editor.UserEditor"
+               class="com.cubrid.cubridmanager.ui.cubrid.user.editor.CQBUserEditor"
                default="false"
                icon="icons/navigator/user_item.png"
-               id="com.cubrid.cubridmanager.ui.cubrid.user.editor.UserEditor"
+               id="com.cubrid.cubridmanager.ui.cubrid.user.editor.CQBUserEditor"
                name="%userEditorName">
          </editor>
          <editor
