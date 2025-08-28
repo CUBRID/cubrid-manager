@@ -5,19 +5,21 @@ Bundle-SymbolicName: com.cubrid.cubridmanager.ui;singleton:=true
 Bundle-Version: 9.3.1.qualifier
 Bundle-Activator: com.cubrid.cubridmanager.ui.CubridManagerUIPlugin
 Bundle-Vendor: Search Solution Corporation
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- com.cubrid.cubridmanager.core,
  org.eclipse.jface.text,
- org.apache.log4j,
  org.eclipse.gef,
  org.eclipse.ui.views,
  org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ com.cubrid.common.configuration,
  com.cubrid.common.core,
  com.cubrid.common.ui,
- org.eclipse.ui.ide,
+ com.cubrid.cubridmanager.core,
  com.cubrid.tool.editor,
- com.cubrid.common.configuration
+ com.cubrid.cubridmanager.jdbc.proxy,
+ slf4j.api
 Bundle-Localization: plugin
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
@@ -60,3 +62,4 @@ Export-Package: com.cubrid.cubridmanager.ui,
  com.cubrid.cubridmanager.ui.spi.util,
  com.cubrid.cubridmanager.ui.workspace.dialog
 Import-Package: jxl
+Automatic-Module-Name: com.cubrid.cubridmanager.ui

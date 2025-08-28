@@ -5,13 +5,14 @@ Bundle-SymbolicName: com.cubrid.cubridmanager.core
 Bundle-Version: 9.3.1.qualifier
 Bundle-Activator: com.cubrid.cubridmanager.core.CubridManagerCorePlugin
 Bundle-Vendor: Search Solution Corporation
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.core.runtime,
- org.apache.log4j,
- com.cubrid.common.core
+ com.cubrid.common.core,
+ slf4j.api,
+ com.cubrid.cubridmanager.jdbc.proxy
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/com.cubrid.cubridmanager.jdbc.proxy_11.1.0.202206031110.jar,
  lib/commons-codec-1.6.jar,
  lib/commons-logging-1.1.1.jar,
  lib/fluent-hc-4.2.1.jar,
@@ -65,6 +66,5 @@ Export-Package: com.cubrid.cubridmanager.core,
  com.cubrid.cubridmanager.core.replication.task,
  com.cubrid.cubridmanager.core.shard.model,
  com.cubrid.cubridmanager.core.shard.task,
- com.cubrid.cubridmanager.core.utils,
- com.cubrid.jdbc.proxy.driver,
- com.cubrid.jdbc.proxy.manage
+ com.cubrid.cubridmanager.core.utils
+Automatic-Module-Name: com.cubrid.cubridmanager.core

@@ -5,14 +5,18 @@ Bundle-SymbolicName: com.cubrid.common.core
 Bundle-Version: 9.3.1.qualifier
 Bundle-Activator: com.cubrid.common.core.CubridCommonCorePlugin
 Bundle-Vendor: Search Solution Corporation
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.core.runtime,
- org.apache.log4j,
- org.apache.ant
+ org.apache.ant,
+ jakarta.xml.bind-api,
+ com.sun.xml.bind.jaxb-impl,
+ org.glassfish.hk2.osgi-resource-locator,
+ ch.qos.logback.classic,
+ ch.qos.logback.core,
+ slf4j.api
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/slf4j-api-1.6.6.jar,
- lib/slf4j-log4j12-1.6.6.jar,
  lib/commons-net-3.0.1.jar,
  lib/commons-lang-2.6.jar,
  lib/com.cubrid.common.core.reader.jar,
@@ -30,8 +34,5 @@ Export-Package: com.cubrid.common.core,
  com.cubrid.common.core.task.impl,
  com.cubrid.common.core.util,
  com.navercorp.dbtools.sqlmap.parser,
- com.navercorp.dbtools.sqlmap.parser.impl,
- org.slf4j,
- org.slf4j.helpers,
- org.slf4j.impl,
- org.slf4j.spi
+ com.navercorp.dbtools.sqlmap.parser.impl
+Automatic-Module-Name: com.cubrid.common.core

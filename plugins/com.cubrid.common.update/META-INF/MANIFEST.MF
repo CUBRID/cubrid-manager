@@ -6,6 +6,7 @@ Bundle-Version: 9.3.1.qualifier
 Bundle-Localization: plugin
 Bundle-Activator: com.cubrid.common.update.p2.UpdatePlugin
 Bundle-Vendor: Search Solution Corporation
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.equinox.p2.ui,
@@ -18,3 +19,4 @@ Export-Package: com.cubrid.common.update.p2;uses:="org.eclipse.osgi.util,org.ecl
  com.cubrid.common.update.p2.handler;uses:="org.eclipse.equinox.p2.ui,org.eclipse.core.runtime.jobs"
 Bundle-ClassPath: .,
  lib/com.cubrid.update.external.jar
+Automatic-Module-Name: com.cubrid.common.update

@@ -14,3 +14,4 @@ Export-Package: com.cubrid.common.core,
  com.cubrid.common.core.util
 Require-Bundle: org.junit;bundle-version="3.8.2"
 Bundle-ClassPath: .
+Automatic-Module-Name: com.cubrid.common.core.testfragment

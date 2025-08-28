@@ -5,8 +5,10 @@ Bundle-SymbolicName: com.cubrid.cubridmanager.jdbc.proxy;singleton:=true
 Bundle-Version: 9.3.1.qualifier
 Bundle-Activator: com.cubrid.jdbc.proxy.manage.CubridManagerJdbcProxyPlugin
 Bundle-Vendor: CUBRID
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: 
  com.cubrid.jdbc.proxy.driver,
  com.cubrid.jdbc.proxy.manage
 Require-Bundle: org.eclipse.core.runtime
+Automatic-Module-Name: com.cubrid.cubridmanager.jdbc.proxy
 

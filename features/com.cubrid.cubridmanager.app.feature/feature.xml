@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.cubrid.cubridmanager.app"
+      id="com.cubrid.cubridmanager.app.feature"
       label="%featureName"
       version="9.3.1.qualifier"
       provider-name="%providerName"
@@ -19,13 +19,14 @@
    </license>
 
    <includes
-         id="com.cubrid.common.update"
+         id="com.cubrid.common.update.feature"
          version="0.0.0"/>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.apache.log4j"/>
+      <import plugin="ch.qos.logback.classic"/>
+      <import plugin="ch.qos.logback.core"/>
+      <import plugin="slf4j.api"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.help.ui"/>
@@ -37,6 +38,7 @@
       <import plugin="org.eclipse.zest.layouts"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="com.cubrid.tool.editor"/>
+      <import plugin="com.cubrid.common.log"/>
       <import plugin="com.cubrid.common.configuration"/>
       <import plugin="com.cubrid.common.update"/>
       <import plugin="com.cubrid.cubridmanager.core"/>

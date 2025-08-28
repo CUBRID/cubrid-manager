@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.cubrid.common.update.feature_9.3.1-SNAPSHOT.jar" id="com.cubrid.common.update.feature" version="9.3.1">
+      <category name="com.cubrid.cubridmanager.app.category"/>
+   </feature>
+   <feature url="features/com.cubrid.cubridmanager.app.feature_9.3.1-SNAPSHOT.jar" id="com.cubrid.cubridmanager.app.feature" version="9.3.1">
+      <category name="com.cubrid.cubridmanager.app.category"/>
+   </feature>
+   <feature url="features/com.cubrid.cubridmanager.dependence.feature_9.3.1-SNAPSHOT.jar" id="com.cubrid.cubridmanager.dependence.feature" version="9.3.1">
+      <category name="com.cubrid.cubridmanager.app.category"/>
+   </feature>
+   <category-def name="com.cubrid.cubridmanager.app.category" label="CUBRID Manager RCP Features"/>
+</site>

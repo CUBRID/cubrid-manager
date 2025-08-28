@@ -17,3 +17,4 @@ Require-Bundle: org.junit;bundle-version="3.8.2",
  com.cubrid.common.core
 Bundle-ClassPath: .
 Import-Package: com.cubrid.cubridmanager.ui
+Automatic-Module-Name: com.cubrid.cubridmanager.core.testfragment

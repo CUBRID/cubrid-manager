@@ -5,6 +5,7 @@ Bundle-SymbolicName: com.cubrid.tool.editor;singleton:=true
 Bundle-Version: 9.3.1.qualifier
 Bundle-Activator: com.cubrid.tool.editor.CUBRIDTextEditorPlugin
 Bundle-Vendor: Search Solution Corporation
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text
@@ -16,3 +17,4 @@ Export-Package: com.cubrid.tool.editor,
 Bundle-ClassPath: .,
  lib/dom4j-1.6.1.jar,
  lib/commons-lang-2.6.jar
+Automatic-Module-Name: com.cubrid.tool.editor
