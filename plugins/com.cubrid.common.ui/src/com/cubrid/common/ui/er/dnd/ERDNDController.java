@@ -58,7 +58,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -83,7 +84,7 @@ public class ERDNDController {
     private final ERSchemaEditor editor;
     private static Map<String, TreeViewer> perspectiveTreeviewerMap =
             new HashMap<String, TreeViewer>();
-    private static Logger LOGGER = Logger.getLogger(ERDNDController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ERDNDController.class);
 
     public ERDNDController(ERSchemaEditor editor) {
         this.editor = editor;

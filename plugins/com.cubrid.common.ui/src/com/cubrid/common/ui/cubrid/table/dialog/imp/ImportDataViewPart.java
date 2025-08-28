@@ -48,7 +48,7 @@ import com.cubrid.common.ui.cubrid.table.dialog.imp.progress.ImportDataProgressM
 import com.cubrid.common.ui.spi.ResourceManager;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -56,6 +56,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.cli.ParseException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -260,7 +262,7 @@ public class ImportDataViewPart extends EditorPart implements ISaveablePart2 {
      * @param input editorInput
      * @throws PartInitException when error
      */
-    public void init(IEditorSite site, IEditorInput input) throws ParseException {
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         this.database = (CubridDatabase) input.getAdapter(CubridDatabase.class);
         this.importConfig = (ImportConfig) input.getAdapter(ImportConfig.class);
         this.input = input;

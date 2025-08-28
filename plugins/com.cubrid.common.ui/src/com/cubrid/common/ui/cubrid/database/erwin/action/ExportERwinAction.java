@@ -41,7 +41,7 @@ import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.cubrid.table.task.GetAllSchemaTask;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;

@@ -1,7 +1,7 @@
 package com.cubrid.common.ui.cubrid.database.erwin.xmlmodel;
 
 import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.DefaultPropsList.ServerValue;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElement;
 
 public class DefaultValueProps {
 
