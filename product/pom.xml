@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.cubrid.cubridmanager</groupId>
+        <artifactId>cubridmanager</artifactId>
+        <version>9.3.1-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
+    <version>9.3.1-SNAPSHOT</version>
+    <artifactId>com.cubrid.cubridmanager.app.product</artifactId>
+    <packaging>eclipse-repository</packaging>
+    <name>CubridManager Product</name>
+
+    <properties>
+        <jre.download.url>https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.7%2B6</jre.download.url>
+        <jre.folder.name>jdk-21.0.7+6-jre</jre.folder.name>
+        <product.output.folder>${project.build.directory}/products/${project.artifactId}</product.output.folder>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>cubrid</id>
+            <url>https://maven.cubrid.org/</url>
+        </repository>   
+    </repositories> 
+    <build>
+        <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <version>3.5.0</version>
+              <executions>
+                <execution>
+                    <id>get-latest-jar</id>
+                    <goals>
+                        <goal>get</goal>
+                    </goals>
+                    <configuration>
+                        <artifact>cubrid:cubrid-jdbc:LATEST</artifact>
+                        <transitive>false</transitive>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>copy-latest-jar</id>
+                    <goals>
+                        <goal>copy</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>cubrid</groupId>
+                                <artifactId>cubrid-jdbc</artifactId>
+                                <version>LATEST</version>
+                                <outputDirectory>${project.build.directory}/driver</outputDirectory>
+                            </artifactItem>
+                        </artifactItems>
+                    </configuration>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                  <execution>
+                    <id>jre-download-jdbc-copy</id>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                    <configuration>
+                      <target>
+                        <mkdir dir="${project.build.directory}/jre/win-x64-jre/"/>
+                        <mkdir dir="${project.build.directory}/jre/linux-x64-jre/"/>
+                        <mkdir dir="${project.build.directory}/jre/linux-aarch64-jre/"/>
+                        <mkdir dir="${project.build.directory}/jre/mac-x64-jre/"/>
+                        <mkdir dir="${project.build.directory}/jre/mac-aarch64-jre/"/>
+                        <get src="${jre.download.url}/OpenJDK21U-jre_x64_windows_hotspot_21.0.7_6.zip"
+                             dest="${project.build.directory}/jre/win-x64-jre.zip"/>
+                        <get src="${jre.download.url}/OpenJDK21U-jre_x64_linux_hotspot_21.0.7_6.tar.gz"
+                             dest="${project.build.directory}/jre/linux-x64-jre.tar.gz"/>
+                        <get src="${jre.download.url}/OpenJDK21U-jre_aarch64_linux_hotspot_21.0.7_6.tar.gz"
+                             dest="${project.build.directory}/jre/linux-aarch64-jre.tar.gz"/>
+                        <get src="${jre.download.url}/OpenJDK21U-jre_x64_mac_hotspot_21.0.7_6.tar.gz"
+                             dest="${project.build.directory}/jre/mac-x64-jre.tar.gz"/>
+                        <get src="${jre.download.url}/OpenJDK21U-jre_aarch64_mac_hotspot_21.0.7_6.tar.gz"
+                             dest="${project.build.directory}/jre/mac-aarch64-jre.tar.gz"/>
+
+                        <echo message="Unzipping jre files" />
+                        <unzip src="${project.build.directory}/jre/win-x64-jre.zip"
+                               dest="${project.build.directory}/jre/win-x64-jre/" />
+                        <untar src="${project.build.directory}/jre/linux-x64-jre.tar.gz" compression="gzip"
+                               dest="${project.build.directory}/jre/linux-x64-jre/" />
+                        <untar src="${project.build.directory}/jre/linux-aarch64-jre.tar.gz" compression="gzip"
+                               dest="${project.build.directory}/jre/linux-aarch64-jre/" />
+                        <untar src="${project.build.directory}/jre/mac-x64-jre.tar.gz" compression="gzip"
+                               dest="${project.build.directory}/jre/mac-x64-jre/" />
+                        <untar src="${project.build.directory}/jre/mac-aarch64-jre.tar.gz" compression="gzip"
+                               dest="${project.build.directory}/jre/mac-aarch64-jre/" />
+
+                        <replace token="jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1" value="jdk.tls.disabledAlgorithms=SSLv3" 
+                          dir="${project.build.directory}/jre/win-x64-jre/${jre.folder.name}/conf/security/"> 
+                          <include name="java.security"/>
+                        </replace>
+                        <replace token="jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1" value="jdk.tls.disabledAlgorithms=SSLv3"
+                          dir="${project.build.directory}/jre/linux-x64-jre/${jre.folder.name}/conf/security/">
+                          <include name="java.security"/>
+                        </replace>
+                        <replace token="jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1" value="jdk.tls.disabledAlgorithms=SSLv3"
+                          dir="${project.build.directory}/jre/linux-aarch64-jre/${jre.folder.name}/conf/security/">
+                          <include name="java.security"/>
+                        </replace>
+                        <replace token="jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1" value="jdk.tls.disabledAlgorithms=SSLv3"
+                          dir="${project.build.directory}/jre/mac-x64-jre/${jre.folder.name}/Contents/Home/conf/security/">
+                          <include name="java.security"/>
+                        </replace>
+                        <replace token="jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1" value="jdk.tls.disabledAlgorithms=SSLv3"
+                          dir="${project.build.directory}/jre/mac-aarch64-jre/${jre.folder.name}/Contents/Home/conf/security/">
+                          <include name="java.security"/>
+                        </replace>
+
+                        <echo message="Move jre files to output product" />
+                        <copy todir="${product.output.folder}/win32/win32/x86_64/${tools-name}/jre">
+                              <fileset dir="${project.build.directory}/jre/win-x64-jre/${jre.folder.name}/" /> </copy>
+                        <copy todir="${product.output.folder}/linux/gtk/x86_64/${tools-name}/jre">
+                              <fileset dir="${project.build.directory}/jre/linux-x64-jre/${jre.folder.name}/" /> </copy>
+                        <copy todir="${product.output.folder}/linux/gtk/aarch64/${tools-name}/jre">
+                              <fileset dir="${project.build.directory}/jre/linux-aarch64-jre/${jre.folder.name}/" /> </copy>
+                        <copy todir="${product.output.folder}/macosx/cocoa/x86_64/${tools-name}.app/Contents/Eclipse/jre">
+                              <fileset dir="${project.build.directory}/jre/mac-x64-jre/${jre.folder.name}/" /> </copy>
+                        <copy todir="${product.output.folder}/macosx/cocoa/aarch64/${tools-name}.app/Contents/Eclipse/jre">
+                              <fileset dir="${project.build.directory}/jre/mac-aarch64-jre/${jre.folder.name}/" /> </copy>
+
+                        <echo message="Copy jdbc driver to output product" />
+                        <copy todir="${product.output.folder}/win32/win32/x86_64/${tools-name}/driver">
+                              <fileset dir="${project.build.directory}/driver" /> </copy>
+                        <copy todir="${product.output.folder}/linux/gtk/x86_64/${tools-name}/driver">
+                              <fileset dir="${project.build.directory}/driver" /> </copy>
+                        <copy todir="${product.output.folder}/linux/gtk/aarch64/${tools-name}/driver">
+                              <fileset dir="${project.build.directory}/driver" /> </copy>
+                        <copy todir="${product.output.folder}/macosx/cocoa/x86_64/${tools-name}.app/Contents/Eclipse/driver">
+                              <fileset dir="${project.build.directory}/driver" /> </copy>
+                        <copy todir="${product.output.folder}/macosx/cocoa/aarch64/${tools-name}.app/Contents/Eclipse/driver">
+                              <fileset dir="${project.build.directory}/driver" /> </copy>
+
+                        <echo message="Change permission" />
+                        <chmod perm="755">
+                          <fileset dir="${product.output.folder}/linux/gtk/x86_64/${tools-name}/jre">
+                            <include name="**/*"/>
+                          </fileset>
+                          <fileset dir="${product.output.folder}/linux/gtk/aarch64/${tools-name}/jre">
+                            <include name="**/*"/>
+                          </fileset>
+                          <fileset dir="${product.output.folder}/macosx/cocoa/x86_64/${tools-name}.app/Contents/Eclipse/jre">
+                            <include name="**/*"/>
+                          </fileset>
+                          <fileset dir="${product.output.folder}/macosx/cocoa/aarch64/${tools-name}.app/Contents/Eclipse/jre">
+                            <include name="**/*"/>
+                          </fileset>
+                        </chmod>
+                      </target>
+                    </configuration>
+                  </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-director-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <formats>
+                        <win32>zip</win32>
+                        <linux>tar.gz</linux>
+                        <macosx>tar.gz</macosx>
+                    </formats>
+                    <products>
+                        <product>
+                            <id>com.cubrid.cubridmanager.app.product</id>
+                            <archiveFileName>CUBRIDAdmin-${cubridtools-version}</archiveFileName>
+                            <rootFolders>
+                                <macosx>${tools-name}.app</macosx>
+                                <win32>${tools-name}</win32>
+                                <linux>${tools-name}</linux>
+                            </rootFolders>
+                        </product>
+                    </products>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>materialize-products</id>
+                        <goals>
+                            <goal>materialize-products</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>archive-products</id>
+                        <goals>
+                            <goal>archive-products</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-repository-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <executions>
+                  <execution>
+                    <id>default-repository</id>
+                    <goals>
+                      <goal>assemble-repository</goal>
+                    </goals>
+                  </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

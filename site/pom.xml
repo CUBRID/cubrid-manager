@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+      <groupId>com.cubrid.cubridmanager</groupId>
+      <artifactId>cubridmanager</artifactId>
+      <version>9.3.1-SNAPSHOT</version>
+      <relativePath>../</relativePath>
+    </parent>
+    <artifactId>site</artifactId>
+    <packaging>pom</packaging>
+    
+    <modules>
+      <module>com.cubrid.cubridmanager.app.update.site</module>
+      <!-- <module>com.cubrid.cubridmanager.p2.site</module> -->
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
