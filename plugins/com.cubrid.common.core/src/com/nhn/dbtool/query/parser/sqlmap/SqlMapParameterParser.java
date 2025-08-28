@@ -31,7 +31,8 @@ import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapParameter;
 import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapQuery;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.Node;
 
 /**
@@ -41,7 +42,7 @@ import org.dom4j.Node;
  */
 public class SqlMapParameterParser {
     @SuppressWarnings("unused")
-    private Logger logger = Logger.getLogger(SqlMapParameterParser.class);
+    private Logger logger = LoggerFactory.getLogger(SqlMapParameterParser.class);
 
     /**
      * Parse parameters

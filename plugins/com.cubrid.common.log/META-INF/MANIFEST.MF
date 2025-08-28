@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SLF4J log binder
+Bundle-SymbolicName: com.cubrid.common.log;singleton:=true
+Bundle-Version: 9.3.1.qualifier
+Require-Bundle: ch.qos.logback.classic,
+ ch.qos.logback.core
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-Vendor: Cubrid
+Fragment-Host: slf4j.api
+Automatic-Module-Name: com.cubrid.common.log
+Provide-Capability: osgi.serviceloader;osgi.serviceloader="org.slf4j.spi.SLF4JServiceProvider"

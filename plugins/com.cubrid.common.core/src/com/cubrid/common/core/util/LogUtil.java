@@ -27,73 +27,75 @@
  */
 package com.cubrid.common.core.util;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import org.apache.log4j.Level;
-import org.apache.log4j.PropertyConfigurator;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cubrid.common.core.CubridCommonCorePlugin;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+
 /**
- * This class is the common log4j interface to be convenient to Get Logger.
+ * This class is the common logback interface to be convenient to Get Logger.
  *
  * @author pangqiren
  * @version 1.0 - 2009-06-04 created by pangqiren
  * @version 1.1 - 2009-09-06 updated by Isaiah Choe
+ * @version 1.2 - 2324-09-09 updated by hwanyseo
  */
 public final class LogUtil {
-    private LogUtil() {}
 
-    /**
-     * re-initialize logger configurations
-     *
-     * @param level Level
-     * @param workspace String
-     */
-    public static void configLogger(Level level, String workspace) {
-        Properties configPro = new Properties();
-        InputStream in = null;
-        try {
-            in = new LogUtil().getClass().getResourceAsStream("/log4j.properties");
-            configPro.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-            configPro = null;
-        } finally {
-            FileUtil.close(in);
-        }
+	private final static Logger Log = getLogger(LogUtil.class);
 
-        // If log4j.properties can't be found.
-        if (configPro == null) {
-            return;
-        }
+	private LogUtil() {
+	}
 
-        if (Level.ERROR.equals(level)) {
-            configPro.put("log4j.rootLogger", "ERROR,stdout,logfile");
-        } else if (Level.DEBUG.equals(level)) {
-            configPro.put("log4j.rootLogger", "DEBUG,stdout,logfile");
-        }
+	/**
+	 * re-initialize logger configurations
+	 *
+	 * @param workspace String
+	 * @throws IOException
+	 * @throws JoranException
+	 */
+	public static void configLogger(String workspace) throws JoranException, IOException {
+		System.setProperty("LOGBACK_LOG_ROOT_DIR", workspace);
 
-        String logPath = workspace;
-        if (workspace == null) {
-            logPath = System.getProperty("user.home");
-        }
-        if (logPath != null) {
-            logPath =
-                    logPath
-                            + File.separator
-                            + "logs"
-                            + File.separator
-                            + "cubrid.log"; // TODO: have to rename another name.
-            configPro.put("log4j.appender.logfile.file", logPath);
-        }
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+		JoranConfigurator jc = new JoranConfigurator();
+		jc.setContext(context);
+		context.reset();
 
-        PropertyConfigurator.configure(configPro);
-    }
+		URL logbackConfigFileUrl = FileLocator.find(CubridCommonCorePlugin.getDefault().getBundle(),
+				new Path("logback.xml"), null);
+		jc.doConfigure(logbackConfigFileUrl.openStream());
+		//reDirectSystemErrToLog();
+	}
 
-    public static Logger getLogger(Class<?> clazz) {
-        return LoggerFactory.getLogger(clazz);
-    }
+	public static Logger getLogger(Class<?> clazz) {
+		return LoggerFactory.getLogger(clazz);
+	}
+
+	public static void reDirectSystemErrToLog() {
+		Log.error("reDirectSystemErrToLog");
+		System.setErr(new PrintStream(new OutputStream() {
+
+			@Override
+			public void write(int b) throws IOException {
+
+			}
+
+			@Override
+			public void write(byte[] b, int off, int len) throws IOException {
+				String msg = new String(b, off, len).trim();
+				Log.error(msg);
+			}
+		}));
+	}
 }

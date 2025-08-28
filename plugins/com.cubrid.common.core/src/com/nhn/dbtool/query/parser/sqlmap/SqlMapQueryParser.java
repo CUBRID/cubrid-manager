@@ -33,7 +33,8 @@ import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapParameter;
 import com.nhn.dbtool.query.parser.sqlmap.model.SqlMapQuery;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
@@ -43,7 +44,7 @@ import org.dom4j.Node;
  * @author Bumsik, Jang
  */
 public class SqlMapQueryParser {
-    private Logger logger = Logger.getLogger(SqlMapQueryParser.class);
+    private Logger logger = LoggerFactory.getLogger(SqlMapQueryParser.class);
 
     /**
      * Query 단위의 Element를 통해 SqlMapQuery를 생성한다.
