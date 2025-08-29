@@ -6,7 +6,6 @@ Bundle-Version: 9.3.1.qualifier
 Bundle-Vendor: Search Solution Corporation
 Fragment-Host: com.cubrid.common.core;bundle-version="9.3.1"
 Export-Package: com.cubrid.common.core,
- com.cubrid.common.core.metadesc.model,
  com.cubrid.common.core.queryplan,
  com.cubrid.common.core.reader,
  com.cubrid.common.core.schemacomment,

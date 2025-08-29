@@ -22,7 +22,6 @@ Require-Bundle: org.eclipse.jface.text,
  com.cubrid.tool.editor,
  com.cubrid.cubridmanager.jdbc.proxy,
  jakarta.xml.bind-api,
- com.sun.xml.bind.jaxb-impl,
  org.glassfish.hk2.osgi-resource-locator,
  slf4j.api
 Bundle-Localization: plugin

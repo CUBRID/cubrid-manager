@@ -9,7 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.core.runtime,
  org.apache.ant,
  jakarta.xml.bind-api,
- com.sun.xml.bind.jaxb-impl,
  org.glassfish.hk2.osgi-resource-locator,
  ch.qos.logback.classic,
  ch.qos.logback.core,
