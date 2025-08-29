@@ -41,6 +41,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -284,14 +286,21 @@ public class SelectWorkspaceDialog extends CMTitleAreaDialog {
             boolean isOk = false;
             try {
                 Location instanceLoc = Platform.getInstanceLocation();
-                isOk = instanceLoc.set(new URL("file", null, workspacePath), true);
+                if (instanceLoc.isSet()) {
+                  isOk = true;
+                } else {
+                  URI uri = new URI("file", null, workspacePath);
+                  isOk = instanceLoc.set(uri.toURL(), true);
+                }
             } catch (IllegalStateException e) {
                 isOk = false;
             } catch (MalformedURLException e) {
                 isOk = false;
             } catch (IOException e) {
                 isOk = false;
-            }
+            } catch (URISyntaxException e) {
+				isOk = false;
+			}
             if (!isOk) {
                 setErrorMessage(Messages.errWorkspaceUsed);
                 return;
