@@ -50,6 +50,8 @@ import com.cubrid.cubridmanager.ui.host.action.ViewServerVersionAction;
 import com.cubrid.cubridmanager.ui.service.action.ServiceDashboardAction;
 import com.cubrid.cubridmanager.ui.spi.Version;
 import com.cubrid.cubridmanager.ui.spi.action.CubridActionBuilder;
+
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.ControlContribution;
@@ -70,6 +72,9 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.registry.ActionSetRegistry;
+import org.eclipse.ui.internal.registry.IActionSetDescriptor;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 
@@ -106,6 +111,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
      * @param window the window containing the action bars
      */
     protected void makeActions(IWorkbenchWindow window) {
+        removeUnWantedActions();
+
         ActionManager manager = ActionManager.getInstance();
         CubridActionBuilder.init();
 
@@ -317,5 +324,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         ActionContributionItem item = new ActionContributionItem(action);
         item.setMode(ActionContributionItem.MODE_FORCE_TEXT);
         return item;
+    }
+
+    private void removeUnWantedActions() {
+        ActionSetRegistry asr = WorkbenchPlugin.getDefault().getActionSetRegistry();
+        IActionSetDescriptor[] actionSets = asr.getActionSets();
+
+        for (IActionSetDescriptor actionSet : actionSets) {
+            if ("org.eclipse.ui.edit.text.actionSet.annotationNavigation".equals(actionSet.getId())
+                    || "org.eclipse.ui.edit.text.actionSet.navigation".equals(actionSet.getId())) {
+                IExtension ext = actionSet.getConfigurationElement().getDeclaringExtension();
+                asr.removeExtension(ext, new Object[] {actionSet});
+            }
+        }
     }
 }
