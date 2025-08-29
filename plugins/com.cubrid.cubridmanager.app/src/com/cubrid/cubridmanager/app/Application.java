@@ -74,7 +74,7 @@ public class Application implements IApplication {
             }
 
             String workspace = SelectWorkspaceDialog.getLastSetWorkspaceDirectory();
-            LogUtil.configLogger(null, workspace);
+            LogUtil.configLogger(workspace);
 
             int returnCode =
                     PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
