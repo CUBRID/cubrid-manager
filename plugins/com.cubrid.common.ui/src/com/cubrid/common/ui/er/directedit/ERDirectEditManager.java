@@ -60,7 +60,7 @@ public class ERDirectEditManager extends DirectEditManager {
             Label label,
             ICellEditorValidator validator,
             GraphicalEditPart source,
-            Class<?> editorType,
+            Class<? extends CellEditor> editorType,
             CellEditorLocator locator) {
         super(source, editorType, locator);
         this.label = label;

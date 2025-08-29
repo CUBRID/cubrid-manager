@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -129,7 +130,7 @@ public class ERMinJoinDirectedGraphLayout implements Comparable {
     }
 
     public List<ERTableNode> getNodesByDegree(int degree) {
-        return getNodesByDegree(joinDirectedGraph.getNodes(), degree);
+        return getNodesByDegree(toERTableNode(joinDirectedGraph.getNodes()), degree);
     }
 
     public List<ERTableNode> getNodesByDegree(List<ERTableNode> allNodes, int degree) {
@@ -358,7 +359,7 @@ public class ERMinJoinDirectedGraphLayout implements Comparable {
     }
 
     private void layout4() {
-        int maxDegree = getMaxDegree(joinDirectedGraph.nodes);
+        int maxDegree = getMaxDegree(toERTableNode(joinDirectedGraph.nodes));
         List<ERTableNode> maxDegreeNodes = getNodesByDegree(maxDegree);
 
         if (maxDegree == 2 && maxDegreeNodes.size() == 2) {
@@ -388,7 +389,7 @@ public class ERMinJoinDirectedGraphLayout implements Comparable {
             exceptNodes.add(maxDegreeNodes.get(0));
             exceptNodes.add(maxDegreeNodes.get(1));
             List<ERTableNode> upDownNodes =
-                    getNewExceptNodeList(joinDirectedGraph.nodes, exceptNodes);
+                    getNewExceptNodeList(toERTableNode(joinDirectedGraph.nodes), exceptNodes);
 
             ERTableNode maxWidthNode = ERTableNode.getMaxSizeNode(upDownNodes, true);
             Dimension offsetD1 =
@@ -410,7 +411,7 @@ public class ERMinJoinDirectedGraphLayout implements Comparable {
     }
 
     public void layoutMultiNodes() {
-        int maxDegree = getMaxDegree(joinDirectedGraph.nodes);
+        int maxDegree = getMaxDegree(toERTableNode(joinDirectedGraph.nodes));
         List<ERTableNode> maxDegreeNodes = getNodesByDegree(maxDegree);
         maxDegreeNodes.get(0).setArranged(true);
         layoutOneCenterGraph(maxDegreeNodes.get(0));
@@ -640,5 +641,17 @@ public class ERMinJoinDirectedGraphLayout implements Comparable {
 
     public int hashCode() {
         return super.hashCode();
+    }
+
+    private List<ERTableNode> toERTableNode(NodeList nodeList) {
+        List<ERTableNode> retList;
+        retList =
+                nodeList.stream()
+                        .toList()
+                        .stream()
+                        .filter(e -> e instanceof ERTableNode)
+                        .map(e -> (ERTableNode) e)
+                        .toList();
+        return retList;
     }
 }

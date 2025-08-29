@@ -178,7 +178,7 @@ public class RelationshipPart extends AbstractRelationshipPart {
 
         // set source and target columns
         if (sourceTablePart != null) {
-            List<EditPart> children = sourceTablePart.getChildren();
+            List<EditPart> children = (List<EditPart>) sourceTablePart.getChildren();
             for (EditPart child : children) {
                 if (!(child instanceof ColumnPart)) {
                     continue;
@@ -194,7 +194,7 @@ public class RelationshipPart extends AbstractRelationshipPart {
 
         // target
         if (targetTablePart != null) {
-            List<EditPart> children = targetTablePart.getChildren();
+            List<EditPart> children = (List<EditPart>) targetTablePart.getChildren();
             for (EditPart child : children) {
                 if (!(child instanceof ColumnPart)) {
                     continue;
@@ -272,7 +272,7 @@ public class RelationshipPart extends AbstractRelationshipPart {
             return;
         }
         // set source and target columns
-        List<EditPart> children = sourceTablePart.getChildren();
+        List<EditPart> children = (List<EditPart>) sourceTablePart.getChildren();
         for (EditPart child : children) {
             if (!(child instanceof ColumnPart)) {
                 continue;
@@ -292,7 +292,7 @@ public class RelationshipPart extends AbstractRelationshipPart {
         }
 
         // target
-        children = targetTablePart.getChildren();
+        children = (List<EditPart>) targetTablePart.getChildren();
         for (EditPart child : children) {
             if (!(child instanceof ColumnPart)) {
                 continue;

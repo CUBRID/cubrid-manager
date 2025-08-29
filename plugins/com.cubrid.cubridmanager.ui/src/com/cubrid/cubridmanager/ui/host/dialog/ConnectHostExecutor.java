@@ -268,7 +268,7 @@ public class ConnectHostExecutor extends TaskExecutor {
         willExitRunLoop = true;
         if (workThread != null) {
             workThread.interrupt();
-            workThread.stop(new Exception("The user canceled."));
+            workThread.stop();
         }
     }
 
