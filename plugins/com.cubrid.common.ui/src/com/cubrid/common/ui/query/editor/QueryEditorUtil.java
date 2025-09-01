@@ -175,6 +175,9 @@ public class QueryEditorUtil {
 
     private static int getMaxNumApplServer(CubridDatabase database) {
         String currentBrokerName = database.getDatabaseInfo().getBrokerName();
+        if (currentBrokerName.isEmpty()) {
+            return 0;
+        }
         return Integer.parseInt(
                 database.getServer()
                         .getServerInfo()

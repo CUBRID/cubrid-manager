@@ -1129,12 +1129,15 @@ public class DatabaseInfo implements IDatabaseSpec {
      */
     public String getBrokerName() {
         String brokerName = "";
-        List<BrokerInfo> brokers =
-                serverInfo.getBrokerInfos().getBorkerInfoList().getBrokerInfoList();
-        for (BrokerInfo broker : brokers) {
-            if (brokerPort.equals(broker.getPort().trim())) {
-                brokerName = broker.getName();
-            }
+        if (serverInfo != null && serverInfo.getBrokerInfos() != null
+                && serverInfo.getBrokerInfos().getBorkerInfoList() != null) {
+	        List<BrokerInfo> brokers =
+	                serverInfo.getBrokerInfos().getBorkerInfoList().getBrokerInfoList();
+	        for (BrokerInfo broker : brokers) {
+	            if (brokerPort.equals(broker.getPort().trim())) {
+	                brokerName = broker.getName();
+	            }
+	        }
         }
         return brokerName;
     }
