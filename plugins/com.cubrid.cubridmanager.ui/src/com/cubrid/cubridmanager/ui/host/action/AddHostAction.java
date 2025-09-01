@@ -37,6 +37,7 @@ import com.cubrid.common.ui.spi.model.CubridGroupNode;
 import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.ui.common.navigator.CubridHostNavigatorView;
+import com.cubrid.cubridmanager.ui.common.navigator.CubridMonitorNavigatorView;
 import com.cubrid.cubridmanager.ui.host.dialog.HostDialog;
 import com.cubrid.cubridmanager.ui.spi.model.loader.CubridServerLoader;
 import com.cubrid.cubridmanager.ui.spi.persist.CMGroupNodePersistManager;
@@ -95,6 +96,12 @@ public class AddHostAction extends SelectionAction {
 
         CubridNavigatorView navigatorView =
                 CubridNavigatorView.getNavigatorView(CubridHostNavigatorView.ID);
+
+        if (navigatorView == null) {
+            navigatorView =
+                    CubridMonitorNavigatorView.getNavigatorView(CubridMonitorNavigatorView.ID);
+        }
+
         TreeViewer treeViewer = navigatorView == null ? null : navigatorView.getViewer();
         if (treeViewer == null) {
             return;
