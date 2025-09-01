@@ -166,7 +166,7 @@ public final class CubridStatusMonitorInstance {
 
                 byte[] bytes = byteStream.toByteArray();
                 IEclipsePreferences preference =
-                        new InstanceScope().getNode(CubridManagerUIPlugin.PLUGIN_ID);
+                        InstanceScope.INSTANCE.getNode(CubridManagerUIPlugin.PLUGIN_ID);
                 preference.putByteArray(key, bytes);
                 preference.flush();
             } catch (Exception ex) {
@@ -185,7 +185,7 @@ public final class CubridStatusMonitorInstance {
         StatusMonInstanceData data = null;
         synchronized (this) {
             IEclipsePreferences preference =
-                    new InstanceScope().getNode(CubridManagerUIPlugin.PLUGIN_ID);
+                    InstanceScope.INSTANCE.getNode(CubridManagerUIPlugin.PLUGIN_ID);
             byte[] bytes = preference.getByteArray(key, BYTE_ARRAY_DEFAULT_DEFAULT);
             if (bytes.length > 0) {
                 try {
@@ -209,7 +209,7 @@ public final class CubridStatusMonitorInstance {
     public void removeSetting(String key) {
         synchronized (this) {
             IEclipsePreferences preference =
-                    new InstanceScope().getNode(CubridManagerUIPlugin.PLUGIN_ID);
+                    InstanceScope.INSTANCE.getNode(CubridManagerUIPlugin.PLUGIN_ID);
             preference.remove(key);
             try {
                 preference.flush();

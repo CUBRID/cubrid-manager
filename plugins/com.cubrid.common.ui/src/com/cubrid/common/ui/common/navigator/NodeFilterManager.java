@@ -88,7 +88,7 @@ public final class NodeFilterManager { // FIXME move logic class to core module
     @SuppressWarnings("deprecation")
     private void loadFilterSetting() {
         synchronized (this) {
-            IEclipsePreferences preference = new InstanceScope().getNode(CommonUIPlugin.PLUGIN_ID);
+            IEclipsePreferences preference = InstanceScope.INSTANCE.getNode(CommonUIPlugin.PLUGIN_ID);
             String xmlString = preference.get(FILTER_XML_CONTENT, "");
             if (StringUtil.isEmpty(xmlString)) {
                 LOGGER.warn("The preference.get(FILTER_XML_CONTENT) has a empty string.");
@@ -156,7 +156,7 @@ public final class NodeFilterManager { // FIXME move logic class to core module
 
                 String xmlString = memento.saveToString();
                 IEclipsePreferences preference =
-                        new InstanceScope().getNode(CommonUIPlugin.PLUGIN_ID);
+                        InstanceScope.INSTANCE.getNode(CommonUIPlugin.PLUGIN_ID);
                 preference.put(FILTER_XML_CONTENT, xmlString);
                 preference.flush();
             } catch (Exception e) {

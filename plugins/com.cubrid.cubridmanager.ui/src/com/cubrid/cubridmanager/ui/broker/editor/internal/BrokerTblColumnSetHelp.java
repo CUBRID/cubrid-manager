@@ -88,7 +88,7 @@ public final class BrokerTblColumnSetHelp {
     public <T extends IColumnSetting> void loadSetting(StatusColumn statusColumn, T[] ts) {
         synchronized (this) {
             IEclipsePreferences preference =
-                    new InstanceScope().getNode(CubridManagerUIPlugin.PLUGIN_ID);
+                    InstanceScope.INSTANCE.getNode(CubridManagerUIPlugin.PLUGIN_ID);
             String xmlString = preference.get(statusColumn.name(), "");
             if (xmlString != null && xmlString.length() > 0) {
                 try {
@@ -125,7 +125,7 @@ public final class BrokerTblColumnSetHelp {
                 }
                 String xmlString = memento.saveToString();
                 IEclipsePreferences preference =
-                        new InstanceScope().getNode(CubridManagerUIPlugin.PLUGIN_ID);
+                        InstanceScope.INSTANCE.getNode(CubridManagerUIPlugin.PLUGIN_ID);
                 preference.put(statusColumn.name(), xmlString);
                 preference.flush();
             } catch (Exception e) {

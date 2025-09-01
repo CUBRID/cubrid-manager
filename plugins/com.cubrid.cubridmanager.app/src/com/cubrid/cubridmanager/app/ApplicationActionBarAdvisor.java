@@ -137,6 +137,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
         quitAction = new QuitAction(Messages.exitActionName);
 
+
         cubridOnlineForumAction = new CubridOnlineForumAction(Messages.cubridOnlineForumActionName);
         cubridProjectSiteAction = new CubridProjectSiteAction(Messages.cubridProjectSiteActionName);
 

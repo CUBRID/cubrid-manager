@@ -58,7 +58,7 @@ public final class PersistUtils {
      * @return IEclipsePreferences
      */
     public static IEclipsePreferences getGlobalPreference(String pluginId) {
-        return new ConfigurationScope().getNode(pluginId);
+        return ConfigurationScope.INSTANCE.getNode(pluginId);
     }
 
     /**
@@ -96,7 +96,7 @@ public final class PersistUtils {
      * @return IEclipsePreferences
      */
     public static IEclipsePreferences getPreference(String pluginId) {
-        return new InstanceScope().getNode(pluginId);
+        return InstanceScope.INSTANCE.getNode(pluginId);
     }
 
     /**

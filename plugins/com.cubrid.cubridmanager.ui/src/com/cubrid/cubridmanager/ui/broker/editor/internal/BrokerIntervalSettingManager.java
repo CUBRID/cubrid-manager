@@ -89,7 +89,7 @@ public final class BrokerIntervalSettingManager {
     protected void loadBrokerIntervalSettings() {
         synchronized (this) {
             IEclipsePreferences preference =
-                    new InstanceScope().getNode(CubridManagerUIPlugin.PLUGIN_ID);
+                    InstanceScope.INSTANCE.getNode(CubridManagerUIPlugin.PLUGIN_ID);
             String xmlString = preference.get(CUBRID_BROKER_INTERVAL_XML_CONTENT, "");
             if (xmlString != null && xmlString.length() > 0) {
                 try {
@@ -136,7 +136,7 @@ public final class BrokerIntervalSettingManager {
                 }
                 String xmlString = memento.saveToString();
                 IEclipsePreferences preference =
-                        new InstanceScope().getNode(CubridManagerUIPlugin.PLUGIN_ID);
+                        InstanceScope.INSTANCE.getNode(CubridManagerUIPlugin.PLUGIN_ID);
                 preference.put(CUBRID_BROKER_INTERVAL_XML_CONTENT, xmlString);
                 preference.flush();
             } catch (Exception e) {

@@ -49,7 +49,7 @@ public class MonitorDashboardPreference {
     private static final Logger LOGGER = LogUtil.getLogger(MonitorDashboardPreference.class);
 
     private static Preferences pre =
-            new InstanceScope().getNode(CubridManagerUIPlugin.PLUGIN_ID).node("monitor");
+            InstanceScope.INSTANCE.getNode(CubridManagerUIPlugin.PLUGIN_ID).node("monitor");
 
     private static final Color COLOR_UNKNOWN = ResourceManager.getColor(250, 225, 0);
 
