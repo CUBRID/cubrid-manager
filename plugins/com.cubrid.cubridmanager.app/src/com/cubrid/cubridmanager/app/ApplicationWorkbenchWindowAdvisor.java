@@ -168,7 +168,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                                 if (editorList != null) {
                                     for (IEditorReference reference : editorList) {
                                         if (!NoticeDashboardEditor.ID.equals(reference.getId())) {
-                                            page.showEditor(reference);
+                                            if (reference.getPart(false) != null) {
+                                                page.showEditor(reference);
+                                            }
                                         }
                                     }
                                     // Send the last active editor to the top
@@ -225,6 +227,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         LayoutManager.getInstance().setStatusLineContrItem(new CubridStatusLineContrItem());
         LayoutManager.getInstance().setTitleLineContrItem(new CubridTitleLineContrItem());
         LayoutManager.getInstance().setWorkbenchContrItem(new CubridWorkbenchContrItem());
+        configurer.getWindow().getShell().setMinimumSize(600, 400);
+        configurer.getWindow().getShell().setMinimized(true);
     }
 
     /** Performs arbitrary actions after the window is created. */

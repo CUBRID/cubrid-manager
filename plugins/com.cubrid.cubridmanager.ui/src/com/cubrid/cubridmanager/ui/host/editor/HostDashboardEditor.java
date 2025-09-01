@@ -544,10 +544,18 @@ public class HostDashboardEditor extends CubridEditorPart {
         if (finishedCount >= TOTAL_TASK_COUNT) {
             isAvailable = true;
         }
-        refreshItem.setEnabled(isAvailable);
-        exportItem.setEnabled(isAvailable);
 
-        saveItem.setEnabled(isDirty);
+        if (refreshItem != null && !refreshItem.isDisposed()) {
+            refreshItem.setEnabled(isAvailable);
+        }
+
+        if (exportItem != null  && !exportItem.isDisposed()) {
+            exportItem.setEnabled(isAvailable);
+        }
+
+        if (saveItem != null  && !saveItem.isDisposed()) {
+            saveItem.setEnabled(isDirty);
+        }
     }
 
     public void loadDbServerData() {
