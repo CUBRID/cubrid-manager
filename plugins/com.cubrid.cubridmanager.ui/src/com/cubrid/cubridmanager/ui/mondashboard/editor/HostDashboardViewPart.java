@@ -461,8 +461,13 @@ public class HostDashboardViewPart extends ViewPart implements DataUpdateListene
     /** Disposes this view when it closed */
     public void dispose() {
         synchronized (this) {
-            generator.removeDataUpdateListener(this);
-            historyFileHelp.closeHistroyFile();
+            if (generator != null) {
+                generator.removeDataUpdateListener(this);
+            }
+
+            if (historyFileHelp != null) {
+                historyFileHelp.closeHistroyFile();
+            }
             super.dispose();
         }
     }

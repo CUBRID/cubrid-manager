@@ -271,6 +271,7 @@ public final class CubridJdbcManager
                                                 && (fileName.matches("^JDBC\\S*.jar")
                                                         || fileName.matches("^jdbc\\S*.jar")
                                                         || fileName.matches("^CUBRID_JDBC\\S*.jar")
+                                                        || fileName.matches("^cubrid-jdbc\\S*.jar")
                                                         || fileName.matches(
                                                                 "^cubrid_jdbc\\S*.jar"));
                                     }
