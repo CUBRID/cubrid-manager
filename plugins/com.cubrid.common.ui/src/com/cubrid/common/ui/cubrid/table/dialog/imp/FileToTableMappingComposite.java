@@ -392,9 +392,18 @@ public class FileToTableMappingComposite extends Composite {
                 for (String fileName : fileNames) {
                     String tableName = fileName;
                     int dotIndex = fileName.lastIndexOf(".");
+                    int schemaDotIndex = fileName.indexOf(".");
+                    
                     if (dotIndex >= 0) {
                         tableName = fileName.substring(0, dotIndex);
                     }
+                    
+                    if (schemaDotIndex != dotIndex) {
+                        String schema = tableName.substring(0, schemaDotIndex);
+                        String table = tableName.substring(schemaDotIndex, tableName.length());
+                        tableName = schema.toUpperCase() + table;
+                    }
+                    
                     String filePath = path + File.separator + fileName;
 
                     tableToFileMap.put(tableName, filePath);
@@ -548,6 +557,10 @@ public class FileToTableMappingComposite extends Composite {
     }
 
     public void resetMapResult() {
+        if (allTableList == null) {
+            return;
+        }
+        
         for (ICubridNode node : allTableList) {
             Object value = node.getData(ImportObjectLabelProvider.IS_MAPPED);
             if (value != null) {
