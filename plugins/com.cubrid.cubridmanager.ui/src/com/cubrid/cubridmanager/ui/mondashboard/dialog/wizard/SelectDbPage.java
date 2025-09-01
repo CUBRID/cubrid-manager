@@ -416,10 +416,10 @@ public class SelectDbPage extends WizardPage implements ModifyListener, IPageCha
             map.put("8", haHostStatusInfoList);
             dbNodeList.add(map);
         }
-        dbTableViewer.refresh();
         for (int i = 0; i < dbTable.getColumnCount(); i++) {
             dbTable.getColumn(i).pack();
         }
+        dbTableViewer.refresh();
     }
 
     /**

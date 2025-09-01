@@ -543,10 +543,10 @@ public class UserEditor extends CubridEditorPart {
                             tableViewer
                                     .getTable()
                                     .setSortDirection(sorter.isAsc() ? SWT.UP : SWT.DOWN);
-                            tableViewer.refresh();
                             for (int k = 0; k < tableViewer.getTable().getColumnCount(); k++) {
                                 tableViewer.getTable().getColumn(k).pack();
                             }
+                            tableViewer.refresh();
                             return;
                         }
                     });

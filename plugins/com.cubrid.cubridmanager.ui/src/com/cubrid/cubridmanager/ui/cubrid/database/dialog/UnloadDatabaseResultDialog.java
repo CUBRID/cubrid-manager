@@ -123,10 +123,10 @@ public class UnloadDatabaseResultDialog extends CMTitleAreaDialog {
         Table resultTable = tableViewer.getTable();
         tableViewer.setInput(getTableModel());
         sorter.doSort(2);
-        tableViewer.refresh();
         for (int i = 0; i < resultTable.getColumnCount(); i++) {
             resultTable.getColumn(i).pack();
         }
+        tableViewer.refresh();
     }
 
     /** Constrain the shell size */

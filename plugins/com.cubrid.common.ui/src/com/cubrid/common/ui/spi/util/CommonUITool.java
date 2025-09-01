@@ -580,8 +580,8 @@ public final class CommonUITool {
                                 tableViewer
                                         .getTable()
                                         .setSortDirection(sorter.isAsc() ? SWT.UP : SWT.DOWN);
-                                tableViewer.refresh();
                                 packTable(tableViewer);
+                                tableViewer.refresh();
                             }
                         });
             }
@@ -676,8 +676,8 @@ public final class CommonUITool {
                                 tableViewer
                                         .getTable()
                                         .setSortDirection(sorter.isAsc() ? SWT.UP : SWT.DOWN);
-                                tableViewer.refresh();
                                 packTable(tableViewer);
+                                tableViewer.refresh();
                             }
                         });
             }

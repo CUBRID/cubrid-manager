@@ -495,10 +495,10 @@ public class DatabaseStatusEditor extends CubridEditorPart {
             if (dbSpaceDescriptionTable != null && !dbSpaceDescriptionTable.isDisposed()) {
                 ((DbSpaceInfoListNew) database.getDatabaseInfo().getDbSpaceInfoList())
                         .createDbSpaceDescriptionData(dbSpaceDescriptionData);
-                dbSpaceDescriptionTableViewer.refresh();
                 for (int i = 0; i < dbSpaceDescriptionTable.getColumnCount(); i++) {
                     dbSpaceDescriptionTable.getColumn(i).pack();
                 }
+                dbSpaceDescriptionTableViewer.refresh();
                 for (int i = 0; i < (1 + dbSpaceDescriptionTable.getItemCount()) / 2; i++) {
                     dbSpaceDescriptionTable.getItem(i * 2).setBackground(color);
                 }
@@ -507,10 +507,10 @@ public class DatabaseStatusEditor extends CubridEditorPart {
             ((DbSpaceInfoListNew) database.getDatabaseInfo().getDbSpaceInfoList())
                     .createFileSpaceDescriptionData(fileSpaceDescriptionData);
             if (fileSpaceDescriptionTable != null && !fileSpaceDescriptionTable.isDisposed()) {
-                fileSpaceDescriptionTableViewer.refresh();
                 for (int i = 0; i < fileSpaceDescriptionTable.getColumnCount(); i++) {
                     fileSpaceDescriptionTable.getColumn(i).pack();
                 }
+                fileSpaceDescriptionTableViewer.refresh();
                 for (int i = 0; i < (1 + fileSpaceDescriptionTable.getItemCount()) / 2; i++) {
                     fileSpaceDescriptionTable.getItem(i * 2).setBackground(color);
                 }
@@ -519,10 +519,10 @@ public class DatabaseStatusEditor extends CubridEditorPart {
             ((DbSpaceInfoListNew) database.getDatabaseInfo().getDbSpaceInfoList())
                     .createVolumeDescriptionData(volumeDescriptionData);
             if (volumeDescriptionTable != null && !volumeDescriptionTable.isDisposed()) {
-                volumeDescriptionTableViewer.refresh();
                 for (int i = 0; i < volumeDescriptionTable.getColumnCount(); i++) {
                     volumeDescriptionTable.getColumn(i).pack();
                 }
+                volumeDescriptionTableViewer.refresh();
                 for (int i = 0; i < (1 + volumeDescriptionTable.getItemCount()) / 2; i++) {
                     volumeDescriptionTable.getItem(i * 2).setBackground(color);
                 }
@@ -530,13 +530,13 @@ public class DatabaseStatusEditor extends CubridEditorPart {
         }
 
         if (dbInfoTable != null && !dbInfoTable.isDisposed()) {
-            dbInfoTableViewer.refresh();
             for (int i = 0; i < dbInfoTable.getColumnCount(); i++) {
                 dbInfoTable.getColumn(i).pack();
             }
             for (int i = 0; i < (1 + dbInfoTable.getItemCount()) / 2; i++) {
                 dbInfoTable.getItem(i * 2).setBackground(color);
             }
+            dbInfoTableViewer.refresh();
         }
     }
 
@@ -806,10 +806,10 @@ public class DatabaseStatusEditor extends CubridEditorPart {
                                 tableViewer
                                         .getTable()
                                         .setSortDirection(sorter.isAsc() ? SWT.UP : SWT.DOWN);
-                                tableViewer.refresh();
                                 for (int k = 0; k < tableViewer.getTable().getColumnCount(); k++) {
                                     tableViewer.getTable().getColumn(k).pack();
                                 }
+                                tableViewer.refresh();
                             }
                         });
             }

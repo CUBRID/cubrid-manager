@@ -304,10 +304,10 @@ public class DatabaseLogListDialog extends CMTitleAreaDialog implements ITaskExe
                 dbLogList.add(map);
             }
             if (dbLogTable != null && !dbLogTable.isDisposed()) {
-                dbLogTableViewer.refresh();
                 for (int i = 0; i < dbLogTable.getColumnCount(); i++) {
                     dbLogTable.getColumn(i).pack();
                 }
+                dbLogTableViewer.refresh();
             }
         }
         return Status.OK_STATUS;

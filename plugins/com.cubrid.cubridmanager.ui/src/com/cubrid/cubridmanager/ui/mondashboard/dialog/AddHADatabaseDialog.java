@@ -353,10 +353,10 @@ public class AddHADatabaseDialog extends CMTitleAreaDialog implements ModifyList
                         } else {
                             dbNodeList.add(map);
                         }
-                        dbTableViewer.refresh();
                         for (int i = 0; i < dbTable.getColumnCount(); i++) {
                             dbTable.getColumn(i).pack();
                         }
+                        dbTableViewer.refresh();
                         verify();
                     }
                 });

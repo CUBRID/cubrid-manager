@@ -285,10 +285,10 @@ public class TransactionInfoDialog extends CMTitleAreaDialog {
                 transactionListData.add(map);
             }
         }
-        transactionTableViewer.refresh();
         for (int i = 0; i < transactionTable.getColumnCount(); i++) {
             transactionTable.getColumn(i).pack();
         }
+        transactionTableViewer.refresh();
         if (database != null) {
             objectIdLabel.setText(Messages.lblActiveTransaction + database.getName());
         }

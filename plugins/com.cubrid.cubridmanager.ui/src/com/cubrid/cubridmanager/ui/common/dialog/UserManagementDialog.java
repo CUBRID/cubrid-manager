@@ -216,10 +216,10 @@ public class UserManagementDialog extends CMTitleAreaDialog {
 
                             serverUserInfoTableList.add(map);
                             serverUserInfoList.add(userInfo);
-                            tableViewer.refresh();
                             for (int i = 0; i < userManageTable.getColumnCount(); i++) {
                                 userManageTable.getColumn(i).pack();
                             }
+                            tableViewer.refresh();
                         }
                     }
                 });
@@ -264,10 +264,10 @@ public class UserManagementDialog extends CMTitleAreaDialog {
                                     map.put("2", userInfo.getStatusMonitorAuth().getText());
                                     map.put("3", userInfo);
                                 }
-                                tableViewer.refresh();
                                 for (int i = 0; i < userManageTable.getColumnCount(); i++) {
                                     userManageTable.getColumn(i).pack();
                                 }
+                                tableViewer.refresh();
                             }
                         }
                     }

@@ -558,13 +558,13 @@ public class VolumeFolderInfoEditor extends CubridEditorPart {
         }
 
         if (spInfoTable != null && !spInfoTable.isDisposed()) {
-            spInfoTableViewer.refresh();
             for (int i = 0; i < spInfoTable.getColumnCount(); i++) {
                 spInfoTable.getColumn(i).pack();
             }
             for (int i = 0; i < (spInfoTable.getItemCount() + 1) / 2; i++) {
                 spInfoTable.getItem(i * 2).setBackground(color);
             }
+            spInfoTableViewer.refresh();
         }
     }
 

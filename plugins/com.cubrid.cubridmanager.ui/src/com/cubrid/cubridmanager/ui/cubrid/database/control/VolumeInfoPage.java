@@ -293,10 +293,10 @@ public class VolumeInfoPage extends WizardPage implements ModifyListener, IPageC
                         map.put("3", pageNumber);
                         map.put("4", volumePath);
                         volumeTableList.add(map);
-                        volumeTableViewer.refresh();
                         for (int i = 0; i < volumeTable.getColumnCount(); i++) {
                             volumeTable.getColumn(i).pack();
                         }
+                        volumeTableViewer.refresh();
                         changeVolumeName();
                         changeAutoVolumeButton();
                     }
@@ -463,10 +463,10 @@ public class VolumeInfoPage extends WizardPage implements ModifyListener, IPageC
             map.put("5", "true"); // whether is default volume
             volumeTableList.add(map);
         }
-        volumeTableViewer.refresh();
         for (int i = 0; i < volumeTable.getColumnCount(); i++) {
             volumeTable.getColumn(i).pack();
         }
+        volumeTableViewer.refresh();
     }
 
     private void initial() {

@@ -277,10 +277,10 @@ public class SelectBrokerPage extends WizardPage implements ModifyListener, IPag
         map.put("9", brokerNode);
         brokerNodeList.add(map);
 
-        brokerTableViewer.refresh();
         for (int i = 0; i < brokerTable.getColumnCount(); i++) {
             brokerTable.getColumn(i).pack();
         }
+        brokerTableViewer.refresh();
     }
 
     /**

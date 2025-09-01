@@ -1182,10 +1182,10 @@ public class LoadDatabaseDialog extends CMTitleAreaDialog implements ModifyListe
         }
         if (!dataList.isEmpty()) {
             tableViewer.setInput(dataList);
-            tableViewer.refresh();
             for (int i = 0; i < unloadInfoTable.getColumnCount(); i++) {
                 unloadInfoTable.getColumn(i).pack();
             }
+            tableViewer.refresh();
         }
     }
 

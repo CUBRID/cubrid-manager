@@ -352,10 +352,10 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
                                 database);
                 if (addDlg.open() == IDialogConstants.OK_ID) { // add
                     procParamsListData.add(model);
-                    procParamsTableViewer.refresh();
                     for (int i = 0; i < procParamsTableViewer.getTable().getColumnCount(); i++) {
                         procParamsTableViewer.getTable().getColumn(i).pack();
                     }
+                    procParamsTableViewer.refresh();
                 }
             } catch (Exception e) {
                 LOGGER.error("", e);

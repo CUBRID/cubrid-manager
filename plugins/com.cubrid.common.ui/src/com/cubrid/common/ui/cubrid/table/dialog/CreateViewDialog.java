@@ -731,10 +731,10 @@ public class CreateViewDialog extends CMTitleAreaDialog {
                 map.put("3", value);
                 viewColListData.add(map);
             }
-            viewColTableViewer.refresh();
             for (int i = 0; i < viewColTableViewer.getTable().getColumnCount(); i++) {
                 viewColTableViewer.getTable().getColumn(i).pack();
             }
+            viewColTableViewer.refresh();
             queryTableViewer.getTable().select(0);
         }
 
@@ -1309,11 +1309,11 @@ public class CreateViewDialog extends CMTitleAreaDialog {
             if (result != null) {
                 viewColListData.addAll(result);
             }
-            viewColTableViewer.refresh();
 
             for (int i = 0; i < viewColTableViewer.getTable().getColumnCount(); i++) {
                 viewColTableViewer.getTable().getColumn(i).pack();
             }
+            viewColTableViewer.refresh();
         } else {
             if (index >= 0) {
                 queryListData.set(index, oldSql);
@@ -1411,11 +1411,11 @@ public class CreateViewDialog extends CMTitleAreaDialog {
                                 tableViewer
                                         .getTable()
                                         .setSortDirection(sorter.isAsc() ? SWT.UP : SWT.DOWN);
-                                tableViewer.refresh();
 
                                 for (int k = 0; k < tableViewer.getTable().getColumnCount(); k++) {
                                     tableViewer.getTable().getColumn(k).pack();
                                 }
+                                tableViewer.refresh();
                             }
                         });
             }

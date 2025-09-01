@@ -332,10 +332,10 @@ public class LockInfoDialog extends CMTrayDialog {
                     connListData.add(map);
                 }
 
-                connTableViewer.refresh();
                 for (int i = 0; i < connectionList.getColumnCount(); i++) {
                     connectionList.getColumn(i).pack();
                 }
+                connTableViewer.refresh();
             }
             lockedNumLabel.setText(
                     Messages.bind(Messages.lblCurrentLockedObjNum, dbLotInfo.getNumlocked()));
@@ -354,11 +354,11 @@ public class LockInfoDialog extends CMTrayDialog {
                     map.put("4", String.valueOf(entry.getNum_waiters()));
                     lockListData.add(map);
                 }
-                lockTableViewer.refresh();
 
                 for (int i = 0; i < lockList.getColumnCount(); i++) {
                     lockList.getColumn(i).pack();
                 }
+                lockTableViewer.refresh();
             }
         }
     }

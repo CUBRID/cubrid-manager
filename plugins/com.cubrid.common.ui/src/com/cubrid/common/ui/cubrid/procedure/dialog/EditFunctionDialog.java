@@ -459,10 +459,10 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
                                 database);
                 if (addDlg.open() == IDialogConstants.OK_ID) { // add
                     funcParamsListData.add(model);
-                    funcParamsTableViewer.refresh();
                     for (int i = 0; i < funcParamsTableViewer.getTable().getColumnCount(); i++) {
                         funcParamsTableViewer.getTable().getColumn(i).pack();
                     }
+                    funcParamsTableViewer.refresh();
                 }
             } catch (Exception e) {
                 LOGGER.error("", e);
@@ -484,10 +484,10 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
                             database);
 
             if (editDlg.open() == IDialogConstants.OK_ID) {
-                funcParamsTableViewer.refresh();
                 for (int i = 0; i < funcParamsTableViewer.getTable().getColumnCount(); i++) {
                     funcParamsTableViewer.getTable().getColumn(i).pack();
                 }
+                funcParamsTableViewer.refresh();
             }
         } else if (buttonId == BUTTON_UP_ID) { // up
             int index = funcParamsTable.getSelectionIndex();
@@ -640,10 +640,10 @@ public class EditFunctionDialog extends CMTitleAreaDialog {
                     }
                 }
             }
-            funcParamsTableViewer.refresh();
             for (int i = 0; i < funcParamsTableViewer.getTable().getColumnCount(); i++) {
                 funcParamsTableViewer.getTable().getColumn(i).pack();
             }
+            funcParamsTableViewer.refresh();
         }
     }
 

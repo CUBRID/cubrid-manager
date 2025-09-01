@@ -262,10 +262,10 @@ public class LockInfoDetailDialog extends CMTitleAreaDialog {
                 map.put("3", String.valueOf(bean.getNsubgranules()));
                 lockHolderListData.add(map);
             }
-            lockHolderTableViewer.refresh();
             for (int i = 0; i < lockHolderTable.getColumnCount(); i++) {
                 lockHolderTable.getColumn(i).pack();
             }
+            lockHolderTableViewer.refresh();
         }
         if (dbLotEntry.getBlockHoldersList() != null) {
             for (BlockedHolders bean : dbLotEntry.getBlockHoldersList()) {
@@ -278,10 +278,10 @@ public class LockInfoDetailDialog extends CMTitleAreaDialog {
                 map.put("5", String.valueOf(bean.getWait_for_sec()));
                 blockedHolderListData.add(map);
             }
-            blockedHolderTableViewer.refresh();
             for (int i = 0; i < blockedHolderTable.getColumnCount(); i++) {
                 blockedHolderTable.getColumn(i).pack();
             }
+            blockedHolderTableViewer.refresh();
         }
         if (dbLotEntry.getLockWaitersList() != null) {
             for (LockWaiters bean : dbLotEntry.getLockWaitersList()) {
@@ -292,10 +292,10 @@ public class LockInfoDetailDialog extends CMTitleAreaDialog {
                 map.put("3", String.valueOf(bean.getWaitfornsec()));
                 lockWaiterListData.add(map);
             }
-            lockWaiterTableViewer.refresh();
             for (int i = 0; i < lockWaiterTable.getColumnCount(); i++) {
                 lockWaiterTable.getColumn(i).pack();
             }
+            lockWaiterTableViewer.refresh();
         }
         objectIdLabel.setText(Messages.bind(Messages.lblObjectId, dbLotEntry.getOid()));
         objectTypeLabel.setText(Messages.bind(Messages.lblObjectType, dbLotEntry.getOb_type()));

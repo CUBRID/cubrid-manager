@@ -300,10 +300,6 @@ public class CQBUserEditor extends CubridEditorPart {
                 authListData.add(getItemAuthMap(classGrantMap.get(className)));
             }
         }
-        ownerClassTableViewer.refresh();
-        if (!DB_DBA_USERNAME.equalsIgnoreCase(userName)) {
-            authTableViewer.refresh();
-        }
         for (int i = 0; i < ownerClassTableViewer.getTable().getColumnCount(); i++) {
             ownerClassTableViewer.getTable().getColumn(i).pack();
         }
@@ -311,6 +307,10 @@ public class CQBUserEditor extends CubridEditorPart {
             for (int i = 0; i < authTableViewer.getTable().getColumnCount(); i++) {
                 authTableViewer.getTable().getColumn(i).pack();
             }
+        }
+        ownerClassTableViewer.refresh();
+        if (!DB_DBA_USERNAME.equalsIgnoreCase(userName)) {
+            authTableViewer.refresh();
         }
 
         StringBuffer sb = new StringBuffer();
@@ -564,10 +564,10 @@ public class CQBUserEditor extends CubridEditorPart {
                             tableViewer
                                     .getTable()
                                     .setSortDirection(sorter.isAsc() ? SWT.UP : SWT.DOWN);
-                            tableViewer.refresh();
                             for (int k = 0; k < tableViewer.getTable().getColumnCount(); k++) {
                                 tableViewer.getTable().getColumn(k).pack();
                             }
+                            tableViewer.refresh();
 
                             return;
                         }

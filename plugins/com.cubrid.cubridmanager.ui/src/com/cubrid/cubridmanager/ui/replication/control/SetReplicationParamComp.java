@@ -246,10 +246,10 @@ public class SetReplicationParamComp {
                             map.put("2", value.toString());
                             updatableComp.updateUI();
                         }
-                        replicationParamTableViewer.refresh();
                         for (int i = 0; i < replicationParamTable.getColumnCount(); i++) {
                             replicationParamTable.getColumn(i).pack();
                         }
+                        replicationParamTableViewer.refresh();
                     }
                 });
     }
@@ -287,10 +287,10 @@ public class SetReplicationParamComp {
             dataMap.put("2", value);
             replicationParamList.add(dataMap);
         }
-        replicationParamTableViewer.refresh();
         for (int i = 0; i < replicationParamTable.getColumnCount(); i++) {
             replicationParamTable.getColumn(i).pack();
         }
+        replicationParamTableViewer.refresh();
     }
 
     /**
@@ -314,10 +314,10 @@ public class SetReplicationParamComp {
             dataMap.put("2", value == null ? "" : value);
             replicationParamList.add(dataMap);
         }
-        replicationParamTableViewer.refresh();
         for (int i = 0; i < replicationParamTable.getColumnCount(); i++) {
             replicationParamTable.getColumn(i).pack();
         }
+        replicationParamTableViewer.refresh();
     }
 
     /**
