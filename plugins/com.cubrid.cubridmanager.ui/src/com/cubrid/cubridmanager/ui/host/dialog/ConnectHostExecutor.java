@@ -674,6 +674,10 @@ public class ConnectHostExecutor extends TaskExecutor {
     }
 
     private boolean isAfterJdbc111(String jdbcVersion) {
+        if (jdbcVersion.isBlank() || jdbcVersion.isEmpty()) {
+            return false;
+        }
+
         String[] tempString;
         int tempIntVersion = 0;
 

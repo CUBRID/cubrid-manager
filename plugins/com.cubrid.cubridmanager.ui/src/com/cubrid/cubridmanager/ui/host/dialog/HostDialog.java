@@ -688,6 +688,7 @@ public class HostDialog extends CMTitleAreaDialog implements ModifyListener {
         String jdbcDriver = jdbcVersionCombo.getText();
         if (jdbcDriver == null || jdbcDriver.length() == 0) {
             setErrorMessage(Messages.errConnJdbcNotSet);
+            setEnabled(false);
             return;
         }
 

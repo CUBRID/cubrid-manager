@@ -280,7 +280,9 @@ public class NavigatorTreeLabelProvider extends LabelProvider
                         database.getName(), haHostStatusInfo, server.getServerInfo());
 
         List<String> haNodeList = HAUtil.getAllHaDBList(server.getServerInfo());
-        server.getLoader().setLoaded(true);
+        if (server.getLoader() != null) {
+            server.getLoader().setLoaded(true);
+        }
         if (haNodeList.contains(database.getName())) {
             DBStatusType statusType = haDatabaseStatusInfo.getStatusType();
 
