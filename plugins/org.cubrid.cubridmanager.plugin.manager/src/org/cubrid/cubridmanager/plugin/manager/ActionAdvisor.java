@@ -231,23 +231,25 @@ public class ActionAdvisor extends AbsActionAdvisor {
     }
 
     public void showToolbar(ICoolBarManager coolBarManager) {
-        IToolBarManager newToolbarManager = getToolbarManaeger(coolBarManager);
         ActionManager manager = ActionManager.getInstance();
+        IToolBarManager toolbarManager = getToolbarManaeger(coolBarManager, IActionConstants.TOOLBAR_1);
+        toolbarManager.removeAll();
 
-        String insertPoint = getToolbarInsertPoint(coolBarManager);
         // Add host action
-        newToolbarManager.insertBefore(insertPoint, createItem(AddHostAction.ID_BIG));
-        newToolbarManager.insertBefore(insertPoint, new Separator());
+        toolbarManager.add(createItem(AddHostAction.ID_BIG));
 
         // Start action
-        newToolbarManager.insertBefore(insertPoint, createItem(StartRetargetAction.ID_BIG));
-        newToolbarManager.insertBefore(insertPoint, new Separator());
+        toolbarManager.add(createItem(StartRetargetAction.ID_BIG));
 
         // Open queryEditor
-        newToolbarManager.insertBefore(insertPoint, createItem(DatabaseQueryNewAction.ID_BIG));
+        toolbarManager = getToolbarManaeger(coolBarManager, IActionConstants.TOOLBAR_2);
+        toolbarManager.removeAll();
+        toolbarManager.add(createItem(DatabaseQueryNewAction.ID_BIG));
 
         // Schema actions
-        newToolbarManager.insertBefore(insertPoint, new Separator());
+        toolbarManager = getToolbarManaeger(coolBarManager, IActionConstants.TOOLBAR_3);
+        toolbarManager.removeAll();
+
         DropDownAction schemaDropAction =
                 new DropDownAction(
                         Messages.schemaActionNameBig,
@@ -263,9 +265,7 @@ public class ActionAdvisor extends AbsActionAdvisor {
         schemaActionManager.add(manager.getAction(NewSynonymAction.ID));
         ActionContributionItem schemaItems = new ActionContributionItem(schemaDropAction);
         schemaItems.setMode(ActionContributionItem.MODE_FORCE_TEXT);
-        newToolbarManager.insertBefore(insertPoint, schemaItems);
-
-        newToolbarManager.insertBefore(insertPoint, new Separator());
+        toolbarManager.add(schemaItems);
 
         // Import and export
         DropDownAction dataDropAction =
@@ -280,9 +280,7 @@ public class ActionAdvisor extends AbsActionAdvisor {
         dataActionManager.add(manager.getAction(ImportWizardAction.ID));
         ActionContributionItem dataItems = new ActionContributionItem(dataDropAction);
         dataItems.setMode(ActionContributionItem.MODE_FORCE_TEXT);
-        newToolbarManager.insertBefore(insertPoint, dataItems);
-
-        newToolbarManager.insertBefore(insertPoint, new Separator());
+        toolbarManager.add(dataItems);
 
         DropDownAction toolsDropAction =
                 new DropDownAction(
@@ -311,8 +309,7 @@ public class ActionAdvisor extends AbsActionAdvisor {
         // toolsActionManager.add(ActionManager.getInstance().getAction(CMServiceAnalysisAction.ID));
         ActionContributionItem toolsItem = new ActionContributionItem(toolsDropAction);
         toolsItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
-        newToolbarManager.insertBefore(insertPoint, toolsItem);
-        newToolbarManager.insertBefore(insertPoint, new Separator());
+        toolbarManager.add(toolsItem);
 
         // User Management
         DropDownAction usersDropAction =
@@ -331,7 +328,7 @@ public class ActionAdvisor extends AbsActionAdvisor {
         userActionManager.add(manager.getAction(DeleteUserAction.ID));
         ActionContributionItem usersItems = new ActionContributionItem(usersDropAction);
         usersItems.setMode(ActionContributionItem.MODE_FORCE_TEXT);
-        newToolbarManager.insertBefore(insertPoint, usersItems);
+        toolbarManager.add(usersItems);
 
         // Management actions
         DropDownAction manageAction =
@@ -355,10 +352,9 @@ public class ActionAdvisor extends AbsActionAdvisor {
 
         ActionContributionItem manageItems = new ActionContributionItem(manageAction);
         manageItems.setMode(ActionContributionItem.MODE_FORCE_TEXT);
-        newToolbarManager.insertBefore(insertPoint, manageItems);
-        newToolbarManager.insertBefore(insertPoint, new Separator());
+        toolbarManager.add(manageItems);
 
-        newToolbarManager.update(true);
+        toolbarManager.update(true);
         coolBarManager.update(true);
     }
 

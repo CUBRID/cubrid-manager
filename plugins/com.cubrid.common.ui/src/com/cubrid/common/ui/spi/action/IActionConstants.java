@@ -58,14 +58,10 @@ public final class IActionConstants {
     public static final String MENU_CUBRID = "CUBRID";
 
     // tool bar
-    public static final String TOOL_NEW1 = "new1";
-    public static final String TOOL_NEW2 = "new2";
-    public static final String TOOL_SERVICE = "service";
-    public static final String TOOL_DATABASE1 = "database1";
-    public static final String TOOL_DATABASE2 = "database2";
-    public static final String TOOL_VERSION = "version";
-    public static final String TOOL_ISSUE = "issue";
-    public static final String TOOL_SEARCH = "search";
+    public static final String TOOLBAR_1 = "toolbar_1";
+    public static final String TOOLBAR_2 = "toolbar_2";
+    public static final String TOOLBAR_3 = "toolbar_3";
+    public static final String TOOLBAR_4 = "toolbar_4";
 
     // group
     public static final String GROUP_HOST = "host";

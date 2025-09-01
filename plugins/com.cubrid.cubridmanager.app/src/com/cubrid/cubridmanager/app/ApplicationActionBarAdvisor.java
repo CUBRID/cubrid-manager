@@ -45,7 +45,6 @@ import com.cubrid.common.ui.perspective.OpenCQBPerspectiveAction;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.action.IActionConstants;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
-import com.cubrid.cubridmanager.ui.common.action.QuitAction;
 import com.cubrid.cubridmanager.ui.host.action.ViewServerVersionAction;
 import com.cubrid.cubridmanager.ui.service.action.ServiceDashboardAction;
 import com.cubrid.cubridmanager.ui.spi.Version;
@@ -89,7 +88,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private static final Logger LOGGER = LogUtil.getLogger(ApplicationActionBarAdvisor.class);
     // common actions
     private IAction preferenceAction = null;
-    private IAction quitAction = null;
     // private IAction checkNewVersionAction = null;
     private IAction cubridOnlineForumAction = null;
     private IAction cubridProjectSiteAction = null;
@@ -132,11 +130,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(preferenceAction);
         preferenceAction.setId(
                 "preferences"); // It must be needed to use a Preferences Menu of an Application
-                                // Menu on Mac.
+        // Menu on Mac.
         manager.registerAction(preferenceAction);
-
-        quitAction = new QuitAction(Messages.exitActionName);
-
 
         cubridOnlineForumAction = new CubridOnlineForumAction(Messages.cubridOnlineForumActionName);
         cubridProjectSiteAction = new CubridProjectSiteAction(Messages.cubridProjectSiteActionName);
@@ -208,9 +203,16 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
      */
     protected void fillCoolBar(ICoolBarManager coolBarManager) {
         ActionManager manager = ActionManager.getInstance();
-        coolBarManager.setLockLayout(true);
-        IToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT | SWT.WRAP | SWT.BOTTOM);
-        coolBarManager.add(new ToolBarContributionItem(toolbarManager, IActionConstants.TOOL_NEW1));
+        IToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT | SWT.WRAP | SWT.RIGHT);
+
+        coolBarManager.add(new ToolBarContributionItem(
+                new ToolBarManager(SWT.FLAT | SWT.WRAP | SWT.LEFT), IActionConstants.TOOLBAR_1));
+        coolBarManager.add(new ToolBarContributionItem(
+                new ToolBarManager(SWT.FLAT | SWT.WRAP | SWT.LEFT), IActionConstants.TOOLBAR_2));
+        coolBarManager.add(new ToolBarContributionItem(
+                new ToolBarManager(SWT.FLAT | SWT.WRAP | SWT.LEFT), IActionConstants.TOOLBAR_3));
+        coolBarManager.add(new ToolBarContributionItem(
+                toolbarManager, IActionConstants.TOOLBAR_4));
 
         Bundle cqbBundle = Platform.getBundle(ApplicationUtil.CQB_PLUGIN_ID);
         /* Active the CQB plugin */
@@ -249,13 +251,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
             viewItems.setMode(ActionContributionItem.MODE_FORCE_TEXT);
             viewItems.setId(IPerspectiveConstance.PERSPECTIVE_ACTION_CONTRIBUTION_ID);
             toolbarManager.add(viewItems);
-            toolbarManager.add(new Separator());
         }
 
         /*TOOLS-3988 There still is the install option after installing cmt plugin.*/
         Bundle bundle = Platform.getBundle(ApplicationUtil.CMT_PLUGIN_ID);
         if (bundle == null) {
-            toolbarManager.add(new Separator());
             IAction action =
                     ActionManager.getInstance().getAction(InstallMigrationToolkitAction.ID);
             if (action != null) {
@@ -274,7 +274,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         }
 
         // Help
-        toolbarManager.add(new Separator());
         DropDownAction helpDropAction =
                 new DropDownAction(
                         Messages.helpActionNameBig,
@@ -305,7 +304,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
                     }
                 };
         searchContribution.setId(IPerspectiveConstance.SEARCH_ACTION_CONTRIBUTION_ID);
-        toolbarManager.add(new Separator());
         toolbarManager.add(searchContribution);
     }
 

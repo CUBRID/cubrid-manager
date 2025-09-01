@@ -53,9 +53,9 @@ public abstract class AbsActionAdvisor {
         menuManager.update(true);
     }
 
-    public void hideToolbar(ICoolBarManager coolBarManager) {
+    public void hideToolbar(ICoolBarManager coolBarManager, String iD) {
         for (IContributionItem item : coolBarManager.getItems()) {
-            if (item instanceof ToolBarContributionItem && "new1".equals(item.getId())) {
+            if (item instanceof ToolBarContributionItem && iD.equals(item.getId())) {
                 ToolBarContributionItem toolBarContributionItem = (ToolBarContributionItem) item;
                 for (IContributionItem c : toolBarContributionItem.getToolBarManager().getItems()) {
                     if (!IPerspectiveConstance.HELP_ACTION_CONTRIBUTION_ID.equals(c.getId())
@@ -76,10 +76,10 @@ public abstract class AbsActionAdvisor {
         coolBarManager.update(true);
     }
 
-    protected IToolBarManager getToolbarManaeger(ICoolBarManager coolBarManager) {
+    protected IToolBarManager getToolbarManaeger(ICoolBarManager coolBarManager, String iD) {
         IToolBarManager newToolbarManager = null;
         for (IContributionItem item : coolBarManager.getItems()) {
-            if (item instanceof ToolBarContributionItem && "new1".equals(item.getId())) {
+            if (item instanceof ToolBarContributionItem && iD.equals(item.getId())) {
                 ToolBarContributionItem toolBarContributionItem = (ToolBarContributionItem) item;
                 newToolbarManager = toolBarContributionItem.getToolBarManager();
                 break;
@@ -87,23 +87,6 @@ public abstract class AbsActionAdvisor {
             }
         }
         return newToolbarManager;
-    }
-
-    protected String getToolbarInsertPoint(ICoolBarManager coolBarManager) {
-        String id = "";
-        for (IContributionItem item : coolBarManager.getItems()) {
-            if (item instanceof ToolBarContributionItem && "new1".equals(item.getId())) {
-                ToolBarContributionItem toolBarContributionItem = (ToolBarContributionItem) item;
-                for (IContributionItem c : toolBarContributionItem.getToolBarManager().getItems()) {
-                    if (c.isVisible()
-                            && getToolbarContributionItemLevel(id)
-                                    < getToolbarContributionItemLevel(c.getId())) {
-                        id = c.getId();
-                    }
-                }
-            }
-        }
-        return id;
     }
 
     protected String getMenuInsertPoint(IMenuManager menuManager) {
@@ -128,19 +111,4 @@ public abstract class AbsActionAdvisor {
         }
     }
 
-    private int getToolbarContributionItemLevel(String id) {
-        if (IPerspectiveConstance.SEARCH_ACTION_CONTRIBUTION_ID.equals(id)) {
-            return 1;
-        }
-        if (IPerspectiveConstance.HELP_ACTION_CONTRIBUTION_ID.equals(id)) {
-            return 2;
-        }
-        if (IPerspectiveConstance.MIGRATION_ACTION_CONTRIBUTION_ID.equals(id)) {
-            return 3;
-        }
-        if (IPerspectiveConstance.PERSPECTIVE_ACTION_CONTRIBUTION_ID.equals(id)) {
-            return 4;
-        }
-        return 0;
-    }
 }

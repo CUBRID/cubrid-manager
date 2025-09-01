@@ -322,26 +322,24 @@ public class ActionAdvisor extends AbsActionAdvisor {
     }
 
     public void showToolbar(ICoolBarManager coolBarManager) {
-        IToolBarManager newToolbarManager = getToolbarManaeger(coolBarManager);
         ActionManager manager = ActionManager.getInstance();
+        IToolBarManager newToolbarManager = getToolbarManaeger(coolBarManager, IActionConstants.TOOLBAR_1);
+        newToolbarManager.removeAll();
+        newToolbarManager.add(createItem(NewQueryConnAction.ID));
+        newToolbarManager.add((createItem(QueryNewAction.ID)));
 
-        String insertPoint = getToolbarInsertPoint(coolBarManager);
+        newToolbarManager.add((createItem(RefreshAction.ID)));
 
-        newToolbarManager.insertBefore(insertPoint, createItem(NewQueryConnAction.ID));
-        newToolbarManager.insertBefore(insertPoint, (createItem(QueryNewAction.ID)));
+        newToolbarManager = getToolbarManaeger(coolBarManager, IActionConstants.TOOLBAR_2);
+        newToolbarManager.removeAll();
+        newToolbarManager.add((createItem(NewTableAction.ID)));
+        newToolbarManager.add((createItem(CreateViewAction.ID)));
 
-        newToolbarManager.insertBefore(insertPoint, (new Separator()));
-        newToolbarManager.insertBefore(insertPoint, (createItem(RefreshAction.ID)));
+        newToolbarManager.add((createItem(ImportWizardAction.ID)));
+        newToolbarManager.add((createItem(ExportWizardAction.ID)));
 
-        newToolbarManager.insertBefore(insertPoint, (new Separator()));
-        newToolbarManager.insertBefore(insertPoint, (createItem(NewTableAction.ID)));
-        newToolbarManager.insertBefore(insertPoint, (createItem(CreateViewAction.ID)));
-
-        newToolbarManager.insertBefore(insertPoint, (new Separator()));
-        newToolbarManager.insertBefore(insertPoint, (createItem(ImportWizardAction.ID)));
-        newToolbarManager.insertBefore(insertPoint, (createItem(ExportWizardAction.ID)));
-
-        newToolbarManager.insertBefore(insertPoint, (new Separator()));
+        newToolbarManager = getToolbarManaeger(coolBarManager, IActionConstants.TOOLBAR_3);
+        newToolbarManager.removeAll();
         DropDownAction toolsDropAction =
                 new DropDownAction(
                         com.cubrid.common.ui.spi.Messages.toolsActionName,
@@ -362,8 +360,7 @@ public class ActionAdvisor extends AbsActionAdvisor {
 
         ActionContributionItem toolsItem = new ActionContributionItem(toolsDropAction);
         toolsItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
-        newToolbarManager.insertBefore(insertPoint, toolsItem);
-        newToolbarManager.insertBefore(insertPoint, new Separator());
+        newToolbarManager.add(toolsItem);
 
         newToolbarManager.update(true);
         coolBarManager.update(true);

@@ -35,6 +35,7 @@ import com.cubrid.common.ui.perspective.IPerspectiveConstance;
 import com.cubrid.common.ui.perspective.PerspectiveChangeEvent;
 import com.cubrid.common.ui.spi.LayoutManager;
 import com.cubrid.common.ui.spi.action.ActionManager;
+import com.cubrid.common.ui.spi.action.IActionConstants;
 import com.cubrid.common.ui.spi.action.MenuProvider;
 import com.cubrid.cubridmanager.ui.spi.action.CubridMenuProvider;
 import com.cubrid.cubridmanager.ui.spi.contribution.CubridStatusLineContrItem;
@@ -89,7 +90,7 @@ public class PerspectiveChangedListener implements IPerspectiveChangedListener {
         if (window != null) {
             ICoolBarManager coolBarManager = window.getCoolBarManager2();
             IMenuManager menuManager = window.getMenuBarManager();
-            ActionAdvisor.getInstance().hideToolbar(coolBarManager);
+            ActionAdvisor.getInstance().hideToolbar(coolBarManager, IActionConstants.TOOLBAR_4);
             ActionAdvisor.getInstance().hideMenu(menuManager);
         }
     }
