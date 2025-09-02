@@ -51,7 +51,7 @@ public class BrowserEditorPartInput implements IEditorInput {
     }
 
     public String getName() {
-        return Messages.tabSearch;
+        return Messages.msgNewFeatures;
     }
 
     public IPersistableElement getPersistable() {
@@ -59,7 +59,7 @@ public class BrowserEditorPartInput implements IEditorInput {
     }
 
     public String getToolTipText() {
-        return Messages.tooltipTabSearch;
+        return Messages.msgNewFeatures;
     }
 
     @SuppressWarnings("rawtypes")
