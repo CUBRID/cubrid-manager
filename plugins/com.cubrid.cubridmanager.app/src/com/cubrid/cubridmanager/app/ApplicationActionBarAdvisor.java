@@ -169,9 +169,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
                 new MenuManager(Messages.mnu_helpMneuName, IWorkbenchActionConstants.M_HELP);
         helpMenu.add(manager.getAction(HelpDocumentAction.ID));
         // fill in help menu
-        if ("ko".equals(Messages.language)) {
-            helpMenu.add(newFeatureAction);
-        }
+        helpMenu.add(newFeatureAction);
         helpMenu.add(new Separator());
         helpMenu.add(reportBugAction);
         helpMenu.add(new Separator());
