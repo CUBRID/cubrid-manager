@@ -248,8 +248,15 @@ public class DbSpaceInfoListNew extends DbSpaceInfoList {
     }
 
     public void createFileSpaceDescriptionData(List<Map<String, String>> fileSpaceDescriptionData) {
+        int totalCount = 0, totalUsed = 0, totalFileTable = 0, totalReserved = 0, TotalSize = 0;
         for (FileSpaceDescription d : fileinfo) {
             Map<String, String> line = new HashMap<String, String>();
+            totalCount += d.getFile_count();
+            totalUsed += d.getUsed_size();
+            totalFileTable += d.getFile_table_size();
+            totalReserved += d.getReserved_size();
+            TotalSize += d.getTotal_size();
+            
             line.put("0", d.getData_type());
             line.put("1", String.valueOf(d.getFile_count()));
             line.put("2", String.valueOf(d.getUsed_size()));
@@ -258,6 +265,17 @@ public class DbSpaceInfoListNew extends DbSpaceInfoList {
             line.put("5", String.valueOf(d.getTotal_size()));
             fileSpaceDescriptionData.add(line);
         }
+        
+        Map<String, String> line = new HashMap<String, String>();
+        line.put("0", "TOTAL");
+        line.put("1", String.valueOf(totalCount));
+        line.put("2", String.valueOf(totalUsed));
+        line.put("3", String.valueOf(totalFileTable));
+        line.put("4", String.valueOf(totalReserved));
+        line.put("5", String.valueOf(TotalSize));
+        fileSpaceDescriptionData.add(line);
+        
+        
     }
 
     public void createVolumeDescriptionData(List<Map<String, String>> volumeDescriptionData) {

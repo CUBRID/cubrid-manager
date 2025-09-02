@@ -548,7 +548,14 @@ public class Messages extends NLS {
     public static String volumnTableTotalsizeColumnLabel;
     public static String volumnTableVolumnNameColumnLabel;
     public static String volumnTableVolumnTypeColumnLabel;
+    public static String volumnTableVolumnPerposeColumnLabel;
     public static String volumnTableUsedAndRemainedSizeColumnLabel;
+    public static String volumnFilesSpaceTypeColumnLabel;
+    public static String volumnFilesSpaceFileCountColumnLabel;
+    public static String volumnFilesSpaceUsedSizeColumnLabel;
+    public static String volumnFilesSpaceFileTableSizeColumnLabel;
+    public static String volumnFilesSpaceReservedSizeColumnLabel;
+    public static String volumnFilesSpaceTotalSizeColumnLabel;
     public static String brokerTableLastConnectTimeColumnLabel;
     public static String brokerTableIDColumnTip;
     public static String brokerTableLQSColumnTip;
@@ -563,6 +570,7 @@ public class Messages extends NLS {
     public static String exportDashboardDialogLblFileName;
     public static String exportDashboardDBTableTitle;
     public static String exportDashboardVolumnTableTitle;
+    public static String exportDashboardVolumnFileTableTitle;
     public static String exportDashboardBrokerTableTitle;
     public static String exportDashboardLockTableTitle;
     public static String exportDashboardMenuRestartServer;

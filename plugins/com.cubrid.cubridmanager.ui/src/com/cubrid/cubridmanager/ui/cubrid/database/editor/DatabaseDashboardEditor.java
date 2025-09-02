@@ -74,8 +74,10 @@ import com.cubrid.cubridmanager.core.cubrid.database.model.transaction.Transacti
 import com.cubrid.cubridmanager.core.cubrid.database.task.CheckFileTask;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.GetAddVolumeStatusInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew.FileSpaceDescription;
 import com.cubrid.cubridmanager.core.logs.model.BrokerLogInfos;
 import com.cubrid.cubridmanager.core.logs.model.LogContentInfo;
 import com.cubrid.cubridmanager.core.logs.model.LogInfo;
@@ -148,6 +150,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
     public static final String ID =
             "com.cubrid.cubridmanager.ui.cubrid.database.editor.DatabaseDashboardEditor";
     private CubridDatabase database = null;
+    private ServerInfo serverInfo;
 
     /*ToolBar Item*/
     private ToolItem settingItem;
@@ -158,6 +161,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
 
     private TableViewer dbInfoTableViewer;
     private TableViewer volumnInfoTableViewer;
+    private TableViewer volumnPurposeInfoTableViewer;
     private TableViewer brokerInfoTableViewer;
     private TableViewer lockAndTransactionTableViewer;
     private Table lockAndTransactionTable;
@@ -166,6 +170,8 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
     private boolean interruptReq;
     private final List<Map<String, String>> dbInfoListData = new ArrayList<Map<String, String>>();
     private final List<Map<String, String>> volumnInfoListData =
+            new ArrayList<Map<String, String>>();
+    private final List<Map<String, String>> volumnfileSpaceData =
             new ArrayList<Map<String, String>>();
     private final List<Map<String, String>> brokerInfoListData =
             new ArrayList<Map<String, String>>();
@@ -227,6 +233,9 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
             createDatabaseComposite(bar, index++);
         }
         createVolumnComposite(bar, index++);
+        if (serverInfo.isIntegratedVolume()) {
+            createVolumnFileComposite(bar, index++);
+        }
         createBrokerComposite(bar, index++);
         createLockAndTransactionComposite(bar, index++);
 
@@ -448,6 +457,14 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
         columnType.getColumn().setText(Messages.volumnTableVolumnTypeColumnLabel);
         columnType.getColumn().setToolTipText(Messages.volumnTableVolumnTypeColumnLabel);
 
+        if (serverInfo.isIntegratedVolume()) {
+            final TableViewerColumn columnPurpose =
+                    new TableViewerColumn(volumnInfoTableViewer, SWT.CENTER);
+            columnPurpose.getColumn().setWidth(90);
+            columnPurpose.getColumn().setText(Messages.volumnTableVolumnPerposeColumnLabel);
+            columnPurpose.getColumn().setToolTipText(Messages.volumnTableVolumnPerposeColumnLabel);
+        }
+
         final TableViewerColumn columnFreeSize =
                 new TableViewerColumn(volumnInfoTableViewer, SWT.RIGHT);
         columnFreeSize.getColumn().setWidth(90);
@@ -562,6 +579,74 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                 });
         volumnInfoTableViewer.getTable().setMenu(menu);
         tableViewOnBarIndexMap.put(volumnInfoTableViewer, index);
+    }
+
+    /**
+     * create volumn File information composite
+     *
+     * @param bar ExpandBar
+     * @param bar index
+     */
+    public void createVolumnFileComposite(ExpandBar bar, int index) {
+        ExpandItem volumnItem = new ExpandItem(bar, SWT.NONE, index);
+        volumnItem.setText(Messages.exportDashboardVolumnFileTableTitle);
+
+        Composite volumnComposite = new Composite(bar, SWT.NONE);
+        volumnComposite.setLayout(new FillLayout());
+
+        volumnPurposeInfoTableViewer = new TableViewer(volumnComposite, SWT.BORDER | SWT.FULL_SELECTION);
+        volumnPurposeInfoTableViewer.getTable().setHeaderVisible(true);
+        volumnPurposeInfoTableViewer.getTable().setLinesVisible(true);
+
+        final TableViewerColumn columnVolumn =
+                new TableViewerColumn(volumnPurposeInfoTableViewer, SWT.CENTER);
+        columnVolumn.getColumn().setWidth(140);
+        columnVolumn.getColumn().setText(Messages.volumnFilesSpaceTypeColumnLabel);
+        columnVolumn.getColumn().setToolTipText(Messages.volumnFilesSpaceTypeColumnLabel);
+
+        final TableViewerColumn columnType =
+                new TableViewerColumn(volumnPurposeInfoTableViewer, SWT.CENTER);
+        columnType.getColumn().setWidth(90);
+        columnType.getColumn().setText(Messages.volumnFilesSpaceFileCountColumnLabel);
+        columnType.getColumn().setToolTipText(Messages.volumnFilesSpaceFileCountColumnLabel);
+
+        final TableViewerColumn columnFreeSize =
+                new TableViewerColumn(volumnPurposeInfoTableViewer, SWT.RIGHT);
+        columnFreeSize.getColumn().setWidth(90);
+        columnFreeSize.getColumn().setText(Messages.volumnFilesSpaceUsedSizeColumnLabel);
+        columnFreeSize.getColumn().setToolTipText(Messages.volumnFilesSpaceUsedSizeColumnLabel);
+
+        final TableViewerColumn columnTotalSize =
+                new TableViewerColumn(volumnPurposeInfoTableViewer, SWT.RIGHT);
+        columnTotalSize.getColumn().setWidth(90);
+        columnTotalSize.getColumn().setText(Messages.volumnFilesSpaceFileTableSizeColumnLabel);
+        columnTotalSize.getColumn().setToolTipText(Messages.volumnFilesSpaceFileTableSizeColumnLabel);
+
+        final TableViewerColumn lastModifyDate =
+                new TableViewerColumn(volumnPurposeInfoTableViewer, SWT.CENTER);
+        lastModifyDate.getColumn().setWidth(90);
+        lastModifyDate.getColumn().setText(Messages.volumnFilesSpaceReservedSizeColumnLabel);
+        lastModifyDate.getColumn().setToolTipText(Messages.volumnFilesSpaceReservedSizeColumnLabel);
+
+        final TableViewerColumn columnLocation =
+                new TableViewerColumn(volumnPurposeInfoTableViewer, SWT.LEFT);
+        columnLocation.getColumn().setWidth(300);
+        columnLocation.getColumn().setText(Messages.volumnFilesSpaceTotalSizeColumnLabel);
+        columnLocation.getColumn().setToolTipText(Messages.volumnFilesSpaceTotalSizeColumnLabel);
+
+        volumnPurposeInfoTableViewer.setContentProvider(new TableContentProvider());
+        volumnPurposeInfoTableViewer.setLabelProvider(new TableLabelProvider());
+
+        Table table = volumnPurposeInfoTableViewer.getTable();
+        table.setLinesVisible(true);
+        table.setHeaderVisible(true);
+
+        volumnPurposeInfoTableViewer.setInput(volumnfileSpaceData);
+        volumnItem.setControl(volumnComposite);
+        volumnItem.setHeight(130);
+        volumnItem.setExpanded(true);
+
+        tableViewOnBarIndexMap.put(volumnPurposeInfoTableViewer, index);
     }
 
     /**
@@ -945,6 +1030,33 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                         });
     }
 
+    private void setVolumnFileInfoData() {
+        Display.getDefault()
+                .syncExec(
+                        new Runnable() {
+                            public void run() {
+                                if (volumnPurposeInfoTableViewer.getTable().isDisposed()) {
+                                    return;
+                                }
+                                volumnPurposeInfoTableViewer.refresh();
+
+                                int height =
+                                        volumnPurposeInfoTableViewer
+                                                .getTable()
+                                                .computeSize(SWT.DEFAULT, SWT.DEFAULT)
+                                                .y;
+                                if (height < 130) {
+                                    height = 130;
+                                } else if (height > 1000) {
+                                    height = 1000;
+                                }
+
+                                bar.getItem(tableViewOnBarIndexMap.get(volumnPurposeInfoTableViewer))
+                                        .setHeight(height);
+                            }
+                        });
+    }
+
     private void setBrokerInfoData() {
         Display.getDefault()
                 .syncExec(
@@ -1176,7 +1288,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
         if (database.getRunningType() != DbRunningType.CS) {
             return;
         }
-        final DbSpaceInfoList dbSpaceInfoList = new DbSpaceInfoList();
+        final DbSpaceInfoListNew dbSpaceInfoList = new DbSpaceInfoListNew();
         final CommonQueryTask<DbSpaceInfoList> loadVolumnTask =
                 new CommonQueryTask<DbSpaceInfoList>(
                         database.getServer().getServerInfo(),
@@ -1203,9 +1315,10 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                             }
 
                             private void process() {
+                                int index = 0;
                                 volumnInfoListData.clear();
                                 DbSpaceInfoList dbSpaceInfoList = loadVolumnTask.getResultModel();
-                                if (dbSpaceInfoList != null) {
+                                if (dbSpaceInfoList != null && dbSpaceInfoList.getSpaceinfo() != null) {
                                     long archiveSize = 0;
                                     for (DbSpaceInfo dbSpaceInfo : dbSpaceInfoList.getSpaceinfo()) {
                                         if (StringUtil.isEmpty(dbSpaceInfo.getType())) {
@@ -1228,11 +1341,15 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                                         || VolumeType.ARCHIVE_LOG
                                                                 .getText()
                                                                 .equals(dbSpaceInfo.getType());
-
+                                        index = 0;
                                         Map<String, String> volumnMap =
                                                 new HashMap<String, String>();
-                                        volumnMap.put("0", dbSpaceInfo.getSpacename());
-                                        volumnMap.put("1", dbSpaceInfo.getType());
+                                        volumnMap.put(String.valueOf(index++), dbSpaceInfo.getSpacename());
+                                        volumnMap.put(String.valueOf(index++), dbSpaceInfo.getType());
+                                        if (serverInfo.isIntegratedVolume()) {
+                                            volumnMap.put(String.valueOf(index++), dbSpaceInfo.getPurpose());
+                                        }
+
                                         String freeSize =
                                                 getSpaceDesc(
                                                         Long.valueOf(dbSpaceInfo.getFreepage())
@@ -1246,36 +1363,47 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                                                         dbSpaceInfoList
                                                                                 .getPagesize()));
                                         if (isLogVolumn) {
-                                            volumnMap.put("2", "-");
+                                            volumnMap.put(String.valueOf(index++), "-");
                                         } else {
-                                            volumnMap.put("2", freeSize);
+                                            volumnMap.put(String.valueOf(index++), freeSize);
                                         }
-                                        volumnMap.put("3", totalSize);
-                                        volumnMap.put("4", dbSpaceInfo.getDate());
-                                        volumnMap.put("5", dbSpaceInfo.getLocation());
+                                        volumnMap.put(String.valueOf(index++), totalSize);
+                                        volumnMap.put(String.valueOf(index++), dbSpaceInfo.getDate());
+                                        volumnMap.put(String.valueOf(index++), dbSpaceInfo.getLocation());
                                         volumnInfoListData.add(volumnMap);
                                     }
 
                                     if (archiveSize > 0) {
                                         Map<String, String> volumnMap =
                                                 new HashMap<String, String>();
-                                        volumnMap.put("0", "Total Archives");
-                                        volumnMap.put("1", "Archive log");
-                                        volumnMap.put("2", "-");
-                                        volumnMap.put("3", getSpaceDesc(archiveSize));
-                                        volumnMap.put("4", "-");
-                                        volumnMap.put("5", "-");
+                                        index = 0;
+                                        volumnMap.put(String.valueOf(index++), "Total Archives");
+                                        volumnMap.put(String.valueOf(index++), "Archive log");
+                                        if (serverInfo.isIntegratedVolume()) {
+                                            volumnMap.put(String.valueOf(index++), "");
+                                        }
+                                        volumnMap.put(String.valueOf(index++), "-");
+                                        volumnMap.put(String.valueOf(index++), getSpaceDesc(archiveSize));
+                                        volumnMap.put(String.valueOf(index++), "-");
+                                        volumnMap.put(String.valueOf(index++), "-");
                                         volumnInfoListData.add(volumnMap);
                                     }
                                 }
 
                                 setVolumnInfoData();
+
+                                if (serverInfo.isIntegratedVolume()) {
+                                    DbSpaceInfoListNew newList = (DbSpaceInfoListNew) dbSpaceInfoList;
+                                    newList.createFileSpaceDescriptionData(volumnfileSpaceData);
+                                    setVolumnFileInfoData();
+                                }
+
                                 loadVolumnTask.finish();
                             }
                         })
                 .start();
     }
-
+    
     /** load broker information */
     public void loadBrokerInfo() {
         // if database is stop, do not get data
@@ -2039,6 +2167,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
 
         if (input instanceof CubridDatabase) {
             database = (CubridDatabase) input;
+            serverInfo = database.getServer().getServerInfo();
         } else if (input instanceof DefaultSchemaNode) {
             ICubridNode node = (DefaultSchemaNode) input;
             if (CubridNodeType.DATABASE_FOLDER.equals(node.getType())) {
@@ -2121,4 +2250,5 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
     public boolean isSaveAsAllowed() {
         return false;
     }
+
 }
