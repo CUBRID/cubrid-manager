@@ -350,25 +350,47 @@ public class HostDashboardEditor extends CubridEditorPart {
         dbNameColumn.setToolTipText(Messages.columnDB);
         dbNameColumn.setWidth(150);
 
-        TableColumn dataColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
-        dataColumn.setText(Messages.columnData);
-        dataColumn.setToolTipText(Messages.columnDataTip);
-        dataColumn.setWidth(150);
-
-        TableColumn indexColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
-        indexColumn.setText(Messages.columnIndex);
-        indexColumn.setToolTipText(Messages.columnIndexTip);
-        indexColumn.setWidth(150);
-
-        TableColumn tempColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
-        tempColumn.setText(Messages.columnTemp);
-        tempColumn.setToolTipText(Messages.columnTempTip);
-        tempColumn.setWidth(150);
-
-        TableColumn genericColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
-        genericColumn.setText(Messages.columnGeneric);
-        genericColumn.setToolTipText(Messages.columnGenericTip);
-        genericColumn.setWidth(150);
+        TableColumn genericPermanentColumn;
+        TableColumn dataPerPerColumn;
+        TableColumn indexColumn;
+        TableColumn tempColumn;
+        
+        if (serverInfo.isIntegratedVolume()) {
+            genericPermanentColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
+            genericPermanentColumn.setText(Messages.columnPermanent);
+            genericPermanentColumn.setToolTipText(Messages.columnPermanentTip);
+            genericPermanentColumn.setWidth(150);
+            
+            dataPerPerColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
+            dataPerPerColumn.setText(Messages.columnPermanentTemp);
+            dataPerPerColumn.setToolTipText(Messages.columnPermanentTempTip);
+            dataPerPerColumn.setWidth(150);
+            
+            tempColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
+            tempColumn.setText(Messages.columnTempTemp);
+            tempColumn.setToolTipText(Messages.columnTempTempTip);
+            tempColumn.setWidth(150);
+        } else {
+            genericPermanentColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
+            genericPermanentColumn.setText(Messages.columnGeneric);
+            genericPermanentColumn.setToolTipText(Messages.columnGenericTip);
+            genericPermanentColumn.setWidth(150);
+            
+            dataPerPerColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
+            dataPerPerColumn.setText(Messages.columnData);
+            dataPerPerColumn.setToolTipText(Messages.columnDataTip);
+            dataPerPerColumn.setWidth(150);
+    
+            indexColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
+            indexColumn.setText(Messages.columnIndex);
+            indexColumn.setToolTipText(Messages.columnIndexTip);
+            indexColumn.setWidth(150);
+    
+            tempColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
+            tempColumn.setText(Messages.columnTemp);
+            tempColumn.setToolTipText(Messages.columnTempTip);
+            tempColumn.setWidth(150);
+        }
 
         TableColumn activeLogColumn = new TableColumn(volumeTableViewer.getTable(), SWT.LEFT);
         activeLogColumn.setText(Messages.columnActiveLog);
@@ -385,14 +407,6 @@ public class HostDashboardEditor extends CubridEditorPart {
         volumeInfoItem.setHeight(100);
         volumeInfoItem.setExpanded(true);
 
-        if (serverInfo.isIntegratedVolume()) {
-            dataColumn.setResizable(false);
-            indexColumn.setResizable(false);
-            dataColumn.setText("");
-            indexColumn.setText("");
-            genericColumn.setText(Messages.columnPermanent);
-            genericColumn.setToolTipText(Messages.columnPermanentTip);
-        }
     }
 
     private void createBrokerInfoItem(ExpandBar bar, int index) {
@@ -647,7 +661,9 @@ public class HostDashboardEditor extends CubridEditorPart {
 
     public void loadVolumeData() {
         // if no database on this server ,don't get volumn data
-        if (serverInfo.getAllDatabaseList().size() == 0 || databaseInfoList == null) {
+        if (serverInfo.getAllDatabaseList() == null || 
+                serverInfo.getAllDatabaseList().size() == 0 || 
+                databaseInfoList == null) {
             return;
         }
 
@@ -1591,12 +1607,12 @@ class ServerStatusLabelProvider implements ITableLabelProvider {
                 case 1:
                     return formater.format(
                                     StringUtil.convertToG(
-                                            new Double(hostStatus.getMemoryUsed()).longValue()
+                                            Double.valueOf(hostStatus.getMemoryUsed()).longValue()
                                                     * 1024))
                             + "GB / "
                             + formater.format(
                                     StringUtil.convertToG(
-                                            new Double(hostStatus.getMemoryPhy()).longValue()
+                                            Double.valueOf(hostStatus.getMemoryPhy()).longValue()
                                                     * 1024))
                             + "GB";
                 case 2:
@@ -1700,52 +1716,70 @@ class DBSpaceLabelProvider implements ITableLabelProvider, ITableColorProvider {
     public String getColumnText(Object obj, int index) {
         if (obj instanceof DBVolumeSpaceInfo) {
             DBVolumeSpaceInfo volumeSpaceInfo = (DBVolumeSpaceInfo) obj;
-            switch (index) {
+            
+            if (isIntegratedVolume) {
+                switch (index) {
                 case 0:
                     return volumeSpaceInfo.getDbName();
                 case 1:
-                    return getVolumeString(volumeSpaceInfo, VolumeType.DATA.getText());
+                    return getVolumeString(volumeSpaceInfo, VolumeType.PERMANENT.getText(), VolumeType.PERMANENT.getText());
                 case 2:
-                    return getVolumeString(volumeSpaceInfo, VolumeType.INDEX.getText());
+                    return getVolumeString(volumeSpaceInfo, VolumeType.PERMANENT.getText(), VolumeType.TEMPORARY.getText());
                 case 3:
-                    if (isIntegratedVolume) {
-                        return getVolumeString(volumeSpaceInfo, VolumeType.TEMPORARY.getText());
-                    }
-                    return getVolumeString(volumeSpaceInfo, VolumeType.TEMP.getText());
+                    return getVolumeString(volumeSpaceInfo, VolumeType.TEMPORARY.getText(), VolumeType.TEMPORARY.getText());
                 case 4:
-                    if (isIntegratedVolume) {
-                        return getVolumeString(volumeSpaceInfo, VolumeType.PERMANENT.getText());
-                    }
+                    return getLogString(volumeSpaceInfo, VolumeType.ACTIVE_LOG.getText());
+                case 5:
+                    return getLogString(volumeSpaceInfo, VolumeType.ARCHIVE_LOG.getText());
+                }
+            } else {
+                switch (index) {
+                case 0:
+                    return volumeSpaceInfo.getDbName();
+                case 1:
                     return getVolumeString(volumeSpaceInfo, VolumeType.GENERIC.getText());
+                case 2:
+                    return getVolumeString(volumeSpaceInfo, VolumeType.DATA.getText());
+                case 3:
+                    return getVolumeString(volumeSpaceInfo, VolumeType.INDEX.getText());
+                case 4:
+                    return getVolumeString(volumeSpaceInfo, VolumeType.TEMP.getText());
                 case 5:
                     return getLogString(volumeSpaceInfo, VolumeType.ACTIVE_LOG.getText());
                 case 6:
                     return getLogString(volumeSpaceInfo, VolumeType.ARCHIVE_LOG.getText());
+                }
             }
         }
         return null;
     }
 
     private String getVolumeString(
-            DBVolumeSpaceInfo volumeSpaceInfo, String type) { // FIXME extract
+            DBVolumeSpaceInfo volumeSpaceInfo, String type) {
+        return getVolumeString(volumeSpaceInfo, type, null);
+    }
+    
+    private String getVolumeString(
+            DBVolumeSpaceInfo volumeSpaceInfo, String type, String purpose) {
         long totalPage = 0;
         long freePage = 0;
-        Date lastCreateDate = null;
 
         StringBuilder sb = new StringBuilder();
         List<DbSpaceInfo> dbSpaceInfoList = volumeSpaceInfo.getVolumeSpaceInfo(type);
         if (dbSpaceInfoList != null) {
             for (DbSpaceInfo dbSpaceInfo : dbSpaceInfoList) {
-                totalPage += dbSpaceInfo.getTotalpage();
-                freePage += dbSpaceInfo.getFreepage();
+                if (purpose == null || dbSpaceInfo.getPurpose().equals(purpose)) {
+                    totalPage += dbSpaceInfo.getTotalpage();
+                    freePage += dbSpaceInfo.getFreepage();
+                }
             }
-        }
 
+        }
         if (totalPage > 0) {
             sb.append(getSpaceDesc((totalPage - freePage) * volumeSpaceInfo.getPageSize()))
                     .append(" / ");
             sb.append(getSpaceDesc(totalPage * volumeSpaceInfo.getPageSize())).append(" / ");
-            sb.append(new Double(freePage * 100.0d / totalPage).intValue()).append("%");
+            sb.append(Double.valueOf(freePage * 100.0d / totalPage).intValue()).append("%");
         } else {
             sb.append("-");
         }

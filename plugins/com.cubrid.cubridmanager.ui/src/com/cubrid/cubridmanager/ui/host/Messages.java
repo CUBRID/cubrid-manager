@@ -251,6 +251,10 @@ public class Messages extends NLS {
     public static String columnArchiveLog;
     public static String columnPermanent;
     public static String columnPermanentTip;
+    public static String columnPermanentTemp;
+    public static String columnPermanentTempTip;
+    public static String columnTempTemp;
+    public static String columnTempTempTip;
     public static String titleBrokerInfo;
     public static String titleSystemInfo;
     public static String columnType;
