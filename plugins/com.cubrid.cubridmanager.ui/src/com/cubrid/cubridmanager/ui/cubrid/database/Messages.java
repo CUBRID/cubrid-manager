@@ -548,7 +548,7 @@ public class Messages extends NLS {
     public static String volumnTableTotalsizeColumnLabel;
     public static String volumnTableVolumnNameColumnLabel;
     public static String volumnTableVolumnTypeColumnLabel;
-    public static String volumnTableVolumnPerposeColumnLabel;
+    public static String volumnTableVolumnPurposeColumnLabel;
     public static String volumnTableUsedAndRemainedSizeColumnLabel;
     public static String volumnFilesSpaceTypeColumnLabel;
     public static String volumnFilesSpaceFileCountColumnLabel;

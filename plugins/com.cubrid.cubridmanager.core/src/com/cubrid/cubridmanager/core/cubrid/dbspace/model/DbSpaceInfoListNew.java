@@ -274,8 +274,6 @@ public class DbSpaceInfoListNew extends DbSpaceInfoList {
         line.put("4", String.valueOf(totalReserved));
         line.put("5", String.valueOf(TotalSize));
         fileSpaceDescriptionData.add(line);
-        
-        
     }
 
     public void createVolumeDescriptionData(List<Map<String, String>> volumeDescriptionData) {

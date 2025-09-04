@@ -461,8 +461,8 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
             final TableViewerColumn columnPurpose =
                     new TableViewerColumn(volumnInfoTableViewer, SWT.CENTER);
             columnPurpose.getColumn().setWidth(90);
-            columnPurpose.getColumn().setText(Messages.volumnTableVolumnPerposeColumnLabel);
-            columnPurpose.getColumn().setToolTipText(Messages.volumnTableVolumnPerposeColumnLabel);
+            columnPurpose.getColumn().setText(Messages.volumnTableVolumnPurposeColumnLabel);
+            columnPurpose.getColumn().setToolTipText(Messages.volumnTableVolumnPurposeColumnLabel);
         }
 
         final TableViewerColumn columnFreeSize =
@@ -1403,7 +1403,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                         })
                 .start();
     }
-    
+
     /** load broker information */
     public void loadBrokerInfo() {
         // if database is stop, do not get data
@@ -2250,5 +2250,4 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
     public boolean isSaveAsAllowed() {
         return false;
     }
-
 }
