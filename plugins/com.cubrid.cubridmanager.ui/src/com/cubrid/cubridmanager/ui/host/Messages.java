@@ -414,4 +414,8 @@ public class Messages extends NLS {
     public static String lblValidOneYear;
     public static String lblValidOneMonth;
     public static String lblValidOneWeek;
+
+    public static String titleHAAddYesNoDialog;
+    public static String msgHAAddYesNoDialog1;
+    public static String msgHAAddYesNoDialog2;
 }

@@ -252,12 +252,21 @@ public class NavigatorTreeLabelProvider extends LabelProvider
         if (server.isConnected()) {
             HAHostStatusInfo haHostStatusInfo = server.getServerInfo().getHaHostStatusInfo();
             if (haHostStatusInfo != null) {
-                if (HostStatusType.REPLICA.equals(haHostStatusInfo.getStatusType())) {
-                    sb.append(" - [").append(Messages.lblServerReplica).append("]");
-                }
-
-                if (HostStatusType.UNKNOWN.equals(haHostStatusInfo.getStatusType())) {
-                    sb.append(" - [").append(Messages.lblServerUnknow).append("]");
+                switch (haHostStatusInfo.getStatusType()) {
+                    case MASTER:
+                        sb.append(" - [").append(Messages.lblServerMaster).append("]");
+                        break;
+                    case SLAVE:
+                        sb.append(" - [").append(Messages.lblServerSlave).append("]");
+                        break;
+                    case REPLICA:
+                        sb.append(" - [").append(Messages.lblServerReplica).append("]");
+                        break;
+                    case UNKNOWN:
+                        sb.append(" - [").append(Messages.lblServerUnknow).append("]");
+                        break;
+                    default:
+                        break;
                 }
             }
         }

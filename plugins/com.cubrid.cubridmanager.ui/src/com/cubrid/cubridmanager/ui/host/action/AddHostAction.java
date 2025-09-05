@@ -36,12 +36,21 @@ import com.cubrid.common.ui.spi.event.CubridNodeChangedEventType;
 import com.cubrid.common.ui.spi.model.CubridGroupNode;
 import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
+import com.cubrid.cubridmanager.core.mondashboard.model.HAHostStatusInfo;
+import com.cubrid.cubridmanager.core.mondashboard.model.HostStatusType;
+import com.cubrid.cubridmanager.core.mondashboard.task.GetHeartbeatNodeInfoTask;
 import com.cubrid.cubridmanager.ui.common.navigator.CubridHostNavigatorView;
 import com.cubrid.cubridmanager.ui.common.navigator.CubridMonitorNavigatorView;
+import com.cubrid.cubridmanager.ui.host.Messages;
 import com.cubrid.cubridmanager.ui.host.dialog.HostDialog;
 import com.cubrid.cubridmanager.ui.spi.model.loader.CubridServerLoader;
 import com.cubrid.cubridmanager.ui.spi.persist.CMGroupNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -111,13 +120,17 @@ public class AddHostAction extends SelectionAction {
     }
 
     public void doRun(Object[] nodes) {
+        doRun(nodes, null);
+    }
+
+    public void doRun(Object[] nodes, String hostName) {
         CubridGroupNode parent = getParentGroupNode(nodes);
         if (parent == null) {
             LOGGER.error("parent is null.");
             return;
         }
 
-        HostDialog dialog = new HostDialog(getShell(), true, false);
+        HostDialog dialog = new HostDialog(getShell(), true, false, hostName);
         int returnCode = dialog.open();
         if (returnCode == HostDialog.ADD_ID || returnCode == HostDialog.CONNECT_ID) {
             CubridServer server = getServerNode(dialog);
@@ -151,6 +164,39 @@ public class AddHostAction extends SelectionAction {
                             .fireCubridNodeChanged(
                                     new CubridNodeChangedEvent(
                                             server, CubridNodeChangedEventType.SERVER_CONNECTED));
+                    getHostStatus(server);
+                }
+
+                if (hostName == null) {
+                    HAHostStatusInfo haHostStatusInfo = server.getServerInfo().getHaHostStatusInfo();
+                    if (haHostStatusInfo != null) {
+                        HostStatusType type = haHostStatusInfo.getStatusType();
+                        HAHostStatusInfo masterInfo;
+                        if (type == HostStatusType.MASTER) {
+                            masterInfo = haHostStatusInfo;
+                        } else {
+                            masterInfo = haHostStatusInfo.getMasterHostStatusInfo();
+                        }
+                        List<HAHostStatusInfo> listInfo = masterInfo.getSlaveHostStatusInfoList();
+                        List<HAHostStatusInfo> addList = new ArrayList<HAHostStatusInfo>();
+                        for (HAHostStatusInfo info : listInfo) {
+                            if (!info.getHostName().equals(haHostStatusInfo.getHostName())) {
+                                addList.add(info);
+                            }
+                        }
+                        if (type == HostStatusType.MASTER) {
+                            boolean isFirst = true;
+                            for (HAHostStatusInfo info : addList) {
+                                showAddHost(type, info, isFirst);
+                                isFirst = false;
+                            }
+                        } else if (type == HostStatusType.SLAVE || type == HostStatusType.REPLICA) {
+                            showAddHost(type, masterInfo, true);
+                            for (HAHostStatusInfo info : addList) {
+                                showAddHost(type, info, false);
+                            }
+                        }
+                    }
                 }
             } else {
                 dialog.closeTestServerConnection();
@@ -189,5 +235,47 @@ public class AddHostAction extends SelectionAction {
         server.setLoader(new CubridServerLoader());
         server.setAutoSavePassword(dialog.isSavePassword());
         return server;
+    }
+
+    private void getHostStatus(final CubridServer server) {
+        final GetHeartbeatNodeInfoTask getHeartbeatNodeInfoTask =
+                new GetHeartbeatNodeInfoTask(server.getServerInfo());
+
+        getHeartbeatNodeInfoTask.setAllDb(true);
+        getHeartbeatNodeInfoTask.execute();
+
+        if (getHeartbeatNodeInfoTask.isSuccess()) {
+            HAHostStatusInfo haHostStatusInfo =
+                    getHeartbeatNodeInfoTask.getHostStatusInfo(
+                            server.getServerInfo().getHostAddress());
+            if (haHostStatusInfo != null) {
+                server.getServerInfo().setHaHostStatusInfo(haHostStatusInfo);
+            }
+        } else {
+            LOGGER.debug("Get host status error:" + getHeartbeatNodeInfoTask.getErrorMsg());
+        }
+    }
+
+    private void showAddHost(HostStatusType fistHostType, HAHostStatusInfo haHostInfo, boolean isFirst) {
+        if (haHostInfo != null) {
+            String msg = "";
+            if (isFirst) {
+                msg = Messages.bind(Messages.msgHAAddYesNoDialog1, 
+                        fistHostType.getText(), 
+                        haHostInfo.getHostName() + "(" + haHostInfo.getStatusType().getText() + ")");
+            } else {
+                msg = Messages.bind(Messages.msgHAAddYesNoDialog2,  
+                        haHostInfo.getHostName() + "(" + haHostInfo.getStatusType().getText() + ")");
+            }
+            boolean isConfirmed = MessageDialog.openQuestion(
+                    getShell(),
+                    Messages.titleHAAddYesNoDialog,
+                    msg
+            );
+
+            if (isConfirmed) {
+              doRun(this.getSelectedObj(), haHostInfo.getHostName());
+            }
+        }
     }
 }

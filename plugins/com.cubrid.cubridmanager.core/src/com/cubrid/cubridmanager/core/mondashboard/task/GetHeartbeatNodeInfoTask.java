@@ -272,7 +272,9 @@ public class GetHeartbeatNodeInfoTask extends SocketTask {
                 dbStatus.setStatusType(
                         DBStatusType.getType(serverMode, serverInfo.isHAMode(dbName)));
                 dbStatus.setHaHostStatusInfo(currentHaHostStatus);
-                currentHaHostStatus.addHADatabaseStatus(dbStatus);
+                if  (currentHaHostStatus != null) {
+                    currentHaHostStatus.addHADatabaseStatus(dbStatus);
+                }
             } else if (node.getValue("open").trim().equals("dbprocinfo")) {
                 String dbName = node.getValue("dbname");
                 String pid = node.getValue("pid");
