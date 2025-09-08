@@ -123,7 +123,7 @@ public class HostDialog extends CMTitleAreaDialog implements ModifyListener {
     }
 
     public HostDialog(Shell parentShell, boolean isNewHost, boolean actionIsConnect) {
-        this(parentShell, isNewHost, isNewHost, null);
+        this(parentShell, isNewHost, actionIsConnect, null);
     }
 
     /**

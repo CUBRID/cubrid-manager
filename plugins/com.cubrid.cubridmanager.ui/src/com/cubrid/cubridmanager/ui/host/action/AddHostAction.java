@@ -256,12 +256,12 @@ public class AddHostAction extends SelectionAction {
         }
     }
 
-    private void showAddHost(HostStatusType fistHostType, HAHostStatusInfo haHostInfo, boolean isFirst) {
+    private void showAddHost(HostStatusType firstHostType, HAHostStatusInfo haHostInfo, boolean isFirst) {
         if (haHostInfo != null) {
             String msg = "";
             if (isFirst) {
                 msg = Messages.bind(Messages.msgHAAddYesNoDialog1, 
-                        fistHostType.getText(), 
+                        firstHostType.getText(),
                         haHostInfo.getHostName() + "(" + haHostInfo.getStatusType().getText() + ")");
             } else {
                 msg = Messages.bind(Messages.msgHAAddYesNoDialog2,  
