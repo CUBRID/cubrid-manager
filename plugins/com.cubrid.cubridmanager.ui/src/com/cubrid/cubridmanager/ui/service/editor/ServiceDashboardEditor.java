@@ -204,8 +204,8 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                 ServiceDashboardEditorSorter.User_DESC);
 
         TreeViewerColumn volumnColumnData = new TreeViewerColumn(serviceTreeViewer, SWT.LEFT);
-        volumnColumnData.getColumn().setText(Messages.columnData);
-        volumnColumnData.getColumn().setToolTipText(Messages.columnDataTip);
+        volumnColumnData.getColumn().setText(Messages.columnPermanent);
+        volumnColumnData.getColumn().setToolTipText(Messages.columnPermanentTip);
         volumnColumnData.getColumn().pack();
         setColumnSorter(
                 volumnColumnData.getColumn(),
@@ -213,8 +213,8 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                 ServiceDashboardEditorSorter.Data_DESC);
 
         TreeViewerColumn volumnColumnIndex = new TreeViewerColumn(serviceTreeViewer, SWT.LEFT);
-        volumnColumnIndex.getColumn().setText(Messages.columnIndex);
-        volumnColumnIndex.getColumn().setToolTipText(Messages.columnIndexTip);
+        volumnColumnIndex.getColumn().setText(Messages.columnPermanentTemp);
+        volumnColumnIndex.getColumn().setToolTipText(Messages.columnPermanentTempTip);
         volumnColumnIndex.getColumn().pack();
         setColumnSorter(
                 volumnColumnIndex.getColumn(),
@@ -222,22 +222,13 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                 ServiceDashboardEditorSorter.Index_DESC);
 
         TreeViewerColumn volumnColumnTemp = new TreeViewerColumn(serviceTreeViewer, SWT.LEFT);
-        volumnColumnTemp.getColumn().setText(Messages.columnTemp);
-        volumnColumnTemp.getColumn().setToolTipText(Messages.columnTempTip);
+        volumnColumnTemp.getColumn().setText(Messages.columnTempTemp);
+        volumnColumnTemp.getColumn().setToolTipText(Messages.columnTempTempTip);
         volumnColumnTemp.getColumn().pack();
         setColumnSorter(
                 volumnColumnTemp.getColumn(),
                 ServiceDashboardEditorSorter.Temp_ASC,
                 ServiceDashboardEditorSorter.Temp_DESC);
-
-        TreeViewerColumn volumnColumnGeneric = new TreeViewerColumn(serviceTreeViewer, SWT.LEFT);
-        volumnColumnGeneric.getColumn().setText(Messages.columnGeneric);
-        volumnColumnGeneric.getColumn().setToolTipText(Messages.columnGenericTip);
-        volumnColumnGeneric.getColumn().pack();
-        setColumnSorter(
-                volumnColumnGeneric.getColumn(),
-                ServiceDashboardEditorSorter.Generic_ASC,
-                ServiceDashboardEditorSorter.Generic_DESC);
 
         TreeColumn tpsColumn = new TreeColumn(serviceTreeViewer.getTree(), SWT.LEFT);
         tpsColumn.setText(Messages.columnTps);
@@ -317,7 +308,6 @@ public class ServiceDashboardEditor extends CubridEditorPart {
         addCellTip(volumnColumnData, 1);
         addCellTip(volumnColumnIndex, 2);
         addCellTip(volumnColumnTemp, 3);
-        addCellTip(volumnColumnGeneric, 4);
 
         serviceTreeViewer
                 .getTree()
@@ -881,14 +871,12 @@ public class ServiceDashboardEditor extends CubridEditorPart {
     private void setVolumeData(
             ServiceDashboardInfo sDashInfo,
             List<CommonQueryTask<DbSpaceInfoList>> getVolumnTaskList) {
-        long totalPageData = 0,
-                freePageData = 0,
-                totalPageIndex = 0,
-                freePageIndex = 0,
-                totalPageTemp = 0,
-                freePageTemp = 0,
-                totalPageGeneric = 0,
-                freePageGeneric = 0,
+        long totalPagePermanent = 0,
+                freePagePermanent = 0,
+                totalPagePermanentTemp = 0,
+                freePagePermanentTemp = 0,
+                totalPageTempTemp = 0,
+                freePageTempTemp = 0,
                 freespaceOnStorage = 0;
 
         for (CommonQueryTask<DbSpaceInfoList> task : getVolumnTaskList) {
@@ -897,39 +885,46 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                 freespaceOnStorage = ((long) dbSpaceInfoList.getFreespace()) * 1024l * 1024l;
                 for (DbSpaceInfo spaceInfo : dbSpaceInfoList.getSpaceinfo()) {
                     String type = spaceInfo.getType();
+                    String purpose = spaceInfo.getPurpose();
                     if (type.equals(VolumeType.DATA.getText())) {
-                        totalPageData += spaceInfo.getTotalpage();
-                        freePageData += spaceInfo.getFreepage();
+                        totalPagePermanent += spaceInfo.getTotalpage();
+                        freePagePermanent += spaceInfo.getFreepage();
                     } else if (type.equals(VolumeType.INDEX.getText())) {
-                        totalPageIndex += spaceInfo.getTotalpage();
-                        freePageIndex += spaceInfo.getFreepage();
+                        totalPagePermanent += spaceInfo.getTotalpage();
+                        freePagePermanent += spaceInfo.getFreepage();
                     } else if (type.equals(VolumeType.TEMP.getText())) {
-                        totalPageTemp += spaceInfo.getTotalpage();
-                        freePageTemp += spaceInfo.getFreepage();
+                        totalPagePermanentTemp += spaceInfo.getTotalpage();
+                        freePagePermanentTemp += spaceInfo.getFreepage();
                     } else if (type.equals(VolumeType.GENERIC.getText())) {
-                        totalPageGeneric += spaceInfo.getTotalpage();
-                        freePageGeneric += spaceInfo.getFreepage();
+                        totalPagePermanent += spaceInfo.getTotalpage();
+                        freePagePermanent += spaceInfo.getFreepage();
+                    } else if (type.equals(VolumeType.PERMANENT.getText())) {
+                       if (purpose.equals(VolumeType.PERMANENT.getText())) {
+                           totalPagePermanent += spaceInfo.getTotalpage();
+                           freePagePermanent += spaceInfo.getFreepage();
+                       } else {
+                           totalPagePermanentTemp += spaceInfo.getTotalpage();
+                           freePagePermanentTemp += spaceInfo.getFreepage();
+                       }
+                    } else if (type.equals(VolumeType.TEMPORARY.getText())) {
+                        totalPageTempTemp += spaceInfo.getTotalpage();
+                        freePageTempTemp += spaceInfo.getFreepage();
                     }
                 }
             }
         }
-        if (totalPageData > 0)
-            sDashInfo.setFreeDataPerc(new Double(freePageData * 100.0d / totalPageData).intValue());
-        else sDashInfo.setFreeDataPerc(-1);
+        if (totalPagePermanent > 0)
+            sDashInfo.setFreePermanentPerc(Double.valueOf(freePagePermanent * 100.0d / totalPagePermanent).intValue());
+        else sDashInfo.setFreePermanentPerc(-1);
 
-        if (totalPageIndex > 0)
-            sDashInfo.setFreeIndexPerc(
-                    new Double(freePageIndex * 100.0d / totalPageIndex).intValue());
-        else sDashInfo.setFreeIndexPerc(-1);
+        if (totalPagePermanentTemp > 0)
+            sDashInfo.setFreePermanentTempPerc(
+                    Double.valueOf(freePagePermanentTemp * 100.0d / totalPagePermanentTemp).intValue());
+        else sDashInfo.setFreePermanentTempPerc(-1);
 
-        if (totalPageTemp > 0)
-            sDashInfo.setFreeTempPerc(new Double(freePageTemp * 100.0d / totalPageTemp).intValue());
-        else sDashInfo.setFreeTempPerc(-1);
-
-        if (totalPageGeneric > 0)
-            sDashInfo.setFreeGenericPerc(
-                    new Double(freePageGeneric * 100.0d / totalPageGeneric).intValue());
-        else sDashInfo.setFreeGenericPerc(-1);
+        if (totalPageTempTemp > 0)
+            sDashInfo.setFreeTempTempPerc(Double.valueOf(freePageTempTemp * 100.0d / totalPageTempTemp).intValue());
+        else sDashInfo.setFreeTempTempPerc(-1);
 
         sDashInfo.setFreespaceOnStorage(freespaceOnStorage);
     }
@@ -1034,7 +1029,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                             switch (type) {
                                 case 1:
                                     int freeDataPerc =
-                                            ((ServiceDashboardInfo) element).getFreeDataPerc();
+                                            ((ServiceDashboardInfo) element).getFreePermanentPerc();
                                     columnText =
                                             ((ServiceDashboardInfo) element)
                                                                     .getServer()
@@ -1045,7 +1040,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                                     break;
                                 case 2:
                                     int freeIndexPerc =
-                                            ((ServiceDashboardInfo) element).getFreeIndexPerc();
+                                            ((ServiceDashboardInfo) element).getFreePermanentTempPerc();
                                     columnText =
                                             ((ServiceDashboardInfo) element)
                                                                     .getServer()
@@ -1056,24 +1051,13 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                                     break;
                                 case 3:
                                     int freeTempPerc =
-                                            ((ServiceDashboardInfo) element).getFreeTempPerc();
+                                            ((ServiceDashboardInfo) element).getFreeTempTempPerc();
                                     columnText =
                                             ((ServiceDashboardInfo) element)
                                                                     .getServer()
                                                                     .isConnected()
                                                             && freeTempPerc >= 0
                                                     ? freeTempPerc + "%"
-                                                    : "-";
-                                    break;
-                                case 4:
-                                    int freeGenericPerc =
-                                            ((ServiceDashboardInfo) element).getFreeGenericPerc();
-                                    columnText =
-                                            ((ServiceDashboardInfo) element)
-                                                                    .getServer()
-                                                                    .isConnected()
-                                                            && freeGenericPerc >= 0
-                                                    ? freeGenericPerc + "%"
                                                     : "-";
                                     break;
                             }
@@ -1088,7 +1072,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                             switch (type) {
                                 case 1:
                                     int freeDataPerc =
-                                            ((ServiceDashboardInfo) element).getFreeDataPerc();
+                                            ((ServiceDashboardInfo) element).getFreePermanentPerc();
                                     String freeDataPercText =
                                             ((ServiceDashboardInfo) element)
                                                                     .getServer()
@@ -1096,11 +1080,11 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                                                             && freeDataPerc >= 0
                                                     ? freeDataPerc + "%"
                                                     : "-";
-                                    tipText = Messages.columnDataTip + " : " + freeDataPercText;
+                                    tipText = Messages.columnPermanent + " : " + freeDataPercText;
                                     break;
                                 case 2:
                                     int freeIndexPerc =
-                                            ((ServiceDashboardInfo) element).getFreeIndexPerc();
+                                            ((ServiceDashboardInfo) element).getFreePermanentTempPerc();
                                     String freeIndexPercText =
                                             ((ServiceDashboardInfo) element)
                                                                     .getServer()
@@ -1108,11 +1092,11 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                                                             && freeIndexPerc >= 0
                                                     ? freeIndexPerc + "%"
                                                     : "-";
-                                    tipText = Messages.columnIndexTip + " : " + freeIndexPercText;
+                                    tipText = Messages.columnPermanentTempTip + " : " + freeIndexPercText;
                                     break;
                                 case 3:
                                     int freeTempPerc =
-                                            ((ServiceDashboardInfo) element).getFreeTempPerc();
+                                            ((ServiceDashboardInfo) element).getFreeTempTempPerc();
                                     String freeTempPercText =
                                             ((ServiceDashboardInfo) element)
                                                                     .getServer()
@@ -1120,20 +1104,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                                                             && freeTempPerc >= 0
                                                     ? freeTempPerc + "%"
                                                     : "-";
-                                    tipText = Messages.columnTempTip + " : " + freeTempPercText;
-                                    break;
-                                case 4:
-                                    int freeGenericPerc =
-                                            ((ServiceDashboardInfo) element).getFreeGenericPerc();
-                                    String freeGenericPercText =
-                                            ((ServiceDashboardInfo) element)
-                                                                    .getServer()
-                                                                    .isConnected()
-                                                            && freeGenericPerc >= 0
-                                                    ? freeGenericPerc + "%"
-                                                    : "-";
-                                    tipText =
-                                            Messages.columnGenericTip + " : " + freeGenericPercText;
+                                    tipText = Messages.columnTempTempTip + " : " + freeTempPercText;
                                     break;
                             }
                         }

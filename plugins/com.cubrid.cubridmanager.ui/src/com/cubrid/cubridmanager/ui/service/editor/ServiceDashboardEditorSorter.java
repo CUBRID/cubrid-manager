@@ -14,19 +14,18 @@ public class ServiceDashboardEditorSorter extends ViewerSorter {
     private static final int Address = 2;
     private static final int Port = 3;
     private static final int User = 4;
-    private static final int Data = 5;
-    private static final int Index = 6;
-    private static final int Temp = 7;
-    private static final int Generic = 8;
-    private static final int Tps = 9;
-    private static final int Qps = 10;
-    private static final int ErrorQ = 11;
-    private static final int Memory = 12;
-    private static final int Disk = 13;
-    private static final int Cpu = 14;
-    private static final int DbStatus = 15;
-    private static final int Version = 16;
-    private static final int BrokerPort = 17;
+    private static final int Permanent = 5;
+    private static final int PermanentTemp = 6;
+    private static final int TempTemp = 7;
+    private static final int Tps = 8;
+    private static final int Qps = 9;
+    private static final int ErrorQ = 10;
+    private static final int Memory = 11;
+    private static final int Disk = 12;
+    private static final int Cpu = 13;
+    private static final int DbStatus = 14;
+    private static final int Version = 15;
+    private static final int BrokerPort = 16;
 
     public static final ServiceDashboardEditorSorter Name_ASC =
             new ServiceDashboardEditorSorter(Name);
@@ -45,21 +44,17 @@ public class ServiceDashboardEditorSorter extends ViewerSorter {
     public static final ServiceDashboardEditorSorter User_DESC =
             new ServiceDashboardEditorSorter(-User);
     public static final ServiceDashboardEditorSorter Data_ASC =
-            new ServiceDashboardEditorSorter(Data);
+            new ServiceDashboardEditorSorter(Permanent);
     public static final ServiceDashboardEditorSorter Data_DESC =
-            new ServiceDashboardEditorSorter(-Data);
+            new ServiceDashboardEditorSorter(-Permanent);
     public static final ServiceDashboardEditorSorter Index_ASC =
-            new ServiceDashboardEditorSorter(Index);
+            new ServiceDashboardEditorSorter(PermanentTemp);
     public static final ServiceDashboardEditorSorter Index_DESC =
-            new ServiceDashboardEditorSorter(-Index);
+            new ServiceDashboardEditorSorter(-PermanentTemp);
     public static final ServiceDashboardEditorSorter Temp_ASC =
-            new ServiceDashboardEditorSorter(Temp);
+            new ServiceDashboardEditorSorter(TempTemp);
     public static final ServiceDashboardEditorSorter Temp_DESC =
-            new ServiceDashboardEditorSorter(-Temp);
-    public static final ServiceDashboardEditorSorter Generic_ASC =
-            new ServiceDashboardEditorSorter(Generic);
-    public static final ServiceDashboardEditorSorter Generic_DESC =
-            new ServiceDashboardEditorSorter(-Generic);
+            new ServiceDashboardEditorSorter(-TempTemp);
     public static final ServiceDashboardEditorSorter Tps_ASC =
             new ServiceDashboardEditorSorter(Tps);
     public static final ServiceDashboardEditorSorter Tps_DESC =
@@ -158,53 +153,41 @@ public class ServiceDashboardEditorSorter extends ViewerSorter {
                         String user2 = cm2.getServer().getUserName();
                         return user2.compareTo(user1);
                     }
-                case Data:
+                case Permanent:
                     {
-                        Integer data1 = cm1.getFreeDataPerc();
-                        Integer data2 = cm2.getFreeDataPerc();
+                        Integer data1 = cm1.getFreePermanentPerc();
+                        Integer data2 = cm2.getFreePermanentPerc();
                         return data1.compareTo(data2);
                     }
-                case -Data:
+                case -Permanent:
                     {
-                        Integer data1 = cm1.getFreeDataPerc();
-                        Integer data2 = cm2.getFreeDataPerc();
+                        Integer data1 = cm1.getFreePermanentPerc();
+                        Integer data2 = cm2.getFreePermanentPerc();
                         return data2.compareTo(data1);
                     }
-                case Index:
+                case PermanentTemp:
                     {
-                        Integer index1 = cm1.getFreeIndexPerc();
-                        Integer index2 = cm2.getFreeIndexPerc();
+                        Integer index1 = cm1.getFreePermanentTempPerc();
+                        Integer index2 = cm2.getFreePermanentTempPerc();
                         return index1.compareTo(index2);
                     }
-                case -Index:
+                case -PermanentTemp:
                     {
-                        Integer index1 = cm1.getFreeIndexPerc();
-                        Integer index2 = cm2.getFreeIndexPerc();
+                        Integer index1 = cm1.getFreePermanentTempPerc();
+                        Integer index2 = cm2.getFreePermanentTempPerc();
                         return index2.compareTo(index1);
                     }
-                case Temp:
+                case TempTemp:
                     {
-                        Integer temp1 = cm1.getFreeTempPerc();
-                        Integer temp2 = cm2.getFreeTempPerc();
+                        Integer temp1 = cm1.getFreeTempTempPerc();
+                        Integer temp2 = cm2.getFreeTempTempPerc();
                         return temp1.compareTo(temp2);
                     }
-                case -Temp:
+                case -TempTemp:
                     {
-                        Integer temp1 = cm1.getFreeTempPerc();
-                        Integer temp2 = cm2.getFreeTempPerc();
+                        Integer temp1 = cm1.getFreeTempTempPerc();
+                        Integer temp2 = cm2.getFreeTempTempPerc();
                         return temp2.compareTo(temp1);
-                    }
-                case Generic:
-                    {
-                        Integer generic1 = cm1.getFreeGenericPerc();
-                        Integer generic2 = cm2.getFreeGenericPerc();
-                        return generic1.compareTo(generic2);
-                    }
-                case -Generic:
-                    {
-                        Integer generic1 = cm1.getFreeGenericPerc();
-                        Integer generic2 = cm2.getFreeGenericPerc();
-                        return generic2.compareTo(generic1);
                     }
                 case Tps:
                     {

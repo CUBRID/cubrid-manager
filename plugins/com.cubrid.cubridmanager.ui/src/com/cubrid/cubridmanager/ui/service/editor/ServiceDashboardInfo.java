@@ -11,7 +11,7 @@ import com.cubrid.common.ui.spi.model.DefaultCubridNode;
  */
 public class ServiceDashboardInfo extends DefaultCubridNode {
     private CubridServer server;
-    private int freeDataPerc, freeIndexPerc, freeTempPerc, freeGenericPerc;
+    private int freePermanentPerc, freePermanentTempPerc, freeTempTempPerc;
     private int tps, qps, errorQ;
     private int databaseOn, databaseOff;
     private long freespaceOnStorage;
@@ -23,46 +23,37 @@ public class ServiceDashboardInfo extends DefaultCubridNode {
             String id, String label, String disconnectedIconPath, CubridServer server) {
         super(id, label, disconnectedIconPath);
         this.server = server;
-        this.freeDataPerc = -1;
-        this.freeIndexPerc = -1;
-        this.freeTempPerc = -1;
-        this.freeGenericPerc = -1;
+        this.freePermanentPerc = -1;
+        this.freePermanentTempPerc = -1;
+        this.freeTempTempPerc = -1;
     }
 
     public CubridServer getServer() {
         return server;
     }
 
-    public void setFreeDataPerc(int freeDataPerc) {
-        this.freeDataPerc = freeDataPerc;
+    public void setFreePermanentPerc(int freeDataPerc) {
+        this.freePermanentPerc = freeDataPerc;
     }
 
-    public int getFreeDataPerc() {
-        return this.freeDataPerc;
+    public int getFreePermanentPerc() {
+        return this.freePermanentPerc;
     }
 
-    public void setFreeIndexPerc(int freeIndexPerc) {
-        this.freeIndexPerc = freeIndexPerc;
+    public void setFreePermanentTempPerc(int freePermanentTempPerc) {
+        this.freePermanentTempPerc = freePermanentTempPerc;
     }
 
-    public int getFreeIndexPerc() {
-        return this.freeIndexPerc;
+    public int getFreePermanentTempPerc() {
+        return this.freePermanentTempPerc;
     }
 
-    public void setFreeTempPerc(int freeTempPerc) {
-        this.freeTempPerc = freeTempPerc;
+    public void setFreeTempTempPerc(int freeTempTempPerc) {
+        this.freeTempTempPerc = freeTempTempPerc;
     }
 
-    public int getFreeTempPerc() {
-        return this.freeTempPerc;
-    }
-
-    public void setFreeGenericPerc(int freeGenericPerc) {
-        this.freeGenericPerc = freeGenericPerc;
-    }
-
-    public int getFreeGenericPerc() {
-        return this.freeGenericPerc;
+    public int getFreeTempTempPerc() {
+        return this.freeTempTempPerc;
     }
 
     public void setServerTps(int tps) {

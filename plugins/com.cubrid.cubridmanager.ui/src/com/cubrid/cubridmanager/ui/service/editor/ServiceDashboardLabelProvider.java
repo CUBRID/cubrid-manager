@@ -160,43 +160,36 @@ public class ServiceDashboardLabelProvider extends LabelProvider
                     case 3:
                         return server.getUserName() == null ? "" : server.getUserName();
                     case 4:
-                        int freeDataPerc = sDashInfo.getFreeDataPerc();
-                        String freeDataPercText =
-                                sDashInfo.getServer().isConnected() && freeDataPerc >= 0
-                                        ? freeDataPerc + "%"
+                        int freePermanentPerc = sDashInfo.getFreePermanentPerc();
+                        String freePermanentPercText =
+                                sDashInfo.getServer().isConnected() && freePermanentPerc >= 0
+                                        ? freePermanentPerc + "%"
                                         : "-";
-                        return freeDataPercText;
+                        return freePermanentPercText;
                     case 5:
-                        int freeIndexPerc = sDashInfo.getFreeIndexPerc();
-                        String freeIndexPercText =
-                                sDashInfo.getServer().isConnected() && freeIndexPerc >= 0
-                                        ? freeIndexPerc + "%"
+                        int freeePermanentTempPerc = sDashInfo.getFreePermanentTempPerc();
+                        String freePermanentTempPercText =
+                                sDashInfo.getServer().isConnected() && freeePermanentTempPerc >= 0
+                                        ? freeePermanentTempPerc + "%"
                                         : "-";
-                        return freeIndexPercText;
+                        return freePermanentTempPercText;
                     case 6:
-                        int freeTempPerc = sDashInfo.getFreeTempPerc();
-                        String freeTempPercText =
-                                sDashInfo.getServer().isConnected() && freeTempPerc >= 0
-                                        ? freeTempPerc + "%"
+                        int freeTempTempPerc = sDashInfo.getFreeTempTempPerc();
+                        String freeTempTempPercText =
+                                sDashInfo.getServer().isConnected() && freeTempTempPerc >= 0
+                                        ? freeTempTempPerc + "%"
                                         : "-";
-                        return freeTempPercText;
+                        return freeTempTempPercText;
                     case 7:
-                        int freeGenericPerc = sDashInfo.getFreeGenericPerc();
-                        String freeGenericPercText =
-                                sDashInfo.getServer().isConnected() && freeGenericPerc >= 0
-                                        ? freeGenericPerc + "%"
-                                        : "-";
-                        return freeGenericPercText;
-                    case 8:
                         int tps = sDashInfo.getServerTps();
                         return sDashInfo.getServer().isConnected() ? Integer.toString(tps) : "-";
-                    case 9:
+                    case 8:
                         int qps = sDashInfo.getServerQps();
                         return sDashInfo.getServer().isConnected() ? Integer.toString(qps) : "-";
-                    case 10:
+                    case 9:
                         int errorQ = sDashInfo.getServerErrorQ();
                         return sDashInfo.getServer().isConnected() ? Integer.toString(errorQ) : "-";
-                    case 11:
+                    case 10:
                         double memUsed = sDashInfo.getMemUsed();
                         double memTotal = sDashInfo.getMemTotal();
                         return sDashInfo.getServer().isConnected()
@@ -209,20 +202,20 @@ public class ServiceDashboardLabelProvider extends LabelProvider
                                                         new Double(memTotal).longValue() * 1024))
                                         + "GB"
                                 : "- / -";
-                    case 12:
+                    case 11:
                         long freespaceOnStorage = sDashInfo.getFreespaceOnStorage();
                         return sDashInfo.getServer().isConnected()
                                 ? getSpaceDesc(freespaceOnStorage)
                                 : "-";
-                    case 13:
+                    case 12:
                         double cpuUsed = sDashInfo.getCpuUsed();
                         return sDashInfo.getServer().isConnected() ? cpuUsed + "%" : "-";
-                    case 14:
+                    case 13:
                         return sDashInfo.getServer().isConnected() ? "Yes" : "No";
-                    case 15:
+                    case 14:
                         String serverVersion = sDashInfo.getServerVersion();
                         return sDashInfo.getServer().isConnected() ? serverVersion : "-";
-                    case 16:
+                    case 15:
                         String brokerPort = sDashInfo.getBrokerPort();
                         return sDashInfo.getServer().isConnected() ? brokerPort : "-";
                 }
