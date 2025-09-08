@@ -458,7 +458,6 @@ public class GetSchemaTask extends JDBCTask {
                 fkInfo.put("PKTABLE_CAT", rs.getString("PKTABLE_CAT"));
                 fkInfo.put("PKTABLE_SCHEM", rs.getString("PKTABLE_SCHEM"));
                 String pkTableName = rs.getString("PKTABLE_NAME");
-                ;
                 String fkTableName = rs.getString("FKTABLE_NAME");
                 if (databaseInfo.isSupportUserSchema()) {
                     pkTableName = schemaNameToUpperCase(pkTableName);
@@ -609,7 +608,15 @@ public class GetSchemaTask extends JDBCTask {
                         Map<String, String> fkInfo = foreignKeys.get(attrName);
                         if (null != fkInfo) {
                             String referencedTable = c.getReferencedTable();
-                            String pkTable = fkInfo.get("PKTABLE_NAME");
+                            String pkTable;
+                            if (isSupportUserSchema) {
+                                pkTable = fkInfo.get("PKTABLE_NAME");
+                                if (pkTable.indexOf(".") == -1) {
+                                    pkTable = fkInfo.get("PKTABLE_SCHEM") + "." + pkTable;
+                                }
+                            } else {
+                                pkTable = fkInfo.get("PKTABLE_NAME");
+                            }
                             if (StringUtil.isEqual(referencedTable, pkTable)) {
                                 continue;
                             }
