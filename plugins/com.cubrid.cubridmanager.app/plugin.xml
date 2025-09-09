@@ -29,10 +29,6 @@
                value="icons/cubridmanager16.gif,icons/cubridmanager32.gif,icons/cubridmanager48.gif,icons/cubridmanager64.gif">
          </property>
           <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
-         </property>
-          <property
                 name="startupForegroundColor"
                 value="C0C0C0">
           </property>
@@ -43,6 +39,10 @@
           <property
                 name="startupProgressRect"
                 value="5,380,557,15">
+          </property>
+          <property
+                name="preferenceCustomization"
+                value="plugin_customization.ini">
           </property>
       </product>
    </extension>

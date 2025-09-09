@@ -14,7 +14,7 @@
     
     <modules>
         <module>com.cubrid.common.core.testfragment</module>
-	<module>com.cubrid.cubridmanager.core.testfragment</module>
+        <module>com.cubrid.cubridmanager.core.testfragment</module>
         <module>com.cubrid.cubridmanager.jdbc.proxy.testfragment</module>
     </modules>
 </project>

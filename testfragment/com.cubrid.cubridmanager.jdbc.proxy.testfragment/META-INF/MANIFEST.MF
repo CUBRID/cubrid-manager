@@ -5,6 +5,6 @@ Bundle-SymbolicName: com.cubrid.cubridmanager.jdbc.proxy.testfragment
 Bundle-Version: 9.3.1.qualifier
 Bundle-Vendor: CUBRID
 Fragment-Host: com.cubrid.cubridmanager.jdbc.proxy;bundle-version="9.3.1"
-Require-Bundle: org.junit,
- com.cubrid.cubridmanager.jdbc.proxy
+Require-Bundle: org.junit
+Bundle-ClassPath: .
 Automatic-Module-Name: com.cubrid.cubridmanager.jdbc.proxy.testfragment
