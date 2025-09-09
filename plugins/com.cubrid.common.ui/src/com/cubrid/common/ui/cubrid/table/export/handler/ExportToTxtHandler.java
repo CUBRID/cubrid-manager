@@ -197,7 +197,6 @@ public class ExportToTxtHandler extends AbsExportDataHandler {
                 }
                 if (hasNextPage(beginIndex, totalRecord)) {
                     hasNextPage = true;
-                    fs.write(rowSeprator);
                 } else {
                     hasNextPage = false;
                 }

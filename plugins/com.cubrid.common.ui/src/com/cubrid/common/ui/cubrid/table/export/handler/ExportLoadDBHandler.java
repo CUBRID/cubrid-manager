@@ -32,7 +32,6 @@ package com.cubrid.common.ui.cubrid.table.export.handler;
 import com.cubrid.common.core.util.FileUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
-import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.event.ExportDataBeginOneTableEvent;
 import com.cubrid.common.ui.cubrid.table.event.ExportDataFailedOneTableEvent;
 import com.cubrid.common.ui.cubrid.table.event.ExportDataFinishOneTableEvent;
@@ -257,7 +256,6 @@ public class ExportLoadDBHandler extends AbsExportDataHandler {
 
                     if (hasNextPage(beginIndex, totalRecord)) {
                         hasNextPage = true;
-                        fs.write(StringUtil.NEWLINE);
                     } else {
                         hasNextPage = false;
                     }
