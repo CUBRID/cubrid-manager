@@ -1080,7 +1080,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                                                             && freeDataPerc >= 0
                                                     ? freeDataPerc + "%"
                                                     : "-";
-                                    tipText = Messages.columnPermanent + " : " + freeDataPercText;
+                                    tipText = Messages.columnPermanentTip + " : " + freeDataPercText;
                                     break;
                                 case 2:
                                     int freeIndexPerc =

@@ -167,10 +167,10 @@ public class ServiceDashboardLabelProvider extends LabelProvider
                                         : "-";
                         return freePermanentPercText;
                     case 5:
-                        int freeePermanentTempPerc = sDashInfo.getFreePermanentTempPerc();
+                        int freePermanentTempPerc = sDashInfo.getFreePermanentTempPerc();
                         String freePermanentTempPercText =
-                                sDashInfo.getServer().isConnected() && freeePermanentTempPerc >= 0
-                                        ? freeePermanentTempPerc + "%"
+                                sDashInfo.getServer().isConnected() && freePermanentTempPerc >= 0
+                                        ? freePermanentTempPerc + "%"
                                         : "-";
                         return freePermanentTempPercText;
                     case 6:
