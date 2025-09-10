@@ -870,11 +870,11 @@ public class GetAllSchemaTask extends JDBCTask {
                 }
                 String attrName = rs.getString("attr_name");
                 String type = rs.getString("attr_type");
-                String dateType = rs.getString("data_type");
+                String dataType = rs.getString("data_type");
                 String prec = rs.getString("prec");
                 String scale = rs.getString("scale");
 
-                String subType = DataType.convertAttrTypeString(dateType, prec, scale);
+                String subType = DataType.convertAttrTypeString(dataType, prec, scale);
                 Map<String, List<SubAttribute>> columnMap;
 
                 columnMap = schemaColumnMap.get(uniqueName);
