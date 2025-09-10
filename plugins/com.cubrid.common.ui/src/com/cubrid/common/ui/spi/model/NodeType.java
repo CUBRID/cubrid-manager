@@ -56,6 +56,8 @@ public class NodeType {
             "STORED_PROCEDURE_PROCEDURE_FOLDER";
     public static final String STORED_PROCEDURE_FUNCTION = "STORED_PROCEDURE_FUNCTION";
     public static final String STORED_PROCEDURE_PROCEDURE = "STORED_PROCEDURE_PROCEDURE";
+    public static final String STORED_PROCEDURE_FUNCTION_PLCSQL = "STORED_PROCEDURE_FUNCTION_PLCSQL";
+    public static final String STORED_PROCEDURE_PROCEDURE_PLCSQL = "STORED_PROCEDURE_PROCEDURE_PLCSQL";
     public static final String TRIGGER_FOLDER = "TRIGGER_FOLDER";
     public static final String TRIGGER = "TRIGGER";
     public static final String SYNONYM_FOLDER = "SYNONYM_FOLDER";

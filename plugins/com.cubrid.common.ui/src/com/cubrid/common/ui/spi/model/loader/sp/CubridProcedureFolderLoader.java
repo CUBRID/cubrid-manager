@@ -136,10 +136,20 @@ public class CubridProcedureFolderLoader extends CubridNodeLoader {
      * @return ICubridNode
      */
     public static ICubridNode createProcedureNode(String id, SPInfo spInfo) {
+        String icon;
+        String type;
+        if (spInfo.getLanguage().equals("JAVA")) {
+            icon = "icons/navigator/procedure_sp_item.png";
+            type = NodeType.STORED_PROCEDURE_PROCEDURE;
+        } else {
+            icon = "icons/navigator/procedure_plcsql_sp_item.png";
+            type = NodeType.STORED_PROCEDURE_PROCEDURE_PLCSQL;
+        }
+
         ICubridNode spNode =
                 new DefaultSchemaNode(
-                        id, spInfo.getSpName(), "icons/navigator/procedure_sp_item.png");
-        spNode.setType(NodeType.STORED_PROCEDURE_PROCEDURE);
+                        id, spInfo.getSpName(), icon);
+        spNode.setType(type);
         spNode.setModelObj(spInfo);
         spNode.setContainer(false);
         return spNode;
