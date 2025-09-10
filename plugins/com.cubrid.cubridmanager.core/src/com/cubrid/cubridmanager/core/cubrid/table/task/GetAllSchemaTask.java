@@ -838,11 +838,18 @@ public class GetAllSchemaTask extends JDBCTask {
      * @throws SQLException the exception
      */
     private void getTypeInfo() throws SQLException {
-        String sql =
-                "SELECT a.class_name, a.attr_name, a.attr_type,"
-                        + " a.data_type, a.prec, a.scale"
-                        + " FROM db_attr_setdomain_elm a"
-                        + " ORDER BY a.class_name, a.attr_name";
+        String sql;
+        if (databaseInfo.isSupportUserSchema()) {
+            sql = "SELECT a.owner_name, a.class_name, a.attr_name, a.attr_type,"
+                    + " a.data_type, a.prec, a.scale"
+                    + " FROM db_attr_setdomain_elm a"
+                    + " ORDER BY a.class_name, a.attr_name";
+        } else {
+            sql = "SELECT a.class_name, a.attr_name, a.attr_type,"
+                    + " a.data_type, a.prec, a.scale"
+                    + " FROM db_attr_setdomain_elm a"
+                    + " ORDER BY a.class_name, a.attr_name";
+        }
 
         // [TOOLS-2425]Support shard broker
         sql = databaseInfo.wrapShardQuery(sql);
@@ -853,7 +860,14 @@ public class GetAllSchemaTask extends JDBCTask {
             Map<String, Map<String, List<SubAttribute>>> schemaColumnMap =
                     new HashMap<String, Map<String, List<SubAttribute>>>();
             while (rs.next()) {
+                String uniqueName;
                 String className = rs.getString("class_name");
+                if (databaseInfo.isSupportUserSchema()) {
+                    String ownerName = rs.getString("owner_name");
+                    uniqueName = ownerName + "." + className;
+                } else {
+                    uniqueName = className;
+                }
                 String attrName = rs.getString("attr_name");
                 String type = rs.getString("attr_type");
                 String dateType = rs.getString("data_type");
@@ -861,11 +875,12 @@ public class GetAllSchemaTask extends JDBCTask {
                 String scale = rs.getString("scale");
 
                 String subType = DataType.convertAttrTypeString(dateType, prec, scale);
+                Map<String, List<SubAttribute>> columnMap;
 
-                Map<String, List<SubAttribute>> columnMap = schemaColumnMap.get("className");
+                columnMap = schemaColumnMap.get(uniqueName);
                 if (columnMap == null) {
                     columnMap = new HashMap<String, List<SubAttribute>>();
-                    schemaColumnMap.put(className, columnMap);
+                    schemaColumnMap.put(uniqueName, columnMap);
                 }
 
                 List<SubAttribute> subList = columnMap.get(attrName);
@@ -883,8 +898,18 @@ public class GetAllSchemaTask extends JDBCTask {
 
                 SchemaInfo schemaInfo = schemas.get(tableName);
                 if (schemaInfo == null) {
-                    LOGGER.error("Table " + tableName + " not found on the schema info.");
-                    continue;
+                    if (databaseInfo.isSupportUserSchema()) {
+                        int index = tableName.indexOf(".");
+                        if (index > 0) {
+                            tableName = tableName.substring(index + 1);
+                        }
+                        schemaInfo = schemas.get(tableName);
+                    }
+
+                    if (schemaInfo == null) {
+                        LOGGER.error("Table " + tableName + " not found on the schema info.");
+                        continue;
+                    }
                 }
 
                 for (Entry<String, List<SubAttribute>> entry : columnMap.entrySet()) {
