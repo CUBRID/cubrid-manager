@@ -929,6 +929,7 @@ public class HostDashboardEditor extends CubridEditorPart {
             }
 
             CommonUITool.packTableOnly(databaseTable);
+            databaseTable.getShell().layout(true, true);
         }
     }
 

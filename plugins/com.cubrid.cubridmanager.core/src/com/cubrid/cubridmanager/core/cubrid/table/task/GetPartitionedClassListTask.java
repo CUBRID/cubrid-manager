@@ -168,8 +168,13 @@ public class GetPartitionedClassListTask extends JDBCTask {
             String exprDataType = null;
             while (rs.next()) {
                 String className = rs.getString("class_name");
-                String ownerName = rs.getString("owner_name");
-                String TableName = ownerName + "." + className;
+                String TableName = "";
+                if (databaseInfo.isSupportUserSchema()) {
+                    String ownerName = rs.getString("owner_name");
+                    TableName = ownerName + "." + className;
+                } else {
+                    TableName = className;
+                }
                 String partitionName = rs.getString("partition_name");
                 String partitionClassName = rs.getString("partition_class_name");
                 String partitionExpr = rs.getString("partition_expr");
