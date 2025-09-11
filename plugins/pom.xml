@@ -23,9 +23,7 @@
         <module>com.cubrid.cubridmanager.app</module>
         <module>com.cubrid.cubridmanager.plugin</module>
         <module>com.cubrid.cubridmanager.ui</module>
-        <module>com.cubrid.cubridquery.ui</module>
         <module>com.cubrid.tool.editor</module>
         <module>org.cubrid.cubridmanager.plugin.manager</module>
-        <module>org.cubrid.cubridquery.plugin.querybrowser</module>
     </modules>
 </project>
