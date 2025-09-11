@@ -137,10 +137,7 @@ public class PerspectiveManager {
         String id = getCurrentPerspectiveId();
         if (IPerspectiveConstance.CM_PERSPECTIVE_ID.equals(id)) {
             return ApplicationType.CUBRID_MANAGER;
-        } else if (IPerspectiveConstance.CQB_PERSPECTIVE_ID.equals(id)) {
-            return ApplicationType.CUBRID_QUERY_BROWSER;
         }
-
         return ApplicationUtil.getApplicationType();
     }
 

@@ -118,10 +118,7 @@ public class OpenTargetAction extends SelectionAction {
             }
 
             ICubridNode node = (ICubridNode) obj[i];
-            if (NodeUtil.isTableViewNode(node)) {
-                DefaultSchemaNode table = (DefaultSchemaNode) obj[i];
-                showObjectInfo(table);
-            } else if (NodeUtil.isTableFolderNode(node)) {
+            if (NodeUtil.isTableFolderNode(node)) {
                 CubridNavigatorView view = CubridNavigatorView.findNavigationView();
 
                 if (view == null) {
@@ -523,39 +520,5 @@ public class OpenTargetAction extends SelectionAction {
             }
         }
         return null;
-    }
-
-    public void showObjectInfo(DefaultSchemaNode table) {
-        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        if (window == null) {
-            return;
-        }
-
-        try {
-            QueryEditorPart queryEditPart = null;
-
-            IEditorPart editorPart = window.getActivePage().getActiveEditor();
-            if (editorPart != null && editorPart instanceof QueryEditorPart) {
-                QueryEditorPart activeQueryEditorPart = (QueryEditorPart) editorPart;
-                if (table.getDatabase().equals(activeQueryEditorPart.getSelectedDatabase())) {
-                    queryEditPart = activeQueryEditorPart;
-                }
-            }
-
-            if (queryEditPart != null) {
-                queryEditPart.getCombinedQueryComposite().createObjInfoFolder(table);
-                window.getActivePage().activate(queryEditPart);
-            } else {
-                QueryUnit input = new QueryUnit();
-                input.setDatabase(table.getDatabase());
-                queryEditPart =
-                        (QueryEditorPart)
-                                window.getActivePage().openEditor(input, QueryEditorPart.ID);
-                queryEditPart.connect(table.getDatabase());
-                queryEditPart.getCombinedQueryComposite().createObjInfoFolder(table);
-            }
-        } catch (PartInitException e) {
-            LOGGER.error("Can not initialize the query editor UI.", e);
-        }
     }
 }

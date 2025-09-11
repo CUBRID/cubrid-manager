@@ -104,7 +104,6 @@ import com.cubrid.common.ui.cubrid.trigger.action.NewTriggerAction;
 import com.cubrid.common.ui.er.action.OpenSchemaEditorAction;
 import com.cubrid.common.ui.external.action.InstallMigrationToolkitAction;
 import com.cubrid.common.ui.perspective.OpenCMPerspectiveAction;
-import com.cubrid.common.ui.perspective.OpenCQBPerspectiveAction;
 import com.cubrid.common.ui.query.action.AddQueryToFavoriteAction;
 import com.cubrid.common.ui.query.action.AssignEditorNameAction;
 import com.cubrid.common.ui.query.action.BatchRunAction;
@@ -771,11 +770,6 @@ public class ActionBuilder {
         action =
                 new OpenCMPerspectiveAction(
                         Messages.openCMViewActionName, loadImage("icons/action/launch_cm.gif"));
-        registerAction(action);
-
-        action =
-                new OpenCQBPerspectiveAction(
-                        Messages.openCQBViewActionName, loadImage("icons/action/launch_cqb.gif"));
         registerAction(action);
 
         //		action = new CMServiceAnalysisAction(

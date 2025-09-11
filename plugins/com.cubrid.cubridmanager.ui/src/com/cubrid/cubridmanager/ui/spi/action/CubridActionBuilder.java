@@ -1345,16 +1345,6 @@ public class CubridActionBuilder extends ActionBuilder {
                         true);
         ActionManager.getInstance().registerAction(viewServerVersionActionTb);
 
-        // Object Info tab on the query editor
-        OpenTargetAction openObjectTabAction =
-                new OpenTargetAction(
-                        shell,
-                        com.cubrid.common.ui.spi.Messages.msgQuickTabAction,
-                        CommonUIPlugin.getImageDescriptor("icons/navigator/quick_tab.png"),
-                        CommonUIPlugin.getImageDescriptor(
-                                "icons/navigator/quick_tab_disabled.png"));
-        ActionManager.getInstance().registerAction(openObjectTabAction);
-
         IAction action = null;
         {
             action =

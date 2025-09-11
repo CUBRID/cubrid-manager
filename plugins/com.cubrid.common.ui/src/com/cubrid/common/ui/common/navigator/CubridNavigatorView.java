@@ -457,15 +457,7 @@ public abstract class CubridNavigatorView extends ViewPart {
                                         Object obj = item.getData();
                                         if (obj instanceof ICubridNode) {
                                             ICubridNode node = (ICubridNode) obj;
-                                            if (NodeType.USER_TABLE.equals(node.getType())
-                                                    || NodeType.SYSTEM_TABLE.equals(node.getType())
-                                                    || NodeType.USER_VIEW.equals(node.getType())
-                                                    || NodeType.SYSTEM_VIEW.equals(
-                                                            node.getType())) {
-                                                DefaultSchemaNode table = (DefaultSchemaNode) obj;
-                                                OpenTargetAction action = new OpenTargetAction();
-                                                action.showObjectInfo(table);
-                                            } else if (NodeType.TABLE_FOLDER.equals(
+                                            if (NodeType.TABLE_FOLDER.equals(
                                                     node.getType())) {
                                                 CubridNavigatorView view =
                                                         CubridNavigatorView.getNavigatorView(

@@ -405,13 +405,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                 mode = ApplicationType.CUBRID_MANAGER.getShortName();
             }
 
-            if (ApplicationType.CUBRID_QUERY_BROWSER.getShortName().equals(mode)) {
-                PerspectiveManager.getInstance()
-                        .openPerspective(IPerspectiveConstance.CQB_PERSPECTIVE_ID);
-            } else {
-                PerspectiveManager.getInstance()
-                        .openPerspective(IPerspectiveConstance.CM_PERSPECTIVE_ID);
-            }
+            PerspectiveManager.getInstance()
+                    .openPerspective(IPerspectiveConstance.CM_PERSPECTIVE_ID);
         } else {
             PerspectiveManager.getInstance().openPerspective(perspective);
         }

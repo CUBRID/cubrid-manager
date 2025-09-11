@@ -30,7 +30,6 @@ package com.cubrid.cubridmanager.ui.common.navigator;
 import com.cubrid.common.ui.common.action.ConnectionUrlExportAction;
 import com.cubrid.common.ui.common.action.ExpandTreeItemAction;
 import com.cubrid.common.ui.common.action.GroupSettingAction;
-import com.cubrid.common.ui.common.action.OpenTargetAction;
 import com.cubrid.common.ui.common.action.SwitchGroupModeAction;
 import com.cubrid.common.ui.common.action.UnExpandTreeItemAction;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
@@ -242,10 +241,6 @@ public class CubridHostNavigatorView extends CubridNavigatorView {
         RefreshAction refreshAction =
                 (RefreshAction) ActionManager.getInstance().getAction(RefreshAction.ID);
         toolBarManager.add(refreshAction);
-
-        OpenTargetAction openObjectTabAction =
-                (OpenTargetAction) manager.getAction(OpenTargetAction.ID);
-        toolBarManager.add(openObjectTabAction);
 
         SwitchGroupModeAction grpSwitchAction =
                 (SwitchGroupModeAction) manager.getAction(SwitchGroupModeAction.ID);

@@ -44,6 +44,4 @@ public interface IPerspectiveConstance {
     /*The perspective id constance*/
     public static final String CM_PERSPECTIVE_ID =
             "org.cubrid.cubridmanager.plugin.manager.Perspective";
-    public static final String CQB_PERSPECTIVE_ID =
-            "org.cubrid.cubridquery.plugin.querybrowser.Perspective";
 }
