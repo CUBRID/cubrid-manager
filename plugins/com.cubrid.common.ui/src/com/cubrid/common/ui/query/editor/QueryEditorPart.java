@@ -41,7 +41,6 @@ import com.cubrid.common.ui.common.dialog.ShardIdSelectionDialog;
 import com.cubrid.common.ui.common.navigator.FavoriteQueryNavigatorView;
 import com.cubrid.common.ui.common.preference.GeneralPreference;
 import com.cubrid.common.ui.cubrid.table.dialog.PstmtParameter;
-import com.cubrid.common.ui.cubrid.table.dialog.PstmtSQLDialog;
 import com.cubrid.common.ui.perspective.PerspectiveManager;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.query.action.CopyAction;
@@ -713,28 +712,6 @@ public class QueryEditorPart extends CubridEditorPart
                     public void widgetSelected(SelectionEvent event) {
                         hideToolTip();
                         getCombinedQueryComposite().select(2, -1);
-                    }
-                });
-
-        setPstmtParaItem = new ToolItem(toolBar, SWT.PUSH);
-        setPstmtParaItem.setImage(CommonUIPlugin.getImage("icons/queryeditor/qe_set_param.png"));
-        setPstmtParaItem.setToolTipText(Messages.tipSetPstmt);
-        setPstmtParaItem.setEnabled(false);
-        setPstmtParaItem.addSelectionListener(
-                new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {
-                        hideToolTip();
-                        if (combinedQueryComposite.getSqlEditorComp().isDisposed()) {
-                            return;
-                        }
-
-                        PstmtSQLDialog dialog =
-                                new PstmtSQLDialog(getSite().getShell(), getSelectedDatabase());
-                        dialog.create();
-                        dialog.setEditorInput((QueryUnit) getEditorInput());
-                        String queries = getSelectedText();
-                        dialog.setSql(queries);
-                        dialog.open();
                     }
                 });
 

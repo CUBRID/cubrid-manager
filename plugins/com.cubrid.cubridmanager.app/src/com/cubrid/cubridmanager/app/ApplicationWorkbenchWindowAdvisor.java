@@ -395,21 +395,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         //		showDashboard();
 
         /* Open the perspective */
-        String perspective = PerspectiveManager.getInstance().getSelectedPerspective();
-        if (StringUtil.isEmpty(perspective)) {
-            String mode = null;
-            ChooseModeDialog dialog = new ChooseModeDialog(Display.getDefault().getActiveShell());
-            if (IDialogConstants.OK_ID == dialog.open()) {
-                mode = dialog.getSelectedMode();
-            } else {
-                mode = ApplicationType.CUBRID_MANAGER.getShortName();
-            }
-
-            PerspectiveManager.getInstance()
-                    .openPerspective(IPerspectiveConstance.CM_PERSPECTIVE_ID);
-        } else {
-            PerspectiveManager.getInstance().openPerspective(perspective);
-        }
+        PerspectiveManager.getInstance()
+                .openPerspective(IPerspectiveConstance.CM_PERSPECTIVE_ID);
 
         //		Display.getDefault().asyncExec(new Runnable() {
         //			public void run() {

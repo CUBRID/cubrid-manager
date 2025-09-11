@@ -73,16 +73,11 @@ import com.cubrid.common.ui.cubrid.table.action.EditTableAction;
 import com.cubrid.common.ui.cubrid.table.action.EditViewAction;
 import com.cubrid.common.ui.cubrid.table.action.ExportTableDefinitionAction;
 import com.cubrid.common.ui.cubrid.table.action.ExportWizardAction;
-import com.cubrid.common.ui.cubrid.table.action.ImportDataFromFileAction;
 import com.cubrid.common.ui.cubrid.table.action.ImportWizardAction;
-import com.cubrid.common.ui.cubrid.table.action.InsertOneByPstmtAction;
 import com.cubrid.common.ui.cubrid.table.action.NewTableAction;
 import com.cubrid.common.ui.cubrid.table.action.PropertyViewAction;
-import com.cubrid.common.ui.cubrid.table.action.PstmtMultiDataAction;
-import com.cubrid.common.ui.cubrid.table.action.PstmtOneDataAction;
 import com.cubrid.common.ui.cubrid.table.action.RenameColumnAction;
 import com.cubrid.common.ui.cubrid.table.action.RenameTableAction;
-import com.cubrid.common.ui.cubrid.table.action.SelectByMultiPstmtDataAction;
 import com.cubrid.common.ui.cubrid.table.action.SelectByOnePstmtDataAction;
 import com.cubrid.common.ui.cubrid.table.action.ShowSchemaEditorAction;
 import com.cubrid.common.ui.cubrid.table.action.TableSelectAllAction;
@@ -91,13 +86,6 @@ import com.cubrid.common.ui.cubrid.table.action.TableToJavaCodeAction;
 import com.cubrid.common.ui.cubrid.table.action.TableToPhpCodeAction;
 import com.cubrid.common.ui.cubrid.table.action.TruncateTableAction;
 import com.cubrid.common.ui.cubrid.table.action.UpdateStatisticsAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeCloneQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeCreateQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeDeleteQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeInsertQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeSelectPstmtQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeSelectQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeUpdateQueryAction;
 import com.cubrid.common.ui.cubrid.trigger.action.AlterTriggerAction;
 import com.cubrid.common.ui.cubrid.trigger.action.DropTriggerAction;
 import com.cubrid.common.ui.cubrid.trigger.action.NewTriggerAction;
@@ -126,7 +114,6 @@ import com.cubrid.common.ui.query.action.RunQueryAction;
 import com.cubrid.common.ui.query.action.RunQueryPlanAction;
 import com.cubrid.common.ui.query.action.ShowSchemaAction;
 import com.cubrid.common.ui.query.action.SqlFormatAction;
-import com.cubrid.common.ui.query.action.SqlPstmtAction;
 import com.cubrid.common.ui.query.action.UndoAction;
 import com.cubrid.common.ui.query.tuner.action.QueryTunerAction;
 import com.cubrid.common.ui.query.tuner.action.QueryTunerRunAction;
@@ -142,53 +129,6 @@ import org.eclipse.swt.widgets.Shell;
  * @version 1.0 - 2009-6-4 created by pangqiren
  */
 public class ActionBuilder {
-    /**
-     * Initialize query making actions
-     *
-     * @param shell
-     * @param manager
-     */
-    private void initMakeQueryActions(Shell shell, ActionManager manager) {
-        IAction action = null;
-
-        action =
-                new MakeSelectQueryAction(
-                        MakeSelectQueryAction.ID, shell, Messages.lblMakeSelectQuery, null);
-        registerAction(action);
-
-        action =
-                new MakeSelectPstmtQueryAction(
-                        MakeSelectPstmtQueryAction.ID,
-                        shell,
-                        Messages.lblMakeSelectPstmtQuery,
-                        null);
-        registerAction(action);
-
-        action =
-                new MakeInsertQueryAction(
-                        MakeInsertQueryAction.ID, shell, Messages.lblMakeInsertQuery, null);
-        registerAction(action);
-
-        action =
-                new MakeUpdateQueryAction(
-                        MakeUpdateQueryAction.ID, shell, Messages.lblMakeUpdateQuery, null);
-        registerAction(action);
-
-        action =
-                new MakeDeleteQueryAction(
-                        MakeDeleteQueryAction.ID, shell, Messages.lblMakeDeleteQuery, null);
-        registerAction(action);
-
-        action =
-                new MakeCreateQueryAction(
-                        MakeCreateQueryAction.ID, shell, Messages.lblMakeCreateQuery, null);
-        registerAction(action);
-
-        action =
-                new MakeCloneQueryAction(
-                        MakeCloneQueryAction.ID, shell, Messages.lblMakeCloneQuery, null);
-        registerAction(action);
-    }
 
     /**
      * Make all actions for CUBRID Manager menu and toolbar
@@ -240,34 +180,10 @@ public class ActionBuilder {
                         loadImage("icons/action/schema_table_add_disabled.png"));
         registerAction(tableNewAction);
 
-        IAction pstmtOneDataAction =
-                new PstmtOneDataAction(shell, Messages.pstmtOneDataActionName, null);
-        registerAction(pstmtOneDataAction);
-
-        IAction pstmtMultiDataAction =
-                new PstmtMultiDataAction(shell, Messages.pstmtMultiDataActionName, null);
-        registerAction(pstmtMultiDataAction);
-
         IAction selectByOnePstmtDataAction =
                 new SelectByOnePstmtDataAction(
                         shell, Messages.selectByOnePstmtDataActionName, null);
         registerAction(selectByOnePstmtDataAction);
-
-        IAction selectByMultiPstmtDataAction =
-                new SelectByMultiPstmtDataAction(
-                        shell, Messages.selectByMultiPstmtDataActionName, null);
-        registerAction(selectByMultiPstmtDataAction);
-
-        IAction insertOneByPstmtAction =
-                new InsertOneByPstmtAction(
-                        shell,
-                        Messages.insertOneByPstmtActionName,
-                        loadImage("icons/action/table_record_insert.png"));
-        registerAction(insertOneByPstmtAction);
-
-        IAction insertMultiByPstmtAction =
-                new ImportDataFromFileAction(shell, Messages.insertMultiByPstmtActionName, null);
-        registerAction(insertMultiByPstmtAction);
 
         IAction tableEditAction =
                 new EditTableAction(
@@ -514,14 +430,6 @@ public class ActionBuilder {
                         Messages.formatActionName,
                         loadImage("icons/queryeditor/query_format.png"));
         registerAction(formatAction);
-
-        // run a pstmt sql
-        SqlPstmtAction sqlPstmtAction =
-                new SqlPstmtAction(
-                        shell,
-                        Messages.sqlPstmtActionName,
-                        loadImage("icons/queryeditor/qe_set_param.png"));
-        registerAction(sqlPstmtAction);
 
         CreateSqlPhpCodeAction createSqlPhpCodeAction =
                 new CreateSqlPhpCodeAction(
@@ -810,8 +718,6 @@ public class ActionBuilder {
                         loadImage("icons/navigator/favorite_query.png"));
         registerAction(action);
 
-        // initialize query making actions
-        initMakeQueryActions(shell, ActionManager.getInstance());
     }
 
     private ImageDescriptor loadImage(String imagePath) {

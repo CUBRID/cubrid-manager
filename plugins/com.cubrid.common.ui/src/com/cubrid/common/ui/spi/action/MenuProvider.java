@@ -55,15 +55,10 @@ import com.cubrid.common.ui.cubrid.table.action.EditTableAction;
 import com.cubrid.common.ui.cubrid.table.action.EditViewAction;
 import com.cubrid.common.ui.cubrid.table.action.ExportTableDefinitionAction;
 import com.cubrid.common.ui.cubrid.table.action.ExportWizardAction;
-import com.cubrid.common.ui.cubrid.table.action.ImportDataFromFileAction;
 import com.cubrid.common.ui.cubrid.table.action.ImportWizardAction;
-import com.cubrid.common.ui.cubrid.table.action.InsertOneByPstmtAction;
 import com.cubrid.common.ui.cubrid.table.action.NewTableAction;
 import com.cubrid.common.ui.cubrid.table.action.PropertyViewAction;
-import com.cubrid.common.ui.cubrid.table.action.PstmtMultiDataAction;
-import com.cubrid.common.ui.cubrid.table.action.PstmtOneDataAction;
 import com.cubrid.common.ui.cubrid.table.action.RenameTableAction;
-import com.cubrid.common.ui.cubrid.table.action.SelectByMultiPstmtDataAction;
 import com.cubrid.common.ui.cubrid.table.action.SelectByOnePstmtDataAction;
 import com.cubrid.common.ui.cubrid.table.action.TableSelectAllAction;
 import com.cubrid.common.ui.cubrid.table.action.TableSelectCountAction;
@@ -71,13 +66,6 @@ import com.cubrid.common.ui.cubrid.table.action.TableToJavaCodeAction;
 import com.cubrid.common.ui.cubrid.table.action.TableToPhpCodeAction;
 import com.cubrid.common.ui.cubrid.table.action.TruncateTableAction;
 import com.cubrid.common.ui.cubrid.table.action.UpdateStatisticsAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeCloneQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeCreateQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeDeleteQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeInsertQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeSelectPstmtQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeSelectQueryAction;
-import com.cubrid.common.ui.cubrid.table.action.makequery.MakeUpdateQueryAction;
 import com.cubrid.common.ui.cubrid.trigger.action.AlterTriggerAction;
 import com.cubrid.common.ui.cubrid.trigger.action.DropTriggerAction;
 import com.cubrid.common.ui.cubrid.trigger.action.NewTriggerAction;
@@ -160,13 +148,6 @@ public class MenuProvider implements IMenuProvider {
                 addActionToManager(manager, getAction(SchemaCommentInstallAction.ID));
                 manager.add(new Separator());
             }
-
-            IMenuManager perparedMenu = new MenuManager(Messages.preparedTableDataMenuName);
-            manager.add(perparedMenu);
-            addActionToManager(perparedMenu, getAction(PstmtOneDataAction.ID));
-            addActionToManager(perparedMenu, getAction(PstmtMultiDataAction.ID));
-            //			addActionToManager(manager, getAction(RunSQLFileAction.ID));
-            manager.add(new Separator());
 
             // Export & Import Actions
             addActionToManager(manager, getAction(ExportWizardAction.ID));
@@ -273,27 +254,6 @@ public class MenuProvider implements IMenuProvider {
     public void buildUserTableMenu(IMenuManager manager, ICubridNode node) {
         DatabaseInfo dbInfo = ((ISchemaNode) node).getDatabase().getDatabaseInfo();
 
-        // SELECT GROUP
-        IMenuManager selectSqlMenu = new MenuManager(Messages.lblMakeSelectQueryGrp);
-        manager.add(selectSqlMenu);
-        // SELECT
-        addActionToManager(selectSqlMenu, getAction(MakeSelectQueryAction.ID));
-        // Parameterized SELECT
-        addActionToManager(selectSqlMenu, getAction(MakeSelectPstmtQueryAction.ID));
-        // Parameterized INSERT
-        addActionToManager(manager, getAction(MakeInsertQueryAction.ID));
-        // Parameterized UPDATE
-        addActionToManager(manager, getAction(MakeUpdateQueryAction.ID));
-        // Parameterized DELETE
-        addActionToManager(manager, getAction(MakeDeleteQueryAction.ID));
-        // CREATE GROUP
-        IMenuManager createSqlMenu = new MenuManager(Messages.lblMakeCreateQueryGrp);
-        manager.add(createSqlMenu);
-        addActionToManager(createSqlMenu, getAction(MakeCreateQueryAction.ID));
-        addActionToManager(createSqlMenu, getAction(MakeCloneQueryAction.ID));
-
-        manager.add(new Separator());
-
         // Schema to Code Actions
         addActionToManager(manager, getAction(TableToJavaCodeAction.ID));
         addActionToManager(manager, getAction(TableToPhpCodeAction.ID));
@@ -312,15 +272,8 @@ public class MenuProvider implements IMenuProvider {
         manager.add(viewDataMenu);
         addActionToManager(viewDataMenu, getAction(TableSelectAllAction.ID));
         addActionToManager(viewDataMenu, getAction(SelectByOnePstmtDataAction.ID));
-        addActionToManager(viewDataMenu, getAction(SelectByMultiPstmtDataAction.ID));
         viewDataMenu.add(new Separator());
         addActionToManager(viewDataMenu, getAction(TableSelectCountAction.ID));
-
-        // Input data
-        IMenuManager inputDataMenu = new MenuManager(Messages.inputDataMenuName);
-        manager.add(inputDataMenu);
-        addActionToManager(inputDataMenu, getAction(InsertOneByPstmtAction.ID));
-        addActionToManager(inputDataMenu, getAction(ImportDataFromFileAction.ID));
 
         //		addActionToManager(manager, getAction(RunSQLFileAction.ID));
         manager.add(new Separator());
