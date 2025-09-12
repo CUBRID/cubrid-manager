@@ -55,7 +55,6 @@ import com.cubrid.common.ui.cubrid.user.action.DeleteUserAction;
 import com.cubrid.common.ui.cubrid.user.action.EditUserAction;
 import com.cubrid.common.ui.er.action.OpenSchemaEditorAction;
 import com.cubrid.common.ui.perspective.AbsActionAdvisor;
-import com.cubrid.common.ui.query.action.DatabaseQueryNewAction;
 import com.cubrid.common.ui.query.action.GotoLineAction;
 import com.cubrid.common.ui.query.tuner.action.QueryTunerAction;
 import com.cubrid.common.ui.schemacomment.action.SchemaCommentInstallAction;
@@ -238,11 +237,6 @@ public class ActionAdvisor extends AbsActionAdvisor {
 
         // Start action
         toolbarManager.add(createItem(StartRetargetAction.ID_BIG));
-
-        // Open queryEditor
-        toolbarManager = getToolbarManaeger(coolBarManager, IActionConstants.TOOLBAR_2);
-        toolbarManager.removeAll();
-        toolbarManager.add(createItem(DatabaseQueryNewAction.ID_BIG));
 
         // Schema actions
         toolbarManager = getToolbarManaeger(coolBarManager, IActionConstants.TOOLBAR_3);

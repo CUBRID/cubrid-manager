@@ -95,11 +95,9 @@ import com.cubrid.common.ui.query.action.AssignEditorNameAction;
 import com.cubrid.common.ui.query.action.BatchRunAction;
 import com.cubrid.common.ui.query.action.CopyAction;
 import com.cubrid.common.ui.query.action.CopyAllAction;
-import com.cubrid.common.ui.query.action.CopyQueryEditorAction;
 import com.cubrid.common.ui.query.action.CreateSqlJavaCodeAction;
 import com.cubrid.common.ui.query.action.CreateSqlPhpCodeAction;
 import com.cubrid.common.ui.query.action.CutAction;
-import com.cubrid.common.ui.query.action.DatabaseQueryNewAction;
 import com.cubrid.common.ui.query.action.FindReplaceAction;
 import com.cubrid.common.ui.query.action.GotoLineAction;
 import com.cubrid.common.ui.query.action.InputMethodAction;
@@ -431,24 +429,6 @@ public class ActionBuilder {
                         loadImage("icons/action/copy_pojo_to_clipboard.gif"));
         registerAction(createSqlJavaCodeAction);
 
-        IAction databaseQueryNewAction =
-                new DatabaseQueryNewAction(
-                        shell,
-                        Messages.queryOpenActionName,
-                        loadImage("icons/action/new_query.png"),
-                        loadImage("icons/action/new_query_disable.png"),
-                        false);
-        registerAction(databaseQueryNewAction);
-
-        IAction databaseQueryNewActionBig =
-                new DatabaseQueryNewAction(
-                        shell,
-                        Messages.queryOpenActionName,
-                        loadImage("icons/action/new_query_big.png"),
-                        loadImage("icons/action/new_query_big_disable.png"),
-                        true);
-        registerAction(databaseQueryNewActionBig);
-
         IAction queryOpenAction = new QueryOpenAction(shell, Messages.queryOpenActionName, null);
         registerAction(queryOpenAction);
 
@@ -481,11 +461,6 @@ public class ActionBuilder {
         IAction showHiddenElementsAction =
                 new ShowHiddenElementsAction(shell, Messages.showAllActionName, null);
         registerAction(showHiddenElementsAction);
-
-        IAction copyQueryEditorAction =
-                new CopyQueryEditorAction(
-                        Messages.queryCopyActionName, loadImage("icons/action/new_query.png"));
-        registerAction(copyQueryEditorAction);
 
         IAction renameColumnAction =
                 new RenameColumnAction(shell, Messages.renameColumnAction, null);
@@ -545,16 +520,6 @@ public class ActionBuilder {
                         loadImage("icons/action/query_tuner.png"),
                         loadImage("icons/action/query_tuner.png"));
         registerAction(queryTunerRunAction);
-
-        // new query editor action
-        IAction databaseQueryNewActionTb =
-                new DatabaseQueryNewAction(
-                        shell,
-                        Messages.queryOpenActionNameBig,
-                        loadImage("icons/action/new_query_big.png"),
-                        loadImage("icons/action/new_query_big_disabled.png"),
-                        true);
-        registerAction(databaseQueryNewActionTb);
 
         // navigation tree expand/unexpand on tree navigator
         IAction expandTreeItemAction =

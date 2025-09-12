@@ -67,7 +67,6 @@ import com.cubrid.common.ui.cubrid.table.action.UpdateStatisticsAction;
 import com.cubrid.common.ui.cubrid.trigger.action.AlterTriggerAction;
 import com.cubrid.common.ui.cubrid.trigger.action.DropTriggerAction;
 import com.cubrid.common.ui.cubrid.trigger.action.NewTriggerAction;
-import com.cubrid.common.ui.query.action.DatabaseQueryNewAction;
 import com.cubrid.common.ui.query.control.DatabaseNavigatorMenu;
 import com.cubrid.common.ui.schemacomment.action.SchemaCommentInstallAction;
 import com.cubrid.common.ui.spi.Messages;
@@ -190,8 +189,6 @@ public class MenuProvider implements IMenuProvider {
      * @param manager IMenuManager
      */
     public void buildSystemViewMenu(IMenuManager manager) {
-        addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
-        manager.add(new Separator());
         addActionToManager(manager, getAction(TableSelectCountAction.ID));
         manager.add(new Separator());
         //		addActionToManager(manager, getAction(ShowSchemaEditorAction.ID));
@@ -205,8 +202,6 @@ public class MenuProvider implements IMenuProvider {
      * @param manager IMenuManager
      */
     public void buildSystemTableMenu(IMenuManager manager) {
-        addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
-        manager.add(new Separator());
         addActionToManager(manager, getAction(TableSelectCountAction.ID));
         manager.add(new Separator());
         //		addActionToManager(manager, getAction(ShowSchemaEditorAction.ID));
@@ -219,8 +214,6 @@ public class MenuProvider implements IMenuProvider {
      * @param manager the parent IMenuManager
      */
     public void buildUserViewMenu(IMenuManager manager) {
-        addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
-        manager.add(new Separator());
         addActionToManager(manager, getAction(TableSelectCountAction.ID));
         manager.add(new Separator());
 

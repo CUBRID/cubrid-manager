@@ -37,7 +37,6 @@ import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.CommonUIPlugin;
-import com.cubrid.common.ui.common.dialog.ShardIdSelectionDialog;
 import com.cubrid.common.ui.common.navigator.FavoriteQueryNavigatorView;
 import com.cubrid.common.ui.common.preference.GeneralPreference;
 import com.cubrid.common.ui.cubrid.table.dialog.PstmtParameter;
@@ -627,47 +626,6 @@ public class QueryEditorPart extends CubridEditorPart
                 });
 
         final ToolBar toolBar = qeToolBar;
-
-        // [TOOLS-2425]Support shard broker
-        changeShardIdValItem = new ToolItem(toolBar, SWT.PUSH);
-        changeShardIdValItem.setImage(
-                CommonUIPlugin.getImage("icons/queryeditor/change_shard_id.png"));
-        changeShardIdValItem.setDisabledImage(
-                CommonUIPlugin.getImage("icons/queryeditor/change_shard_id_disabled.png"));
-        changeShardIdValItem.setToolTipText(Messages.changeShardId);
-        changeShardIdValItem.addSelectionListener(
-                new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {
-                        CubridDatabase cubridDatabase = getSelectedDatabase();
-                        if (cubridDatabase != null) {
-                            DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
-                            if (dbInfo != null && dbInfo.isShard()) {
-                                ShardIdSelectionDialog dialog =
-                                        new ShardIdSelectionDialog(
-                                                Display.getDefault().getActiveShell());
-                                dialog.setDatabaseInfo(dbInfo);
-                                dialog.setShardId(shardId);
-                                dialog.setShardVal(shardVal);
-                                dialog.setShardQueryType(shardQueryType);
-                                if (dialog.open() == IDialogConstants.OK_ID) {
-                                    shardId = dialog.getShardId();
-                                    shardVal = dialog.getShardVal();
-                                    shardQueryType = dialog.getShardQueryType();
-                                    changeQueryEditorPartNameWithShard();
-                                }
-                            }
-                        }
-                    }
-                });
-
-        CubridDatabase cubridDatabase = getSelectedDatabase();
-        if (cubridDatabase == null
-                || CubridDatabase.hasValidDatabaseInfo(cubridDatabase)
-                        && cubridDatabase.getDatabaseInfo().isShard()) {
-            changeShardIdValItem.setEnabled(false);
-        }
-
-        new ToolItem(toolBar, SWT.SEPARATOR);
 
         runItem = new ToolItem(toolBar, SWT.PUSH);
         runItem.setImage(CommonUIPlugin.getImage("icons/queryeditor/query_run.png"));

@@ -44,7 +44,6 @@ import com.cubrid.common.ui.cubrid.table.action.ImportWizardAction;
 import com.cubrid.common.ui.cubrid.user.action.AddUserAction;
 import com.cubrid.common.ui.cubrid.user.action.DeleteUserAction;
 import com.cubrid.common.ui.cubrid.user.action.EditUserAction;
-import com.cubrid.common.ui.query.action.DatabaseQueryNewAction;
 import com.cubrid.common.ui.query.control.DatabaseNavigatorMenu;
 import com.cubrid.common.ui.schemacomment.action.SchemaCommentInstallAction;
 import com.cubrid.common.ui.spi.action.ActionManager;
@@ -486,8 +485,6 @@ public class CubridMenuProvider extends MenuProvider {
         manager.add(new Separator());
         addActionToManager(manager, getAction(EditDatabaseLoginAction.ID));
         addActionToManager(manager, getAction(ConnectionUrlExportAction.ID));
-        manager.add(new Separator());
-        addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
         manager.add(new Separator());
         addActionToManager(manager, getAction(ShowDatabaseDashboardAction.ID));
         manager.add(new Separator());

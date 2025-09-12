@@ -35,8 +35,6 @@ import com.cubrid.common.ui.common.action.OpenTargetAction;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
 import com.cubrid.common.ui.common.preference.GeneralPreference;
 import com.cubrid.common.ui.cubrid.table.control.SchemaInfoEditorPart;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
-import com.cubrid.common.ui.query.editor.QueryUnit;
 import com.cubrid.common.ui.spi.CubridNodeManager;
 import com.cubrid.common.ui.spi.LayoutManager;
 import com.cubrid.common.ui.spi.action.ActionManager;
@@ -276,9 +274,7 @@ public final class CubridWorkbenchContrItem extends WorkbenchContrItem {
                                 NodeType.USER_PARTITIONED_TABLE_FOLDER
                             },
                             false);
-            if (useSelectQuery) {
-                openSelectQuery(selection);
-            } else {
+            if (!useSelectQuery) {
                 openEditorOrView(cubridNode);
             }
         }
@@ -439,51 +435,6 @@ public final class CubridWorkbenchContrItem extends WorkbenchContrItem {
     public void openUsersDetailInfoPart(CubridDatabase database) {
         OpenTargetAction action = new OpenTargetAction();
         action.openUsersDetailInfoEditor(database);
-    }
-
-    public void openSelectQuery(ISelection selection) {
-        final Object obj = ((IStructuredSelection) selection).getFirstElement();
-        if (!(obj instanceof ICubridNode)) {
-            return;
-        }
-
-        ISchemaNode table = (ISchemaNode) obj;
-        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        if (window == null) {
-            return;
-        }
-
-        boolean existsEditor = false;
-        QueryEditorPart editor = null;
-        QueryUnit input = new QueryUnit();
-        input.setDatabase(table.getDatabase());
-        try {
-            IEditorPart editorPart = window.getActivePage().getActiveEditor();
-            if (editorPart != null && editorPart instanceof QueryEditorPart) {
-                QueryEditorPart queryEditorPart = (QueryEditorPart) editorPart;
-                if (queryEditorPart.getSelectedDatabase() == input.getDatabase()) {
-                    editor = (QueryEditorPart) editorPart;
-                    existsEditor = true;
-                }
-            }
-
-            if (editor == null) {
-                editor =
-                        (QueryEditorPart)
-                                window.getActivePage().openEditor(input, QueryEditorPart.ID);
-                editor.connect(table.getDatabase());
-            }
-
-            DefaultSchemaNode tableNode = (DefaultSchemaNode) obj;
-            String sql = getStmtSQL(tableNode) + StringUtil.NEWLINE + StringUtil.NEWLINE;
-            if (existsEditor) {
-                editor.newQueryTab(sql, true);
-            } else {
-                editor.setQuery(sql, false, true, false);
-            }
-        } catch (Exception e) {
-            LOGGER.error("", e);
-        }
     }
 
     /**
