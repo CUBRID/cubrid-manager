@@ -65,8 +65,6 @@ import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.ui.broker.action.StartBrokerEnvAction;
 import com.cubrid.cubridmanager.ui.broker.action.StopBrokerEnvAction;
-import com.cubrid.cubridmanager.ui.common.action.QueryNewAction;
-import com.cubrid.cubridmanager.ui.common.action.QueryNewCustomAction;
 import com.cubrid.cubridmanager.ui.common.action.QuitAction;
 import com.cubrid.cubridmanager.ui.common.action.RefreshAction;
 import com.cubrid.cubridmanager.ui.common.action.StartRetargetAction;
@@ -423,9 +421,6 @@ public class ActionAdvisor extends AbsActionAdvisor {
         editMenu.add(manager.getAction(GotoLineAction.ID));
 
         // fill in the run menu
-        toolsMenu.add(manager.getAction(QueryNewAction.ID));
-        toolsMenu.add(manager.getAction(QueryNewCustomAction.ID));
-        toolsMenu.add(new Separator());
         toolsMenu.add(manager.getAction(StartServiceAction.ID));
         toolsMenu.add(manager.getAction(StopServiceAction.ID));
         toolsMenu.add(new Separator());

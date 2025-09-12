@@ -39,7 +39,6 @@ import com.cubrid.cubridmanager.core.common.model.DbRunningType;
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
-import com.cubrid.cubridmanager.ui.common.dialog.LoginQueryEditDialog;
 import com.cubrid.cubridmanager.ui.common.navigator.CubridHostNavigatorView;
 import com.cubrid.cubridmanager.ui.spi.model.loader.CubridServerLoader;
 import com.cubrid.cubridmanager.ui.spi.persist.CMGroupNodePersistManager;
@@ -47,7 +46,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -213,27 +211,6 @@ public class CMDatabaseNavigatorMenu extends DatabaseNavigatorMenu {
 
         if (count > 0) {
             new MenuItem(dbSelectionMenu, SWT.SEPARATOR);
-        }
-    }
-
-    /**
-     * When click self-connection menu item, handle with this event
-     *
-     * @param dbItem DatabaseMenuItem
-     * @return boolean
-     */
-    public boolean handleWithSelfConn(DatabaseMenuItem dbItem) {
-        LoginQueryEditDialog dialog = new LoginQueryEditDialog(parent.getShell());
-        dialog.setSelServerName(DatabaseNavigatorMenu.SELF_DATABASE_SELECTED_LABEL);
-        if (DatabaseNavigatorMenu.SELF_DATABASE.getDatabaseInfo() != null) {
-            dialog.setSelDatabaseName(
-                    DatabaseNavigatorMenu.SELF_DATABASE.getDatabaseInfo().getDbName());
-        }
-        if (dialog.open() == IDialogConstants.OK_ID) {
-            return true;
-        } else {
-            dbItem.setSelection(false);
-            return false;
         }
     }
 

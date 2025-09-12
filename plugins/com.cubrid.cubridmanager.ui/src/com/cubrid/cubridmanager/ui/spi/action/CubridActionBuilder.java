@@ -48,8 +48,6 @@ import com.cubrid.cubridmanager.ui.broker.action.StopBrokerAction;
 import com.cubrid.cubridmanager.ui.broker.action.StopBrokerEnvAction;
 import com.cubrid.cubridmanager.ui.common.action.CMGroupSettingAction;
 import com.cubrid.cubridmanager.ui.common.action.PropertyAction;
-import com.cubrid.cubridmanager.ui.common.action.QueryNewAction;
-import com.cubrid.cubridmanager.ui.common.action.QueryNewCustomAction;
 import com.cubrid.cubridmanager.ui.common.action.RefreshAction;
 import com.cubrid.cubridmanager.ui.common.action.StartRetargetAction;
 import com.cubrid.cubridmanager.ui.common.action.StartServiceAction;
@@ -284,33 +282,6 @@ public class CubridActionBuilder extends ActionBuilder {
                                 "icons/action/menu_start_disabled.png"),
                         true);
         ActionManager.getInstance().registerAction(startActionBig);
-
-        IAction queryNewAction =
-                new QueryNewAction(
-                        shell,
-                        com.cubrid.common.ui.spi.Messages.queryNewActionName,
-                        CommonUIPlugin.getImageDescriptor("icons/action/new_query.png"),
-                        CommonUIPlugin.getImageDescriptor("icons/action/new_query_disabled.png"),
-                        false);
-        ActionManager.getInstance().registerAction(queryNewAction);
-
-        IAction queryNewActionBig =
-                new QueryNewAction(
-                        shell,
-                        com.cubrid.common.ui.spi.Messages.queryNewActionName,
-                        CommonUIPlugin.getImageDescriptor("icons/action/new_query_big.png"),
-                        CommonUIPlugin.getImageDescriptor(
-                                "icons/action/new_query_big_disabled.png"),
-                        true);
-        ActionManager.getInstance().registerAction(queryNewActionBig);
-
-        IAction queryNewCustomAction =
-                new QueryNewCustomAction(
-                        shell,
-                        com.cubrid.common.ui.spi.Messages.queryNewCustomActionName,
-                        CommonUIPlugin.getImageDescriptor("icons/action/new_query.png"),
-                        CommonUIPlugin.getImageDescriptor("icons/action/new_query_disabled.png"));
-        ActionManager.getInstance().registerAction(queryNewCustomAction);
 
         // host related action
         IAction addHostAction =

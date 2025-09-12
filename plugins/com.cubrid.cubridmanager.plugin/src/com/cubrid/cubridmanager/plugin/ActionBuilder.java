@@ -32,7 +32,6 @@ import com.cubrid.common.ui.cubrid.user.action.AddUserAction;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.action.IActionConstants;
 import com.cubrid.cubridmanager.ui.common.action.PropertyAction;
-import com.cubrid.cubridmanager.ui.common.action.QueryNewAction;
 import com.cubrid.cubridmanager.ui.common.action.StartRetargetAction;
 import com.cubrid.cubridmanager.ui.common.action.StartServiceAction;
 import com.cubrid.cubridmanager.ui.common.action.StopRetargetAction;
@@ -101,7 +100,6 @@ public class ActionBuilder {
         cubridMenuMgr.add(new Separator());
         cubridMenuMgr.add(ActionManager.getInstance().getAction(AddHostAction.ID));
         cubridMenuMgr.add(ActionManager.getInstance().getAction(CreateDatabaseAction.ID));
-        cubridMenuMgr.add(ActionManager.getInstance().getAction(QueryNewAction.ID));
         cubridMenuMgr.add(ActionManager.getInstance().getAction(AddUserAction.ID));
         cubridMenuMgr.add(ActionManager.getInstance().getAction(NewTableAction.ID));
         cubridMenuMgr.add(new Separator());
@@ -125,7 +123,6 @@ public class ActionBuilder {
         IToolBarManager newToolbarManager = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         newToolbarManager.add(ActionManager.getInstance().getAction(AddHostAction.ID));
         newToolbarManager.add(ActionManager.getInstance().getAction(CreateDatabaseAction.ID));
-        newToolbarManager.add(ActionManager.getInstance().getAction(QueryNewAction.ID));
         parent.add(newToolbarManager);
         IToolBarManager statusToolbarManager = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         statusToolbarManager.add(ActionManager.getInstance().getAction(StartRetargetAction.ID));

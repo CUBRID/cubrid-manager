@@ -125,12 +125,7 @@ public class NoticeDashboardPage extends FormPage {
         form = managedForm.getForm();
 
         toolkit.decorateFormHeading(form.getForm());
-        String title =
-                client.equals("CMT")
-                        ? Messages.titleCUBRIDMigration
-                        : client.equals("CQB")
-                                ? Messages.titleCUBRIDQuery
-                                : Messages.titleCUBRIDManager;
+        String title = Messages.titleCUBRIDMigration;
         form.setText(title);
         form.setFont(new Font(Display.getCurrent(), "Arial", 13, SWT.BOLD));
 

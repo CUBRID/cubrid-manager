@@ -471,7 +471,6 @@ public class Messages extends NLS {
     public static String titlePreferencesBtn;
     public static String titleHelpBtn;
     public static String titleCUBRIDManager;
-    public static String titleCUBRIDQuery;
     public static String titleCUBRIDMigration;
     public static String titleCommonAction;
     public static String titleReleaseNews;

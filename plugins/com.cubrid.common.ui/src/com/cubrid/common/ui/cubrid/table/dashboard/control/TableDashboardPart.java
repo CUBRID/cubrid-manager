@@ -51,9 +51,6 @@ import com.cubrid.common.ui.cubrid.table.action.ExportWizardAction;
 import com.cubrid.common.ui.cubrid.table.action.ImportWizardAction;
 import com.cubrid.common.ui.cubrid.table.action.NewTableAction;
 import com.cubrid.common.ui.cubrid.table.action.RenameTableAction;
-import com.cubrid.common.ui.cubrid.table.action.SelectByOnePstmtDataAction;
-import com.cubrid.common.ui.cubrid.table.action.TableSelectAllAction;
-import com.cubrid.common.ui.cubrid.table.action.TableSelectCountAction;
 import com.cubrid.common.ui.cubrid.table.action.TableToJavaCodeAction;
 import com.cubrid.common.ui.cubrid.table.action.TableToPhpCodeAction;
 import com.cubrid.common.ui.cubrid.table.dashboard.control.TableDashboardComposite.TablesDetailInfoCTabItem;
@@ -965,65 +962,6 @@ public class TableDashboardPart extends CubridEditorPart implements ITableButton
         }
 
         new MenuItem(menu, SWT.SEPARATOR);
-
-        // View data menu
-        final Menu viewDataMenu = new Menu(menu);
-        {
-            final MenuItem subMenuItem = new MenuItem(menu, SWT.CASCADE);
-            subMenuItem.setText(com.cubrid.common.ui.spi.Messages.viewDataMenuName);
-            subMenuItem.setMenu(viewDataMenu);
-        }
-
-        final TableSelectAllAction selectAllAction =
-                (TableSelectAllAction) manager.getAction(TableSelectAllAction.ID);
-        if (selectAllAction != null) {
-            MenuItem menuItem = new MenuItem(viewDataMenu, SWT.PUSH);
-            menuItem.setText(selectAllAction.getText());
-            menuItem.setImage(CommonUITool.getImage(selectAllAction.getImageDescriptor()));
-            menuItem.addSelectionListener(
-                    new SelectionAdapter() {
-                        public void widgetSelected(SelectionEvent event) {
-                            ICubridNode node = getFirstSelectedNode();
-                            if (node != null) {
-                                selectAllAction.run((ISchemaNode) node);
-                            }
-                        }
-                    });
-        }
-
-        final SelectByOnePstmtDataAction selectPstmtAction =
-                (SelectByOnePstmtDataAction) manager.getAction(SelectByOnePstmtDataAction.ID);
-        if (selectPstmtAction != null) {
-            MenuItem menuItem = new MenuItem(viewDataMenu, SWT.PUSH);
-            menuItem.setText(selectPstmtAction.getText());
-            menuItem.setImage(CommonUITool.getImage(selectPstmtAction.getImageDescriptor()));
-            menuItem.addSelectionListener(
-                    new SelectionAdapter() {
-                        public void widgetSelected(SelectionEvent event) {
-                            ICubridNode node = getFirstSelectedNode();
-                            if (node != null) {
-                                selectPstmtAction.run((ISchemaNode) node);
-                            }
-                        }
-                    });
-        }
-
-        final TableSelectCountAction selectCountAction =
-                (TableSelectCountAction) manager.getAction(TableSelectCountAction.ID);
-        if (selectCountAction != null) {
-            MenuItem menuItem = new MenuItem(viewDataMenu, SWT.PUSH);
-            menuItem.setText(selectCountAction.getText());
-            menuItem.setImage(CommonUITool.getImage(selectAllAction.getImageDescriptor()));
-            menuItem.addSelectionListener(
-                    new SelectionAdapter() {
-                        public void widgetSelected(SelectionEvent event) {
-                            ICubridNode node = getFirstSelectedNode();
-                            if (node != null) {
-                                selectCountAction.run((ISchemaNode) node);
-                            }
-                        }
-                    });
-        }
 
         // Export & Import
         final ExportWizardAction exportWizardAction =

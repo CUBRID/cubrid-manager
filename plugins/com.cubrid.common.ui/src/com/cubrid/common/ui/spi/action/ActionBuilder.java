@@ -78,9 +78,7 @@ import com.cubrid.common.ui.cubrid.table.action.NewTableAction;
 import com.cubrid.common.ui.cubrid.table.action.PropertyViewAction;
 import com.cubrid.common.ui.cubrid.table.action.RenameColumnAction;
 import com.cubrid.common.ui.cubrid.table.action.RenameTableAction;
-import com.cubrid.common.ui.cubrid.table.action.SelectByOnePstmtDataAction;
 import com.cubrid.common.ui.cubrid.table.action.ShowSchemaEditorAction;
-import com.cubrid.common.ui.cubrid.table.action.TableSelectAllAction;
 import com.cubrid.common.ui.cubrid.table.action.TableSelectCountAction;
 import com.cubrid.common.ui.cubrid.table.action.TableToJavaCodeAction;
 import com.cubrid.common.ui.cubrid.table.action.TableToPhpCodeAction;
@@ -180,11 +178,6 @@ public class ActionBuilder {
                         loadImage("icons/action/schema_table_add_disabled.png"));
         registerAction(tableNewAction);
 
-        IAction selectByOnePstmtDataAction =
-                new SelectByOnePstmtDataAction(
-                        shell, Messages.selectByOnePstmtDataActionName, null);
-        registerAction(selectByOnePstmtDataAction);
-
         IAction tableEditAction =
                 new EditTableAction(
                         shell,
@@ -235,13 +228,6 @@ public class ActionBuilder {
         IAction createLikeTableAction =
                 new CreateLikeTableAction(shell, Messages.createLikeTableActionName, null);
         registerAction(createLikeTableAction);
-
-        IAction tableSelectAllAction =
-                new TableSelectAllAction(
-                        shell,
-                        Messages.tableSelectActionName,
-                        loadImage("icons/action/table_select_all.png"));
-        registerAction(tableSelectAllAction);
 
         //		IAction tableInsertAction = new InsertTableDataAction(
         //				shell,

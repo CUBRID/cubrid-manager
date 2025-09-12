@@ -59,8 +59,6 @@ import com.cubrid.common.ui.cubrid.table.action.ImportWizardAction;
 import com.cubrid.common.ui.cubrid.table.action.NewTableAction;
 import com.cubrid.common.ui.cubrid.table.action.PropertyViewAction;
 import com.cubrid.common.ui.cubrid.table.action.RenameTableAction;
-import com.cubrid.common.ui.cubrid.table.action.SelectByOnePstmtDataAction;
-import com.cubrid.common.ui.cubrid.table.action.TableSelectAllAction;
 import com.cubrid.common.ui.cubrid.table.action.TableSelectCountAction;
 import com.cubrid.common.ui.cubrid.table.action.TableToJavaCodeAction;
 import com.cubrid.common.ui.cubrid.table.action.TableToPhpCodeAction;
@@ -180,7 +178,6 @@ public class MenuProvider implements IMenuProvider {
      * @param manager IMenuManager
      */
     public void buildPartitionedTableMenu(IMenuManager manager) {
-        addActionToManager(manager, getAction(TableSelectAllAction.ID));
         addActionToManager(manager, getAction(TableSelectCountAction.ID));
         manager.add(new Separator());
         addActionToManager(manager, getAction(UpdateStatisticsAction.ID));
@@ -195,7 +192,6 @@ public class MenuProvider implements IMenuProvider {
     public void buildSystemViewMenu(IMenuManager manager) {
         addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
         manager.add(new Separator());
-        addActionToManager(manager, getAction(TableSelectAllAction.ID));
         addActionToManager(manager, getAction(TableSelectCountAction.ID));
         manager.add(new Separator());
         //		addActionToManager(manager, getAction(ShowSchemaEditorAction.ID));
@@ -211,7 +207,6 @@ public class MenuProvider implements IMenuProvider {
     public void buildSystemTableMenu(IMenuManager manager) {
         addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
         manager.add(new Separator());
-        addActionToManager(manager, getAction(TableSelectAllAction.ID));
         addActionToManager(manager, getAction(TableSelectCountAction.ID));
         manager.add(new Separator());
         //		addActionToManager(manager, getAction(ShowSchemaEditorAction.ID));
@@ -226,7 +221,6 @@ public class MenuProvider implements IMenuProvider {
     public void buildUserViewMenu(IMenuManager manager) {
         addActionToManager(manager, getAction(DatabaseQueryNewAction.ID));
         manager.add(new Separator());
-        addActionToManager(manager, getAction(TableSelectAllAction.ID));
         addActionToManager(manager, getAction(TableSelectCountAction.ID));
         manager.add(new Separator());
 
@@ -270,9 +264,6 @@ public class MenuProvider implements IMenuProvider {
         // View data
         IMenuManager viewDataMenu = new MenuManager(Messages.viewDataMenuName);
         manager.add(viewDataMenu);
-        addActionToManager(viewDataMenu, getAction(TableSelectAllAction.ID));
-        addActionToManager(viewDataMenu, getAction(SelectByOnePstmtDataAction.ID));
-        viewDataMenu.add(new Separator());
         addActionToManager(viewDataMenu, getAction(TableSelectCountAction.ID));
 
         //		addActionToManager(manager, getAction(RunSQLFileAction.ID));
