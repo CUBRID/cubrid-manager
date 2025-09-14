@@ -76,11 +76,6 @@ public final class CQBConnectionUtils {
             }
         }
 
-        // check the query editor in this database
-        if (!LayoutUtil.checkAllQueryEditor(database)) {
-            return false;
-        }
-
         cancelJob(jobFamily);
 
         database.getLoader().setLoaded(false);
@@ -117,11 +112,6 @@ public final class CQBConnectionUtils {
             if (!isLogout) {
                 return false;
             }
-        }
-
-        // check the query editor in this database
-        if (!LayoutUtil.checkAllQueryEditor(database)) {
-            return false;
         }
 
         cancelJob(jobFamily);

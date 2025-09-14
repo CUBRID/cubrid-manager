@@ -197,10 +197,6 @@ public class StopDatabaseAction extends SelectionAction {
                     setEnabled(false);
                     return;
                 }
-                if (!LayoutUtil.checkAllQueryEditor(database)) {
-                    isContinue = false;
-                    break;
-                }
                 CommonUpdateTask task =
                         new CommonUpdateTask(
                                 CommonTaskName.STOP_DB_TASK_NAME,

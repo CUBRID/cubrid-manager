@@ -35,9 +35,8 @@ import com.cubrid.common.ui.common.action.BrokerLogParserAction;
 import com.cubrid.common.ui.common.action.BrokerLogTopMergeAction;
 import com.cubrid.common.ui.common.action.DropDownAction;
 import com.cubrid.common.ui.common.action.OpenPreferenceAction;
-import com.cubrid.common.ui.common.action.OpenQueryAction;
+import com.cubrid.common.ui.common.action.OpenTextEditorAction;
 import com.cubrid.common.ui.common.action.ReportBugAction;
-import com.cubrid.common.ui.common.action.RestoreQueryEditorAction;
 import com.cubrid.common.ui.common.dialog.SelectWorkspaceDialog;
 import com.cubrid.common.ui.compare.data.action.DataCompareWizardAction;
 import com.cubrid.common.ui.compare.schema.action.SchemaCompareWizardAction;
@@ -56,7 +55,6 @@ import com.cubrid.common.ui.cubrid.user.action.EditUserAction;
 import com.cubrid.common.ui.er.action.OpenSchemaEditorAction;
 import com.cubrid.common.ui.perspective.AbsActionAdvisor;
 import com.cubrid.common.ui.query.action.GotoLineAction;
-import com.cubrid.common.ui.query.tuner.action.QueryTunerAction;
 import com.cubrid.common.ui.schemacomment.action.SchemaCommentInstallAction;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.action.IActionConstants;
@@ -292,7 +290,6 @@ public class ActionAdvisor extends AbsActionAdvisor {
         toolsActionManager.add(new Separator());
         // toolsActionManager.add(ActionManager.getInstance().getAction(RunSQLFileAction.ID));
         toolsActionManager.add(ActionManager.getInstance().getAction(UnifyHostConfigAction.ID));
-        toolsActionManager.add(ActionManager.getInstance().getAction(QueryTunerAction.ID));
         toolsActionManager.add(new Separator());
 
         //		toolsActionManager.add(ActionManager.getInstance().getAction(
@@ -378,15 +375,13 @@ public class ActionAdvisor extends AbsActionAdvisor {
         fileMenu.add(closeAction);
         fileMenu.add(closeAllAction);
         fileMenu.add(new Separator());
-        fileMenu.add(manager.getAction(OpenQueryAction.ID));
+        fileMenu.add(manager.getAction(OpenTextEditorAction.ID));
         fileMenu.add(saveAction);
         fileMenu.add(saveasAction);
         fileMenu.add(saveAllAction);
         fileMenu.add(new Separator());
         //		fileMenu.add(manager.getAction(OpenSchemaEditorAction.ID));
         //		fileMenu.add(new Separator());
-        fileMenu.add(manager.getAction(RestoreQueryEditorAction.ID));
-        fileMenu.add(new Separator());
         fileMenu.add(manager.getAction(ImportHostsAction.ID));
         fileMenu.add(
                 SelectWorkspaceDialog.getWorkspaceMenu(

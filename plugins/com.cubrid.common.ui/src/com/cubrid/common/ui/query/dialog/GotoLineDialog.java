@@ -31,7 +31,7 @@ package com.cubrid.common.ui.query.dialog;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.query.control.SQLEditorComposite;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -104,8 +104,8 @@ public final class GotoLineDialog extends Dialog {
     private SQLEditorComposite getActiveSQLEditorComposite() {
         IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         IEditorPart editor = window.getActivePage().getActiveEditor();
-        if (editor instanceof QueryEditorPart) {
-            QueryEditorPart queryEditor = (QueryEditorPart) editor;
+        if (editor instanceof TextEditorPart) {
+            TextEditorPart queryEditor = (TextEditorPart) editor;
             return queryEditor.getCombinedQueryComposite().getSqlEditorComp();
         }
         return null;

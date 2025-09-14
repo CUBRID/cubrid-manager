@@ -35,33 +35,26 @@ import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.common.action.HelpDocumentAction;
 import com.cubrid.common.ui.perspective.PerspectiveManager;
 import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.query.action.AddQueryToFavoriteAction;
 import com.cubrid.common.ui.query.action.CopyAction;
 import com.cubrid.common.ui.query.action.CreateSqlJavaCodeAction;
 import com.cubrid.common.ui.query.action.CreateSqlPhpCodeAction;
 import com.cubrid.common.ui.query.action.CutAction;
 import com.cubrid.common.ui.query.action.FindReplaceAction;
 import com.cubrid.common.ui.query.action.GotoLineAction;
-import com.cubrid.common.ui.query.action.ParseSqlmapQueryAction;
 import com.cubrid.common.ui.query.action.PasteAction;
 import com.cubrid.common.ui.query.action.QueryOpenAction;
 import com.cubrid.common.ui.query.action.RedoAction;
 import com.cubrid.common.ui.query.action.ReformatColumnsAliasAction;
-import com.cubrid.common.ui.query.action.RunQueryAction;
-import com.cubrid.common.ui.query.action.RunQueryPlanAction;
-import com.cubrid.common.ui.query.action.ShowSchemaAction;
 import com.cubrid.common.ui.query.action.UndoAction;
-import com.cubrid.common.ui.query.builder.quickbuilder.QuickBuilderDialog;
 import com.cubrid.common.ui.query.dialog.SetFileEncodingDialog;
 import com.cubrid.common.ui.query.editor.ISQLPartitions;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import com.cubrid.common.ui.query.editor.SQLContentAssistProcessor;
 import com.cubrid.common.ui.query.editor.SQLDocument;
 import com.cubrid.common.ui.query.editor.SQLPartitionScanner;
 import com.cubrid.common.ui.query.editor.SQLTextViewer;
 import com.cubrid.common.ui.query.editor.SQLViewerConfiguration;
 import com.cubrid.common.ui.query.editor.SubQueryEditorTabItem;
-import com.cubrid.common.ui.query.tuner.action.QueryTunerRunAction;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.spi.ResourceManager;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.action.FocusAction;
@@ -134,7 +127,7 @@ public class SQLEditorComposite extends Composite {
     private FindReplaceDocumentAdapter findReplaceDocAdapter;
     private IContentAssistant contentAssistant;
     private IContentAssistant recentlyUsedSQLcontentAssistant;
-    private final QueryEditorPart queryEditor;
+    private final TextEditorPart queryEditor;
     protected FindReplaceOption findOption;
     private boolean isWholeWord;
     protected boolean useCompletions = true;
@@ -150,7 +143,7 @@ public class SQLEditorComposite extends Composite {
     public SQLEditorComposite(
             Composite parent,
             int style,
-            QueryEditorPart editorPart,
+            TextEditorPart editorPart,
             SubQueryEditorTabItem editorTabItem) {
         super(parent, style);
         this.queryEditor = editorPart;
@@ -166,7 +159,7 @@ public class SQLEditorComposite extends Composite {
         }
     }
 
-    public QueryEditorPart getQueryEditorPart() {
+    public TextEditorPart getQueryEditorPart() {
         return queryEditor;
     }
 
@@ -250,44 +243,6 @@ public class SQLEditorComposite extends Composite {
 
                         manager.add(new Separator());
 
-                        IAction runQueryAction =
-                                ActionManager.getInstance().getAction(RunQueryAction.ID);
-                        if (runQueryAction != null) {
-                            manager.add(runQueryAction);
-                        }
-
-                        IAction runSqlmapQueryAction =
-                                ActionManager.getInstance().getAction(ParseSqlmapQueryAction.ID);
-                        if (runSqlmapQueryAction != null) {
-                            manager.add(runSqlmapQueryAction);
-                        }
-
-                        IAction runQueryPlanAction =
-                                ActionManager.getInstance().getAction(RunQueryPlanAction.ID);
-                        if (runQueryPlanAction != null) {
-                            manager.add(runQueryPlanAction);
-                        }
-
-                        IAction favoriteQueryAction =
-                                ActionManager.getInstance().getAction(AddQueryToFavoriteAction.ID);
-                        if (favoriteQueryAction != null) {
-                            manager.add(favoriteQueryAction);
-                        }
-
-                        manager.add(new Separator());
-
-                        IAction showSchemaViewAction =
-                                ActionManager.getInstance().getAction(ShowSchemaAction.ID);
-                        if (showSchemaViewAction != null) {
-                            manager.add(showSchemaViewAction);
-                        }
-                        manager.add(new Separator());
-
-                        IAction queryTunerRunAction =
-                                ActionManager.getInstance().getAction(QueryTunerRunAction.ID);
-                        manager.add(queryTunerRunAction);
-                        manager.add(new Separator());
-
                         IAction createPhpCodeAction =
                                 ActionManager.getInstance().getAction(CreateSqlPhpCodeAction.ID);
                         if (createPhpCodeAction != null) {
@@ -333,16 +288,6 @@ public class SQLEditorComposite extends Composite {
                             FocusAction.changeActionStatus(redoAction, text);
                         }
 
-                        ServerInfo serverInfo =
-                                queryEditor == null || queryEditor.getSelectedServer() == null
-                                        ? null
-                                        : queryEditor.getSelectedServer().getServerInfo();
-                        boolean isLowerCase = QueryOptions.getKeywordLowercase(serverInfo);
-                        boolean isNoAutoUpperCase =
-                                QueryOptions.getNoAutoUppercaseKeyword(serverInfo);
-                        if (!isLowerCase && !isNoAutoUpperCase) {
-                            autoReplaceKeyword();
-                        }
                     }
 
                     // FIXME extract method?
@@ -444,26 +389,7 @@ public class SQLEditorComposite extends Composite {
         text.addKeyListener(
                 new KeyAdapter() {
                     public void keyPressed(KeyEvent event) {
-                        if ((event.stateMask & SWT.COMMAND) != 0) { // for Mac
-                            if ((event.stateMask & SWT.SHIFT) != 0) {
-                                if (event.keyCode == SWT.CR || event.keyCode == SWT.KEYPAD_CR) {
-                                    queryEditor.runQuery(false);
-                                    return;
-                                }
-                            }
-                        }
-
-                        if (event.keyCode == SWT.F5
-                                || (event.stateMask & SWT.CTRL) != 0 && event.keyCode == 'e') {
-                            queryEditor.runQuery(false);
-                        } else if (event.keyCode == SWT.F6
-                                || (event.stateMask & SWT.CTRL) != 0 && event.keyCode == 'l') {
-                            queryEditor.runQuery(true);
-                        } else if (event.keyCode == SWT.F7) {
-                            queryEditor.getCombinedQueryComposite().showQueryHistory();
-                        } else if (event.keyCode == SWT.F8) {
-                            queryEditor.runMultiQuery();
-                        } else if (event.keyCode == SWT.F1) {
+                        if (event.keyCode == SWT.F1) {
                             ActionManager.getInstance().getAction(HelpDocumentAction.ID).run();
                         } else if (event.keyCode == SWT.F3) {
                             if ((event.stateMask & SWT.SHIFT) == 0) {
@@ -471,21 +397,12 @@ public class SQLEditorComposite extends Composite {
                             } else {
                                 TextEditorFindReplaceMediator.findPrevious();
                             }
-                        } else if (event.keyCode == SWT.F9) {
-                            queryEditor.setTuningModeButton(!queryEditor.isTuningModeButton());
-                        } else if (event.keyCode == SWT.F11) {
-                            queryEditor.getCombinedQueryComposite().rotateQueryPlanDisplayMode();
                         } else if ((event.stateMask & SWT.CTRL) == 0
                                 && (event.stateMask & SWT.SHIFT) == 0
                                 && (event.stateMask & SWT.ALT) == 0
                                 && event.keyCode == SWT.ESC) {
                             int cursorOffset = text.getCaretOffset();
                             text.setSelectionRange(cursorOffset, 0);
-                        } else if ((event.stateMask & SWT.CTRL) != 0
-                                && (event.stateMask & SWT.SHIFT) == 0
-                                && (event.stateMask & SWT.ALT) == 0
-                                && event.keyCode == ',') {
-                            new QuickBuilderDialog(getShell(), SWT.NONE).open();
                         } else if ((event.stateMask & SWT.CTRL) != 0 && event.keyCode == ' ') {
                             contentAssistant.showPossibleCompletions();
                         } else if ((event.stateMask & SWT.CTRL) != 0 && event.keyCode == 'r') {
@@ -520,33 +437,19 @@ public class SQLEditorComposite extends Composite {
                             }
                         } else if ((event.stateMask & SWT.CTRL) != 0
                                 && (event.stateMask & SWT.SHIFT) == 0) {
-                            if (event.keyCode == '/') {
-                                inputComment(false, false);
-                            } else if (event.keyCode == 'z') {
+                            if (event.keyCode == 'z') {
                                 event.doit = false;
                                 undo();
                             } else if (event.keyCode == 'y') {
                                 redo();
                             } else if (event.keyCode == 'f' || event.keyCode == 'h') {
                                 find();
-                            } else if ((event.stateMask & SWT.ALT) != 0
-                                    && (event.keyCode == SWT.CR
-                                            || event.keyCode == SWT.KEYPAD_CR)) { // NOPMD
-                                queryEditor.runQueryPlanInCursorLine();
-                            } else if (event.keyCode == SWT.CR || event.keyCode == SWT.KEYPAD_CR) {
-                                queryEditor.runQueryInCursorLine();
                             } else if (event.keyCode == 'g') {
                                 gotoLine();
                             }
                         } else if ((event.stateMask & SWT.CTRL) != 0
                                 && (event.stateMask & SWT.SHIFT) != 0) {
-                            if ((event.stateMask & SWT.ALT) != 0
-                                    && (event.keyCode == SWT.CR
-                                            || event.keyCode == SWT.KEYPAD_CR)) { // NOPMD
-                                queryEditor.runQuery(true);
-                            } else if (event.keyCode == SWT.CR || event.keyCode == SWT.KEYPAD_CR) {
-                                queryEditor.runQuery(false);
-                            } else if (event.keyCode == 'x') {
+                            if (event.keyCode == 'x') {
                                 toUpperCase();
                             } else if (event.keyCode == 'y') {
                                 toLowerCase();
@@ -585,7 +488,7 @@ public class SQLEditorComposite extends Composite {
                                 IEditorReference[] refs = page.getEditorReferences();
                                 for (int i = 0, selected = 0; i < refs.length; i++) {
                                     IEditorReference ref = refs[i];
-                                    if (QueryEditorPart.ID.equals(ref.getId())) {
+                                    if (TextEditorPart.ID.equals(ref.getId())) {
                                         if (index == selected) {
                                             IEditorPart part = ref.getEditor(true);
                                             page.activate(part);
@@ -594,16 +497,6 @@ public class SQLEditorComposite extends Composite {
                                     }
                                 }
                             }
-                        } else if ((event.stateMask & SWT.CTRL) != 0
-                                && (event.keyCode >= '1' && event.keyCode <= '9')) {
-                            // ctrl + 1 ~ 9 : change middle tab
-                            ITabSelection selector = queryEditor.getCombinedQueryComposite();
-                            selector.select(event.keyCode - '1', -1);
-                        } else if ((event.stateMask & SWT.ALT) != 0
-                                && (event.keyCode >= '1' && event.keyCode <= '9')) {
-                            // alt + 1 ~ 9 : change bottom tab
-                            ITabSelection selector = queryEditor.getCombinedQueryComposite();
-                            selector.select(-1, event.keyCode - '1');
                         }
                     }
                 });
@@ -623,30 +516,6 @@ public class SQLEditorComposite extends Composite {
                                 ActionManager.getInstance()
                                         .getAction(ReformatColumnsAliasAction.ID);
                         reformatColumnsAliasAction.setEnabled(false);
-
-                        // show schema info view with a selected text
-                        IAction showSchemaAction =
-                                ActionManager.getInstance().getAction(ShowSchemaAction.ID);
-                        showSchemaAction.setEnabled(false);
-                        if (event.getSource() instanceof StyledText) {
-                            StyledText stext = (StyledText) event.getSource();
-                            if (stext != null
-                                    && stext.getSelectionText() != null
-                                    && stext.getSelectionText().length() > 0) {
-                                copyAction.setEnabled(true);
-                                cutAction.setEnabled(true);
-                                reformatColumnsAliasAction.setEnabled(true);
-                                CubridDatabase db = queryEditor.getSelectedDatabase();
-                                if (DatabaseNavigatorMenu.SELF_DATABASE_ID.equals(db.getId())
-                                        && ApplicationType.CUBRID_MANAGER.equals(
-                                                PerspectiveManager.getInstance()
-                                                        .getCurrentMode())) {
-                                    showSchemaAction.setEnabled(false);
-                                } else {
-                                    showSchemaAction.setEnabled(true);
-                                }
-                            }
-                        }
                     }
                 });
 
@@ -917,16 +786,6 @@ public class SQLEditorComposite extends Composite {
         TextEditorFindReplaceMediator.openFindReplaceDialog();
     }
 
-    /** change current line sql script to comment */
-    public void comment() {
-        inputComment(true, true);
-    }
-
-    /** change comment to current line sql script */
-    public void uncomment() {
-        inputComment(true, false);
-    }
-
     /** remove tab in script */
     public void unindent() {
         removeTab();
@@ -935,74 +794,6 @@ public class SQLEditorComposite extends Composite {
     /** insert tab in script */
     public void indent() {
         inputTab();
-    }
-
-    void inputComment(boolean isForce, boolean isComment) {
-        boolean isComments = isComment;
-        int startOffset = text.getSelection().x;
-        int endOffset = text.getSelection().y;
-
-        int startLine = text.getLineAtOffset(startOffset);
-        int endLine = text.getLineAtOffset(endOffset);
-
-        if (text.getSelectionText().endsWith(StringUtil.NEWLINE)) {
-            endLine--;
-        }
-
-        int currLineOffset;
-
-        if (!isForce) {
-            isComments = false; // if isComment == true, adding comment
-
-            for (int i = startLine; i <= endLine; i++) {
-                currLineOffset = text.getOffsetAtLine(i);
-                if (!text.getText().substring(currLineOffset).trim().startsWith("--")) {
-                    isComments |= true;
-                }
-            }
-        }
-
-        if (startOffset == endOffset) {
-            currLineOffset = text.getOffsetAtLine(startLine);
-            if (isComments) {
-                text.replaceTextRange(currLineOffset, 0, "--");
-            } else {
-                int lineStartOffset = text.getOffsetAtLine(startLine);
-                if ((lineStartOffset + 2 <= text.getText().length())
-                        && (text.getText()
-                                .substring(lineStartOffset, lineStartOffset + 2)
-                                .equals("--"))) {
-                    currLineOffset = text.getText().indexOf("--", currLineOffset);
-                    text.replaceTextRange(currLineOffset, 2, "");
-                }
-            }
-        } else {
-            if (isComments) {
-                for (int i = startLine; i <= endLine; i++) {
-                    currLineOffset = text.getOffsetAtLine(i);
-                    text.replaceTextRange(currLineOffset, 0, "--");
-                }
-                startOffset += 2;
-                endOffset += (endLine - startLine + 1) * 2;
-            } else {
-                for (int i = startLine; i <= endLine; i++) {
-                    int lineStartOffset = text.getOffsetAtLine(i);
-
-                    if ((lineStartOffset + 2 <= text.getText().length())
-                            && (text.getText()
-                                    .substring(lineStartOffset, lineStartOffset + 2)
-                                    .equals("--"))) {
-                        currLineOffset = text.getText().indexOf("--", text.getOffsetAtLine(i));
-                        text.replaceTextRange(currLineOffset, 2, "");
-                        if (i == startLine) {
-                            startOffset -= 2;
-                        }
-                        endOffset -= 2;
-                    }
-                }
-            }
-            text.setSelection(startOffset, endOffset);
-        }
     }
 
     public void inputTab() {

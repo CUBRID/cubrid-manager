@@ -34,7 +34,7 @@ import com.cubrid.common.ui.cubrid.table.control.FKTableViewerLabelProvider;
 import com.cubrid.common.ui.cubrid.table.control.IndexTableViewerContentProvider;
 import com.cubrid.common.ui.cubrid.table.control.IndexTableViewerLabelProvider;
 import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.query.format.SqlFormattingStrategy;
 import com.cubrid.common.ui.spi.ResourceManager;
 import com.cubrid.common.ui.spi.TableContentProvider;
@@ -61,6 +61,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -111,6 +112,9 @@ public class ObjectInfoComposite extends Composite implements ISubTabSelection {
     private GetInfoDataTask getInfoDataTask;
     /*Mark is table*/
     private boolean isTable = false;
+    
+    public static final Color BACK_COLOR = ResourceManager.getColor(204, 204, 204);
+    public static final Color SASH_COLOR = ResourceManager.getColor(128, 128, 128);
 
     public ObjectInfoComposite(Composite parent, int style, DefaultSchemaNode schemaNode) {
         super(parent, style);
@@ -297,7 +301,7 @@ public class ObjectInfoComposite extends Composite implements ISubTabSelection {
         objInfoFolder.setSimple(false);
         objInfoFolder.setUnselectedImageVisible(true);
         objInfoFolder.setUnselectedCloseVisible(true);
-        objInfoFolder.setSelectionBackground(CombinedQueryEditorComposite.BACK_COLOR);
+        objInfoFolder.setSelectionBackground(BACK_COLOR);
         objInfoFolder.setSelectionForeground(ResourceManager.getColor(SWT.COLOR_BLACK));
         objInfoFolder.setLayout(new GridLayout(1, true));
         objInfoFolder.setLayoutData(
@@ -519,7 +523,7 @@ public class ObjectInfoComposite extends Composite implements ISubTabSelection {
         composite.setLayout(new FillLayout());
 
         final SashForm sashForm = new SashForm(composite, SWT.VERTICAL);
-        sashForm.setBackground(CombinedQueryEditorComposite.BACK_COLOR);
+        sashForm.setBackground(BACK_COLOR);
 
         /*Index table composite*/
         Composite indexComposite = new Composite(sashForm, SWT.None);
@@ -649,8 +653,8 @@ public class ObjectInfoComposite extends Composite implements ISubTabSelection {
                         .getActivePage()
                         .getActiveEditor();
 
-        if (part instanceof QueryEditorPart) {
-            QueryEditorPart editorPart = (QueryEditorPart) part;
+        if (part instanceof TextEditorPart) {
+            TextEditorPart editorPart = (TextEditorPart) part;
             SQLEditorComposite sqlEditor =
                     editorPart.getCombinedQueryComposite().getSqlEditorComp();
             queries.append(sqlEditor.getAllQueries());

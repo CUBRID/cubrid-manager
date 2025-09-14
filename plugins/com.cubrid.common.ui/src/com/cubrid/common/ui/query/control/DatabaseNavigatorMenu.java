@@ -31,7 +31,7 @@ import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
 import com.cubrid.common.ui.common.navigator.NodeFilterManager;
 import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.spi.LayoutManager;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.CubridGroupNode;
@@ -103,7 +103,7 @@ public class DatabaseNavigatorMenu {
 
     protected Composite parent = null;
     protected CLabel selectDbLabel;
-    protected QueryEditorPart editor;
+    protected TextEditorPart editor;
     protected DatabaseMenuItem lastSelectedDatabaseMenu = null;
     protected Image selectedImage;
 
@@ -310,17 +310,6 @@ public class DatabaseNavigatorMenu {
                                     dbItem.setSelection(false);
                                     return;
                                 }
-                            }
-
-                            boolean valid = editor.resetJDBCConnection();
-                            if (valid) {
-                                selectMenuItem(dbItem);
-                                editor.getCombinedQueryComposite()
-                                        .getMultiDBQueryComp()
-                                        .setMainDatabase(dbItem.getDatabase());
-                                editor.refreshQueryOptions();
-                            } else {
-                                dbItem.setSelection(false);
                             }
                         }
 
@@ -685,10 +674,8 @@ public class DatabaseNavigatorMenu {
                                         || !selectedMenuItem.isEnabled()
                                         /*For bug TOOLS-1292 After change the user, the query editor hasn't been logout */
                                         || isChangedDBUser()) {
-                                    editor.shutDownConnection();
                                     selectMenuItem(nullDbMenuItem);
                                 }
-                                editor.refreshQueryOptions();
                             }
                         });
     }
@@ -738,7 +725,6 @@ public class DatabaseNavigatorMenu {
             DatabaseMenuItem item = findById(database.getId());
             selectMenuItem(item);
         }
-        editor.refreshQueryOptions();
     }
 
     /**
@@ -785,26 +771,6 @@ public class DatabaseNavigatorMenu {
             selectedMenuItem = tmpItem;
             setText(tmpItem);
             selectdDb = tmpItem.getDatabase();
-
-            // [TOOLS-2425]Support shard broker
-            if (CubridDatabase.hasValidDatabaseInfo(selectdDb)) {
-                DatabaseInfo dbInfo = selectdDb.getDatabaseInfo();
-                if (dbInfo.isShard()) {
-                    editor.setShardId(dbInfo.getCurrentShardId());
-                    editor.setShardVal(dbInfo.getCurrentShardVal());
-                    editor.setShardQueryType(dbInfo.getShardQueryType());
-                }
-            }
-
-            editor.changeQueryEditorPartName(selectDbLabel.getText());
-            editor.changeQueryEditorPartNameWithShard();
-
-            /*For bug Tools-1250 Update the auto commit status by select db*/
-            if (selectdDb != null
-                    && lastSelectdDb != null
-                    && !StringUtil.isEqualNotIgnoreNull(selectdDb.getId(), lastSelectdDb.getId())) {
-                editor.setAutocommit(true);
-            }
 
             /*Save current selectDB*/
             lastSelectdDb = selectdDb;
@@ -923,7 +889,7 @@ public class DatabaseNavigatorMenu {
         return getSelectedDb() == NULL_DATABASE;
     }
 
-    public void setEditor(QueryEditorPart editor) {
+    public void setEditor(TextEditorPart editor) {
         this.editor = editor;
     }
 

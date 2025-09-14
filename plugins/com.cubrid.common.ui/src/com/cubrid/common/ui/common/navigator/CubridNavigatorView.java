@@ -48,8 +48,6 @@ import com.cubrid.common.ui.common.sqlrunner.dialog.RunSQLFileDialogDNDControlle
 import com.cubrid.common.ui.er.dnd.ERDNDController;
 import com.cubrid.common.ui.perspective.IPerspectiveConstance;
 import com.cubrid.common.ui.perspective.PerspectiveManager;
-import com.cubrid.common.ui.query.control.MultiDBQueryDNDController;
-import com.cubrid.common.ui.query.editor.QueryEditorDNDController;
 import com.cubrid.common.ui.spi.CubridNodeManager;
 import com.cubrid.common.ui.spi.ICubridGroupNodeManager;
 import com.cubrid.common.ui.spi.LayoutManager;
@@ -684,12 +682,6 @@ public abstract class CubridNavigatorView extends ViewPart {
 
         addTreeDropTarget(tree);
         String perspectiveId = PerspectiveManager.getInstance().getCurrentPerspectiveId();
-        // DropTarget for query editor.
-        QueryEditorDNDController.registerDragSource(perspectiveId, tv);
-
-        // DropTarget for multiple query
-        MultiDBQueryDNDController.registerDragSource(perspectiveId, tv);
-
         // DropTarget for Run SQL file
         RunSQLFileDialogDNDController.registerDragSource(perspectiveId, tv);
 

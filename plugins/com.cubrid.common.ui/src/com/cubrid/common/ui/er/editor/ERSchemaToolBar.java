@@ -36,7 +36,6 @@ import com.cubrid.common.ui.er.Messages;
 import com.cubrid.common.ui.er.model.ERSchema;
 import com.cubrid.common.ui.query.control.EditorToolBar;
 import com.cubrid.common.ui.spi.util.CommonUITool;
-import java.sql.SQLException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -59,7 +58,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.PartInitException;
 import org.slf4j.Logger;
 
 /**
@@ -82,7 +80,6 @@ public class ERSchemaToolBar extends ToolBar {
     private ToolItem saveAsItem;
     private ToolItem ddlCompareItem;
     private ToolItem syncCommentItem;
-    private ToolItem generateSyncCommentSQLItem;
     private ToolItem connectLineItem;
     private ToolItem newTableItem;
     private ToolItem zoomInItem;
@@ -241,29 +238,6 @@ public class ERSchemaToolBar extends ToolBar {
                         }
                     });
         }
-        // generate SQL for synchronizing comments to db
-        generateSyncCommentSQLItem = new ToolItem(this, SWT.PUSH);
-        generateSyncCommentSQLItem.setImage(
-                CommonUIPlugin.getImage("icons/er/generate_sync_comments_sqls.png"));
-        generateSyncCommentSQLItem.setToolTipText(Messages.btnTipGenerateSyncCommentsSQL);
-        generateSyncCommentSQLItem.addSelectionListener(
-                new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {
-                        try {
-                            erSchemaEditor.generateSyncCommentSQL();
-                        } catch (PartInitException e) {
-                            LOGGER.error(e.getMessage());
-                            CommonUITool.openErrorBox(
-                                    erSchemaEditor.getSite().getShell(), e.getMessage());
-                        } catch (SQLException e) {
-                            LOGGER.error(e.getMessage());
-                            CommonUITool.openErrorBox(
-                                    erSchemaEditor.getSite().getShell(), e.getMessage());
-                        }
-                    }
-                });
-        new ToolItem(this, SWT.SEPARATOR | SWT.VERTICAL);
-
         // automatic layout
         autoLayoutItem = new ToolItem(this, SWT.SEPARATOR);
         Composite autoLayoutComp = createAutoLayoutComp();

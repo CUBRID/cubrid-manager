@@ -28,9 +28,6 @@ o * Copyright (C) 2009 Search Solution Corporation. All rights reserved by Searc
 package com.cubrid.common.ui.spi.util;
 
 import com.cubrid.common.core.util.LogUtil;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.part.CubridViewPart;
 import java.util.ArrayList;
@@ -303,71 +300,5 @@ public final class LayoutUtil {
                 }
             }
         }
-    }
-
-    /**
-     * When database logout or stop,check query editor whether some transaction are not commit
-     *
-     * @param databaseNode the CubridDatabase object
-     * @return <code>true</code> if transaction is commited;<code>false</code> otherwise
-     */
-    public static boolean checkAllQueryEditor(CubridDatabase databaseNode) {
-        IWorkbenchPage page = getActivePage();
-        if (page == null) {
-            return true;
-        }
-
-        boolean isContinue = true;
-        IEditorReference[] editorRefArr = page.getEditorReferences();
-        if (editorRefArr == null || editorRefArr.length == 0) {
-            return true;
-        }
-
-        for (IEditorReference editorRef : editorRefArr) {
-            String editorId = editorRef.getId();
-            if (editorId != null && editorId.equals(QueryEditorPart.ID)) {
-                QueryEditorPart queryEditor = (QueryEditorPart) editorRef.getEditor(false);
-                CubridDatabase db = queryEditor.getSelectedDatabase();
-                if (db != null && db.getId().equals(databaseNode.getId())) {
-                    isContinue = queryEditor.resetJDBCConnection();
-                }
-            }
-        }
-
-        return isContinue;
-    }
-
-    /**
-     * When server disconnect or delete,check query editor whether some transaction are not commit
-     *
-     * @param cubridServer the CubridServer object
-     * @return <code>true</code> if transaction is commited;<code>false</code> otherwise
-     */
-    public static boolean checkAllQueryEditor(CubridServer cubridServer) {
-        IWorkbenchPage page = getActivePage();
-        if (page == null) {
-            return true;
-        }
-
-        IEditorReference[] editorRefArr = page.getEditorReferences();
-        if (editorRefArr == null || editorRefArr.length == 0) {
-            return true;
-        }
-
-        boolean isContinue = true;
-        for (IEditorReference editorRef : editorRefArr) {
-            String editorId = editorRef.getId();
-            if (editorId != null && editorId.equals(QueryEditorPart.ID)) {
-                QueryEditorPart queryEditor = (QueryEditorPart) editorRef.getEditor(false);
-                CubridDatabase db = queryEditor.getSelectedDatabase();
-                if (db != null
-                        && db.getServer() != null
-                        && db.getServer().getId().equals(cubridServer.getId())) {
-                    isContinue = queryEditor.resetJDBCConnection();
-                }
-            }
-        }
-
-        return isContinue;
     }
 }

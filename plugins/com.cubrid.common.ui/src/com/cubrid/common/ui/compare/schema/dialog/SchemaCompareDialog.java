@@ -79,7 +79,7 @@ public class SchemaCompareDialog extends CMTitleAreaDialog {
      * The constructor
      *
      * @param parentShell
-     * @param queryEditorPart
+     * @param TextEditorPart
      */
     public SchemaCompareDialog(Shell parentShell, List<ICubridNode> selections) {
         super(parentShell);

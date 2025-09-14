@@ -2944,8 +2944,6 @@ public class TableEditorPart extends CubridEditorPart implements ITaskExecutorIn
                     .fireCubridNodeChanged(
                             new CubridNodeChangedEvent(
                                     editedTableNode, CubridNodeChangedEventType.NODE_REFRESH));
-            /* Broadcast the view changed */
-            QueryEditorUtil.fireSchemaNodeChanged(editedTableNode);
         }
 
         getSite().getWorkbenchWindow().getActivePage().closeEditor(editor, false);

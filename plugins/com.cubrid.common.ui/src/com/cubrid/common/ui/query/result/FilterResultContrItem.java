@@ -378,7 +378,6 @@ public class FilterResultContrItem extends ControlContribution {
         filterSetting.setFilterColumnInfoList(colInfoList);
 
         qe.setFilterSetting(filterSetting);
-        qe.makeItem();
     }
 
     /**

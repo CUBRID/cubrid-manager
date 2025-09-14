@@ -29,7 +29,6 @@
  */
 package com.cubrid.common.ui.query.tuner;
 
-import com.cubrid.common.core.queryplan.StructQueryPlan;
 import com.cubrid.common.core.util.DateUtil;
 import com.cubrid.common.ui.query.control.ColumnInfo;
 import com.cubrid.common.ui.query.control.QueryInfo;
@@ -55,7 +54,6 @@ public class QueryRecord implements Cloneable {
     private long startTime;
     private long stopTime;
     private String query;
-    private StructQueryPlan queryPlan;
     private Map<String, String> statistics;
     private final Date createDate;
     private String name;
@@ -133,16 +131,6 @@ public class QueryRecord implements Cloneable {
     /** @return the query */
     public String getQuery() {
         return query;
-    }
-
-    /** @return the queryPlan */
-    public StructQueryPlan getQueryPlan() {
-        return queryPlan;
-    }
-
-    /** @param queryPlan the queryPlan to set */
-    public void setQueryPlan(StructQueryPlan queryPlan) {
-        this.queryPlan = queryPlan;
     }
 
     /** @param startTime the startTime to set */
@@ -246,9 +234,6 @@ public class QueryRecord implements Cloneable {
         try {
             queryRecord = (QueryRecord) super.clone();
         } catch (CloneNotSupportedException e) {
-        }
-        if (queryPlan != null) {
-            queryRecord.setQueryPlan(queryPlan.clone());
         }
 
         if (statistics != null) {

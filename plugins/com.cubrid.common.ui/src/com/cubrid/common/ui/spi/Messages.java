@@ -128,8 +128,6 @@ public class Messages extends NLS {
     public static String viewDataMenuName;
     public static String copySQLMenuName;
     public static String copyGrantToClipboardActionName;
-    public static String columnSelectSqlActionName;
-    public static String columnSelectCountActionName;
     public static String copyDeleteStmtToClipboardAction;
     public static String copyUpdateStmtToClipboardAction;
     // trigger
@@ -162,7 +160,6 @@ public class Messages extends NLS {
     public static String queryCopyActionName;
     public static String showSchemaActionName;
     public static String sqlQuickHelpActionName;
-    public static String titleAssignNameAction;
 
     // navigator view action
     public static String collapseAllActionName;

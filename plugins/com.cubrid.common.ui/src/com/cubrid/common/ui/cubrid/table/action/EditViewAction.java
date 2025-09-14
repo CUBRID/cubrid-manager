@@ -205,8 +205,6 @@ public class EditViewAction extends SelectionAction {
                                     node, CubridNodeChangedEventType.NODE_REFRESH));
             ActionManager.getInstance().fireSelectionChanged(getSelection());
 
-            /*Broadcast the view changed*/
-            QueryEditorUtil.fireSchemaNodeChanged(node);
             return IDialogConstants.OK_ID;
         }
         return IDialogConstants.CANCEL_ID;

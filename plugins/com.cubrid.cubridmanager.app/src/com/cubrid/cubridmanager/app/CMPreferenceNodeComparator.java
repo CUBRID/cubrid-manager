@@ -31,7 +31,6 @@ import com.cubrid.common.ui.common.preference.GeneralPreferencePage;
 import com.cubrid.common.ui.common.preference.JdbcManagePreferencePage;
 import com.cubrid.common.ui.common.preference.NavigatorPreferencePage;
 import com.cubrid.common.ui.cubrid.table.preference.ImportPreferencePage;
-import com.cubrid.common.ui.query.preference.QueryOptionPreferencePage;
 import com.cubrid.common.ui.spi.PreferenceNodeComparator;
 import com.cubrid.cubridmanager.ui.mondashboard.preference.DashboardPreferencePage;
 
@@ -56,11 +55,6 @@ public class CMPreferenceNodeComparator extends PreferenceNodeComparator {
         if (GeneralPreferencePage.ID.equals(id1)) {
             return -1;
         } else if (GeneralPreferencePage.ID.equals(id2)) {
-            return 1;
-        }
-        if (QueryOptionPreferencePage.ID.equals(id1)) {
-            return -1;
-        } else if (QueryOptionPreferencePage.ID.equals(id2)) {
             return 1;
         }
         if (ImportPreferencePage.ID.equals(id1)) {

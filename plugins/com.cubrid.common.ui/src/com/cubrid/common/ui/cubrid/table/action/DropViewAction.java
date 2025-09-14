@@ -121,8 +121,6 @@ public class DropViewAction extends SelectionAction {
             table.getDatabase().getDatabaseInfo().removeSchema(table.getName());
             for (int i = 0; i < selectedCount; i++) {
                 parent.removeChild(nodeArray[i]);
-                /*Broadcast the view changed*/
-                QueryEditorUtil.fireSchemaNodeChanged(nodeArray[i]);
             }
             viewer.remove(parent, nodeArray);
             viewer.setSelection(new StructuredSelection(parent), true);

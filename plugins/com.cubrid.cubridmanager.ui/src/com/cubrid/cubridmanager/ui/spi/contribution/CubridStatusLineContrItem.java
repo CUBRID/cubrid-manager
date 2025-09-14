@@ -27,7 +27,6 @@
  */
 package com.cubrid.cubridmanager.ui.spi.contribution;
 
-import com.cubrid.common.ui.common.action.RestoreQueryEditorAction;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
 import com.cubrid.common.ui.query.control.DatabaseNavigatorMenu;
 import com.cubrid.common.ui.spi.action.ActionManager;
@@ -89,8 +88,6 @@ public class CubridStatusLineContrItem extends StatusLineContrItem {
     protected void updateStatusLine(StatusLineManager statusLineManager, ICubridNode cubridNode) {
 
         clearStatusLine();
-
-        updateStatusLineForRestoreQueryEditor();
 
         if (cubridNode == null
                 || cubridNode.getServer() == null
@@ -186,51 +183,6 @@ public class CubridStatusLineContrItem extends StatusLineContrItem {
         }
     }
 
-    private void updateStatusLineForRestoreQueryEditor() {
-        final int countOfRestorableQueryEditors =
-                ApplicationPersistUtil.getInstance().countOfRestorableQueryEditorsAtLastSession();
-        if (countOfRestorableQueryEditors <= 0) {
-            return;
-        }
-
-        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        StatusLineManager statusLineManager = null;
-        if (window instanceof WorkbenchWindow) {
-            statusLineManager = ((WorkbenchWindow) window).getStatusLineManager();
-        }
-
-        if (statusLineManager == null) {
-            return;
-        }
-
-        IContributionItem scaleItem =
-                new ControlContribution(RESTORE_QUERY_EDITORS_CONTR_ID) {
-                    protected Control createControl(Composite parent) {
-                        Button btn = new Button(parent, SWT.None);
-                        String buttonTitle =
-                                Messages.bind(
-                                        com.cubrid.common.ui.common.Messages
-                                                .restoreQueryEditorTitle,
-                                        countOfRestorableQueryEditors);
-                        btn.setText(buttonTitle);
-                        btn.addSelectionListener(
-                                new SelectionAdapter() {
-                                    public void widgetSelected(SelectionEvent e) {
-                                        ActionManager manager = ActionManager.getInstance();
-                                        IAction action =
-                                                manager.getAction(RestoreQueryEditorAction.ID);
-                                        if (action != null
-                                                && action instanceof RestoreQueryEditorAction) {
-                                            action.run();
-                                        }
-                                    }
-                                });
-                        return btn;
-                    };
-                };
-        statusLineManager.add(scaleItem);
-    }
-
     /**
      * Change status line for navigator selection
      *
@@ -250,8 +202,6 @@ public class CubridStatusLineContrItem extends StatusLineContrItem {
         }
         // workbenchWindow.setStatus("");
         clearStatusLine();
-
-        updateStatusLineForRestoreQueryEditor();
 
         if (selection == null || selection.isEmpty()) {
             return;

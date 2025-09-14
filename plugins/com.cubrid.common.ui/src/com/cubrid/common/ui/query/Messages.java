@@ -59,10 +59,6 @@ public class Messages extends NLS {
     public static String cancel;
     public static String changeShardId;
     public static String run;
-    public static String btnRunThisQuery;
-    public static String btnParseThisSqlmapQuery;
-    public static String btnRunThisQueryPlan;
-    public static String runMultiQuery;
     public static String btnYes;
     public static String btnNo;
 
@@ -134,7 +130,6 @@ public class Messages extends NLS {
     public static String confirmDelMsg;
     public static String errorHead;
     public static String copyClipBoard;
-    public static String insertRecord;
     public static String oidNavigator;
     public static String detailView;
     public static String allExport;
@@ -221,9 +216,6 @@ public class Messages extends NLS {
     public static String explain_history_delete_error;
 
     public static String qedit_top;
-    public static String qedit_next_run;
-    public static String qedit_lastpage;
-    public static String qedit_nextpage;
 
     public static String commitUpdate;
     public static String waiting_export;
@@ -390,7 +382,6 @@ public class Messages extends NLS {
     public static String treeSelected;
 
     public static String batchRun;
-    public static String btnAddSelectedQueryIntoFavorite;
     public static String titleBatchRunMessage;
     public static String msgBatchRunMessage;
     public static String btnBatchRun;
@@ -496,28 +487,11 @@ public class Messages extends NLS {
 
     public static String msgMaxOpenNum;
 
-    public static String quickQueryBuilderTitle;
-    public static String quickQueryBuilderLabel;
-    public static String quickQueryBuilderLoading;
-    public static String quickQueryBuilderBtnSelect1;
-    public static String quickQueryBuilderBtnSelect2;
-    public static String quickQueryBuilderBtnInsert;
-    public static String quickQueryBuilderBtnUpdate;
-
     // query editor tab item
     public static String queryEditorAddTabItemTooltip;
     public static String queryEditorDefaultTabItemTooltip;
     public static String queryEditorTabItemName;
     public static String queryEditorTabItemTooltip;
-    public static String shardMultiQueryTitle;
-    public static String shardMultiQueryMessage;
-    public static String shardMultiQueryStartLabel;
-    public static String shardMultiQueryEndLabel;
-    public static String shardMultiQueryDialogTitle;
-    public static String shardMultiQueryRunButton;
-    public static String shardMultiQueryCloseButton;
-    public static String shardMultiQueryStartShardIdInputErrorMsg;
-    public static String shardMultiQueryEndShardIdInputErrorMsg;
 
     // Plan display style menu
     public static String lblPlanText;
@@ -680,19 +654,12 @@ public class Messages extends NLS {
 
     public static String titleSelectFolderToBeExported;
     public static String msgSelectFolderToBeExported;
-    public static String errDidNotSelectedQuery;
-    public static String msgDoYouWantToAddAllQueryInEditor;
 
     public static String titleEditField;
     public static String titleViewFieldContent;
     public static String errTextTypeNotMatch;
     public static String msgEditFieldData;
     public static String msgViewFieldData;
-
-    // QueryResultTableCalcInfo
-    public static String msgCalcInfoCount;
-    public static String msgCalcInfoSUM;
-    public static String msgCalcInfoAVG;
 
     public static String msgConnectionTimeOut;
     public static String msgConnectionError;

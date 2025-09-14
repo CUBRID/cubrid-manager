@@ -29,8 +29,8 @@
 package com.cubrid.common.ui.query.dialog;
 
 import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.query.Messages;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
 import com.cubrid.common.ui.spi.persist.QueryOptions;
 import com.cubrid.common.ui.spi.util.CommonUITool;
@@ -217,12 +217,12 @@ public class SetFileEncodingDialog extends CMTitleAreaDialog {
     private void openFile() {
         String filePath = null;
         if (isOpened) {
-            File file = QueryEditorPart.getOpenedSQLFile();
+            File file = TextEditorPart.getOpenedSQLFile();
             if (file != null) {
                 filePath = file.getAbsolutePath();
             }
         } else {
-            File savedDirFile = QueryEditorPart.getSavedFile();
+            File savedDirFile = TextEditorPart.getSavedFile();
             if (savedDirFile != null) {
                 filePath = savedDirFile.getAbsolutePath();
             }

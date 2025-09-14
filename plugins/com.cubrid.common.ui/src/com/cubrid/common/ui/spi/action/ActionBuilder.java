@@ -36,9 +36,8 @@ import com.cubrid.common.ui.common.action.HelpDocumentAction;
 import com.cubrid.common.ui.common.action.HiddenElementAction;
 import com.cubrid.common.ui.common.action.NoticeAction;
 import com.cubrid.common.ui.common.action.OIDNavigatorAction;
-import com.cubrid.common.ui.common.action.OpenQueryAction;
+import com.cubrid.common.ui.common.action.OpenTextEditorAction;
 import com.cubrid.common.ui.common.action.ReportBugAction;
-import com.cubrid.common.ui.common.action.RestoreQueryEditorAction;
 import com.cubrid.common.ui.common.action.RunSQLFileAction;
 import com.cubrid.common.ui.common.action.SchemaCompareAction;
 import com.cubrid.common.ui.common.action.ShowHiddenElementsAction;
@@ -62,8 +61,6 @@ import com.cubrid.common.ui.cubrid.serial.action.EditSerialAction;
 import com.cubrid.common.ui.cubrid.synonym.action.AlterSynonymAction;
 import com.cubrid.common.ui.cubrid.synonym.action.DropSynonymAction;
 import com.cubrid.common.ui.cubrid.synonym.action.NewSynonymAction;
-import com.cubrid.common.ui.cubrid.table.action.ColumnSelectCountAction;
-import com.cubrid.common.ui.cubrid.table.action.ColumnSelectSqlAction;
 import com.cubrid.common.ui.cubrid.table.action.CreateLikeTableAction;
 import com.cubrid.common.ui.cubrid.table.action.CreateViewAction;
 import com.cubrid.common.ui.cubrid.table.action.DeleteTableAction;
@@ -90,9 +87,6 @@ import com.cubrid.common.ui.cubrid.trigger.action.NewTriggerAction;
 import com.cubrid.common.ui.er.action.OpenSchemaEditorAction;
 import com.cubrid.common.ui.external.action.InstallMigrationToolkitAction;
 import com.cubrid.common.ui.perspective.OpenCMPerspectiveAction;
-import com.cubrid.common.ui.query.action.AddQueryToFavoriteAction;
-import com.cubrid.common.ui.query.action.AssignEditorNameAction;
-import com.cubrid.common.ui.query.action.BatchRunAction;
 import com.cubrid.common.ui.query.action.CopyAction;
 import com.cubrid.common.ui.query.action.CopyAllAction;
 import com.cubrid.common.ui.query.action.CreateSqlJavaCodeAction;
@@ -100,19 +94,12 @@ import com.cubrid.common.ui.query.action.CreateSqlPhpCodeAction;
 import com.cubrid.common.ui.query.action.CutAction;
 import com.cubrid.common.ui.query.action.FindReplaceAction;
 import com.cubrid.common.ui.query.action.GotoLineAction;
-import com.cubrid.common.ui.query.action.InputMethodAction;
-import com.cubrid.common.ui.query.action.ParseSqlmapQueryAction;
 import com.cubrid.common.ui.query.action.PasteAction;
 import com.cubrid.common.ui.query.action.QueryOpenAction;
 import com.cubrid.common.ui.query.action.RedoAction;
 import com.cubrid.common.ui.query.action.ReformatColumnsAliasAction;
-import com.cubrid.common.ui.query.action.RunQueryAction;
-import com.cubrid.common.ui.query.action.RunQueryPlanAction;
-import com.cubrid.common.ui.query.action.ShowSchemaAction;
 import com.cubrid.common.ui.query.action.SqlFormatAction;
 import com.cubrid.common.ui.query.action.UndoAction;
-import com.cubrid.common.ui.query.tuner.action.QueryTunerAction;
-import com.cubrid.common.ui.query.tuner.action.QueryTunerRunAction;
 import com.cubrid.common.ui.spi.Messages;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -132,7 +119,7 @@ public class ActionBuilder {
      * @param window the workbench window
      */
     protected void makeActions(Shell shell) {
-        IAction openAction = new OpenQueryAction(shell, Messages.openActionName, null);
+        IAction openAction = new OpenTextEditorAction(shell, Messages.openActionName, null);
         registerAction(openAction);
 
         // implemented actions for retarget actions
@@ -147,10 +134,6 @@ public class ActionBuilder {
 
         IAction copyAllAction = new CopyAllAction(shell, Messages.copyAllActionName, null);
         registerAction(copyAllAction);
-
-        IAction inputMethodAction =
-                new InputMethodAction(shell, Messages.inputMethodActionName, null);
-        registerAction(inputMethodAction);
 
         IAction pasteAction = new PasteAction(shell, Messages.pasteActionName, null);
         registerAction(pasteAction);
@@ -272,9 +255,6 @@ public class ActionBuilder {
         registerAction(viewDropAction);
         viewDropAction.setImageDescriptor(loadImage("icons/action/schema_view_delete.png"));
 
-        IAction showSchemaAction = new ShowSchemaAction(shell, Messages.showSchemaActionName, null);
-        registerAction(showSchemaAction);
-
         IAction updateStatisticsAction =
                 new UpdateStatisticsAction(shell, Messages.updateStatisticsActionName, null);
         registerAction(updateStatisticsAction);
@@ -293,13 +273,6 @@ public class ActionBuilder {
                         loadImage("icons/action/copy_pojo_to_clipboard.gif"));
         registerAction(tableToPhpCodeAction);
 
-        IAction columnSelectSqlAction =
-                new ColumnSelectSqlAction(shell, Messages.columnSelectSqlActionName, null);
-        registerAction(columnSelectSqlAction);
-
-        IAction columnSelectCountAction =
-                new ColumnSelectCountAction(shell, Messages.columnSelectCountActionName, null);
-        registerAction(columnSelectCountAction);
         // trigger related action
         IAction newTriggerAction =
                 new NewTriggerAction(
@@ -505,22 +478,6 @@ public class ActionBuilder {
                 new NoticeAction(com.cubrid.common.ui.common.Messages.titleNoticeDialog, null);
         registerAction(noticeAction);
 
-        IAction queryTunerAction =
-                new QueryTunerAction(
-                        shell,
-                        com.cubrid.common.ui.common.Messages.actionQueryTuner,
-                        loadImage("icons/action/query_tuner.png"),
-                        loadImage("icons/action/query_tuner.png"));
-        registerAction(queryTunerAction);
-
-        IAction queryTunerRunAction =
-                new QueryTunerRunAction(
-                        shell,
-                        com.cubrid.common.ui.common.Messages.actionQueryTuner,
-                        loadImage("icons/action/query_tuner.png"),
-                        loadImage("icons/action/query_tuner.png"));
-        registerAction(queryTunerRunAction);
-
         // navigation tree expand/unexpand on tree navigator
         IAction expandTreeItemAction =
                 new ExpandTreeItemAction(
@@ -535,18 +492,6 @@ public class ActionBuilder {
                         loadImage("icons/navigator/unexpand.png"),
                         null);
         registerAction(unExpandTreeItemAction);
-
-        IAction batchRunAction =
-                new BatchRunAction(
-                        com.cubrid.common.ui.query.Messages.batchRun,
-                        loadImage("icons/queryeditor/run_batch_sql.png"));
-        registerAction(batchRunAction);
-
-        /*Assign name action*/
-        IAction assignNameAction =
-                new AssignEditorNameAction(
-                        Messages.titleAssignNameAction, loadImage("icons/action/assign_name.gif"));
-        registerAction(assignNameAction);
 
         IAction compareSchemaAction = new SchemaCompareAction(shell, Messages.compareSchema, null);
         registerAction(compareSchemaAction);
@@ -630,46 +575,7 @@ public class ActionBuilder {
                 new OpenCMPerspectiveAction(
                         Messages.openCMViewActionName, loadImage("icons/action/launch_cm.gif"));
         registerAction(action);
-
-        //		action = new CMServiceAnalysisAction(
-        //				"CM Service Analysis Demo",
-        //				loadImage("icons/action/launch_cqb.gif"));
-        //		registerAction(action);
-
-        action =
-                new RestoreQueryEditorAction(
-                        com.cubrid.common.ui.common.Messages.restoreQueryEditorMenu, null);
-        registerAction(action);
-
-        action =
-                new RunQueryAction(
-                        shell,
-                        com.cubrid.common.ui.query.Messages.btnRunThisQuery,
-                        loadImage("icons/queryeditor/query_run.png"));
-        registerAction(action);
-
-        action =
-                new ParseSqlmapQueryAction(
-                        shell,
-                        com.cubrid.common.ui.query.Messages.btnParseThisSqlmapQuery,
-                        loadImage("icons/navigator/sql.png"));
-        registerAction(action);
-
-        action =
-                new RunQueryPlanAction(
-                        shell,
-                        com.cubrid.common.ui.query.Messages.btnRunThisQueryPlan,
-                        loadImage("icons/queryeditor/query_execution_plan.png"));
-        registerAction(action);
-
-        action =
-                new AddQueryToFavoriteAction(
-                        shell,
-                        com.cubrid.common.ui.query.Messages.btnAddSelectedQueryIntoFavorite,
-                        loadImage("icons/navigator/favorite_query.png"));
-        registerAction(action);
-
-    }
+}
 
     private ImageDescriptor loadImage(String imagePath) {
         return CommonUIPlugin.getImageDescriptor(imagePath);

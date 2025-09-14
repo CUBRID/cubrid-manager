@@ -29,7 +29,6 @@
  */
 package com.cubrid.common.ui.query.tuner;
 
-import com.cubrid.common.core.queryplan.StructQueryPlan;
 import com.cubrid.common.core.util.CubridUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
@@ -174,26 +173,6 @@ public class QueryTunerJob extends Job implements IQueryJob {
                     LOGGER.error(ee.getMessage(), ee);
                     queryRecord.setErrorException(ee);
                 }
-            }
-
-            /*Run the query plan*/
-            if ((queryType & IQueryJob.RUN_PLAN) > 0) {
-                StructQueryPlan queryPlan = null;
-                try {
-                    stmt.setOnlyQueryPlan(true);
-                    String plan = stmt.getQueryplan(sql);
-                    queryPlan = new StructQueryPlan(sql, plan, new Date());
-                    queryRecord.setQueryPlan(queryPlan);
-                } catch (final SQLException ee) {
-                    LOGGER.error(ee.getMessage(), ee);
-                    queryRecord.setErrorException(ee);
-                }
-            }
-
-            if ((queryType & IQueryJob.COLLECT_STAT) > 0) {
-                queryRecord.setStatistics(CubridUtil.fetchStatistics(connection));
-            } else {
-                queryRecord.setStatistics(CubridUtil.makeBlankStatistics());
             }
 
             queryRecord.setStopTime(System.currentTimeMillis());

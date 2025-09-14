@@ -29,10 +29,8 @@ package com.cubrid.cubridmanager.ui.spi.util;
 
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.ui.common.preference.NullCategoryPreferencePage;
-import com.cubrid.common.ui.query.preference.QueryOptionPreferencePage;
 import com.cubrid.common.ui.spi.dialog.CMPreferenceDialog;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.model.CubridServer;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.cubridmanager.core.common.model.ServerType;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
@@ -148,15 +146,6 @@ public final class PreferenceUtil {
             managerNode.setPage(managerPorpertyPage);
             categoryNode.add(managerNode);
 
-            // query editor node
-            if (serverType == ServerType.BOTH || serverType == ServerType.DATABASE) {
-                CubridServer server = node.getServer();
-                QueryOptionPreferencePage queryEditorPage = new QueryOptionPreferencePage(server);
-                PreferenceNode queryEditorNode =
-                        new PreferenceNode(Messages.msgQueryPropertyPageName);
-                queryEditorNode.setPage(queryEditorPage);
-                mgr.addToRoot(queryEditorNode);
-            }
         } else if (CubridNodeType.DATABASE_FOLDER.equals(type)) {
             // database server node
             DatabaseConfigPropertyPage databaseServerPorpertyPage =

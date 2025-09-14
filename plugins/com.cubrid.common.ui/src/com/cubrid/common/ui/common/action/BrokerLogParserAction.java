@@ -29,7 +29,7 @@ package com.cubrid.common.ui.common.action;
 
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.common.dialog.BrokerLogParserDialog;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.query.editor.QueryUnit;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -69,9 +69,9 @@ public class BrokerLogParserAction extends Action {
         String sql = dialog.getResultSql();
         try {
             QueryUnit input = new QueryUnit();
-            QueryEditorPart editor =
-                    (QueryEditorPart) window.getActivePage().openEditor(input, QueryEditorPart.ID);
-            editor.setQuery(sql, false, false, false);
+            TextEditorPart editor =
+                    (TextEditorPart) window.getActivePage().openEditor(input, TextEditorPart.ID);
+            editor.setQuery(sql, false);
         } catch (PartInitException e) {
             LOGGER.debug("Failed sql is {}.", sql);
             LOGGER.error("Can not parse broker sql log.", e);

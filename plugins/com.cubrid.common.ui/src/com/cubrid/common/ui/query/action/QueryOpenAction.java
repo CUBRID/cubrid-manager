@@ -30,8 +30,8 @@ package com.cubrid.common.ui.query.action;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.query.control.SQLEditorComposite;
 import com.cubrid.common.ui.query.dialog.SetFileEncodingDialog;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import com.cubrid.common.ui.query.editor.QueryUnit;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.io.IOException;
@@ -136,7 +136,7 @@ public class QueryOpenAction extends SelectionAction {
         try {
             if (editor == null) {
                 IEditorInput input = new QueryUnit();
-                editor = window.getActivePage().openEditor(input, QueryEditorPart.ID);
+                editor = window.getActivePage().openEditor(input, TextEditorPart.ID);
             }
         } catch (PartInitException e) {
             CommonUITool.openErrorBox(e.getMessage());
@@ -147,7 +147,7 @@ public class QueryOpenAction extends SelectionAction {
         }
 
         try {
-            QueryEditorPart queryEditor = (QueryEditorPart) editor;
+            TextEditorPart queryEditor = (TextEditorPart) editor;
             SQLEditorComposite editorComp =
                     queryEditor.getCombinedQueryComposite().getSqlEditorComp();
             String encoding = editorComp.getDocument().getEncoding();

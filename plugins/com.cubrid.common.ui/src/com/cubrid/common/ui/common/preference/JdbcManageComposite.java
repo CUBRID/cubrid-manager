@@ -33,7 +33,6 @@ import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.CommonUIPlugin;
 import com.cubrid.common.ui.common.Messages;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import com.cubrid.common.ui.spi.TableViewerSorter;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.CubridServer;
@@ -71,8 +70,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -499,23 +496,6 @@ public class JdbcManageComposite extends Composite {
                         return true;
                     }
                 }
-            }
-        }
-        IEditorReference[] editorReference = page.getEditorReferences();
-        for (int i = 0; editorReference != null && i < editorReference.length; i++) {
-            IEditorPart editorPart = editorReference[i].getEditor(false);
-            if (!(editorPart instanceof QueryEditorPart)) {
-                continue;
-            }
-            QueryEditorPart queryEditorPart = (QueryEditorPart) editorPart;
-            CubridServer server = queryEditorPart.getSelectedServer();
-            ServerInfo serverInfo = server == null ? null : server.getServerInfo();
-            String partName = queryEditorPart.getPartName();
-            if (serverInfo != null && serverInfo.getJdbcDriverVersion().equals(jdbcVersion)) {
-                CommonUITool.openErrorBox(
-                        Messages.bind(
-                                Messages.errDeleteJdbcQuery, new Object[] {partName, jdbcVersion}));
-                return true;
             }
         }
         return false;

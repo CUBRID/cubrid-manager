@@ -28,23 +28,13 @@
  */
 package com.cubrid.common.ui.query.dialog;
 
-import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.query.control.CombinedQueryEditorComposite;
-import com.cubrid.common.ui.query.editor.InfoWindowManager;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import java.util.Set;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -52,9 +42,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * InformationWindow
@@ -108,28 +95,7 @@ public class InformationWindow extends Window {
                     }
                 });
 
-        parentShell.addControlListener(
-                new ControlListener() {
-                    public void controlResized(ControlEvent e) {
-                        updateLocation();
-                    }
-
-                    public void controlMoved(ControlEvent e) {
-                        updateLocation();
-                    }
-                });
-
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            parentShell.addPaintListener(
-                    new PaintListener() {
-                        public void paintControl(PaintEvent e) {
-                            updateLocation();
-                        }
-                    });
-        }
-
         this.getShell().setAlpha(minAlpha);
-        updateLocation();
 
         return parent;
     }
@@ -211,8 +177,6 @@ public class InformationWindow extends Window {
         if (keyWords != null) {
             decorateText(keyWords);
         }
-
-        updateLocation();
     }
 
     /** Decorate the text */
@@ -228,56 +192,6 @@ public class InformationWindow extends Window {
                 eachStyle.length = key.length();
                 eachStyle.fontStyle = SWT.BOLD;
                 infoText.setStyleRange(eachStyle);
-            }
-        }
-    }
-
-    /** Update the location */
-    public void updateLocation() {
-        int x = 0, y = 0;
-
-        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        if (window == null || window.getActivePage() == null) {
-            return;
-        }
-
-        Shell windowShell = this.getShell();
-        if (windowShell == null) {
-            InfoWindowManager.dispose();
-            return;
-        }
-
-        IEditorPart editPart = window.getActivePage().getActiveEditor();
-        if (editPart != null && editPart instanceof QueryEditorPart) {
-            QueryEditorPart queryEditorPart = (QueryEditorPart) editPart;
-            CombinedQueryEditorComposite combinedComposite =
-                    queryEditorPart.getCombinedQueryComposite();
-            if (combinedComposite != null && !combinedComposite.isDisposed()) {
-                Rectangle compositeBounds = combinedComposite.getBounds();
-                if (compositeBounds.width < width + horizonalMargin
-                        || compositeBounds.height < height + verticalMargin) {
-                    windowShell.setVisible(false);
-                    return;
-                }
-
-                Point size = infoText.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                width = size.x;
-                height = size.y;
-                Point endLocation =
-                        Display.getCurrent()
-                                .map(
-                                        combinedComposite,
-                                        null,
-                                        new Point(compositeBounds.width, compositeBounds.height));
-                x = endLocation.x - width - horizonalMargin;
-                y = endLocation.y - height - verticalMargin;
-                windowShell.setBounds(x, y, width, height);
-
-                if (StringUtil.isEmpty(infoText.getText())) {
-                    windowShell.setVisible(false);
-                } else {
-                    windowShell.setVisible(true);
-                }
             }
         }
     }

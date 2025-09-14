@@ -87,11 +87,6 @@ public final class HostUtils {
             }
         }
 
-        // check the query editor in this server
-        if (!LayoutUtil.checkAllQueryEditor(server)) {
-            return false;
-        }
-
         boolean isSaved = server.getServerInfo().isConnected();
         boolean isCloseAll =
                 CubridWorkbenchContrItem.closeAllEditorAndViewInServer(server, isSaved);
@@ -147,11 +142,6 @@ public final class HostUtils {
             if (!isDisconnectHost) {
                 return false;
             }
-        }
-
-        // check the query editor in this server
-        if (!LayoutUtil.checkAllQueryEditor(server)) {
-            return false;
         }
 
         boolean isSaved = server.getServerInfo().isConnected();

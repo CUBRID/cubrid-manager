@@ -114,10 +114,6 @@ public class DatabaseConnectionPropertyPage extends PreferencePage
         if (!isChanged) {
             return true;
         }
-        // check the query editor in this database
-        if (!LayoutUtil.checkAllQueryEditor(database)) {
-            return false;
-        }
 
         DatabaseInfo databaseInfo = database.getDatabaseInfo();
         QueryOptions.setCharset(databaseInfo, charset);

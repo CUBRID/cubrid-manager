@@ -37,7 +37,7 @@ import com.cubrid.common.ui.query.action.CopyAction;
 import com.cubrid.common.ui.query.action.CopyAllAction;
 import com.cubrid.common.ui.query.action.PasteAction;
 import com.cubrid.common.ui.query.control.SQLEditorComposite;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.query.editor.QueryUnit;
 import com.cubrid.common.ui.spi.Messages;
 import com.cubrid.common.ui.spi.TableContentProvider;
@@ -1459,7 +1459,7 @@ public final class CommonUITool {
      *     query editor if the running type is not CS.
      * @throws PartInitException when open editor error.
      */
-    public static QueryEditorPart openQueryEditor(CubridDatabase database, boolean careDBRunType)
+    public static TextEditorPart TextQueryEditor(CubridDatabase database, boolean careDBRunType)
             throws PartInitException {
         IWorkbenchPage page = LayoutUtil.getActivePage();
         if (page == null) {
@@ -1472,11 +1472,11 @@ public final class CommonUITool {
 
         QueryUnit input = new QueryUnit();
         input.setDatabase(database);
-        IEditorPart editor = page.openEditor(input, QueryEditorPart.ID);
+        IEditorPart editor = page.openEditor(input, TextEditorPart.ID);
         if (editor != null) {
-            ((QueryEditorPart) editor).connect(database);
+            ((TextEditorPart) editor).connect(database);
         }
-        return (QueryEditorPart) editor;
+        return (TextEditorPart) editor;
     }
 
     /**
@@ -1485,7 +1485,7 @@ public final class CommonUITool {
      * @return SQLEditorComposite
      */
     public static SQLEditorComposite getActiveSQLEditorComposite() {
-        QueryEditorPart queryEditor = getActiveQueryEditorPart();
+        TextEditorPart queryEditor = getActiveTextEditorPart();
         if (queryEditor != null) {
             return queryEditor.getCombinedQueryComposite().getSqlEditorComp();
         }
@@ -1497,11 +1497,11 @@ public final class CommonUITool {
      *
      * @return
      */
-    public static QueryEditorPart getActiveQueryEditorPart() {
+    public static TextEditorPart getActiveTextEditorPart() {
         IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         IEditorPart editor = window.getActivePage().getActiveEditor();
-        if (editor instanceof QueryEditorPart) {
-            return (QueryEditorPart) editor;
+        if (editor instanceof TextEditorPart) {
+            return (TextEditorPart) editor;
         }
 
         return null;

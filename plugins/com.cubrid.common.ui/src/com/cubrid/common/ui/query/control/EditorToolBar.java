@@ -27,7 +27,7 @@
  */
 package com.cubrid.common.ui.query.control;
 
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.util.CommonUITool;
@@ -38,7 +38,6 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -60,7 +59,7 @@ public final class EditorToolBar extends ToolBar {
      * @param parent Composite
      * @param editor QueryEditorPart
      */
-    public EditorToolBar(Composite parent, QueryEditorPart editor) {
+    public EditorToolBar(Composite parent, TextEditorPart editor) {
         super(parent, SWT.WRAP | SWT.FLAT);
         CreateSelectItem(parent);
         dbMenu = loadDbNavigatorMenu();
@@ -117,24 +116,6 @@ public final class EditorToolBar extends ToolBar {
         // do not check subclass
     }
 
-    /**
-     * set the database
-     *
-     * @param database CubridDatabase
-     */
-    public void setDatabase(CubridDatabase database) {
-        dbMenu.setDatabase(database);
-    }
-
-    /**
-     * get selected database
-     *
-     * @return dbSelectd
-     */
-    public CubridDatabase getSelectedDb() {
-        return (CubridDatabase) dbMenu.getSelectedDb();
-    }
-
     public CubridDatabase[] getDatabaseOnMenu() {
         List<CubridDatabase> databases = new ArrayList<CubridDatabase>();
         for (MenuItem item : dbMenu.getDbSelectionMenu().getItems()) {
@@ -144,23 +125,5 @@ public final class EditorToolBar extends ToolBar {
             databases.add(((DatabaseMenuItem) item).getDatabase());
         }
         return databases.toArray(new CubridDatabase[0]);
-    }
-
-    /**
-     * inject custom operation when database changed
-     *
-     * @param listener Listener
-     */
-    public void addDatabaseChangedListener(Listener listener) {
-        dbMenu.addDatabaseChangedListener(listener);
-    }
-
-    /**
-     * if no database selected
-     *
-     * @return boolean
-     */
-    public boolean isNull() {
-        return dbMenu.isNull();
     }
 }

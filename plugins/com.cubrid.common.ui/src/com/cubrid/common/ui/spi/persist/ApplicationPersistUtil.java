@@ -29,7 +29,6 @@
  */
 package com.cubrid.common.ui.spi.persist;
 
-import com.cubrid.common.core.queryplan.StructQueryPlan;
 import com.cubrid.common.core.util.DateUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.StringUtil;
@@ -211,11 +210,6 @@ public class ApplicationPersistUtil {
         long stopTime = StringUtil.intValue(element.getString("stop_time"), -1);
         String query = element.getString("query");
 
-        StructQueryPlan queryPlan = null;
-        IXMLMemento[] planArray = element.getChildren("query_plan");
-        if (planArray != null && planArray.length > 0) {
-            queryPlan = loadQueryPlan(planArray[0]);
-        }
         LinkedHashMap<String, String> statistics = null;
         IXMLMemento[] statisticsArray = element.getChildren("statistics");
         if (statisticsArray != null && statisticsArray.length > 0) {
@@ -231,32 +225,9 @@ public class ApplicationPersistUtil {
 
         queryRecord = new QueryRecord(query, startTime, stopTime, createDate);
         queryRecord.setName(name);
-        queryRecord.setQueryPlan(queryPlan);
         queryRecord.setStatistics(statistics);
 
         return queryRecord;
-    }
-
-    /**
-     * Load query plan
-     *
-     * @param element
-     * @return
-     */
-    private StructQueryPlan loadQueryPlan(IXMLMemento element) {
-        DateFormat formater = DateUtil.getDateFormat(DATE_PATTERN, Locale.ENGLISH);
-        String query = element.getString("query");
-        String dateStr = element.getString("create_date");
-        String plan = element.getString("plan");
-        Date date = null;
-        try {
-            date = formater.parse(dateStr);
-        } catch (ParseException e) {
-            LOGGER.error(e.getMessage());
-            date = new Date();
-        }
-
-        return new StructQueryPlan(query, plan, date);
     }
 
     /**
@@ -420,15 +391,6 @@ public class ApplicationPersistUtil {
                     queryRecordMemento.putString(
                             "stop_time", String.valueOf(queryRecord.getStopTime()));
                     queryRecordMemento.putString("query", queryRecord.getQuery());
-
-                    if (queryRecord.getQueryPlan() != null) {
-                        StructQueryPlan queryPlan = queryRecord.getQueryPlan();
-                        IXMLMemento queryPlanMemento = queryRecordMemento.createChild("query_plan");
-                        queryPlanMemento.putString("query", queryPlan.getSql());
-                        queryPlanMemento.putString("plan", queryPlan.getPlanRaw());
-                        queryPlanMemento.putString(
-                                "create_date", formater.format(queryPlan.getCreated()));
-                    }
 
                     if (queryRecord.getStatistics() != null) {
                         IXMLMemento statisticsMemento =

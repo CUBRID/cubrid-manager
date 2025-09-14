@@ -44,8 +44,6 @@ import com.cubrid.common.ui.cubrid.serial.action.EditSerialAction;
 import com.cubrid.common.ui.cubrid.synonym.action.AlterSynonymAction;
 import com.cubrid.common.ui.cubrid.synonym.action.DropSynonymAction;
 import com.cubrid.common.ui.cubrid.synonym.action.NewSynonymAction;
-import com.cubrid.common.ui.cubrid.table.action.ColumnSelectCountAction;
-import com.cubrid.common.ui.cubrid.table.action.ColumnSelectSqlAction;
 import com.cubrid.common.ui.cubrid.table.action.CreateLikeTableAction;
 import com.cubrid.common.ui.cubrid.table.action.CreateViewAction;
 import com.cubrid.common.ui.cubrid.table.action.DeleteTableAction;
@@ -160,9 +158,6 @@ public class MenuProvider implements IMenuProvider {
             buildUserViewMenu(manager);
         } else if (NodeType.VIEW_FOLDER.equals(type)) {
             addActionToManager(manager, getAction(CreateViewAction.ID));
-        } else if (NodeType.TABLE_COLUMN.equals(type)) {
-            addActionToManager(manager, getAction(ColumnSelectSqlAction.ID));
-            addActionToManager(manager, getAction(ColumnSelectCountAction.ID));
         } else if (NodeType.GROUP.equals(type)) {
             addActionToManager(manager, getAction(GroupPropertyAction.ID));
             manager.add(new Separator());

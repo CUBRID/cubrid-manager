@@ -124,12 +124,6 @@ public class RenameColumnAction extends SelectionAction {
                         cn.getDatabase());
         if (dialog.open() == Dialog.OK) {
             CommonUITool.refreshNavigatorTree((TreeViewer) provider, cn.getParent().getParent());
-
-            ICubridNode tableNode = cn.getParent().getParent();
-            if (tableNode != null && tableNode instanceof ISchemaNode) {
-                /* Broadcast the view changed */
-                QueryEditorUtil.fireSchemaNodeChanged((ISchemaNode) tableNode);
-            }
         }
     }
 }

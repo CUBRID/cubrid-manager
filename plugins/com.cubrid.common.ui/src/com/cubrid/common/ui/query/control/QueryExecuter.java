@@ -28,7 +28,6 @@
 
 package com.cubrid.common.ui.query.control;
 
-import com.cubrid.common.core.queryplan.StructQueryPlan;
 import com.cubrid.common.core.util.Closer;
 import com.cubrid.common.core.util.CubridUtil;
 import com.cubrid.common.core.util.LogUtil;
@@ -39,15 +38,10 @@ import com.cubrid.common.ui.CommonUIPlugin;
 import com.cubrid.common.ui.cubrid.table.dialog.PstmtParameter;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.query.action.CopyAction;
-import com.cubrid.common.ui.query.action.InputMethodAction;
-import com.cubrid.common.ui.query.action.NextQueryAction;
 import com.cubrid.common.ui.query.action.PasteAction;
 import com.cubrid.common.ui.query.action.ResultPageTopAction;
-import com.cubrid.common.ui.query.control.tunemode.TuneModeModel;
 import com.cubrid.common.ui.query.dialog.ExportResultDialog;
-import com.cubrid.common.ui.query.dialog.RowDetailDialog;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
-import com.cubrid.common.ui.query.result.FilterResultContrItem;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.query.result.QueryResultFilterSetting;
 import com.cubrid.common.ui.spi.ResourceManager;
 import com.cubrid.common.ui.spi.action.ActionManager;
@@ -165,31 +159,18 @@ public class QueryExecuter
                             QueryOptions.FONT_COLOR_RED,
                             QueryOptions.FONT_COLOR_GREEN,
                             QueryOptions.FONT_COLOR_BLUE));
-    private static final Color RED_COLOR = ResourceManager.getColor(255, 0, 0);
-    private static final Color GREEN_COLOR = ResourceManager.getColor(0, 154, 33);
-    private static final Color BLUE_COLOR = ResourceManager.getColor(0, 0, 255);
     private final int recordLimit;
     public String query = "";
-    private String rownumQuery;
     public final String orignQuery;
     public int idx;
     public int cntRecord = 0;
     public Table tblResult = null;
-    public ToolItem insertRecordItem = null;
-    public ToolItem insertSaveItem = null;
-    public ToolItem delRecordItem = null;
-    public ToolItem rollbackModifiedItem = null;
-    public ToolItem swRecordItem = null;
-    public SQLHistoryDetail sqlDetailHistory;
-    public boolean multiResultsCompare = false;
     public QueryExecuter baseQueryExecuter = null;
     private TableSelectSupport selectableSupport;
 
-    private final QueryEditorPart queryEditor;
+    private final TextEditorPart textEditor;
     private QueryInfo queryInfo = null;
     private Action resultCursorTopAction = null;
-    private Action nextQueryAction = null;
-    private FilterResultContrItem filterResultContrItem;
     private List<Map<String, CellValue>> allDataList = null;
     private List<ColumnInfo> allColumnList = null;
     private String queryMsg;
@@ -234,7 +215,7 @@ public class QueryExecuter
     private List<String> columnTableNames;
 
     public QueryExecuter(
-            QueryEditorPart qe,
+            TextEditorPart qe,
             int idx,
             String query,
             CubridDatabase cubridDatabase,
@@ -248,7 +229,7 @@ public class QueryExecuter
         this.database = cubridDatabase;
         this.charset = database.getDatabaseInfo().getCharSet();
         this.parameterList = parameterList;
-        this.queryEditor = qe;
+        this.textEditor = qe;
         this.idx = idx;
         this.query = query;
         this.orignQuery = orignQuery;
@@ -261,7 +242,6 @@ public class QueryExecuter
                 QueryOptions.isExistPrefix(serverInfo)
                         ? QueryOptions.getSearchUnitCount(serverInfo)
                         : QueryOptions.getSearchUnitCount(null);
-        filterResultContrItem = new FilterResultContrItem(this, recordLimit);
         allDataList = new ArrayList<Map<String, CellValue>>();
         allColumnList = new ArrayList<ColumnInfo>();
         colComparatorMap = new HashMap<String, ColumnComparator>();
@@ -284,13 +264,13 @@ public class QueryExecuter
     }
 
     public QueryExecuter(
-            QueryEditorPart qe,
+            TextEditorPart qe,
             int idx,
             String query,
             CubridDatabase cubridDatabase,
             List<PstmtParameter> parameterList,
             String orignQuery) {
-        this(qe, idx, query, cubridDatabase, qe.getConnection(), parameterList, orignQuery);
+        this(qe, idx, query, cubridDatabase, null, parameterList, orignQuery);
     }
 
     /**
@@ -636,12 +616,8 @@ public class QueryExecuter
      * @param toolBarManager ToolBarManager
      */
     public void makeActions(ToolBarManager toolBarManager, Table resultTable) {
-        toolBarManager.add(filterResultContrItem);
-        toolBarManager.add(new Separator());
         resultCursorTopAction = new ResultPageTopAction(this);
-        nextQueryAction = new NextQueryAction(this);
         toolBarManager.add(resultCursorTopAction);
-        toolBarManager.add(nextQueryAction);
         toolBarManager.update(true);
     }
 
@@ -687,22 +663,7 @@ public class QueryExecuter
                     }
                 });
 
-        if (queryEditor != null) {
-            if (!multiQueryResult) {
-                createContextMenuItems();
-            }
-
-            editor = new ControlEditor(selectableSupport.getTableCursor());
-            editor.horizontalAlignment = SWT.LEFT;
-            editor.grabHorizontal = true;
-            editor.grabVertical = true;
-
-            bindEvents();
-            addTableItemToolTips();
-        }
-
         makeColumn();
-        makeItem();
         processLogs(messageText);
     }
 
@@ -784,27 +745,7 @@ public class QueryExecuter
                                 }
                             }
                         });
-
-        selectableSupport
-                .getTableCursor()
-                .addKeyListener(
-                        new org.eclipse.swt.events.KeyAdapter() {
-                            public void keyReleased(KeyEvent event) {
-                                if (isEditMode() && event.keyCode == SWT.DEL) {
-                                    deleteRecord(tblResult, null);
-                                } else if (((event.stateMask & SWT.CTRL) != 0
-                                                || (event.stateMask & SWT.COMMAND) != 0)
-                                        && (event.keyCode == 'c' || event.character == '')) {
-                                    // key press 'ctrl + c' is intercept by editor text so add
-                                    // here
-                                    copySelectedItems();
-                                } else if ((event.stateMask & SWT.CTRL) != 0
-                                        && event.keyCode == 'a') {
-                                    selectableSupport.selectAll();
-                                }
-                            }
-                        });
-    }
+        }
 
     /** Judge is show detail button */
     public boolean isShowButton(int rowIndex, int columnIndex) {
@@ -847,64 +788,7 @@ public class QueryExecuter
         }
 
         String charset = getDatabaseInfo() != null ? getDatabaseInfo().getCharSet() : null;
-        String dataType =
-                DataType.makeType(
-                        columnInfo.getType(),
-                        columnInfo.getChildElementType(),
-                        columnInfo.getPrecision(),
-                        columnInfo.getScale());
         cellValue.setFileCharset(charset);
-        CellViewer cellViewer = new CellViewer(columnInfo, editMode, charset);
-
-        if (IDialogConstants.OK_ID == cellViewer.openCellViewer(tblResult.getShell(), cellValue)) {
-            CellValue newValue = cellViewer.getValue();
-            if (!CellViewer.isCellValueEqual(cellValue, newValue)) {
-                String showValue = null;
-                if (newValue.getValue() == null) {
-                    showValue = DataType.NULL_EXPORT_FORMAT;
-                    item.setText(columnIndex, showValue);
-                    newValueMap.put(dataIndex, newValue);
-                    updateValue(item, dataMap, newValueMap);
-                } else if (newValue.getValue() instanceof String) {
-                    String strValue = newValue.getValue().toString();
-                    FormatDataResult result =
-                            DBAttrTypeFormatter.format(
-                                    dataType, strValue, null, false, charset, false);
-                    if (result.isSuccess()) {
-                        // Update the data
-                        showValue = newValue.getShowValue();
-                        item.setText(columnIndex, showValue);
-                        newValueMap.put(dataIndex, newValue);
-                        updateValue(item, dataMap, newValueMap);
-                    } else {
-                        CommonUITool.openErrorBox(
-                                Messages.bind(Messages.errTextTypeNotMatch, dataType));
-                        return;
-                    }
-                } else if (newValue.getValue() instanceof byte[]) {
-                    if (DataType.DATATYPE_BIT.equalsIgnoreCase(columnInfo.getType())
-                            || DataType.DATATYPE_BIT_VARYING.equalsIgnoreCase(
-                                    columnInfo.getType())) {
-                        byte[] bValues = (byte[]) newValue.getValue();
-                        if (bValues.length * 8 > columnInfo.getPrecision() + 7) {
-                            String msg = Messages.bind(Messages.errTextTypeNotMatch, dataType);
-                            CommonUITool.openErrorBox(msg);
-                            return;
-                        }
-                    }
-                    showValue = newValue.getShowValue();
-                    item.setText(columnIndex, showValue);
-                    newValueMap.put(dataIndex, newValue);
-                    updateValue(item, dataMap, newValueMap);
-                } else {
-                    showValue = newValue.getShowValue();
-                    item.setText(columnIndex, showValue);
-                    newValueMap.put(dataIndex, newValue);
-                    updateValue(item, dataMap, newValueMap);
-                }
-                selectableSupport.getTableCursor().redraw();
-            }
-        }
     }
 
     /** Perform edit data */
@@ -964,11 +848,6 @@ public class QueryExecuter
             CommonUITool.registerCopyPasteContextMenu(text, true);
         }
 
-        Listener textListener = new TableItemEditor(text, item, rowIndex, columnIndex);
-        text.addListener(SWT.FocusOut, textListener);
-        text.addListener(SWT.Traverse, textListener);
-        text.addListener(SWT.FocusIn, textListener);
-        text.addListener(SWT.MouseDown, textListener);
         text.setText(item.getText(columnIndex));
         text.selectAll();
 
@@ -1068,7 +947,6 @@ public class QueryExecuter
                 }
 
                 makeResult(prs);
-                makeItem();
             }
         } catch (final Exception ee) {
             LOGGER.error(
@@ -1123,24 +1001,6 @@ public class QueryExecuter
                                 FocusAction.changeActionStatus(pasteAction, text);
                             }
                         }
-                        IAction inputAction =
-                                ActionManager.getInstance().getAction(InputMethodAction.ID);
-                        if (inputAction instanceof InputMethodAction) {
-                            manager.add(inputAction);
-                            if (!inputAction.isEnabled()) {
-                                FocusAction.changeActionStatus(inputAction, text);
-                            } else {
-                                ((InputMethodAction) inputAction).setType(type);
-                                ((InputMethodAction) inputAction).setTableItem(item);
-                                ((InputMethodAction) inputAction).setColumn(column);
-                                ((InputMethodAction) inputAction).setQueryExecuter(executer);
-                            }
-                            if (isEditMode()) {
-                                inputAction.setEnabled(true);
-                            } else {
-                                inputAction.setEnabled(false);
-                            }
-                        }
                     }
                 });
         Menu contextMenu = menuManager.createContextMenu(text);
@@ -1157,34 +1017,12 @@ public class QueryExecuter
                         if (pasteAction != null && !pasteAction.isEnabled()) {
                             FocusAction.changeActionStatus(pasteAction, text);
                         }
-                        IAction inputAction =
-                                ActionManager.getInstance().getAction(InputMethodAction.ID);
-                        if (inputAction != null) {
-                            FocusAction.changeActionStatus(inputAction, text);
-                        }
                     }
                 });
     }
 
     private void createContextMenuItems() {
-        Menu menu = new Menu(queryEditor.getEditorSite().getShell(), SWT.POP_UP);
-
-        final MenuItem itemInsert = new MenuItem(menu, SWT.PUSH);
-        itemInsert.setText(Messages.insertRecord);
-        itemInsert.addSelectionListener(
-                new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {
-                        if (!getEditable()) {
-                            CommonUITool.openErrorBox(
-                                    Display.getDefault().getActiveShell(), Messages.errNotEditable);
-                            return;
-                        }
-
-                        insertSaveItem.setEnabled(getEditable());
-                        rollbackModifiedItem.setEnabled(getEditable());
-                        addNewItem();
-                    }
-                });
+        Menu menu = new Menu(textEditor.getEditorSite().getShell(), SWT.POP_UP);
 
         final MenuItem itemCopy = new MenuItem(menu, SWT.PUSH);
         itemCopy.setText(Messages.copyClipBoard);
@@ -1193,35 +1031,6 @@ public class QueryExecuter
         itemDelete.setText(Messages.delete);
 
         new MenuItem(menu, SWT.SEPARATOR);
-
-        final MenuItem itemDetail = new MenuItem(menu, SWT.PUSH);
-        itemDetail.setText(Messages.detailView);
-        itemDetail.addSelectionListener(
-                new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {
-                        List<Point> selectedList = selectableSupport.getSelectedLocations();
-                        Point location = selectedList.get(0);
-                        if (location == null) {
-                            CommonUITool.openErrorBox(Messages.errShowDetailFailed);
-                            return;
-                        }
-
-                        // Bug fixed by Kevin.Qian. FYI. allDataList is a global query result to the
-                        // current query.
-                        Map<String, CellValue> map = allDataList.get(location.y);
-                        TableItem item = tblResult.getItem(location.y);
-                        ColumnInfo colInfo = allColumnList.get(location.x - 1);
-                        RowDetailDialog dialog =
-                                new RowDetailDialog(
-                                        tblResult.getShell(),
-                                        allColumnList,
-                                        map,
-                                        item,
-                                        colInfo.getName(),
-                                        executer);
-                        dialog.open();
-                    }
-                });
 
         tblResult.setMenu(menu);
         tblResult.addListener(
@@ -1276,7 +1085,6 @@ public class QueryExecuter
         if (isEmpty()) {
             itemExportAll.setEnabled(false);
             itemExportSelection.setEnabled(false);
-            itemDetail.setEnabled(false);
         }
 
         menu.addMenuListener(
@@ -1297,20 +1105,6 @@ public class QueryExecuter
                             itemExportAll.setEnabled(false);
                         }
 
-                        if (executer.getQueryEditor() != null
-                                && executer.getQueryEditor().getDatabaseInfo() != null
-                                && executer.getQueryEditor()
-                                        .getDatabaseInfo()
-                                        .equals(executer.getDatabaseInfo())) {
-                            itemInsert.setEnabled(isEditMode());
-                            itemDetail.setEnabled(enableItemDetail);
-                            itemDelete.setEnabled(getEditable() && isEditMode());
-                        } else {
-                            itemInsert.setEnabled(false);
-                            itemDetail.setEnabled(false);
-                            itemDelete.setEnabled(false);
-                        }
-
                         for (int i = 0; i < tblItems.length; i++) {
                             if (isEditMode()
                                     && getEditable()
@@ -1328,15 +1122,6 @@ public class QueryExecuter
                     }
                 });
         itemCopy.setAccelerator(SWT.CTRL + 'c');
-
-        itemDelete.addSelectionListener(
-                new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {
-                        if (isEditMode()) {
-                            deleteRecord(tblResult, null);
-                        }
-                    }
-                });
 
         itemExportAll.addSelectionListener(
                 new SelectionAdapter() {
@@ -1685,12 +1470,8 @@ public class QueryExecuter
                 count++;
 
                 sql.append(colName);
-                if (QueryEditorPart.isNullEmpty(colInfo.getType(), data)) {
+                if ("(NULL)".equals(data)) {
                     sql.append(" IS NULL");
-                } else if ("(NULL)".equals(data)) {
-                    sql.append(" IS NULL");
-                } else if (QueryEditorPart.isNotNeedQuote(colInfo.getType())) {
-                    sql.append("=").append(data);
                 } else {
                     sql.append("='").append(data.replaceAll("'", "''")).append("'");
                 }
@@ -1822,7 +1603,6 @@ public class QueryExecuter
                             tblResult.setSortDirection(comparator.isAsc() ? SWT.UP : SWT.DOWN);
                             Collections.sort(allDataList, comparator);
                             comparator.setAsc(!comparator.isAsc());
-                            makeItem();
 
                             column.pack();
                             if (column.equals(sortedColumn)) {
@@ -1886,394 +1666,8 @@ public class QueryExecuter
         }
     }
 
-    /**
-     * make query editor result table
-     *
-     * @param start int
-     * @throws SQLException if failed
-     */
-    public TuneModeModel makeTable(int start, boolean useTuneMode) throws SQLException {
-        String sql = isLimitedSql() ? handleRownumQuery(multiQuerySql, start) : query;
-        TuneModeModel tuneModeModel = null;
-        long beginTimestamp = 0;
-        long endTimestamp = 0;
-        double elapsedTime = 0.0;
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMaximumFractionDigits(3);
-        stmt = null;
-        rs = null;
-
-        try {
-            beginTimestamp = System.currentTimeMillis();
-            stmt = getStatement(connection.checkAndConnectQuietly(), sql, false, false);
-            stmt.setQueryInfo(false);
-            stmt.setOnlyQueryPlan(false);
-
-            // begin tune mode
-            if (queryEditor.isCollectExecStats()) {
-                queryEditor.beginCollectExecStats();
-            }
-            if (columnTableNames == null || columnTableNames.size() == 0) {
-                columnTableNames = UIQueryUtil.loadColumnTableNameList(stmt);
-            }
-            stmt.executeQuery();
-
-            String queryPlan = null;
-
-            rs = (CUBRIDResultSetProxy) stmt.getResultSet();
-
-            endTimestamp = System.currentTimeMillis();
-            elapsedTime = (endTimestamp - beginTimestamp) * 0.001;
-            String elapsedTimeStr = new String(nf.format(elapsedTime));
-
-            if (start == 1) {
-                makeResult(rs);
-            } else {
-                fillTableItemData(rs);
-            }
-
-            // collect statistics and query plan on tune mode
-            if (useTuneMode && queryEditor.isCollectExecStats()) {
-                Map<String, String> stat =
-                        CubridUtil.fetchStatistics(connection.checkAndConnectQuietly());
-
-                StructQueryPlan sq = new StructQueryPlan(sql, stmt.getQueryplan(sql), new Date());
-                queryPlan = sq.getPlanRaw();
-
-                tuneModeModel = new TuneModeModel(sq, stat);
-            }
-
-            queryMsg +=
-                    "[ "
-                            + elapsedTimeStr
-                            + " "
-                            + Messages.second
-                            + " , "
-                            + Messages.totalRows
-                            + " : "
-                            + cntRecord
-                            + " ]"
-                            + StringUtil.NEWLINE;
-
-            if (useTuneMode && queryEditor.isCollectExecStats() && queryPlan != null) {
-                this.queryPlanLog = queryPlan;
-            }
-
-            query += sql + StringUtil.NEWLINE;
-            recordSQLDetail(elapsedTimeStr.toString(), queryMsg);
-        } catch (SQLException event) {
-            queryMsg +=
-                    Messages.runError
-                            + event.getErrorCode()
-                            + StringUtil.NEWLINE
-                            + Messages.errorHead
-                            + event.getMessage()
-                            + StringUtil.NEWLINE;
-            query += sql + StringUtil.NEWLINE;
-            LOGGER.error(
-                    "execute SQL failed sql at query editor: "
-                            + query
-                            + " error message: "
-                            + event.getMessage(),
-                    event);
-            throw event;
-        } finally {
-            queryInfo = new QueryInfo(allDataList == null ? 0 : allDataList.size());
-            QueryUtil.freeQuery(stmt, rs);
-            stmt = null;
-            rs = null;
-        }
-
-        return tuneModeModel;
-    }
-
-    private String handleRownumQuery(String sql, int start) {
-        if (sql.indexOf(SqlParser.ROWNUM_CONDITION_MARK) != -1) {
-            saveRownumQuery(sql);
-            return sql.replace(
-                    SqlParser.ROWNUM_CONDITION_MARK,
-                    "\r\nWHERE ROWNUM BETWEEN "
-                            + String.valueOf(start)
-                            + " AND "
-                            + String.valueOf(start + filterResultContrItem.getSearchUnit() - 1));
-        } else {
-            return sql;
-        }
-    }
-
-    private void saveRownumQuery(String sql) {
-        rownumQuery = rownumQuery != sql ? sql : rownumQuery;
-    }
-
-    private void recordSQLDetail(String elapseTime, String info) {
-        elapseTime = elapseTime.trim();
-        try {
-            if (elapseTime.split(" ").length > 1) {
-                double totalTime = 0;
-                for (String time : elapseTime.split(" ")) {
-                    totalTime += Double.valueOf(time);
-                }
-                NumberFormat nf = NumberFormat.getInstance();
-                nf.setMaximumFractionDigits(3);
-                nf.setMinimumFractionDigits(3);
-                elapseTime = nf.format(totalTime);
-            }
-        } catch (Exception e) {
-            LOGGER.error("parse execute sql time error", e);
-        }
-        if (sqlDetailHistory != null) {
-            sqlDetailHistory.setExecuteInfo(info);
-            sqlDetailHistory.setElapseTime(elapseTime);
-        }
-    }
-
     private boolean isLimitedSql() {
         return multiQuerySql != null;
-    }
-
-    /**
-     * make a table item by its data.
-     *
-     * @param item a TableItem instance
-     * @param mapItemData a item data instance with type of Map<String, Object>
-     */
-    private void makeItemValue(TableItem item, Map<String, CellValue> mapItemData) {
-        for (int j = 0; allColumnList != null && j < allColumnList.size(); j++) {
-            String columnIndex = allColumnList.get(j).getIndex();
-            String type = allColumnList.get(j).getType();
-            CellValue colValue = mapItemData.get(columnIndex);
-            if (colValue == null || colValue.getShowValue() == null) {
-                item.setText(j + 1, DataType.NULL_EXPORT_FORMAT);
-                item.setBackground(j + 1, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-                item.setData((j + 1) + "", DataType.VALUE_NULL);
-            } else if (DataType.DATATYPE_BLOB.equalsIgnoreCase(type)) {
-                item.setText(j + 1, DataType.BLOB_EXPORT_FORMAT);
-                item.setBackground(j + 1, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-            } else if (DataType.DATATYPE_CLOB.equalsIgnoreCase(type)) {
-                item.setText(j + 1, DataType.CLOB_EXPORT_FORMAT);
-                item.setBackground(j + 1, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-            } else if ((DataType.DATATYPE_BIT_VARYING.equalsIgnoreCase(type)
-                            || DataType.DATATYPE_BIT.equalsIgnoreCase(type))
-                    && DataType.BIT_EXPORT_FORMAT.equals(colValue.getShowValue())) {
-                String data = colValue.getShowValue();
-                item.setText(j + 1, data);
-                item.setBackground(j + 1, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-            } else {
-                item.setText(j + 1, colValue.getShowValue());
-            }
-        }
-    }
-
-    /** make table item by the data in allDataList */
-    public void makeItem() {
-        findPK();
-        processResultTable(true);
-    }
-
-    private void findPK() {
-        isSingleTableQuery = false;
-
-        if (!queryEditor.isCollectExecStats()) {
-            String tableName = null;
-            if (columnTableNames != null && columnTableNames.size() > 0) {
-                tableName = columnTableNames.get(0);
-                if (tableName != null) {
-                    isSingleTableQuery = true;
-                    for (int i = 1, len = columnTableNames.size(); i < len; i++) {
-                        if (!tableName.equals(columnTableNames.get(i))) {
-                            isSingleTableQuery = false;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (isSingleTableQuery) {
-                int matchedCnt = 0;
-                List<String> pkList = UIQueryUtil.getPkList(getDatabaseInfo(), tableName);
-                for (String pk : pkList) {
-                    for (int j = 0; allColumnList != null && j < allColumnList.size(); j++) {
-                        String columnName = allColumnList.get(j).getName();
-                        if (pk.equalsIgnoreCase(columnName)) {
-                            matchedCnt++;
-                        }
-                    }
-                }
-                isContainPrimayKey = matchedCnt > 0 && matchedCnt == pkList.size() ? true : false;
-            }
-        }
-    }
-
-    private void processResultTable(boolean isNew) {
-        if (insertRecordItem != null && !insertRecordItem.isDisposed()) {
-            insertRecordItem.setEnabled(getEditable() && isEditMode());
-        }
-
-        if (isNew) {
-            tblResult.removeAll();
-        }
-
-        clearModifiedLog();
-        rsToItemMap.clear();
-
-        List<Point> matchedPointList = new ArrayList<Point>();
-        final int indexGap = isNew ? 0 : getCurrentTblTotalCount();
-        int itemNo = 0;
-
-        for (int i = 0; allDataList != null && i < queryInfo.getTotalRs(); i++) {
-            Map<String, CellValue> dataMap = allDataList.get(i);
-
-            // filter the data
-            boolean isAccepted = filterResultContrItem.select(dataMap, filterSetting);
-            if (!isAccepted) {
-                continue;
-            }
-
-            TableItem item = new TableItem(tblResult, SWT.MULTI);
-            rsToItemMap.put("" + item.hashCode(), "" + i);
-            item.setText(0, String.valueOf(indexGap + i + 1));
-            item.setData(dataMap);
-            makeItemValue(item, dataMap);
-            item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-
-            int columnNum = 1;
-            for (int j = 0; allColumnList != null && j < allColumnList.size(); j++, columnNum++) {
-                ColumnInfo columnInfo = allColumnList.get(j);
-                String columnIndex = columnInfo.getIndex();
-
-                // display compare data for multiple queries
-                if (multiResultsCompare == true && baseQueryExecuter != null) {
-                    compareTableItemData(item, i, columnIndex);
-                }
-
-                Object colValue = dataMap.get(columnIndex);
-                String showValue = null;
-                if (colValue instanceof String) {
-                    showValue = (String) colValue;
-                } else if (colValue instanceof CellValue) {
-                    showValue = ((CellValue) colValue).getShowValue();
-                }
-
-                if (showValue == null) {
-                    item.setText(columnNum, DataType.NULL_EXPORT_FORMAT);
-                    item.setData((columnNum) + "", DataType.VALUE_NULL);
-                } else {
-                    item.setText(columnNum, showValue);
-                }
-
-                if (DataType.isSelfDefinedData(showValue)) {
-                    item.setBackground(
-                            columnNum, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-                }
-
-                // Select the matched data
-                if (showValue != null
-                        && filterResultContrItem.isMatch(filterSetting, showValue, columnInfo)) {
-                    Point ponit = new Point(j + 1, itemNo);
-                    matchedPointList.add(ponit);
-                }
-            }
-
-            itemNo++;
-        }
-
-        if (filterResultContrItem.isUseFilter()) {
-            selectableSupport.setSelection(matchedPointList);
-        }
-
-        if (delRecordItem != null && !delRecordItem.isDisposed()) {
-            delRecordItem.setEnabled(false);
-        }
-    }
-
-    /** Compare data and mart item foreground */
-    private void compareTableItemData(TableItem item, int row, String columnIndex) {
-        boolean dataDiff = false, extraRow = false, extraColumn = false;
-        CellValue cellValue0 = executer.getAllDataList().get(row).get(columnIndex);
-        int baseRowSize = baseQueryExecuter.getAllDataList().size();
-        if (row < baseRowSize) {
-            int baseColumnSize = baseQueryExecuter.getAllDataList().get(row).size();
-            if (Integer.parseInt(columnIndex) <= baseColumnSize) {
-                CellValue cellValue1 = baseQueryExecuter.getAllDataList().get(row).get(columnIndex);
-                if (isCellValueEqual(cellValue0, cellValue1)) {
-                    dataDiff = false;
-                } else {
-                    dataDiff = true;
-                }
-            } else {
-                extraColumn = true;
-            }
-        } else {
-            extraRow = true;
-        }
-
-        if (dataDiff == true) {
-            item.setForeground(Integer.parseInt(columnIndex), RED_COLOR);
-        } else if (extraColumn == true) {
-            item.setForeground(Integer.parseInt(columnIndex), GREEN_COLOR);
-        } else if (extraRow) {
-            item.setForeground(Integer.parseInt(columnIndex), BLUE_COLOR);
-        }
-    }
-
-    /**
-     * Judge the value is equal
-     *
-     * @param value0
-     * @param value1
-     * @return
-     */
-    private boolean isCellValueEqual(CellValue value0, CellValue value1) {
-        if (value0 == null || value1 == null) {
-            if (value0 == null && value1 == null) {
-                return true;
-            }
-            return false;
-        }
-
-        // Judge the data is null
-        if (value0.getValue() == null || value1.getValue() == null) {
-            if (value0.getValue() == null && value1.getValue() == null) {
-                return true;
-            }
-            return false;
-        }
-
-        if (!value0.getValue().getClass().equals(value1.getValue().getClass())) {
-            return false;
-        }
-
-        // TODO replace another way
-        if (value0.getValue() instanceof File && value1.getValue() instanceof File) {
-            File oldFile = (File) value0.getValue();
-            File newFile = (File) value1.getValue();
-            return oldFile.getAbsolutePath().equals(newFile.getAbsolutePath())
-                    && oldFile.lastModified() == newFile.lastModified();
-        } else if (value0.getValue() instanceof byte[] && value1.getValue() instanceof byte[]) {
-            byte[] oldBytes = (byte[]) value0.getValue();
-            byte[] newBytes = (byte[]) value1.getValue();
-            if (oldBytes.length != newBytes.length) {
-                return false;
-            } else {
-                for (int i = 0; i < oldBytes.length; i++) {
-                    if (oldBytes[i] != newBytes[i]) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        } else if (value0.getValue() instanceof java.sql.Date
-                && value1.getValue() instanceof java.sql.Date) {
-            return ((java.sql.Date) value0.getValue()).getTime()
-                    == ((java.sql.Date) value1.getValue()).getTime();
-        }
-
-        return StringUtil.isEqual(value0.getShowValue(), value1.getShowValue());
-    }
-
-    public void makeItemWithoutReset() {
-        findPK();
-        processResultTable(false);
     }
 
     public boolean getEditable() {
@@ -2327,205 +1721,6 @@ public class QueryExecuter
         // item.setBackground(1, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
         // item.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         tblResult.showItem(item);
-    }
-
-    /**
-     * add a new item into table result
-     *
-     * @return a new added TableItem
-     */
-    public TableItem addNewItem() {
-        TableItem itemNew = new TableItem(tblResult, SWT.MULTI);
-        changeInsertedItemStyle(itemNew);
-        selectableSupport.setSelection(itemNew, 0);
-
-        String key = "" + itemNew.hashCode();
-        // The data is necessary
-        Map<String, CellValue> dataMap = new HashMap<String, CellValue>();
-        itemNew.setData(dataMap);
-        itemNew.setData(LASTEST_DATA_FLAG, dataMap);
-        itemNew.setData(NEW_RECORD_FLAG, key);
-        insValues.put(key, dataMap);
-        return itemNew;
-    }
-
-    public void updateValue(
-            TableItem item, Map<String, CellValue> oldValue, Map<String, CellValue> newValue) {
-        String key = "" + item.hashCode();
-        if (this.insValues.get(key) != null) {
-            return;
-        }
-        if (this.oldValues.get(key) == null) {
-            this.oldValues.put(key, oldValue);
-        }
-        this.newValues.put(key, newValue);
-        insertSaveItem.setEnabled(getEditable());
-        rollbackModifiedItem.setEnabled(getEditable());
-    }
-
-    /**
-     * update row data
-     *
-     * @param oid String
-     * @param value String[]
-     * @param colName String[]
-     * @throws SQLException if failed
-     */
-    public void updateValue(String oid, String[] colName, Object[] value) throws SQLException {
-        queryEditor.updateResult(oid, colName, value);
-    }
-
-    /**
-     * Save all new inserted/updated records to database
-     *
-     * @throws ParamSetException
-     */
-    @SuppressWarnings("unchecked")
-    public boolean saveInsertedUpdatedDeletedRecords() throws SQLException, ParamSetException {
-        logMessageText.setText("");
-
-        // delete
-        if (delValues.size() > 0) {
-            Map<String, Map<String, CellValue>> deleteValuesMap = deleteValues();
-            if (deleteValuesMap.size() == 0) {
-                return false;
-            }
-        }
-
-        // insert
-        int insertCounts = 0;
-        if (insValues.size() > 0) {
-            Map<String, TableItem> insertedTableItems = new HashMap<String, TableItem>();
-            for (TableItem recordItem : tblResult.getItems()) {
-                String key = "" + recordItem.hashCode();
-                Map<String, CellValue> newValue =
-                        (Map<String, CellValue>) recordItem.getData(LASTEST_DATA_FLAG);
-                if (insValues.containsKey(key) && newValue != null) {
-                    Map<String, CellValue> insertValue = new HashMap<String, CellValue>();
-                    insertValue.putAll(newValue);
-                    insValues.put(key, insertValue);
-                    insertedTableItems.put(key, recordItem);
-                }
-                insertCounts++;
-            }
-            Map<String, Map<String, CellValue>> insertValuesMap = insertValues();
-            if (insertValuesMap.size() == 0) {
-                return false;
-            }
-        }
-
-        // update
-        if (oldValues.size() > 0 && newValues.size() > 0) {
-            Map<String, Map<String, CellValue>> updateValuesMap = updateValues();
-            if (updateValuesMap.size() == 0) {
-                return false;
-            }
-        }
-
-        clearModifiedLog();
-
-        if (insertCounts > 0) {
-            reloadQuery();
-        }
-
-        try {
-            for (CombinedQueryEditorComposite combinedQueryEditorComposite :
-                    getQueryEditor().getAllCombinedQueryEditorComposite()) {
-                combinedQueryEditorComposite
-                        .getRecentlyUsedSQLComposite()
-                        .refreshRecentlyUsedSQLList();
-            }
-        } catch (Exception ignored) {
-        }
-        return true;
-    }
-
-    public void clearModifiedLog() {
-        oldValues.clear();
-        newValues.clear();
-        insValues.clear();
-        delValues.clear();
-    }
-
-    /**
-     * delete the record
-     *
-     * @param selection TableItem[]
-     */
-    @SuppressWarnings("unchecked")
-    protected void deleteRecord(Table table, TableItem[] selection) {
-        if (selection == null) {
-            selection = selectableSupport.getSelectedTableItems();
-            if (selection.length == 0) {
-                return;
-            }
-        } else {
-            if (selection.length == 0) {
-                return;
-            }
-        }
-
-        ArrayList<TableItem> itemsWithOIDList = new ArrayList<TableItem>();
-        ArrayList<TableItem> itemsInsertedList = new ArrayList<TableItem>();
-        // dispatch the selected items into corresponding list
-        for (TableItem item : selection) {
-            if (isNewInsertedRecordItem(item)) {
-                itemsInsertedList.add(item);
-                insValues.remove("" + item.hashCode());
-            } else {
-                itemsWithOIDList.add(item);
-                delValues.put("" + item.hashCode(), (Map<String, CellValue>) item.getData());
-                insertSaveItem.setEnabled(getEditable());
-                rollbackModifiedItem.setEnabled(getEditable());
-            }
-        }
-
-        TableItem[] itemsInserted = new TableItem[itemsInsertedList.size()];
-        itemsInserted = itemsInsertedList.toArray(itemsInserted);
-
-        TableItem[] itemsWithOID = new TableItem[itemsWithOIDList.size()];
-        itemsWithOID = itemsWithOIDList.toArray(itemsWithOID);
-        selection = itemsWithOID;
-
-        for (TableItem item : itemsWithOIDList) {
-            item.dispose();
-        }
-
-        //			String[] oid = new String[selection.length];
-        //			for (int i = 0; i < selection.length; i++) {
-        //				oid[i] = selection[i].getText(1);
-        //			}
-
-        //			try {
-        //				qe.deleteResult(oid);
-        //				for (int i = 0; i < oid.length; i++) {
-        //					if (allDataList == null) {
-        //						break;
-        //					}
-        //					for (int j = 0; j < allDataList.size(); j++) {
-        //						Map<String, Object> deletedRecordMap = allDataList.get(j);
-        //						if (deletedRecordMap.get("0").equals(oid[i])) {
-        //							allDataList.remove(deletedRecordMap);
-        //							queryInfo.setTotalRs(queryInfo.getTotalRs() - 1);
-        //							break;
-        //						}
-        //					}
-        //				}
-        //			deleteNewInsertedRecords(itemsInserted);
-
-        for (TableItem item : itemsInsertedList) {
-            item.dispose();
-        }
-        //				int iDeletedItemCount = oid.length + itemsInserted.length;
-        //				CommonTool.openInformationBox(Messages.delete,
-        //						Messages.bind(Messages.deleteOk, iDeletedItemCount));
-        //				makeItem();
-        //				updateActions();
-        //			} catch (SQLException event) {
-        //				CommonTool.openErrorBox(event.getErrorCode() + CommonTool.NEWLINE + Messages.errorHead
-        //					+ event.getMessage());
-        //			}
-        //		}
     }
 
     public void copySelectedItems() {
@@ -2640,10 +1835,6 @@ public class QueryExecuter
         this.multiQuerySql = multiQuerySql;
     }
 
-    public QueryEditorPart getQueryEditor() {
-        return queryEditor;
-    }
-
     /**
      * mark a new-inserted flag and generate unique-id on a table item
      *
@@ -2692,548 +1883,6 @@ public class QueryExecuter
         return itemId;
     }
 
-    /**
-     * Delete values on the query result editor.
-     *
-     * @param queryConn Connection
-     * @throws SQLException the exception
-     */
-    private Map<String, Map<String, CellValue>> deleteValues()
-            throws SQLException, ParamSetException {
-        ParamSetter paramSetter = new ParamSetter();
-        Map<String, Map<String, CellValue>> successedMap =
-                new HashMap<String, Map<String, CellValue>>();
-
-        Connection conn = connection.checkAndConnect();
-        try {
-            String tableName = UIQueryUtil.getTableNameFromQuery(conn, query);
-            String escapedTable = QuerySyntax.escapeKeyword(tableName);
-            if (tableName == null) {
-                CommonUITool.openErrorBox(Messages.errModifiedOneTable);
-                return successedMap;
-            }
-
-            PreparedStatement pstmt = null;
-            List<ColumnInfo> allColumnList = getAllColumnList();
-
-            for (String key : delValues.keySet()) {
-                Map<String, CellValue> valuesMap = delValues.get(key);
-                if (valuesMap == null) {
-                    continue;
-                }
-                try {
-                    List<ColumnInfo> colInfoList = new ArrayList<ColumnInfo>();
-                    List<ColumnInfo> unPColInfoList = new ArrayList<ColumnInfo>();
-
-                    for (int i = 0; i < allColumnList.size(); i++) {
-                        ColumnInfo colInfo = allColumnList.get(i);
-                        if (queryEditor.isIgnoreType(colInfo.getType())) {
-                            continue;
-                        }
-
-                        CellValue value = valuesMap.get(colInfo.getIndex());
-                        if (value == null || value.getValue() == null) {
-                            continue;
-                        }
-
-                        if (DataType.DATATYPE_NATIONAL_CHARACTER.equalsIgnoreCase(colInfo.getType())
-                                || DataType.DATATYPE_NCHAR_VARYING.equalsIgnoreCase(
-                                        colInfo.getType())
-                                || DataType.DATATYPE_NCHAR.equalsIgnoreCase(colInfo.getType())) {
-                            unPColInfoList.add(colInfo);
-                            continue;
-                        }
-
-                        if ((DataType.DATATYPE_BIT.equalsIgnoreCase(colInfo.getType())
-                                        || DataType.DATATYPE_BIT_VARYING.equalsIgnoreCase(
-                                                colInfo.getType()))
-                                && value.getValue() instanceof String) {
-                            unPColInfoList.add(colInfo);
-                            continue;
-                        }
-
-                        colInfoList.add(colInfo);
-                    }
-
-                    StringBuilder sqlBuffer = new StringBuilder();
-                    sqlBuffer
-                            .append("DELETE FROM ")
-                            .append(QuerySyntax.escapeKeyword(escapedTable))
-                            .append(" WHERE ");
-
-                    List<PstmtParameter> pstmtParaList = new ArrayList<PstmtParameter>();
-                    int paramCount = 1;
-                    for (ColumnInfo columnInfo : colInfoList) {
-                        if (paramCount > 1) {
-                            sqlBuffer.append(" AND ");
-                        }
-                        sqlBuffer
-                                .append(QuerySyntax.escapeKeyword(columnInfo.getName()))
-                                .append(" = ? ");
-
-                        CellValue value = valuesMap.get(columnInfo.getIndex());
-                        PstmtParameter pstmtParameter =
-                                new PstmtParameter(
-                                        columnInfo.getName(),
-                                        paramCount,
-                                        columnInfo.getComleteType(),
-                                        value.getValue());
-                        pstmtParaList.add(pstmtParameter);
-                        paramCount++;
-                    }
-
-                    for (ColumnInfo columnInfo : unPColInfoList) {
-                        if (paramCount > 1) {
-                            sqlBuffer.append(" AND ");
-                        }
-                        sqlBuffer
-                                .append(QuerySyntax.escapeKeyword(columnInfo.getName()))
-                                .append("=");
-                        CellValue cellValue = valuesMap.get(columnInfo.getIndex());
-                        String dataType =
-                                DataType.makeType(
-                                        columnInfo.getType(),
-                                        columnInfo.getChildElementType(),
-                                        columnInfo.getPrecision(),
-                                        columnInfo.getScale());
-
-                        FormatDataResult result =
-                                DBAttrTypeFormatter.format(
-                                        dataType,
-                                        cellValue.getStringValue(),
-                                        null,
-                                        false,
-                                        charset,
-                                        false);
-                        if (result.isSuccess()) {
-                            sqlBuffer.append(result.getFormatedString());
-                        } else {
-                            throw new ParamSetException(
-                                    "Format data \""
-                                            + cellValue.getStringValue()
-                                            + "\"error for data type "
-                                            + dataType);
-                        }
-
-                        paramCount++;
-                    }
-
-                    pstmt = conn.prepareStatement(sqlBuffer.toString());
-                    for (PstmtParameter pstmtParameter : pstmtParaList) {
-                        paramSetter.handle(pstmt, pstmtParameter);
-                    }
-                    pstmt.executeUpdate();
-                    successedMap.put(key, valuesMap);
-
-                    if (!connection.isAutoCommit() && queryEditor.getConnection() == connection) {
-                        queryEditor.setHaveActiveTransaction(true);
-                    }
-                } catch (SQLException ex) {
-                    if (successedMap.containsKey(key)) {
-                        successedMap.remove(key);
-                    }
-                    LOGGER.error("", ex);
-                    throw ex;
-                } finally {
-                    QueryUtil.freeQuery(pstmt);
-                }
-            }
-        } finally {
-            if (connection != null && connection.isAutoClosable()) {
-                connection.commit();
-                connection.close();
-            }
-        }
-        return successedMap;
-    }
-
-    /**
-     * Insert values on the query result editor.
-     *
-     * @return
-     * @throws SQLException
-     */
-    private Map<String, Map<String, CellValue>> insertValues()
-            throws SQLException, ParamSetException {
-        Map<String, Map<String, CellValue>> successedMap =
-                new HashMap<String, Map<String, CellValue>>();
-        if (insValues == null || insValues.size() == 0) {
-            return successedMap;
-        }
-
-        ParamSetter paramSetter = new ParamSetter();
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMaximumFractionDigits(3);
-
-        Connection conn = connection.checkAndConnect();
-        try {
-            String tableName = UIQueryUtil.getTableNameFromQuery(conn, query);
-            String escapedTable = QuerySyntax.escapeKeyword(tableName);
-            if (tableName == null) {
-                CommonUITool.openErrorBox(Messages.errModifiedOneTable);
-                return successedMap;
-            }
-
-            PreparedStatement pstmt = null;
-            List<ColumnInfo> allColumnList = getAllColumnList();
-            for (String key : insValues.keySet()) {
-                Map<String, CellValue> valuesMap = insValues.get(key);
-                if (valuesMap == null) {
-                    continue;
-                }
-                try {
-                    List<ColumnInfo> colInfoList = new ArrayList<ColumnInfo>();
-                    List<ColumnInfo> unPColInfoList = new ArrayList<ColumnInfo>();
-                    for (int i = 0; i < allColumnList.size(); i++) {
-                        ColumnInfo colInfo = allColumnList.get(i);
-                        if (queryEditor.isIgnoreType(colInfo.getType())) {
-                            continue;
-                        }
-
-                        CellValue value = valuesMap.get(colInfo.getIndex());
-                        if (value == null || value.getValue() == null) {
-                            continue;
-                        }
-
-                        if (DataType.DATATYPE_NATIONAL_CHARACTER.equalsIgnoreCase(colInfo.getType())
-                                || DataType.DATATYPE_NCHAR_VARYING.equalsIgnoreCase(
-                                        colInfo.getType())
-                                || DataType.DATATYPE_NCHAR.equalsIgnoreCase(colInfo.getType())) {
-                            unPColInfoList.add(colInfo);
-                            continue;
-                        }
-
-                        if ((DataType.DATATYPE_BIT.equalsIgnoreCase(colInfo.getType())
-                                        || DataType.DATATYPE_BIT_VARYING.equalsIgnoreCase(
-                                                colInfo.getType()))
-                                && value.getValue() instanceof String) {
-                            unPColInfoList.add(colInfo);
-                            continue;
-                        }
-
-                        colInfoList.add(colInfo);
-                    }
-
-                    StringBuilder sqlBuffer = new StringBuilder();
-                    sqlBuffer.append("INSERT INTO ").append(escapedTable).append(" (");
-                    int paramCount = 0;
-                    for (ColumnInfo columnInfo : colInfoList) {
-                        if (paramCount > 0) {
-                            sqlBuffer.append(",");
-                        }
-                        sqlBuffer.append(QuerySyntax.escapeKeyword(columnInfo.getName()));
-                        paramCount++;
-                    }
-                    for (ColumnInfo columnInfo : unPColInfoList) {
-                        if (paramCount > 0) {
-                            sqlBuffer.append(",");
-                        }
-                        sqlBuffer.append(QuerySyntax.escapeKeyword(columnInfo.getName()));
-                        paramCount++;
-                    }
-                    sqlBuffer.append(") VALUES (");
-
-                    int dataIndex = 1;
-                    List<PstmtParameter> pstmtParaList = new ArrayList<PstmtParameter>();
-                    for (ColumnInfo columnInfo : colInfoList) {
-                        if (dataIndex > 1) {
-                            sqlBuffer.append(",");
-                        }
-                        sqlBuffer.append("?");
-
-                        CellValue value = valuesMap.get(columnInfo.getIndex());
-                        PstmtParameter pstmtParameter =
-                                new PstmtParameter(
-                                        columnInfo.getName(),
-                                        dataIndex,
-                                        columnInfo.getComleteType(),
-                                        value.getValue());
-                        pstmtParaList.add(pstmtParameter);
-                        dataIndex++;
-                    }
-
-                    String charset =
-                            getDatabaseInfo() != null ? getDatabaseInfo().getCharSet() : null;
-                    for (ColumnInfo columnInfo : unPColInfoList) {
-                        if (dataIndex > 1) {
-                            sqlBuffer.append(",");
-                        }
-                        CellValue value = valuesMap.get(columnInfo.getIndex());
-                        String dataType =
-                                DataType.makeType(
-                                        columnInfo.getType(),
-                                        columnInfo.getChildElementType(),
-                                        columnInfo.getPrecision(),
-                                        columnInfo.getScale());
-
-                        FormatDataResult result =
-                                DBAttrTypeFormatter.format(
-                                        dataType,
-                                        value.getStringValue(),
-                                        null,
-                                        false,
-                                        charset,
-                                        false);
-                        if (result.isSuccess()) {
-                            sqlBuffer.append(result.getFormatedString());
-                        } else {
-                            throw new ParamSetException(
-                                    "Format data \""
-                                            + value.getStringValue()
-                                            + "\"error for data type "
-                                            + dataType);
-                        }
-                    }
-                    sqlBuffer.append(")");
-                    pstmt = conn.prepareStatement(sqlBuffer.toString());
-                    for (PstmtParameter pstmtParameter : pstmtParaList) {
-                        paramSetter.handle(pstmt, pstmtParameter);
-                    }
-                    pstmt.executeUpdate();
-                    successedMap.put(key, valuesMap);
-
-                    if (!connection.isAutoCommit() && queryEditor.getConnection() == connection) {
-                        queryEditor.setHaveActiveTransaction(true);
-                    }
-                } catch (SQLException e) {
-                    if (successedMap.containsKey(key)) {
-                        successedMap.remove(key);
-                    }
-                    LOGGER.error("", e);
-                    logMessageText.setText(e.getLocalizedMessage());
-                    throw e;
-                } finally {
-                    QueryUtil.freeQuery(pstmt);
-                }
-            }
-        } finally {
-            if (connection != null && connection.isAutoClosable()) {
-                connection.commit();
-                connection.close();
-            }
-        }
-        return successedMap;
-    }
-
-    /**
-     * Update values on the query result editor.
-     *
-     * @param queryConn Connection
-     * @return
-     * @throws SQLException
-     * @throws ParamSetException
-     */
-    private Map<String, Map<String, CellValue>> updateValues()
-            throws SQLException, ParamSetException {
-        Map<String, Map<String, CellValue>> successedMap =
-                new HashMap<String, Map<String, CellValue>>();
-        ParamSetter paramSetter = new ParamSetter();
-        if (oldValues == null || oldValues.size() == 0) {
-            return successedMap;
-        }
-        if (newValues == null || newValues.size() == 0) {
-            return successedMap;
-        }
-
-        Connection conn = connection.checkAndConnect();
-        try {
-            String tableName = UIQueryUtil.getTableNameFromQuery(conn, query);
-            String escapedTable = QuerySyntax.escapeKeyword(tableName);
-            if (tableName == null) {
-                CommonUITool.openErrorBox(Messages.errModifiedOneTable);
-                return successedMap;
-            }
-
-            List<ColumnInfo> colInfoList = getAllColumnList();
-            PreparedStatement pstmt = null;
-
-            for (String key : oldValues.keySet()) {
-                try {
-                    Map<String, CellValue> oldValueMap = oldValues.get(key);
-                    Map<String, CellValue> newValueMap = newValues.get(key);
-                    if (oldValueMap == null
-                            || oldValueMap.size() == 0
-                            || newValueMap == null
-                            || newValueMap.size() == 0) {
-                        continue;
-                    }
-                    StringBuilder updateSQLBuffer = new StringBuilder();
-                    List<ColumnInfo> updatedColInfoList = new ArrayList<ColumnInfo>();
-                    List<CellValue> newValueList = new ArrayList<CellValue>();
-
-                    for (int i = 0; i < colInfoList.size(); i++) {
-                        ColumnInfo colInfo = colInfoList.get(i);
-                        CellValue newValue = newValueMap.get(colInfo.getIndex());
-                        CellValue oldValue = oldValueMap.get(colInfo.getIndex());
-                        if ((oldValue == null && newValue != null)
-                                || (newValue == null && oldValue != null)) {
-                            newValueList.add(newValue);
-                            updatedColInfoList.add(colInfo);
-                        } else if (oldValue != null
-                                && newValue != null
-                                && !oldValue.equals(newValue)) {
-                            newValueList.add(newValue);
-                            updatedColInfoList.add(colInfo);
-                        }
-                    }
-                    if (updatedColInfoList.isEmpty()) {
-                        continue;
-                    }
-
-                    updateSQLBuffer.append("UPDATE ").append(escapedTable).append(" SET ");
-                    StringBuilder setSQLBf = new StringBuilder();
-                    List<PstmtParameter> pstmtParaList = new ArrayList<PstmtParameter>();
-                    int valueParamIndex = 1;
-                    for (int i = 0; i < updatedColInfoList.size(); i++) {
-                        ColumnInfo colInfo = updatedColInfoList.get(i);
-                        CellValue newValue = newValueMap.get(colInfo.getIndex());
-                        String colName = colInfo.getName();
-                        if (queryEditor.isIgnoreType(colInfo.getType())) {
-                            continue;
-                        }
-                        if (setSQLBf.length() > 0) {
-                            setSQLBf.append(", ");
-                        }
-                        CellValue cellValue = newValueMap.get(colInfo.getIndex());
-                        if (DataType.DATATYPE_NATIONAL_CHARACTER.equalsIgnoreCase(colInfo.getType())
-                                || DataType.DATATYPE_NCHAR_VARYING.equalsIgnoreCase(
-                                        colInfo.getType())
-                                || DataType.DATATYPE_NCHAR.equalsIgnoreCase(colInfo.getType())) {
-                            String dataType =
-                                    DataType.makeType(
-                                            colInfo.getType(),
-                                            colInfo.getChildElementType(),
-                                            colInfo.getPrecision(),
-                                            colInfo.getScale());
-                            String charset =
-                                    getDatabaseInfo() != null
-                                            ? getDatabaseInfo().getCharSet()
-                                            : null;
-                            FormatDataResult result =
-                                    DBAttrTypeFormatter.format(
-                                            dataType,
-                                            cellValue.getStringValue(),
-                                            null,
-                                            false,
-                                            charset,
-                                            false);
-                            if (result.isSuccess()) {
-                                setSQLBf.append(QuerySyntax.escapeKeyword(colName));
-                                setSQLBf.append(" = ").append(result.getFormatedString());
-                            } else {
-                                throw new ParamSetException(
-                                        "Format data \""
-                                                + cellValue.getStringValue()
-                                                + "\"error for data type "
-                                                + dataType);
-                            }
-                        } else if ((DataType.DATATYPE_BIT.equalsIgnoreCase(colInfo.getType())
-                                        || DataType.DATATYPE_BIT_VARYING.equalsIgnoreCase(
-                                                colInfo.getType()))
-                                && newValue.getValue() instanceof String) {
-                            String dataType =
-                                    DataType.makeType(
-                                            colInfo.getType(),
-                                            colInfo.getChildElementType(),
-                                            colInfo.getPrecision(),
-                                            colInfo.getScale());
-                            String charset =
-                                    getDatabaseInfo() != null
-                                            ? getDatabaseInfo().getCharSet()
-                                            : null;
-                            FormatDataResult result =
-                                    DBAttrTypeFormatter.format(
-                                            dataType,
-                                            cellValue.getStringValue(),
-                                            null,
-                                            false,
-                                            charset,
-                                            false);
-                            setSQLBf.append(QuerySyntax.escapeKeyword(colName));
-                            setSQLBf.append(" = ").append(result.getFormatedString());
-                        } else {
-                            setSQLBf.append(QuerySyntax.escapeKeyword(colName)).append(" = ?");
-                            PstmtParameter pstmtParameter =
-                                    new PstmtParameter(
-                                            colInfo.getName(),
-                                            valueParamIndex++,
-                                            colInfo.getComleteType(),
-                                            cellValue.getValue());
-                            pstmtParaList.add(pstmtParameter);
-                        }
-                    }
-                    if (setSQLBf.length() < 1) {
-                        continue;
-                    }
-                    updateSQLBuffer.append(setSQLBf);
-                    updateSQLBuffer.append(" WHERE ");
-
-                    List<String> pkList = UIQueryUtil.getPkList(getDatabaseInfo(), tableName);
-                    int pkParamIndex = 0;
-                    for (int i = 0; i < newValueMap.size(); i++) {
-                        ColumnInfo colInfo = ((ColumnInfo) getAllColumnList().get(i));
-                        String col = colInfo.getName();
-                        if (!pkList.contains(col)) {
-                            continue;
-                        }
-                        if (queryEditor.isIgnoreType(colInfo.getType())) {
-                            continue;
-                        }
-                        if (pkParamIndex > 0) {
-                            updateSQLBuffer.append(" AND ");
-                        }
-
-                        updateSQLBuffer.append(QuerySyntax.escapeKeyword(col)).append(" = ?");
-                        CellValue object = oldValueMap.get(colInfo.getIndex());
-
-                        PstmtParameter pstmtParameter =
-                                new PstmtParameter(
-                                        colInfo.getName(),
-                                        valueParamIndex++,
-                                        colInfo.getComleteType(),
-                                        object.getValue());
-                        pstmtParaList.add(pstmtParameter);
-                        pkParamIndex++;
-                    }
-
-                    pstmt = conn.prepareStatement(updateSQLBuffer.toString());
-                    for (PstmtParameter pstmtParameter : pstmtParaList) {
-                        paramSetter.handle(pstmt, pstmtParameter);
-                    }
-                    pstmt.executeUpdate();
-                    successedMap.put(key, newValueMap);
-
-                    if (!connection.isAutoCommit() && queryEditor.getConnection() == connection) {
-                        queryEditor.setHaveActiveTransaction(true);
-                    }
-
-                    for (ColumnInfo colInfo : updatedColInfoList) {
-                        CellValue newValue = newValueMap.get(colInfo.getIndex());
-                        CellValue oldValue = oldValueMap.get(colInfo.getIndex());
-                        if (newValue != null && oldValue != null) {
-                            oldValue.setValue(newValue.getValue());
-                        }
-                    }
-                } catch (SQLException e) {
-                    if (successedMap.containsKey(key)) {
-                        successedMap.remove(key);
-                    }
-                    LOGGER.error("", e);
-                    logMessageText.setText(e.getLocalizedMessage());
-                    throw e;
-                } finally {
-                    QueryUtil.freeQuery(pstmt);
-                }
-            }
-        } finally {
-            if (connection != null && connection.isAutoClosable()) {
-                connection.commit();
-                connection.close();
-            }
-        }
-        return successedMap;
-    }
-
     public String getQueryPlanLog() {
         return queryPlanLog;
     }
@@ -3265,10 +1914,6 @@ public class QueryExecuter
         return newValues.size() > 0 || delValues.size() > 0 || insValues.size() > 0;
     }
 
-    public void setSqlDetailHistory(SQLHistoryDetail sqlDetailHistory) {
-        this.sqlDetailHistory = sqlDetailHistory;
-    }
-
     public List<Map<String, CellValue>> getAllDataList() {
         return allDataList;
     }
@@ -3289,14 +1934,6 @@ public class QueryExecuter
         this.filterSetting = filterSetting;
     }
 
-    public void setMultiResultsCompare(boolean multiResultsCompare) {
-        this.multiResultsCompare = multiResultsCompare;
-    }
-
-    public boolean getMultiResultsCompare() {
-        return this.multiResultsCompare;
-    }
-
     public void setBaseQueryExecuter(QueryExecuter baseQueryExecuter) {
         this.baseQueryExecuter = baseQueryExecuter;
     }
@@ -3309,233 +1946,6 @@ public class QueryExecuter
         return idx;
     }
 
-    /**
-     * Table item editor
-     *
-     * @author pangqiren
-     * @version 1.0 - 2009-12-18 created by pangqiren
-     */
-    private class TableItemEditor implements Listener {
-        private boolean isRunning = false;
-        private final TableItem item;
-        private final int column;
-        private final StyledText text;
-        private Shell shell;
-        private DateTimeComponent dateTimeComponent;
-        private int dateTimeComponentWidth = 300;
-        private int dateTimeComponentHeight = 230;
-
-        public TableItemEditor(StyledText text, TableItem item, int row, int column) {
-            this.text = text;
-            this.item = item;
-            this.column = column;
-            shell =
-                    new Shell(
-                            Display.getDefault().getActiveShell(),
-                            SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-            shell.setText("");
-            shell.setLayout(new GridLayout());
-            shell.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-            dateTimeComponent = new DateTimeComponent(shell, SWT.BORDER);
-            dateTimeComponent.setLayout(new GridLayout());
-            dateTimeComponent.setLayoutData(new GridData(GridData.FILL_BOTH));
-            Point dateTimeComponentSize = dateTimeComponent.componentSize();
-            dateTimeComponentWidth = dateTimeComponentSize.x;
-            dateTimeComponentHeight = dateTimeComponentSize.y;
-            shell.setSize(dateTimeComponentWidth, dateTimeComponentHeight);
-        }
-
-        /**
-         * to process cell value editing event on inserting time.
-         *
-         * @param event source event
-         */
-        @SuppressWarnings("unchecked")
-        public void processInsertingEditEvent(Event event) {
-            int oldCol = column;
-            String showValue = text.getText();
-            String value = text.getText();
-            Map<String, CellValue> newValMap =
-                    (Map<String, CellValue>) item.getData(LASTEST_DATA_FLAG);
-            if (newValMap != null) {
-                if (DataType.VALUE_NULL.equals(value)) {
-                    showValue = DataType.VALUE_NULL;
-                    value = null;
-                }
-                if (DataType.VALUE_NULL.equals(showValue)) {
-                    item.setBackground(oldCol, null);
-                }
-                item.setText(column, showValue);
-                newValMap.put("" + column, new CellValue(value, showValue));
-            }
-        }
-
-        /**
-         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-         * @param event the event which occurred
-         */
-        public void handleEvent(final Event event) {
-            text.setEditable(getEditable() && isEditMode());
-
-            int oldCol = column;
-            if (event.type == SWT.FocusOut) {
-                focusOutAction(event, oldCol);
-                return;
-            } else if (event.type == SWT.Traverse) {
-                if (event.detail == SWT.TRAVERSE_RETURN) {
-                    focusOutAction(event, oldCol);
-                    return;
-                } else if (event.detail == SWT.TRAVERSE_ESCAPE) {
-                    if (isRunning) {
-                        return;
-                    }
-                    isRunning = true;
-                    text.dispose();
-                    event.doit = false;
-                    isRunning = false;
-                }
-            } else if (event.type == SWT.FocusIn) {
-                if (!getQueryEditor().isConnected()) {
-                    CommonUITool.openErrorBox(
-                            Display.getDefault().getActiveShell(), Messages.errMsgExecuteInResult);
-                    event.doit = false;
-                    isRunning = false;
-                    text.dispose();
-                    return;
-                }
-                String attrType = ((ColumnInfo) tblResult.getColumn(column).getData()).getType();
-                if (queryEditor.isIgnoreType(attrType)) {
-                    CommonUITool.openErrorBox(
-                            Display.getDefault().getActiveShell(),
-                            Messages.bind(Messages.errEditableOnResultTab, attrType));
-                    event.doit = false;
-                    isRunning = false;
-                    text.dispose();
-                    return;
-                }
-                /*
-                				if (attrType.equalsIgnoreCase("DATE")
-                						|| attrType.equalsIgnoreCase("DATETIME")
-                						|| attrType.equalsIgnoreCase("TIMESTAMP")) {
-
-                					//compute location
-                					Point p = Display.getDefault().getCursorLocation();
-                					Rectangle screenSize = Display.getDefault().getClientArea();
-                					if (p.x + dateTimeComponentWidth > screenSize.width) {
-                						p.x = screenSize.width - dateTimeComponentWidth - 50;
-                					}
-                					if (p.y + dateTimeComponentHeight > screenSize.height) {
-                						p.y = screenSize.height - dateTimeComponentHeight - 50 ;
-                					}
-
-                					shell.setLocation(p);
-                					shell.open();
-                					while (!shell.isDisposed()) {
-                						if (!Display.getDefault().readAndDispatch())
-                							Display.getDefault().sleep();
-                					}
-                					//if select a date
-                					if (dateTimeComponent.getReturnDateValue() != null) {
-                						if (isNewInsertedRecordItem(item) ) {//if this is a new record
-                							if (attrType.equalsIgnoreCase("DATE")) {
-                								item.setText(column, dateTimeComponent.getReturnDateValue());
-                							} else if (attrType.equalsIgnoreCase("TIMESTAMP")) {
-                								item.setText(column, dateTimeComponent.getReturnTimestampValue());
-                							} else {
-                								item.setText(column, dateTimeComponent.getReturnDateTimeValue());
-                							}
-                						} else {
-                							//if the date value is changed
-                							if ((attrType.equalsIgnoreCase("DATE") && item.getText(column)
-                									.equals(dateTimeComponent.getReturnDateValue()))
-                									//timestamp or date time
-                									|| (item.getText(column).equals(dateTimeComponent.getReturnDateTimeValue()))) {
-                								return ;
-                							}
-                //							if (CommonTool.openConfirmBox(Messages.cfmUpdateChangedValue)) {
-                //								try {
-                									if (attrType.equalsIgnoreCase("DATE")) {
-                										item.setText(column, dateTimeComponent.getReturnDateValue());
-                									} else if (attrType.equalsIgnoreCase("TIMESTAMP")) {
-                										item.setText(column, dateTimeComponent.getReturnTimestampValue());
-                									} else {
-                										item.setText(column, dateTimeComponent.getReturnDateTimeValue());
-                									}
-                //									updateValue(row, column);
-                									if (DataType.VALUE_NULL.equals(item.getData(oldCol
-                											+ ""))) {
-                										item.setData(oldCol + "", "");
-                										item.setBackground(oldCol, null);
-                									}
-
-                									//TODO: pendingUpdateQueries.add(sql);
-                //								} catch (SQLException e1) {
-                //									CommonTool.openErrorBox(e1.getErrorCode()
-                //											+ CommonTool.NEWLINE
-                //											+ e1.getMessage());
-                //									tblResult.getItem(oldRow).setText(oldCol, old);
-                //									event.doit = false;
-                //									if (DataType.VALUE_NULL.equals(item.getData(oldCol + ""))) {
-                //										item.setText(oldCol, DataType.NULL_EXPORT_FORMAT);
-                //									}
-                //								}
-                //							}
-                						}
-
-                					}
-                				}
-                				*/
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        private void focusOutAction(final Event event, int oldCol) {
-            if (isRunning) {
-                return;
-            }
-            if (text == null) {
-                return;
-            }
-            isRunning = true;
-
-            boolean isChanged = !text.getText().equals(item.getText(column));
-            if (isChanged) {
-                if (isNewInsertedRecordItem(item)) {
-                    processInsertingEditEvent(event);
-                } else {
-                    Map<String, CellValue> oldValueMap = (Map<String, CellValue>) item.getData();
-                    item.setText(column, text.getText());
-
-                    Map<String, CellValue> newValMap =
-                            (Map<String, CellValue>) item.getData(LASTEST_DATA_FLAG);
-                    if (newValMap == null) {
-                        newValMap = new HashMap<String, CellValue>();
-                        newValMap.putAll(oldValueMap);
-                        item.setData(LASTEST_DATA_FLAG, newValMap);
-                    }
-                    newValMap.put(
-                            String.valueOf(column),
-                            new CellValue(item.getText(column), item.getText(column)));
-                    updateValue(item, oldValueMap, newValMap);
-
-                    if (DataType.VALUE_NULL.equals(item.getData("" + oldCol))) {
-                        item.setData("" + oldCol, "");
-                        item.setBackground(oldCol, null);
-                    }
-                }
-            } else if ("".equals(text.getText())) {
-                if (DataType.VALUE_NULL.equals(item.getData("" + oldCol))) {
-                    item.setText(oldCol, DataType.NULL_EXPORT_FORMAT);
-                } else {
-                    item.setText(column, "");
-                }
-            }
-            text.dispose();
-            isRunning = false;
-        }
-    }
-
     public void setColumnTableNames(List<String> tableNames) {
         this.columnTableNames = tableNames;
     }
@@ -3546,21 +1956,5 @@ public class QueryExecuter
 
     public int getCurrentTblTotalCount() {
         return tblResult.getItemCount();
-    }
-
-    public void runNextQuery() throws SQLException {
-        int start = getCurrentTblTotalCount() + 1;
-        allDataList.clear();
-        makeTable(start, queryEditor.isCollectExecStats());
-        if (isLimitedSql() && cntRecord != 0) {
-            makeItemWithoutReset();
-            processLogs(null);
-        } else {
-            if (showEndDialog) {
-                CommonUITool.openInformationBox(Messages.noMoreRecord);
-                showEndDialog = false;
-                nextQueryAction.setEnabled(false);
-            }
-        }
     }
 }

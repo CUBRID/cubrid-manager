@@ -31,7 +31,6 @@ package org.cubrid.cubridmanager.plugin.manager;
 import com.cubrid.common.ui.common.navigator.CubridColumnNavigatorView;
 import com.cubrid.common.ui.common.navigator.CubridDdlNavigatorView;
 import com.cubrid.common.ui.common.navigator.CubridIndexNavigatorView;
-import com.cubrid.common.ui.common.navigator.FavoriteQueryNavigatorView;
 import com.cubrid.common.ui.common.preference.GeneralPreference;
 import com.cubrid.common.ui.er.editor.ERDThumbnailViewPart;
 import com.cubrid.cubridmanager.ui.broker.editor.BrokerEnvStatusView;
@@ -88,14 +87,6 @@ public class Perspective implements IPerspectiveFactory {
         viewLayout = layout.getViewLayout(CubridMonitorNavigatorView.ID);
         viewLayout.setCloseable(false);
         viewLayout.setMoveable(false);
-
-        IPlaceholderFolderLayout FavoriteSqlPlaceFolder =
-                layout.createPlaceholderFolder(
-                        "FavoriteSqlPlaceFolder",
-                        IPageLayout.RIGHT,
-                        0.7f,
-                        IPageLayout.ID_EDITOR_AREA);
-        FavoriteSqlPlaceFolder.addPlaceholder(FavoriteQueryNavigatorView.ID);
 
         boolean isAutoShowSchemaInfo = GeneralPreference.isAutoShowSchemaInfo();
         if (isAutoShowSchemaInfo) {

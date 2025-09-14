@@ -29,8 +29,8 @@ package com.cubrid.common.ui.common.action;
 
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.query.dialog.SetFileEncodingDialog;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import com.cubrid.common.ui.query.editor.QueryUnit;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
@@ -57,12 +57,12 @@ import org.slf4j.Logger;
  * @version 1.0 - 2009-03-17 created by wangsl
  * @version 1.1 - 2012-09-05 created by Isaiah Choe
  */
-public class OpenQueryAction extends SelectionAction {
+public class OpenTextEditorAction extends SelectionAction {
 
-    public static final String ID = OpenQueryAction.class.getName();
-    private static final Logger LOGGER = LogUtil.getLogger(OpenQueryAction.class);
+    public static final String ID = OpenTextEditorAction.class.getName();
+    private static final Logger LOGGER = LogUtil.getLogger(OpenTextEditorAction.class);
 
-    protected OpenQueryAction(
+    protected OpenTextEditorAction(
             Shell shell, ISelectionProvider provider, String text, ImageDescriptor icon) {
         super(shell, provider, text, icon);
         setId(ID);
@@ -70,7 +70,7 @@ public class OpenQueryAction extends SelectionAction {
         setEnabled(true);
     }
 
-    public OpenQueryAction(Shell shell, String text, ImageDescriptor icon) {
+    public OpenTextEditorAction(Shell shell, String text, ImageDescriptor icon) {
         this(shell, null, text, icon);
     }
 
@@ -122,12 +122,12 @@ public class OpenQueryAction extends SelectionAction {
             fileName = dialog.getFilePath();
 
             IEditorPart editor =
-                    window.getActivePage().openEditor(new QueryUnit(), QueryEditorPart.ID);
+                    window.getActivePage().openEditor(new QueryUnit(), TextEditorPart.ID);
             if (editor == null) {
                 return;
             }
 
-            QueryEditorPart queryEditor = (QueryEditorPart) editor;
+            TextEditorPart queryEditor = (TextEditorPart) editor;
             queryEditor
                     .getCombinedQueryComposite()
                     .getSqlEditorComp()
@@ -136,7 +136,7 @@ public class OpenQueryAction extends SelectionAction {
             Object[] obj = this.getSelectedObj();
             CubridDatabase[] cubridDatabases = handleSelectionObj(obj);
             if (cubridDatabases.length > 0 && cubridDatabases[0] != null) {
-                ((QueryEditorPart) editor).connect(cubridDatabases[0]);
+                ((TextEditorPart) editor).connect(cubridDatabases[0]);
             }
         } catch (PartInitException e) {
             LOGGER.error("Can not initialize the query editor UI.", e);

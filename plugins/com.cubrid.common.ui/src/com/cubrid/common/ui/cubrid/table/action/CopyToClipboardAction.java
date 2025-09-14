@@ -29,7 +29,7 @@ package com.cubrid.common.ui.cubrid.table.action;
 
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.query.editor.QueryUnit;
 import com.cubrid.common.ui.spi.action.SelectionAction;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
@@ -143,10 +143,10 @@ public abstract class CopyToClipboardAction extends SelectionAction {
                         if (isCopyToEditor) {
                             IWorkbenchPage activePage = LayoutUtil.getActivePage();
                             ep = activePage.getActiveEditor();
-                            if (!(ep instanceof QueryEditorPart)) {
+                            if (!(ep instanceof TextEditorPart)) {
                                 ep = openNewQueryEditor();
                             }
-                            if (!(ep instanceof QueryEditorPart)) {
+                            if (!(ep instanceof TextEditorPart)) {
                                 ep = null;
                             }
                         }
@@ -163,9 +163,9 @@ public abstract class CopyToClipboardAction extends SelectionAction {
                         }
                         if (allTableSql.length() > 0) {
                             if (isCopyToEditor) {
-                                if (ep instanceof QueryEditorPart) {
-                                    ((QueryEditorPart) ep)
-                                            .setQuery(allTableSql.toString(), true, false, false);
+                                if (ep instanceof TextEditorPart) {
+                                    ((TextEditorPart) ep)
+                                            .setQuery(allTableSql.toString(), true);
                                 }
                             } else {
                                 CommonUITool.copyContentToClipboard(allTableSql.toString());
@@ -190,9 +190,9 @@ public abstract class CopyToClipboardAction extends SelectionAction {
             queryUnit.setDatabase(database);
         }
         try {
-            IEditorPart editor = activePage.openEditor(queryUnit, QueryEditorPart.ID);
+            IEditorPart editor = activePage.openEditor(queryUnit, TextEditorPart.ID);
             if (editor != null && database != null) {
-                ((QueryEditorPart) editor).connect(database);
+                ((TextEditorPart) editor).connect(database);
             }
             return editor;
         } catch (PartInitException e) {

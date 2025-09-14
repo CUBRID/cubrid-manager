@@ -26,11 +26,11 @@
                name="%cubridNoticeEditor">
          </editor> 
          <editor
-         	   id="com.cubrid.common.ui.query.editor.QueryEditorPart"
-               class="com.cubrid.common.ui.query.editor.QueryEditorPart"
+         	   id="com.cubrid.common.ui.query.editor.TextEditorPart"
+               class="com.cubrid.common.ui.query.editor.TextEditorPart"
                default="false"
                icon="icons/queryeditor/query_editor.png"
-               name="%queryEditorName">
+               name="%textEditorName">
          </editor>
          <editor
                class="com.cubrid.common.ui.cubrid.table.control.SchemaInfoEditorPart"

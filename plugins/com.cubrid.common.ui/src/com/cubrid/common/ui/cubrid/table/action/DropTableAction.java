@@ -196,8 +196,6 @@ public class DropTableAction extends SelectionAction {
             table.getDatabase().getDatabaseInfo().removeSchema(table.getName());
             for (int i = 0; i < len; i++) {
                 parent.removeChild((ISchemaNode) obj[i]);
-                /*Broadcast the view changed*/
-                QueryEditorUtil.fireSchemaNodeChanged((ISchemaNode) obj[i]);
             }
             viewer.remove(parent, obj);
             viewer.setSelection(new StructuredSelection(parent), true);
@@ -305,8 +303,6 @@ public class DropTableAction extends SelectionAction {
             table.getDatabase().getDatabaseInfo().removeSchema(table.getName());
             for (int i = 0; i < len; i++) {
                 parent.removeChild((ISchemaNode) obj[i]);
-                /*Broadcast the view changed*/
-                QueryEditorUtil.fireSchemaNodeChanged((ISchemaNode) obj[i]);
             }
             treeViewer.remove(parent, obj);
             treeViewer.setSelection(new StructuredSelection(parent), true);

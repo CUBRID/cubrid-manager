@@ -233,8 +233,6 @@ public class RenameTableAction extends SelectionAction {
                                 new CubridNodeChangedEvent(
                                         table, CubridNodeChangedEventType.NODE_ADD));
                 ActionManager.getInstance().fireSelectionChanged(getSelection());
-                /*Broadcast the view changed*/
-                QueryEditorUtil.fireSchemaNodeChanged(table);
 
                 /*For bug TOOLS-3118: close opened TableEditorPart about dropped table*/
                 IWorkbench workbench = PlatformUI.getWorkbench();

@@ -29,7 +29,7 @@
  */
 package com.cubrid.common.ui.query.action;
 
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.spi.action.FocusAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Control;
@@ -77,8 +77,8 @@ public class SqlFormatAction extends FocusAction {
     public void run() {
         IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         IEditorPart editor = window.getActivePage().getActiveEditor();
-        if (editor instanceof QueryEditorPart) {
-            QueryEditorPart queryEditor = (QueryEditorPart) editor;
+        if (editor instanceof TextEditorPart) {
+            TextEditorPart queryEditor = (TextEditorPart) editor;
             queryEditor.format();
         }
     }

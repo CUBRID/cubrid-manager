@@ -32,7 +32,6 @@ import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.cubrid.table.action.ShowSchemaEditorAction;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import com.cubrid.common.ui.query.editor.QueryUnit;
 import com.cubrid.common.ui.spi.ResourceManager;
 import com.cubrid.common.ui.spi.action.ActionManager;
@@ -668,22 +667,6 @@ public class SchemaInfoEditorPart extends CubridEditorPart {
 
     @Override
     public void dispose() {
-
-        if (cubridNode.getType().equals(NodeType.USER_TABLE)
-                || cubridNode.getType().equals(NodeType.USER_VIEW)
-                || cubridNode.getType().equals(NodeType.SYSTEM_TABLE)
-                || cubridNode.getType().equals(NodeType.SYSTEM_VIEW)) {
-            IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-            QueryUnit unit = new QueryUnit();
-            unit.setDatabase(((DefaultSchemaNode) cubridNode).getDatabase());
-
-            try {
-                IEditorPart editor = window.getActivePage().openEditor(unit, QueryEditorPart.ID);
-                if (editor != null) ((QueryEditorPart) editor).connect(unit.getDatabase());
-            } catch (PartInitException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
         super.dispose();
     }
 }

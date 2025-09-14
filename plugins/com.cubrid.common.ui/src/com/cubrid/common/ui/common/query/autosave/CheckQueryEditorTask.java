@@ -33,13 +33,10 @@ import com.cubrid.common.core.util.DateUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.query.control.CombinedQueryEditorComposite;
-import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import com.cubrid.common.ui.query.editor.QueryEditorUtil;
-import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.model.CubridServer;
+import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.spi.model.RestorableQueryEditorInfo;
 import com.cubrid.common.ui.spi.persist.ApplicationPersistUtil;
-import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,9 +117,9 @@ public class CheckQueryEditorTask
                         new Runnable() {
                             public void run() {
                                 Date createTime = new Date();
-                                List<QueryEditorPart> editorPartList =
+                                List<TextEditorPart> editorPartList =
                                         QueryEditorUtil.getAllQueryEditorPart();
-                                for (QueryEditorPart editor : editorPartList) {
+                                for (TextEditorPart editor : editorPartList) {
                                     ArrayList<RestorableQueryEditorInfo> sqlTabItemList =
                                             new ArrayList<RestorableQueryEditorInfo>();
                                     for (CombinedQueryEditorComposite combinedQueryEditorComposite :
@@ -138,28 +135,7 @@ public class CheckQueryEditorTask
                                         if (StringUtil.isEmpty(text.getText())) {
                                             LOGGER.warn("The text.getText() is a null.");
                                             continue;
-                                        }
-
-                                        CubridDatabase cubridDatabase =
-                                                editor.getSelectedDatabase();
-                                        RestorableQueryEditorInfo editorStatus =
-                                                new RestorableQueryEditorInfo();
-                                        if (cubridDatabase != null) {
-                                            DatabaseInfo dbInfo = cubridDatabase.getDatabaseInfo();
-                                            if (dbInfo != null) {
-                                                editorStatus.setDatabaseName(dbInfo.getDbName());
-                                            }
-
-                                            CubridServer cubridServer = cubridDatabase.getServer();
-                                            if (cubridServer != null) {
-                                                editorStatus.setServerName(cubridServer.getId());
-                                            }
-                                        }
-
-                                        editorStatus.setQueryContents(text.getText());
-                                        editorStatus.setCreatedTime(createTime);
-                                        sqlTabItemList.add(editorStatus);
-                                    }
+                                        }}
                                     ApplicationPersistUtil.getInstance()
                                             .addEditorStatus(sqlTabItemList);
                                 }
