@@ -46,9 +46,9 @@
    </plugins>
 
    <features>
-      <feature id="com.cubrid.cubridmanager.app.feature" version="9.3.1.qualifier"/>
-      <feature id="com.cubrid.cubridmanager.dependence.feature" version="9.3.1.qualifier"/>
-      <feature id="com.cubrid.common.update.feature" version="9.3.1.qualifier"/>
+      <feature id="com.cubrid.cubridmanager.app.feature" version="12.0.0.qualifier"/>
+      <feature id="com.cubrid.cubridmanager.dependence.feature" version="12.0.0.qualifier"/>
+      <feature id="com.cubrid.common.update.feature" version="12.0.0.qualifier"/>
    </features>
 
    <configurations>

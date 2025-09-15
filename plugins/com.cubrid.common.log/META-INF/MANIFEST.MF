@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SLF4J log binder
 Bundle-SymbolicName: com.cubrid.common.log;singleton:=true
-Bundle-Version: 9.3.1.qualifier
+Bundle-Version: 12.0.0.qualifier
 Require-Bundle: ch.qos.logback.classic,
  ch.qos.logback.core
 Bundle-ActivationPolicy: lazy

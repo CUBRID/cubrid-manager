@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CUBRID Tools Common Update Plug-in
 Bundle-SymbolicName: com.cubrid.common.update;singleton:=true
-Bundle-Version: 9.3.1.qualifier
+Bundle-Version: 12.0.0.qualifier
 Bundle-Localization: plugin
 Bundle-Activator: com.cubrid.common.update.p2.UpdatePlugin
 Bundle-Vendor: Search Solution Corporation

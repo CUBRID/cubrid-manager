@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.cubrid.common.update_9.3.1.qualifier.jar" id="com.cubrid.common.update" version="9.3.1.qualifier">
+   <feature url="features/com.cubrid.common.update_12.0.0.qualifier.jar" id="com.cubrid.common.update" version="12.0.0.qualifier">
       <category name="com.cubrid.cubridmanager.app.category"/>
    </feature>
-   <feature url="features/com.cubrid.cubridmanager.app_9.3.1.qualifier.jar" id="com.cubrid.cubridmanager.app" version="9.3.1.qualifier">
+   <feature url="features/com.cubrid.cubridmanager.app_12.0.0.qualifier.jar" id="com.cubrid.cubridmanager.app" version="12.0.0.qualifier">
       <category name="com.cubrid.cubridmanager.app.category"/>
    </feature>
-   <feature url="features/com.cubrid.cubridmanager.dependence_9.3.1.qualifier.jar" id="com.cubrid.cubridmanager.dependence" version="9.3.1.qualifier">
+   <feature url="features/com.cubrid.cubridmanager.dependence_12.0.0.qualifier.jar" id="com.cubrid.cubridmanager.dependence" version="12.0.0.qualifier">
       <category name="com.cubrid.cubridmanager.app.category"/>
    </feature>
    <category-def name="com.cubrid.cubridmanager.app.category" label="CUBRID Manager RCP Features"/>

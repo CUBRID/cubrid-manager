@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CUBRID Editor Tool
 Bundle-SymbolicName: com.cubrid.tool.editor;singleton:=true
-Bundle-Version: 9.3.1.qualifier
+Bundle-Version: 12.0.0.qualifier
 Bundle-Activator: com.cubrid.tool.editor.CUBRIDTextEditorPlugin
 Bundle-Vendor: Search Solution Corporation
 Bundle-RequiredExecutionEnvironment: JavaSE-21
