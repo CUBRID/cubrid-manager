@@ -41,6 +41,7 @@ PRODUCT_FILE_LIST=$(find ${PROJECT_DIR} -name com.cubrid.cubridmanager.app.produ
 for PRODUCT_FILE in ${PRODUCT_FILE_LIST}
 do
   echo "PRODUCT_FILE=" $PRODUCT_FILE
+  sed -i "/<product/,/>/s/version=\".*\"/version=\"${VERSION}.qualifier\"/" ${PRODUCT_FILE}
   sed -i "/<feature/,/>/s/version=\".*\"/version=\"${VERSION}.qualifier\"/" ${PRODUCT_FILE}
 done
 
