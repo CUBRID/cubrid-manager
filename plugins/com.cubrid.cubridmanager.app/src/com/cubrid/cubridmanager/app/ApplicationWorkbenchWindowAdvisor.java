@@ -53,7 +53,6 @@ import com.cubrid.cubridmanager.ui.spi.contribution.CubridTitleLineContrItem;
 import com.cubrid.cubridmanager.ui.spi.contribution.CubridWorkbenchContrItem;
 import com.cubrid.cubridmanager.ui.spi.persist.CMDBNodePersistManager;
 import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
-import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -456,8 +455,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
         /*Load JDBC driver for CMT*/
         CubridJdbcManager.getInstance();
-        /*Init CQBDBNodePersistManager*/
-        CQBDBNodePersistManager.getInstance();
         /*Init CMDBNodePersistManager*/
         CMDBNodePersistManager.getInstance();
 

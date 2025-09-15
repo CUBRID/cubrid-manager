@@ -34,8 +34,6 @@ import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.persist.QueryOptions;
 import com.cubrid.common.ui.spi.progress.JobFamily;
 import com.cubrid.common.ui.spi.util.CommonUITool;
-import com.cubrid.common.ui.spi.util.LayoutUtil;
-import com.cubrid.cubridmanager.ui.spi.persist.CQBDBNodePersistManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
@@ -118,7 +116,6 @@ public final class CQBConnectionUtils {
 
         database.setLogined(false);
         database.removeAllChild();
-        CQBDBNodePersistManager.getInstance().removeDatabase(database);
         QueryOptions.removePref(database.getDatabaseInfo().getServerInfo());
 
         return true;

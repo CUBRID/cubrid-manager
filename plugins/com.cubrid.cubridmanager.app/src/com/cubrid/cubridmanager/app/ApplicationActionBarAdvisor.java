@@ -206,16 +206,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         coolBarManager.add(new ToolBarContributionItem(
                 toolbarManager, IActionConstants.TOOLBAR_4));
 
-        Bundle cqbBundle = Platform.getBundle(ApplicationUtil.CQB_PLUGIN_ID);
-        /* Active the CQB plugin */
-        if (cqbBundle != null) {
-            try {
-                cqbBundle.start();
-            } catch (Exception e) {
-                LOGGER.error(e.getMessage());
-            }
-        }
-
         Bundle cmBundle = Platform.getBundle(ApplicationUtil.CM_PLUGIN_ID);
         /* Active the CM plugin */
         if (cmBundle != null) {
