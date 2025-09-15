@@ -10,7 +10,6 @@
         <relativePath>../</relativePath>
     </parent>
     <artifactId>com.cubrid.cubridmanager.app.feature</artifactId>
-    <version>9.3.1-SNAPSHOT</version>
     <packaging>eclipse-feature</packaging>
 
 </project>
