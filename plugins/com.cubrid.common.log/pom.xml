@@ -12,7 +12,6 @@
 	</parent>
 
 	<artifactId>com.cubrid.common.log</artifactId>
-	<version>9.3.1-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 
 </project>

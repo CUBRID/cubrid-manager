@@ -43,11 +43,6 @@ public class Messages extends NLS {
     public static String insertCommit;
     public static String insertRollback;
     public static String saveAs;
-    public static String commit;
-    public static String rollback;
-    public static String autoCommit;
-    public static String autoCommitLabelOn;
-    public static String autoCommitLabelOff;
     public static String title;
     public static String clear;
     public static String msgClear;
@@ -74,9 +69,6 @@ public class Messages extends NLS {
     public static String queryOk;
     public static String queryFail;
     public static String errWhere;
-    public static String queryPlanTip;
-    public static String lblPlanQuery;
-    public static String proRunQuery;
     public static String undoTip;
     public static String redoTip;
     public static String stopBtn;
@@ -88,10 +80,8 @@ public class Messages extends NLS {
     public static String errCreatedSqlNotSelected;
     // editor and/or query explain
 
-    public static String unCommentTip;
     public static String unIndentTip;
     public static String indentTip;
-    public static String commentTip;
     public static String info;
     public static String transActive;
     public static String cantChangeStatus;

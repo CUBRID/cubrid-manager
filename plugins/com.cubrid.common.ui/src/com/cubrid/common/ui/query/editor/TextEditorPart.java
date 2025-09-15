@@ -477,35 +477,6 @@ public class TextEditorPart extends CubridEditorPart
 
         new ToolItem(toolBar, SWT.SEPARATOR);
 
-        ToolItem itemComment = new ToolItem(toolBar, SWT.PUSH);
-        itemComment.setImage(CommonUIPlugin.getImage("icons/queryeditor/query_comment_add.png"));
-        itemComment.setToolTipText(Messages.commentTip + "(Ctrl+/)");
-        itemComment.addSelectionListener(
-                new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {
-                        hideToolTip();
-                        if (combinedQueryComposite.getSqlEditorComp().isDisposed()) {
-                            return;
-                        }
-                    }
-                });
-
-        ToolItem itemUncomment = new ToolItem(toolBar, SWT.PUSH);
-        itemUncomment.setImage(
-                CommonUIPlugin.getImage("icons/queryeditor/query_comment_delete.png"));
-        itemUncomment.setToolTipText(Messages.unCommentTip + "(Ctrl+/)");
-        itemUncomment.addSelectionListener(
-                new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {
-                        hideToolTip();
-                        if (combinedQueryComposite.getSqlEditorComp().isDisposed()) {
-                            return;
-                        }
-                    }
-                });
-
-        new ToolItem(toolBar, SWT.SEPARATOR);
-
         ToolItem openItem = new ToolItem(toolBar, SWT.PUSH);
         openItem.setImage(CommonUIPlugin.getImage("/icons/queryeditor/file_open.png"));
         openItem.setToolTipText(Messages.open);

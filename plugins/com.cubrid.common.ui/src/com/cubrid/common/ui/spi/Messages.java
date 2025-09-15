@@ -97,10 +97,6 @@ public class Messages extends NLS {
 
     // table and view
     public static String tableNewActionName;
-    public static String selectByOnePstmtDataActionName;
-    public static String selectByMultiPstmtDataActionName;
-    public static String insertOneByPstmtActionName;
-    public static String insertMultiByPstmtActionName;
     public static String tableDeleteAllActionName;
     public static String truncateTableActionName;
     public static String deleteAllRecordsActionName;
@@ -126,7 +122,6 @@ public class Messages extends NLS {
     public static String copySelectStmtToClipboardActionName;
     public static String copyDDLToClipboardMenuName;
     public static String viewDataMenuName;
-    public static String copySQLMenuName;
     public static String copyGrantToClipboardActionName;
     public static String copyDeleteStmtToClipboardAction;
     public static String copyUpdateStmtToClipboardAction;

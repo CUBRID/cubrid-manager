@@ -30,17 +30,13 @@ package com.cubrid.common.ui.query.control;
 import com.cubrid.common.ui.query.editor.TextEditorPart;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
-import com.cubrid.common.ui.spi.util.CommonUITool;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 
 /**
  * A Toolbar Control to show the query editor toolItem and database selection menu
@@ -51,7 +47,6 @@ public final class EditorToolBar extends ToolBar {
 
     private CLabel selectDbLabel;
     private final DatabaseNavigatorMenu dbMenu;
-    private int SELECTDBLABEL_LENTH = 180;
 
     /**
      * Create the composite
@@ -61,18 +56,9 @@ public final class EditorToolBar extends ToolBar {
      */
     public EditorToolBar(Composite parent, TextEditorPart editor) {
         super(parent, SWT.WRAP | SWT.FLAT);
-        CreateSelectItem(parent);
         dbMenu = loadDbNavigatorMenu();
         dbMenu.setEditor(editor);
         init(parent);
-    }
-
-    private void CreateSelectItem(Composite parent) {
-        ToolItem selectDbItem = new ToolItem(this, SWT.SEPARATOR);
-        Composite comp = createDropDownComp();
-        selectDbItem.setControl(comp);
-        selectDbItem.setWidth(SELECTDBLABEL_LENTH);
-        new ToolItem(this, SWT.SEPARATOR | SWT.VERTICAL);
     }
 
     private void init(Composite parent) {
@@ -84,26 +70,6 @@ public final class EditorToolBar extends ToolBar {
     /** Load the database selection pop-up menu from extension points */
     public static DatabaseNavigatorMenu loadDbNavigatorMenu() {
         return ActionManager.getInstance().getMenuProvider().getDatabaseNavigatorMenu();
-    }
-
-    /**
-     * create drop down composite
-     *
-     * @return comp composite
-     */
-    private Composite createDropDownComp() {
-        Composite comp = new Composite(this, SWT.NONE);
-        final GridLayout gdLayout = new GridLayout(2, false);
-        gdLayout.marginHeight = 0;
-        gdLayout.marginWidth = 0;
-        gdLayout.horizontalSpacing = -1;
-        gdLayout.verticalSpacing = 0;
-        comp.setLayout(gdLayout);
-        comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        selectDbLabel = new CLabel(comp, SWT.CENTER | SWT.SHADOW_OUT);
-        selectDbLabel.setLayoutData(CommonUITool.createGridData(1, 1, SELECTDBLABEL_LENTH, -1));
-        selectDbLabel.setText(DatabaseNavigatorMenu.NO_DATABASE_SELECTED_LABEL);
-        return comp;
     }
 
     /** when tree node in navigation view change, refresh the database list */

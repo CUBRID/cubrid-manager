@@ -67,40 +67,6 @@ public final class TableUtil {
     private TableUtil() {}
 
     /**
-     * Insert Record
-     *
-     * @param database CubridDatabase
-     * @param sqlList List<String>
-     * @return int
-     * @throws SQLException The SQLException
-     */
-    public static int insertRecord(CubridDatabase database, List<String> sqlList)
-            throws SQLException {
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            conn = JDBCConnectionManager.getConnection(database.getDatabaseInfo(), false);
-            stmt = conn.createStatement();
-            for (String sql : sqlList) {
-                stmt.addBatch(sql);
-            }
-            int[] countArr = stmt.executeBatch();
-            conn.commit();
-            int count = 0;
-            for (int i = 0; countArr != null && i < countArr.length; i++) {
-                count += countArr[i];
-            }
-            return count;
-        } catch (SQLException e) {
-            QueryUtil.rollback(conn);
-            LOGGER.error(e.getMessage(), e);
-            throw e;
-        } finally {
-            QueryUtil.freeQuery(conn, stmt);
-        }
-    }
-
-    /**
      * get Auto Increment
      *
      * @param database CubridDatabase

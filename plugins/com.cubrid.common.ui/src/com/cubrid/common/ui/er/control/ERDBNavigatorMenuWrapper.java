@@ -484,19 +484,6 @@ public class ERDBNavigatorMenuWrapper extends DatabaseNavigatorMenu {
         }
     }
 
-    /** When tree node in navigation view change, refresh the database list */
-    public void refresh() {
-        Display.getDefault()
-                .asyncExec(
-                        new Runnable() {
-                            /** @see org.eclipse.jface.action.Action#run() */
-                            public void run() {
-                                loadDatabaseMenu();
-                                // add for extend function
-                            }
-                        });
-    }
-
     /**
      * Set the database
      *
@@ -507,43 +494,6 @@ public class ERDBNavigatorMenuWrapper extends DatabaseNavigatorMenu {
         if ((database.isLogined() && database.getRunningType() == DbRunningType.CS)) {
             DatabaseMenuItem item = findById(database.getId());
             selectMenuItem(item);
-        }
-    }
-
-    /**
-     * target a database selection change
-     *
-     * @param item DatabaseMenuItem
-     */
-    public void selectMenuItem(DatabaseMenuItem item) {
-        DatabaseMenuItem tmpItem = item;
-        if (tmpItem != null) {
-            if (selectedMenuItem != null && !selectedMenuItem.isDisposed()) {
-                selectedMenuItem.setSelection(false);
-            }
-
-            if (listener != null) {
-                Event e = new Event();
-                e.data = tmpItem.getDatabase();
-                listener.handleEvent(e);
-            }
-
-            tmpItem.setSelection(true);
-            selectedMenuItem = tmpItem;
-            setText(tmpItem);
-            selectdDb = tmpItem.getDatabase();
-
-            /* Save current selectDB */
-            lastSelectdDb = selectdDb;
-            lastUser = (selectdDb == null ? null : selectdDb.getUserName());
-
-            LayoutManager.getInstance()
-                    .getTitleLineContrItem()
-                    .changeTitleForQueryEditor(selectdDb);
-            LayoutManager.getInstance()
-                    .getStatusLineContrItem()
-                    .changeStuatusLineForViewOrEditPart(selectdDb, erSchemaEditor);
-            erSchemaEditor.changeDataBase(lastSelectdDb);
         }
     }
 

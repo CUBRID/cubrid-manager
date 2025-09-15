@@ -49,16 +49,13 @@ public final class CompatibleUtil {
     private static final String VER_8_4_1 = "8.4.1";
     private static final String VER_8_4_3 = "8.4.3";
     private static final String VER_8_4_4 = "8.4.4";
-    private static final String VER_8_4_9 = "8.4.9";
     private static final String VER_9_0_0 = "9.0.0";
     private static final String VER_9_1_0 = "9.1.0";
     private static final String VER_9_2_0 = "9.2.0";
     private static final String VER_9_3_0 = "9.3.0";
     private static final String VER_10_0_0 = "10.0.0";
-    private static final String VER_10_1_0 = "10.1.0";
     private static final String VER_10_2_0 = "10.2.0";
     private static final String VER_10_2_1 = "10.2.1";
-    private static final String VER_11_0_0 = "11.0.0";
     private static final String VER_11_0_1 = "11.0.1";
     private static final String VER_11_2_0 =
             "11.2.0"; // From 11.2 version, the engine and jdbc versioning  are different.
