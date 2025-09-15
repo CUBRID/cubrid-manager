@@ -47,9 +47,7 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="com.cubrid.cubridmanager.ui"/>
       <import plugin="org.cubrid.cubridmanager.plugin.manager" version="9.3.1" match="greaterOrEqual"/>
-      <import plugin="org.cubrid.cubridquery.plugin.querybrowser" version="9.3.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.cubrid.cubridquery.ui" version="9.3.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.6.0" match="greaterOrEqual"/>
    </requires>
 
@@ -97,20 +95,6 @@
 
    <plugin
          id="com.cubrid.common.configuration"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.cubrid.cubridquery.plugin.querybrowser"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.cubrid.cubridquery.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

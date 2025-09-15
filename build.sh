@@ -4,7 +4,6 @@ SHELL_DIR="$( cd "$( dirname "$0" )" && pwd -P )"
 
 VERSION_FILE_PATH=${SHELL_DIR}/VERSION
 RELEASE_VERSION_FILE_PATH=${SHELL_DIR}/plugins/com.cubrid.cubridmanager.ui/version.properties
-RELEASE_QUERY_VERSION_FILE_PATH=${SHELL_DIR}/plugins/com.cubrid.cubridquery.ui/version.properties
 
 function update_build_version ()
 {
@@ -13,9 +12,7 @@ function update_build_version ()
   RELEASE_YEAR=$(date "+%Y")
   echo "RELEASE_YEAR=" $RELEASE_YEAR
   sed -i "/releaseStr/d" $RELEASE_VERSION_FILE_PATH
-  sed -i "/releaseStr/d" $RELEASE_QUERY_VERSION_FILE_PATH
   echo "releaseStr="$RELEASE_YEAR >> $RELEASE_VERSION_FILE_PATH
-  echo "releaseStr="$RELEASE_YEAR >> $RELEASE_QUERY_VERSION_FILE_PATH
 
   if [ -d ${SHELL_DIR}/.git ]; then
     COMMIT_NUMBER=$(git rev-list --count HEAD | awk '{ printf "%04d", $1 }')
@@ -25,15 +22,11 @@ function update_build_version ()
 
   VERSION=$(cat ${VERSION_FILE_PATH} | grep version | cut -d '=' -f2)
   sed -i "/releaseVersion/d" $RELEASE_VERSION_FILE_PATH
-  sed -i "/releaseVersion/d" $RELEASE_QUERY_VERSION_FILE_PATH
   echo "releaseVersion="$VERSION >> $RELEASE_VERSION_FILE_PATH
-  echo "releaseVersion="$VERSION >> $RELEASE_QUERY_VERSION_FILE_PATH
 
   RELEASE_VERSION=$VERSION.$COMMIT_NUMBER
   sed -i "/buildVersionId/d" $RELEASE_VERSION_FILE_PATH
-  sed -i "/buildVersionId/d" $RELEASE_QUERY_VERSION_FILE_PATH
   echo "buildVersionId="$RELEASE_VERSION >> $RELEASE_VERSION_FILE_PATH
-  echo "buildVersionId="$RELEASE_VERSION >> $RELEASE_QUERY_VERSION_FILE_PATH
 
   echo "VERSION=" $VERSION
   echo "COMMIT_NUMBER=" $COMMIT_NUMBER
