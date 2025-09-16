@@ -77,7 +77,6 @@ import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.GetAddVolumeStatusInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
-import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew.FileSpaceDescription;
 import com.cubrid.cubridmanager.core.logs.model.BrokerLogInfos;
 import com.cubrid.cubridmanager.core.logs.model.LogContentInfo;
 import com.cubrid.cubridmanager.core.logs.model.LogInfo;
@@ -321,8 +320,6 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                 .open();
                     }
                 });
-
-        new ToolItem(toolbar, SWT.SEPARATOR | SWT.VERTICAL);
 
         autoRefreshItem = new ToolItem(toolbar, SWT.PUSH);
         autoRefreshItem.setImage(

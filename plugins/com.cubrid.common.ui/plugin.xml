@@ -179,20 +179,6 @@
              name="%preferenceName">
        </page>
        <page
-             class="com.cubrid.common.ui.query.preference.QueryOptionPreferencePage"
-             id="com.cubrid.common.ui.preference.queryoption"
-             category="com.cubrid.common.ui.preference.category"
-             name="%queryOptionPageName">
-			<keywordReference id="Query.commit"/>
-			<keywordReference id="Query.result"/>
-			<keywordReference id="Query.CLOB"/>
-			<keywordReference id="Query.BLOB"/>
-			<keywordReference id="Query.prompt"/>
-			<keywordReference id="Query.keyword"/>
-			<keywordReference id="Query.scientific"/>
-			<keywordReference id="Query.font"/>
-       </page>
-       <page
              class="com.cubrid.common.ui.common.preference.JdbcManagePreferencePage"
              id="com.cubrid.common.ui.preference.jdbcmanage"
              category="com.cubrid.common.ui.preference.category"
