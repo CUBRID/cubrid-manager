@@ -41,4 +41,6 @@ public class Messages extends NLS {
     }
 
     public static String menu_update;
+    public static String title_no_update;
+    public static String msg_no_update;
 }
