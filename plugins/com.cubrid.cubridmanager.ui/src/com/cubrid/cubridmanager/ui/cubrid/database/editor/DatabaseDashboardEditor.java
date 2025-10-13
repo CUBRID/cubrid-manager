@@ -238,7 +238,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
         createBrokerComposite(bar, index++);
         createLockAndTransactionComposite(bar, index++);
 
-        loadData(true);
+        loadData();
     }
 
     /**
@@ -951,26 +951,13 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
      *
      * @return <code>true</code> whether it is successful;<code>false</code> otherwise
      */
-    public boolean loadData(boolean isInit) {
+    public boolean loadData() {
         loadVolumnsInfo();
         loadBrokerInfo();
         loadDatabaseInfo();
         loadTransactionInfo();
 
-        if (isInit) {
-            packTableAll();
-        }
-
         return true;
-    }
-
-    private void packTableAll() {
-        CommonUITool.packTableOnly(dbInfoTableViewer);
-        CommonUITool.packTableOnly(volumnInfoTableViewer);
-        CommonUITool.packTableOnly(brokerInfoTableViewer);
-        CommonUITool.packTableOnly(lockAndTransactionTableViewer);
-        CommonUITool.packTableOnly(lockAndTransactionTable);
-        CommonUITool.packTableOnly(brokerInfoTable);
     }
 
     private void setDataBaseInfoData() {
@@ -982,6 +969,9 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                     return;
                                 }
                                 dbInfoTableViewer.refresh();
+                                if (!autoRefreshData) {
+                                    CommonUITool.packTable(dbInfoTableViewer);
+                                }
 
                                 int height =
                                         dbInfoTableViewer
@@ -1009,6 +999,9 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                     return;
                                 }
                                 volumnInfoTableViewer.refresh();
+                                if (!autoRefreshData) {
+                                    CommonUITool.packTable(volumnInfoTableViewer);
+                                }
 
                                 int height =
                                         volumnInfoTableViewer
@@ -1036,6 +1029,9 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                     return;
                                 }
                                 volumnPurposeInfoTableViewer.refresh();
+                                if (!autoRefreshData) {
+                                    CommonUITool.packTableOnly(volumnPurposeInfoTableViewer);
+                                }
 
                                 int height =
                                         volumnPurposeInfoTableViewer
@@ -1063,7 +1059,9 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                     return;
                                 }
                                 brokerInfoTableViewer.refresh();
-
+                                if (!autoRefreshData) {
+                                    CommonUITool.packTable(brokerInfoTableViewer);
+                                }
                                 int height =
                                         brokerInfoTableViewer
                                                 .getTable()
@@ -1089,6 +1087,9 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                                     return;
                                 }
                                 lockAndTransactionTableViewer.refresh();
+                                if (!autoRefreshData) {
+                                    CommonUITool.packTableOnly(lockAndTransactionTableViewer);
+                                }
 
                                 int height =
                                         lockAndTransactionTableViewer
@@ -1233,7 +1234,7 @@ public class DatabaseDashboardEditor extends CubridEditorPart {
                     return;
                 }
                 // load volumn info
-                //				loadVolumnsInfo();
+                loadVolumnsInfo();
                 // load broker info
                 loadBrokerInfo();
                 // load transaction info

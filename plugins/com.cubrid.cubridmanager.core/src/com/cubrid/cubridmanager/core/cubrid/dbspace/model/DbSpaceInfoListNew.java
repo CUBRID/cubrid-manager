@@ -249,6 +249,7 @@ public class DbSpaceInfoListNew extends DbSpaceInfoList {
 
     public void createFileSpaceDescriptionData(List<Map<String, String>> fileSpaceDescriptionData) {
         int totalCount = 0, totalUsed = 0, totalFileTable = 0, totalReserved = 0, TotalSize = 0;
+        fileSpaceDescriptionData.clear();
         for (FileSpaceDescription d : fileinfo) {
             Map<String, String> line = new HashMap<String, String>();
             totalCount += d.getFile_count();
