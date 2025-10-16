@@ -161,7 +161,7 @@ public class EditUserDialog extends CMTrayDialog {
         parentComp = (Composite) super.createDialogArea(parent);
 
         tabFolder = new CTabFolder(parentComp, SWT.NONE);
-        tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+        tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         GridLayout layout = new GridLayout();
         tabFolder.setLayout(layout);
 

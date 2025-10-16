@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -327,6 +329,7 @@ public class XlsxWriterHelper { // FIXME move this logic to core module
             }
         } finally {
             FileUtil.close(zos);
+            zip.close();
         }
     }
 
@@ -360,38 +363,38 @@ public class XlsxWriterHelper { // FIXME move this logic to core module
             Map<String, File> fileMap,
             File outFile)
             throws IOException {
-        String templateFileName = System.nanoTime() + "template.xlsx";
+        Path templatePath = Files.createTempFile("template", ".xlsx");
+        File tempFile = templatePath.toFile();
+        tempFile.deleteOnExit();
         FileOutputStream os = null;
         try {
-            os = new FileOutputStream(templateFileName);
+            os = new FileOutputStream(tempFile);
             workbook.write(os);
         } finally {
             FileUtil.close(os);
-
             FileOutputStream out = null;
             try {
                 out = new FileOutputStream(outFile);
                 if (xlsxWriterhelper != null) {
-                    xlsxWriterhelper.substitute(new File(templateFileName), fileMap, out);
+                    xlsxWriterhelper.substitute(tempFile, fileMap, out);
                 }
             } finally {
                 FileUtil.close(out);
-                deleteTempFiles(fileMap, templateFileName);
+                deleteTempFiles(fileMap, templatePath);
             }
         }
     }
 
-    private static void deleteTempFiles(Map<String, File> fileMap, String templateFileName) {
+    private static void deleteTempFiles(Map<String, File> fileMap, Path templatePath) {
         boolean isSuccess = true;
         Iterator<File> fileIt = fileMap.values().iterator();
         while (fileIt.hasNext()) {
             File file = fileIt.next();
             isSuccess = file.delete();
         }
-        File file = new File(templateFileName);
         try {
-            if (file.exists() && isSuccess) {
-                isSuccess = file.delete();
+            if (templatePath.toFile().exists() && isSuccess) {
+                Files.delete(templatePath);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
