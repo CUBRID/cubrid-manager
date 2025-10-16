@@ -127,11 +127,20 @@ public class DatabaseMonitorPartHelper implements DataUpdateListener {
                         hostCpuTotal == null ? "0" : hostCpuTotal,
                         hostMemTotal == null ? "0" : hostMemTotal);
 
-        HADatabaseStatusInfo haDbStatusInfo =
-                HAUtil.getDatabaseStatusInfo(
-                        dataChangedEvent.getHaHostStatusInfoList(),
-                        dbNode.getParent().getIp(),
-                        dbNode.getDbName());
+        HADatabaseStatusInfo haDbStatusInfo = null;
+        if (dbNode.getParent().getHostStatusInfo().getHostName() != null) {
+            haDbStatusInfo =
+                    HAUtil.getDatabaseStatusInfoFromHostName(
+                            dataChangedEvent.getHaHostStatusInfoList(),
+                            dbNode.getParent().getHostStatusInfo().getHostName(),
+                            dbNode.getDbName());
+        } else {
+            haDbStatusInfo =
+                    HAUtil.getDatabaseStatusInfo(
+                            dataChangedEvent.getHaHostStatusInfoList(),
+                            dbNode.getParent().getIp(),
+                            dbNode.getDbName());
+        }
         if (haDbStatusInfo == null) {
             haDbStatusInfo =
                     HAUtil.getDatabaseStatusInfo(

@@ -41,6 +41,7 @@ import com.cubrid.cubridmanager.core.mondashboard.model.ProcessStatusType;
 import com.cubrid.cubridmanager.core.mondashboard.model.SyncModeType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Get heartbeat node information
@@ -96,6 +97,9 @@ public class GetHeartbeatNodeInfoTask extends SocketTask {
     public void execute() {
         if (CompatibleUtil.isSupportHA(serverInfo)) {
             super.execute();
+            if (super.isSuccess()) {
+                serverInfo.setHaHostName(getCurrentHostName());
+            }
         }
     }
 
@@ -114,7 +118,8 @@ public class GetHeartbeatNodeInfoTask extends SocketTask {
         }
         for (int i = 0; i < hostStatusList.size(); i++) {
             HAHostStatusInfo hostStatusInfo = hostStatusList.get(i);
-            if (StringUtil.isIpEqual(serverInfo.getHostAddress(), hostStatusInfo.getIp())) {
+            if (Objects.equals(serverInfo.getHaHostName(), hostStatusInfo.getHostName())
+                    || StringUtil.isIpEqual(serverInfo.getHostAddress(), hostStatusInfo.getIp())) {
                 List<HADatabaseStatusInfo> dbStatusInfoList = hostStatusInfo.getDbStatusList();
                 for (int j = 0; j < dbStatusInfoList.size(); j++) {
                     HADatabaseStatusInfo dbStatusInfo = dbStatusInfoList.get(j);
@@ -133,7 +138,7 @@ public class GetHeartbeatNodeInfoTask extends SocketTask {
      * @param ip The String
      * @return HAHostStatusInfo
      */
-    public HAHostStatusInfo getHostStatusInfo(String ip) {
+    public HAHostStatusInfo getHostStatusInfo(String hostName, String ip) {
         if (hostStatusList == null) {
             getHAHostStatusList();
         }
@@ -142,11 +147,16 @@ public class GetHeartbeatNodeInfoTask extends SocketTask {
         }
         for (int i = 0; i < hostStatusList.size(); i++) {
             HAHostStatusInfo hostStatusInfo = hostStatusList.get(i);
-            if (StringUtil.isIpEqual(ip, hostStatusInfo.getIp())) {
+            if (Objects.equals(hostName, hostStatusInfo.getHostName())
+                    || StringUtil.isIpEqual(ip, hostStatusInfo.getIp())) {
                 return hostStatusInfo;
             }
         }
         return null;
+    }
+
+    public HAHostStatusInfo getHostStatusInfo(ServerInfo info) {
+        return getHostStatusInfo(info.getHaHostName(), info.getHostAddress());
     }
 
     /**

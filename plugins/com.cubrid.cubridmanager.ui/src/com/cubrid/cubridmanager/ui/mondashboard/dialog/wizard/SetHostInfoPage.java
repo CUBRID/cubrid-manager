@@ -362,7 +362,7 @@ public class SetHostInfoPage extends WizardPage implements ModifyListener {
         hostNode.setConnected(true);
         HAHostStatusInfo hostStatusInfo = null;
         if (heartbeatNodeInfoTask != null) {
-            hostStatusInfo = heartbeatNodeInfoTask.getHostStatusInfo(ipText.getText());
+            hostStatusInfo = heartbeatNodeInfoTask.getHostStatusInfo(heartbeatNodeInfoTask.getCurrentHostName(), ipText.getText());
         }
         if (hostStatusInfo == null) {
             hostStatusInfo = getHostStatusInfo(ipText.getText(), portText.getText());

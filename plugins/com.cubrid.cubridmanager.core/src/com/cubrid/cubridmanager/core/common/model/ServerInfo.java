@@ -109,6 +109,7 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
     // version changed in ServerInfo.
     private static final ConcurrentHashMap<ServerInfo, List<SocketTask>> observer =
             new ConcurrentHashMap<ServerInfo, List<SocketTask>>();
+    private String haHostName = null;
 
     /**
      * Add a observer.
@@ -1169,5 +1170,13 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
         return serverInfo.getHostAddress().compareTo(getHostAddress()) == 0
                 && serverInfo.getHostMonPort() == getHostMonPort()
                 && serverInfo.getUserName().compareTo(getUserName()) == 0;
+    }
+
+    public String getHaHostName() {
+        return haHostName;
+    }
+
+    public void setHaHostName(String currentHostName) {
+        haHostName = currentHostName;
     }
 }

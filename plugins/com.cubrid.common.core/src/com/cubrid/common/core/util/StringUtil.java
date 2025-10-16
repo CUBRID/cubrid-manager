@@ -1464,4 +1464,12 @@ public final class StringUtil {
 
         return data;
     }
+
+    public static String deleteAfterDot(String input) {
+        int idx = input.indexOf('.');
+        if (idx != -1) {
+            return input.substring(0, idx);
+        }
+        return input;
+    }
 }

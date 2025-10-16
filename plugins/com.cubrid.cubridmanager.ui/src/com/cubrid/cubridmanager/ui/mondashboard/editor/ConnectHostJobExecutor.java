@@ -441,7 +441,7 @@ public class ConnectHostJobExecutor extends TaskJobExecutor {
             } else if (task instanceof GetHeartbeatNodeInfoTask) {
                 GetHeartbeatNodeInfoTask getHeartbeatNodeInfoTask = (GetHeartbeatNodeInfoTask) task;
                 haHostStatusInfo =
-                        getHeartbeatNodeInfoTask.getHostStatusInfo(serverInfo.getHostAddress());
+                        getHeartbeatNodeInfoTask.getHostStatusInfo(serverInfo);
             }
             if (monitor.isCanceled() || !isContinue) {
                 disConnect();

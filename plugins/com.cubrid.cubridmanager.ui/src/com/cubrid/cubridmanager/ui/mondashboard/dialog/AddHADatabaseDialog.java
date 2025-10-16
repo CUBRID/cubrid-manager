@@ -41,6 +41,7 @@ import com.cubrid.cubridmanager.core.mondashboard.model.HADatabaseStatusInfo;
 import com.cubrid.cubridmanager.core.mondashboard.model.HAHostStatusInfo;
 import com.cubrid.cubridmanager.core.mondashboard.model.HostStatusType;
 import com.cubrid.cubridmanager.core.mondashboard.task.GetDbModeTask;
+import com.cubrid.cubridmanager.core.mondashboard.task.GetHeartbeatNodeInfoTask;
 import com.cubrid.cubridmanager.core.mondashboard.task.VerifyDbUserPasswordTask;
 import com.cubrid.cubridmanager.ui.host.dialog.ConnectHostExecutor;
 import com.cubrid.cubridmanager.ui.mondashboard.Messages;
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -287,6 +289,11 @@ public class AddHADatabaseDialog extends CMTitleAreaDialog implements ModifyList
                         getDbModeTask.setDbList(dbList);
                         executor.addTask(getDbModeTask);
 
+                        GetHeartbeatNodeInfoTask getHbNodeInfoTask = new GetHeartbeatNodeInfoTask(serverInfo);
+                        getHbNodeInfoTask.setAllDb(false);
+                        getHbNodeInfoTask.setDbList(dbList);
+                        executor.addTask(getHbNodeInfoTask);
+
                         new ExecTaskWithProgress(executor).exec(true, true);
                         if (!executor.isSuccess()) {
                             if (verifyDbUserPasswordTask != null
@@ -302,7 +309,7 @@ public class AddHADatabaseDialog extends CMTitleAreaDialog implements ModifyList
                                 && getDbModeTask.getDbModes().size() > 0) {
                             List<HADatabaseStatusInfo> dbModeList = getDbModeTask.getDbModes();
                             haDbStatusInfo = dbModeList.get(0);
-                            haHostStatusInfo = getHAHostStatusInfo(serverInfo.getHostAddress());
+                            haHostStatusInfo = getHAHostStatusInfo(serverInfo);
                             if (haHostStatusInfo != null) {
                                 haDbStatusInfo.setHaHostStatusInfo(haHostStatusInfo);
                                 haHostStatusInfo.addHADatabaseStatus(haDbStatusInfo);
@@ -492,10 +499,11 @@ public class AddHADatabaseDialog extends CMTitleAreaDialog implements ModifyList
      * @param ip The String
      * @return HAHostStatusInfo
      */
-    private HAHostStatusInfo getHAHostStatusInfo(String ip) {
+    private HAHostStatusInfo getHAHostStatusInfo(ServerInfo info) {
         for (int i = 0; haHostStatusInfoList != null && i < haHostStatusInfoList.size(); i++) {
             HAHostStatusInfo haHostStatusInfo = haHostStatusInfoList.get(i);
-            if (com.cubrid.common.core.util.StringUtil.isIpEqual(ip, haHostStatusInfo.getIp())) {
+            if (Objects.equals(info.getHaHostName(), haHostStatusInfo.getHostName())
+                    || com.cubrid.common.core.util.StringUtil.isIpEqual(info.getHostAddress(), haHostStatusInfo.getIp())) {
                 return haHostStatusInfo;
             }
         }

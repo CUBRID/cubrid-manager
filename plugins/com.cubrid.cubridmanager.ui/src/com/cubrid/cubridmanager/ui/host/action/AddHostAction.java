@@ -247,7 +247,7 @@ public class AddHostAction extends SelectionAction {
         if (getHeartbeatNodeInfoTask.isSuccess()) {
             HAHostStatusInfo haHostStatusInfo =
                     getHeartbeatNodeInfoTask.getHostStatusInfo(
-                            server.getServerInfo().getHostAddress());
+                            server.getServerInfo());
             if (haHostStatusInfo != null) {
                 server.getServerInfo().setHaHostStatusInfo(haHostStatusInfo);
             }
