@@ -404,7 +404,7 @@ public final class HAUtil {
 
         for (int i = 0; i < haHostStatusInfoList.size(); i++) {
             HAHostStatusInfo hostStatusInfo = haHostStatusInfoList.get(i);
-            if (Objects.equals(hostName, hostStatusInfo.getHostName())) {
+            if (StringUtil.equalsIgnoreCaseAndNotNull(hostName, hostStatusInfo.getHostName())) {
                 List<HADatabaseStatusInfo> dbStatusInfoList = hostStatusInfo.getDbStatusList();
                 for (int j = 0; j < dbStatusInfoList.size(); j++) {
                     HADatabaseStatusInfo dbStatusInfo = dbStatusInfoList.get(j);

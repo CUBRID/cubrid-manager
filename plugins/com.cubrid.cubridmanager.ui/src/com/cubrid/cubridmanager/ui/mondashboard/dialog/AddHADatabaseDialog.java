@@ -27,6 +27,7 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.dialog;
 
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.spi.dialog.CMTitleAreaDialog;
 import com.cubrid.common.ui.spi.progress.CommonTaskExec;
 import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
@@ -502,7 +503,7 @@ public class AddHADatabaseDialog extends CMTitleAreaDialog implements ModifyList
     private HAHostStatusInfo getHAHostStatusInfo(ServerInfo info) {
         for (int i = 0; haHostStatusInfoList != null && i < haHostStatusInfoList.size(); i++) {
             HAHostStatusInfo haHostStatusInfo = haHostStatusInfoList.get(i);
-            if (Objects.equals(info.getHaHostName(), haHostStatusInfo.getHostName())
+            if (StringUtil.equalsIgnoreCaseAndNotNull(info.getHaHostName(), haHostStatusInfo.getHostName())
                     || com.cubrid.common.core.util.StringUtil.isIpEqual(info.getHostAddress(), haHostStatusInfo.getIp())) {
                 return haHostStatusInfo;
             }

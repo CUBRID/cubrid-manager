@@ -27,6 +27,7 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.dialog.wizard;
 
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.spi.progress.CommonTaskExec;
 import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
 import com.cubrid.common.ui.spi.progress.TaskExecutor;
@@ -436,7 +437,8 @@ public class SelectDbPage extends WizardPage implements ModifyListener, IPageCha
             Map<String, Object> map = dbNodeList.get(i);
             HostNode hostNode1 = (HostNode) map.get("6");
             DatabaseNode dbNode1 = (DatabaseNode) map.get("7");
-            if ((Objects.equals(hostNode1.getHostStatusInfo().getHostName(), hostNode.getHostStatusInfo().getHostName())
+            if ((StringUtil.equalsIgnoreCaseAndNotNull(
+                    hostNode1.getHostStatusInfo().getHostName(), hostNode.getHostStatusInfo().getHostName())
                     || com.cubrid.common.core.util.StringUtil.isIpEqual(hostNode1.getIp(), hostNode.getIp()))
                     && hostNode.getPort().equals(hostNode1.getPort())
                     && hostNode.getUserName().equals(hostNode1.getUserName())

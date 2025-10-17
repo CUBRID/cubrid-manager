@@ -118,7 +118,7 @@ public class GetHeartbeatNodeInfoTask extends SocketTask {
         }
         for (int i = 0; i < hostStatusList.size(); i++) {
             HAHostStatusInfo hostStatusInfo = hostStatusList.get(i);
-            if (Objects.equals(serverInfo.getHaHostName(), hostStatusInfo.getHostName())
+            if (StringUtil.equalsIgnoreCaseAndNotNull(serverInfo.getHaHostName(), hostStatusInfo.getHostName())
                     || StringUtil.isIpEqual(serverInfo.getHostAddress(), hostStatusInfo.getIp())) {
                 List<HADatabaseStatusInfo> dbStatusInfoList = hostStatusInfo.getDbStatusList();
                 for (int j = 0; j < dbStatusInfoList.size(); j++) {
@@ -147,7 +147,7 @@ public class GetHeartbeatNodeInfoTask extends SocketTask {
         }
         for (int i = 0; i < hostStatusList.size(); i++) {
             HAHostStatusInfo hostStatusInfo = hostStatusList.get(i);
-            if (Objects.equals(hostName, hostStatusInfo.getHostName())
+            if (StringUtil.equalsIgnoreCaseAndNotNull(hostName, hostStatusInfo.getHostName())
                     || StringUtil.isIpEqual(ip, hostStatusInfo.getIp())) {
                 return hostStatusInfo;
             }
