@@ -30,6 +30,8 @@ package com.cubrid.cubridmanager.core.mondashboard.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cubrid.common.core.util.StringUtil;
+
 /**
  * The host status information in HA mode
  *
@@ -62,7 +64,7 @@ public class HAHostStatusInfo {
     }
 
     public void setHostName(String hostName) {
-        this.hostName = hostName;
+        this.hostName = StringUtil.deleteAfterDot(hostName);
     }
 
     public String getPriority() {

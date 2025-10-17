@@ -1464,4 +1464,19 @@ public final class StringUtil {
 
         return data;
     }
+
+    public static String deleteAfterDot(String input) {
+        int idx = input.indexOf('.');
+        if (idx != -1) {
+            return input.substring(0, idx);
+        }
+        return input;
+    }
+    
+    public static boolean equalsIgnoreCaseAndNotNull(String sourceA, String sourceB) {
+        if (sourceA == null && sourceB == null) {
+            return false;
+        }
+        return sourceA != null && sourceA.equalsIgnoreCase(sourceB);
+    }
 }

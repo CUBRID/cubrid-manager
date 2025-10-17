@@ -27,6 +27,7 @@
  */
 package com.cubrid.cubridmanager.ui.mondashboard.dialog.wizard;
 
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.spi.progress.CommonTaskExec;
 import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
 import com.cubrid.common.ui.spi.progress.TaskExecutor;
@@ -50,6 +51,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
@@ -216,7 +219,7 @@ public class SelectDbPage extends WizardPage implements ModifyListener, IPageCha
                                 getHeartbeatNodeInfoTask.getDatabaseStatusInfo(dbName);
                         HAHostStatusInfo haHostStatusInfo =
                                 getHeartbeatNodeInfoTask.getHostStatusInfo(
-                                        serverInfo.getHostAddress());
+                                        serverInfo);
 
                         // if this database is HA Mode,will get it's active database or standby
                         // database
@@ -434,8 +437,9 @@ public class SelectDbPage extends WizardPage implements ModifyListener, IPageCha
             Map<String, Object> map = dbNodeList.get(i);
             HostNode hostNode1 = (HostNode) map.get("6");
             DatabaseNode dbNode1 = (DatabaseNode) map.get("7");
-            if (com.cubrid.common.core.util.StringUtil.isIpEqual(
-                            hostNode1.getIp(), hostNode.getIp())
+            if ((StringUtil.equalsIgnoreCaseAndNotNull(
+                    hostNode1.getHostStatusInfo().getHostName(), hostNode.getHostStatusInfo().getHostName())
+                    || com.cubrid.common.core.util.StringUtil.isIpEqual(hostNode1.getIp(), hostNode.getIp()))
                     && hostNode.getPort().equals(hostNode1.getPort())
                     && hostNode.getUserName().equals(hostNode1.getUserName())
                     && dbNode.getDbName().equals(dbNode1.getDbName())) {
@@ -552,8 +556,11 @@ public class SelectDbPage extends WizardPage implements ModifyListener, IPageCha
                                     hostNode.getUserName());
             List<DatabaseInfo> dbInfoList = serverInfo.getLoginedUserInfo().getDatabaseInfoList();
             dbNameCombo.removeAll();
-            for (int i = 0; i < dbInfoList.size(); i++) {
-                dbNameCombo.add(dbInfoList.get(i).getDbName());
+
+            if (dbInfoList != null) {
+                for (int i = 0; i < dbInfoList.size(); i++) {
+                    dbNameCombo.add(dbInfoList.get(i).getDbName());
+                }
             }
             if (dbNameCombo.getItemCount() > 0) {
                 dbNameCombo.select(0);

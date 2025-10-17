@@ -239,9 +239,9 @@ public class CubridServerLoader extends CubridNodeLoader {
         getHeartbeatNodeInfoTask.execute();
 
         if (getHeartbeatNodeInfoTask.isSuccess()) {
+            server.getServerInfo().setHaHostName(getHeartbeatNodeInfoTask.getCurrentHostName());
             HAHostStatusInfo haHostStatusInfo =
-                    getHeartbeatNodeInfoTask.getHostStatusInfo(
-                            server.getServerInfo().getHostAddress());
+                    getHeartbeatNodeInfoTask.getHostStatusInfo(server.getServerInfo());
             if (haHostStatusInfo != null) {
                 server.getServerInfo().setHaHostStatusInfo(haHostStatusInfo);
             }
