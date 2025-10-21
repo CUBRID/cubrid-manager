@@ -23,6 +23,8 @@ Require-Bundle: org.eclipse.jface.text,
  com.cubrid.cubridmanager.jdbc.proxy,
  jakarta.xml.bind-api,
  org.glassfish.hk2.osgi-resource-locator,
+ com.sun.xml.bind.jaxb-core,
+ com.sun.xml.bind.jaxb-impl,
  slf4j.api
 Bundle-Localization: plugin
 Eclipse-LazyStart: true

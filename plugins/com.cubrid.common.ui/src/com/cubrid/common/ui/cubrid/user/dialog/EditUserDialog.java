@@ -184,6 +184,7 @@ public class EditUserDialog extends CMTrayDialog {
             authItem.dispose();
         }
 
+        tabFolder.setSelection(0);
         userNameText.setFocus();
         return parentComp;
     }
@@ -195,7 +196,7 @@ public class EditUserDialog extends CMTrayDialog {
      */
     private Composite createUserComposite() {
         final Composite composite = new Composite(tabFolder, SWT.NONE);
-        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         GridLayout layout = new GridLayout();
         composite.setLayout(layout);
 
@@ -420,9 +421,9 @@ public class EditUserDialog extends CMTrayDialog {
                         }
                         allUserTable.remove(idx);
                         setBtnEnableDisable();
-                        packTable(allUserTable);
-                        packTable(userGroupTable);
-                        packTable(memberTableViewer.getTable());
+                        userGroupTable.update();
+                        allUserTable.update();
+                        memberTableViewer.getTable().update();
                     }
                 });
 
@@ -470,12 +471,11 @@ public class EditUserDialog extends CMTrayDialog {
                             TableItem item = new TableItem(allUserTable, SWT.NONE);
                             item.setText(0, userGroupTable.getItem(i).getText(0));
                         }
-
                         userGroupTable.remove(idxs);
                         setBtnEnableDisable();
-                        packTable(allUserTable);
-                        packTable(userGroupTable);
-                        packTable(memberTableViewer.getTable());
+                        allUserTable.update();
+                        userGroupTable.update();
+                        memberTableViewer.getTable().update();
                     }
                 });
         new Label(cmpRightAreaGroup, SWT.NONE);

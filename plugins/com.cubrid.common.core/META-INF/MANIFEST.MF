@@ -10,6 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.ant,
  jakarta.xml.bind-api,
  org.glassfish.hk2.osgi-resource-locator,
+ com.sun.xml.bind.jaxb-core,
+ com.sun.xml.bind.jaxb-impl,
  ch.qos.logback.classic,
  ch.qos.logback.core,
  slf4j.api
