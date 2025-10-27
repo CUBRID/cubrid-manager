@@ -206,7 +206,7 @@ public class ExportTableDefinitionDialog extends CMTitleAreaDialog {
         type2Btn.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         type2Btn.setText(Messages.exportTableDefinitionExcelLayoutTypeGeneric);
         type2Btn.setSelection(false);
-        type1Btn.addSelectionListener(
+        type2Btn.addSelectionListener(
                 new SelectionAdapter() {
                     public void widgetSelected(SelectionEvent e) {
                         exportLayoutType = 2;

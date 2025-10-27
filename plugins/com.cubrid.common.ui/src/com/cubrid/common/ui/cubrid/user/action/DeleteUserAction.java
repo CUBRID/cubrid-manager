@@ -41,6 +41,7 @@ import com.cubrid.common.ui.spi.model.DefaultCubridNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.ICubridNodeLoader;
 import com.cubrid.common.ui.spi.model.ISchemaNode;
+import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.progress.CommonTaskExec;
 import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
 import com.cubrid.common.ui.spi.progress.TaskExecutor;
@@ -104,7 +105,11 @@ public class DeleteUserAction extends SelectionAction {
         if (!(obj instanceof ISchemaNode)) {
             return false;
         }
+
         ISchemaNode node = (ISchemaNode) obj;
+        if (node.getType() != null && !NodeType.USER.equals(node.getType())) {
+            return false;
+        }
         CubridDatabase database = node.getDatabase();
         if (database != null
                 && database.getRunningType() == DbRunningType.CS
