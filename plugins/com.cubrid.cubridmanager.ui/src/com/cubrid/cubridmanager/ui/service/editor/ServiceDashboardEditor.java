@@ -60,6 +60,8 @@ import com.cubrid.cubridmanager.core.cubrid.database.task.GetDatabaseListTask;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
+import com.cubrid.cubridmanager.core.mondashboard.model.HAHostStatusInfo;
+import com.cubrid.cubridmanager.core.mondashboard.task.GetHeartbeatNodeInfoTask;
 import com.cubrid.cubridmanager.core.monitoring.model.HostStatData;
 import com.cubrid.cubridmanager.core.monitoring.model.HostStatDataProxy;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
@@ -710,6 +712,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
                 loadServerHostInfo(serverInfo, serverName);
                 loadServerDbInfo(serverInfo, serverName);
                 loadServerEnvInfo(serverInfo, serverName);
+                loadServerHaHostStatus(serverInfo, serverName);
                 ServiceDashboardInfoMap.put(serverName, sDashInfo);
             }
         }
@@ -867,6 +870,36 @@ public class ServiceDashboardEditor extends CubridEditorPart {
         executeTask(taskJobExec, serverInfo.getServerName(), Messages.taskGetServerEnvInfo);
     }
 
+    private void loadServerHaHostStatus(final ServerInfo serverInfo, final String key) {
+        if (serverInfo.isConnected() == false) {
+            return;
+        }
+        final GetHeartbeatNodeInfoTask getHeartbeatNodeInfoTask =
+                new GetHeartbeatNodeInfoTask(serverInfo);
+        getHeartbeatNodeInfoTask.setAllDb(true);
+
+        TaskJobExecutor taskJobExec =
+                new CommonTaskJobExec(
+                        new ITaskExecutorInterceptor() {
+                            public void completeAll() {
+                                Object input = serviceTreeViewer.getInput();
+                                ServiceDashboardInfo sDashInfo =
+                                        getSelectedDashInfo(input, serverInfo.getServerName(), key);
+                                HAHostStatusInfo infoHaStatus = 
+                                        getHeartbeatNodeInfoTask.getHostStatusInfo(serverInfo);
+                                setHaStatusInfo(sDashInfo, infoHaStatus);
+                                serviceTreeViewer.refresh(input);
+                            }
+
+                            public IStatus postTaskFinished(ITask task) {
+                                return Status.OK_STATUS;
+                            }
+                        });
+
+        taskJobExec.addTask(getHeartbeatNodeInfoTask);
+        executeTask(taskJobExec, serverInfo.getServerName(), Messages.taskGetServerHaHostStatusInfo);
+    }
+
     /** Set Server Volume Data */
     private void setVolumeData(
             ServiceDashboardInfo sDashInfo,
@@ -992,6 +1025,12 @@ public class ServiceDashboardEditor extends CubridEditorPart {
             serverVersion = brokerVersion.substring(brokerVersion.indexOf("VERSION") + 8);
         }
         sDashInfo.setServerVersion(serverVersion);
+    }
+
+    private void setHaStatusInfo(ServiceDashboardInfo sDashInfo, HAHostStatusInfo info) {
+        if (info != null) {
+            sDashInfo.getServer().getServerInfo().setHaHostStatusInfo(info);
+        }
     }
 
     /** Get Selected Dashboard Item */

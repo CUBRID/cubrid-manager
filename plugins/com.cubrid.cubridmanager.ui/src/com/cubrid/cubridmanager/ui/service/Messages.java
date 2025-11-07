@@ -69,6 +69,7 @@ public class Messages extends NLS {
     public static String taskGetServerHostInfo;
     public static String taskGetServerDbInfo;
     public static String taskGetServerEnvInfo;
+    public static String taskGetServerHaHostStatusInfo;
 
     public static String serviceDashboardPartToolTip;
     public static String msgConnected;

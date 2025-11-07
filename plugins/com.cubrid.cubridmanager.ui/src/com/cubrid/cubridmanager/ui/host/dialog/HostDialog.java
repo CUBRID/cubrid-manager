@@ -166,7 +166,9 @@ public class HostDialog extends CMTitleAreaDialog implements ModifyListener {
         if (server != null) {
             addressText.setText(server.getHostAddress());
         } else {
-            addressText.setText("localhost");
+            if (hostName == null) {
+                addressText.setText("localhost");
+            }
         }
         addressText.setLayoutData(
                 CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
@@ -411,8 +413,8 @@ public class HostDialog extends CMTitleAreaDialog implements ModifyListener {
 
         if (isNewHost) {
             createButton(parent, TEST_CONNECT_ID, Messages.btnTestConn, false);
-            createButton(parent, ADD_ID, Messages.btnAddHost, true);
-            createButton(parent, CONNECT_ID, Messages.btnConnectHost, false);
+            createButton(parent, ADD_ID, Messages.btnAddHost, false);
+            createButton(parent, CONNECT_ID, Messages.btnConnectHost, true);
 
             getButton(ADD_ID).setToolTipText(Messages.btnAddHost);
             getButton(ADD_ID).setEnabled(server != null);
