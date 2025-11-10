@@ -129,7 +129,7 @@ public class AddDatabaseMonitorAction extends SelectionAction {
             AddHostAndDbWizard wizard =
                     new AddHostAndDbWizard(hostNode, dashboard.getHostNodeList(), 1);
             CMWizardDialog dialog = new CMWizardDialog(getShell(), wizard);
-            dialog.setPageSize(660, 380);
+            dialog.setMinimumPageSize(660, 420);
             int returnCode = dialog.open();
             if (returnCode == IDialogConstants.OK_ID) {
                 List<HostNode> addedHostNodeList = wizard.getAddedHostNodeList();

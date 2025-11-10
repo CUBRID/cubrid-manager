@@ -208,7 +208,7 @@ public class SelectBrokerPage extends WizardPage implements ModifyListener, IPag
                         parent,
                         null,
                         columnNameArr,
-                        CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, 400));
+                        CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, -1));
         brokerTable = brokerTableViewer.getTable();
         for (int i = 0; i < brokerTable.getColumnCount(); i++) {
             brokerTable.getColumn(i).pack();

@@ -301,7 +301,7 @@ public class SelectDbPage extends WizardPage implements ModifyListener, IPageCha
                         parent,
                         null,
                         columnNameArr,
-                        CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, 500));
+                        CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, -1));
         dbTable = dbTableViewer.getTable();
         for (int i = 0; i < dbTable.getColumnCount(); i++) {
             dbTable.getColumn(i).pack();

@@ -328,7 +328,6 @@ public class BackupDatabaseDialog extends CMTrayDialog {
     /** Constrain the shell size */
     protected void constrainShellSize() {
         super.constrainShellSize();
-        getShell().setMinimumSize(500, 450);
         CommonUITool.centerShell(getShell());
         getShell().setText(Messages.titleBackupDbDialog);
     }

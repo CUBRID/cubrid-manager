@@ -232,7 +232,7 @@ public class AddDashboardDialog extends CMTitleAreaDialog implements ModifyListe
                         AddHostAndDbWizard wizard =
                                 new AddHostAndDbWizard(hostNode, hostNodeList, addType);
                         CMWizardDialog dialog = new CMWizardDialog(getShell(), wizard);
-                        dialog.setPageSize(660, 380);
+                        dialog.setMinimumPageSize(660, 420);
                         if (IDialogConstants.OK_ID == dialog.open()) {
                             List<HostNode> addedHostNodeList = wizard.getAddedHostNodeList();
                             HAUtil.mergeHostNode(hostNodeList, addedHostNodeList);

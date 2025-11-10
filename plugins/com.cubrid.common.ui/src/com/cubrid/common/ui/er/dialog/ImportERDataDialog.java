@@ -74,6 +74,8 @@ public class ImportERDataDialog extends CMTitleAreaDialog {
     private ERXmlContainer container;
     private String gsonData = null;
     private int selectedMode = -1;
+    private static final int ERD_FILE = 0;
+    private static final int ERWIN_XML_FILE = 1;
 
     public ImportERDataDialog(Shell parentShell, ERSchema erSchema) {
         super(parentShell);
@@ -133,7 +135,7 @@ public class ImportERDataDialog extends CMTitleAreaDialog {
                         filename = filePath;
                         filePathText.setText(filename);
 
-                        selectedMode = dialog.getFilterIndex();
+                        selectedMode = getFileExtensionType(filename);
                         if (isGsonFile()) {
                             handleGsonFile(filename);
                         } else if (isERWinFile()) {
@@ -221,5 +223,23 @@ public class ImportERDataDialog extends CMTitleAreaDialog {
 
     public ERXmlContainer getERWinContainer() {
         return container;
+    }
+
+    private int getFileExtensionType(String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            return -1;
+        }
+
+        int lastDotIndex = filePath.lastIndexOf('.');
+        if (lastDotIndex > 0) {
+            String fileExtension = filePath.substring(lastDotIndex + 1);
+            if (fileExtension.equalsIgnoreCase("erd")) {
+                return ERD_FILE;
+            } else if (fileExtension.equalsIgnoreCase("xml")) {
+                return ERWIN_XML_FILE;
+            }
+        }
+
+        return -1;
     }
 }
