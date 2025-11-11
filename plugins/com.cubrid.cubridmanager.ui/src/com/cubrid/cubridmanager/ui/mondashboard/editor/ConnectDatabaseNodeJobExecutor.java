@@ -90,7 +90,7 @@ public class ConnectDatabaseNodeJobExecutor extends TaskJobExecutor {
                         dbNode.getDbName()));
         // Check this database whether exist
         List<String> realDbNameList = serverInfo.getAllDatabaseList();
-        if (!realDbNameList.contains(dbNode.getDbName())) {
+        if (realDbNameList != null && !realDbNameList.contains(dbNode.getDbName())) {
             return Status.CANCEL_STATUS;
         }
         for (ITask task : taskList) {
