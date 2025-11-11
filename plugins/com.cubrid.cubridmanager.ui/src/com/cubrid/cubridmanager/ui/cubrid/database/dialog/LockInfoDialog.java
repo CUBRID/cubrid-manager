@@ -536,11 +536,16 @@ public class LockInfoDialog extends CMTrayDialog {
                         // [TOOLS-3185][CM]Can't get the lockdb information when the database have
                         // been using specific collation.
                         if (CompatibleUtil.isAfter910(database.getDatabaseInfo())) {
-                            if (!CompatibleUtil.isLockDBNotSupportVersion(database.getDatabaseInfo())
-                                    && !msg.startsWith("Lockdb operation has")) {
+                            if (!CompatibleUtil.isLockDBNotSupportVersion(database.getDatabaseInfo())) {
                                 CommonUITool.openErrorBox(
                                         getShell(),
                                         com.cubrid.common.ui.spi.Messages.errLockNoUseTemporary);
+                            } else {
+                                if (!msg.startsWith("Lockdb operation has")) {
+                                    CommonUITool.openErrorBox(
+                                            getShell(),
+                                            com.cubrid.common.ui.spi.Messages.errLockNoUseTemporary);
+                                }
                             }
                         } else {
                             CommonUITool.openErrorBox(getShell(), msg);
