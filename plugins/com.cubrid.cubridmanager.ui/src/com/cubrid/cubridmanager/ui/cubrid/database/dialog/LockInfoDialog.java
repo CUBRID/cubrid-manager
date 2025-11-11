@@ -86,8 +86,7 @@ public class LockInfoDialog extends CMTrayDialog {
 
     private Label lockEscLabel;
     private Label deadLockNumLabel;
-    private Label lockedNumLabel;
-    private Label maxLockLabel;
+    private Label objectLockTableInfo;
 
     private CubridDatabase database = null;
     private Composite parentComp;
@@ -214,11 +213,8 @@ public class LockInfoDialog extends CMTrayDialog {
         lockTableGroup.setLayout(layout);
         lockTableGroup.setText(Messages.grpLockTable);
 
-        lockedNumLabel = new Label(lockTableGroup, SWT.NONE);
-        lockedNumLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-
-        maxLockLabel = new Label(lockTableGroup, SWT.NONE);
-        maxLockLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+        objectLockTableInfo = new Label(lockTableGroup, SWT.NONE);
+        objectLockTableInfo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
         final Group clientsTableGroup = new Group(composit, SWT.NONE);
         clientsTableGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -250,7 +246,7 @@ public class LockInfoDialog extends CMTrayDialog {
                     }
                 });
 
-        Button detailButton = new Button(composit, SWT.PUSH);
+        Button detailButton = new Button(clientsTableGroup, SWT.PUSH);
         detailButton.setFont(JFaceResources.getDialogFont());
         detailButton.setText(com.cubrid.cubridmanager.ui.common.Messages.btnDetail);
         detailButton.addSelectionListener(
@@ -264,6 +260,13 @@ public class LockInfoDialog extends CMTrayDialog {
         Point minSize = detailButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
         data.widthHint = Math.max(widthHint, minSize.x);
         detailButton.setLayoutData(data);
+
+        if (database != null && CompatibleUtil.isLockDBNotSupportVersion(database.getDatabaseInfo())) {
+            if (databaseLockInfo != null
+                    && databaseLockInfo.getLockInfo().getDbLotInfo().getSizelock() == null) {
+                clientsTableGroup.setVisible(false);
+            }
+        }
 
         return composit;
     }
@@ -313,6 +316,10 @@ public class LockInfoDialog extends CMTrayDialog {
     private void initial() {
         if (databaseLockInfo != null) {
             LockInfo lockInfo = databaseLockInfo.getLockInfo();
+            if (lockInfo == null) {
+                return;
+            }
+
             DbLotInfo dbLotInfo = lockInfo.getDbLotInfo();
             lockEscLabel.setText(Messages.bind(Messages.lblLockEscalation, lockInfo.getEsc()));
             deadLockNumLabel.setText(
@@ -337,10 +344,21 @@ public class LockInfoDialog extends CMTrayDialog {
                 }
                 connTableViewer.refresh();
             }
-            lockedNumLabel.setText(
-                    Messages.bind(Messages.lblCurrentLockedObjNum, dbLotInfo.getNumlocked()));
-            maxLockLabel.setText(
-                    Messages.bind(Messages.lblMaxLockedObjNum, dbLotInfo.getMaxnumlock()));
+
+            StringBuilder lockTableInfo = new StringBuilder();
+            lockTableInfo.append(Messages.bind(Messages.lblCurrentLockedObjNum, dbLotInfo.getNumlocked()));
+            if (CompatibleUtil.isAfter1143(database.getDatabaseInfo())) {
+                lockTableInfo.append("\n" + Messages.bind(Messages.lblNumallocated, dbLotInfo.getNumallocated()));
+                lockTableInfo.append("\n" + Messages.bind(Messages.lblSizelock, dbLotInfo.getSizelock()));
+            } else if (CompatibleUtil.isLockDBNotSupportVersion(database.getDatabaseInfo())) {
+                if (dbLotInfo.getSizelock() != null) {
+                    lockTableInfo.append("\n" + Messages.bind(Messages.lblNumallocated, dbLotInfo.getNumallocated()));
+                    lockTableInfo.append("\n" + Messages.bind(Messages.lblSizelock, dbLotInfo.getSizelock()));
+                }
+            } else {
+                lockTableInfo.append("\n" + Messages.bind(Messages.lblMaxLockedObjNum, dbLotInfo.getMaxnumlock()));
+            }
+            objectLockTableInfo.setText(lockTableInfo.toString());
 
             lockListData.clear();
             if (dbLotInfo.getDbLotEntryList() != null) {
@@ -386,8 +404,17 @@ public class LockInfoDialog extends CMTrayDialog {
                         new DatabaseLockInfo());
         task.setDbName(database.getName());
         execTask(-1, new SocketTask[] {task}, true, shell);
-        if (task.getErrorMsg() != null) {
-            return false;
+
+        String msg = task.getErrorMsg();
+        if (msg != null) {
+            if (database != null
+                    && CompatibleUtil.isLockDBNotSupportVersion(database.getDatabaseInfo())) {
+                if (!msg.startsWith("Lockdb operation has")) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
         setDatabaseLockInfo(task.getResultModel());
         return true;
@@ -509,9 +536,12 @@ public class LockInfoDialog extends CMTrayDialog {
                         // [TOOLS-3185][CM]Can't get the lockdb information when the database have
                         // been using specific collation.
                         if (CompatibleUtil.isAfter910(database.getDatabaseInfo())) {
-                            CommonUITool.openErrorBox(
-                                    getShell(),
-                                    com.cubrid.common.ui.spi.Messages.errLockNoUseTemporary);
+                            if (!CompatibleUtil.isLockDBNotSupportVersion(database.getDatabaseInfo())
+                                    && !msg.startsWith("Lockdb operation has")) {
+                                CommonUITool.openErrorBox(
+                                        getShell(),
+                                        com.cubrid.common.ui.spi.Messages.errLockNoUseTemporary);
+                            }
                         } else {
                             CommonUITool.openErrorBox(getShell(), msg);
                         }

@@ -39,6 +39,8 @@ import java.util.List;
 public class DbLotInfo {
     private int numlocked;
     private int maxnumlock;
+    private int numallocated;
+    private String sizelock;
 
     private List<DbLotEntry> dbLotEntryList;
 
@@ -56,6 +58,22 @@ public class DbLotInfo {
 
     public void setMaxnumlock(int maxnumlock) {
         this.maxnumlock = maxnumlock;
+    }
+
+    public int getNumallocated() {
+        return numallocated;
+    }
+
+    public void setNumallocated(int numallocated) {
+        this.numallocated = numallocated;
+    }
+
+    public String getSizelock() {
+        return sizelock;
+    }
+
+    public void setSizelock(String sizelock) {
+        this.sizelock = sizelock;
     }
 
     /**

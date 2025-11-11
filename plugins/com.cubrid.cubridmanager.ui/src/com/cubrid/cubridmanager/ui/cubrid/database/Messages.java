@@ -480,6 +480,8 @@ public class Messages extends NLS {
     public static String lblRunInterval;
     public static String lblCurrentLockedObjNum;
     public static String lblMaxLockedObjNum;
+    public static String lblNumallocated;
+    public static String lblSizelock;
     // new directory
     public static String titleCreateNewDialog;
     public static String msgCreateNewDirInformation;

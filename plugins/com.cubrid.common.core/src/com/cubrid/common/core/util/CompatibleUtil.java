@@ -60,6 +60,8 @@ public final class CompatibleUtil {
     private static final String VER_11_2_0 =
             "11.2.0"; // From 11.2 version, the engine and jdbc versioning  are different.
     private static final String VER_11_4_0 = "11.4.0";
+    private static final String VER_11_4_2 = "11.4.2";
+    private static final String VER_11_4_3 = "11.4.3";
 
     private CompatibleUtil() {}
 
@@ -422,6 +424,14 @@ public final class CompatibleUtil {
 
     public static boolean isAfter114(IServerSpec serverInfo) {
         return compareVersion(serverInfo.getServerVersionKey(), VER_11_4_0) >= 0;
+    }
+
+    public static boolean isAfter1143(IDatabaseSpec database) {
+        return compareVersion(database.getVersion(), VER_11_4_3) >= 0;
+    }
+
+    public static boolean isAfter1143(IServerSpec serverInfo) {
+        return compareVersion(serverInfo.getServerVersionKey(), VER_11_4_3) >= 0;
     }
 
     /**
@@ -1343,4 +1353,13 @@ public final class CompatibleUtil {
     public static boolean isSupportChangeOwnerWithAlterStatement(IServerSpec serverInfo) {
         return isAfter900(serverInfo);
     }
+
+    public static boolean isLockDBNotSupportVersion(IDatabaseSpec database) {
+        if (isAfter114(database)
+                && compareVersion(database.getVersion(), VER_11_4_2) <= 0) {
+            return true;
+        }
+        return false;
+    }
+
 }
