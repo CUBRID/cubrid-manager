@@ -1028,9 +1028,7 @@ public class ServiceDashboardEditor extends CubridEditorPart {
     }
 
     private void setHaStatusInfo(ServiceDashboardInfo sDashInfo, HAHostStatusInfo info) {
-        if (info != null) {
-            sDashInfo.getServer().getServerInfo().setHaHostStatusInfo(info);
-        }
+        sDashInfo.getServer().getServerInfo().setHaHostStatusInfo(info);
     }
 
     /** Get Selected Dashboard Item */

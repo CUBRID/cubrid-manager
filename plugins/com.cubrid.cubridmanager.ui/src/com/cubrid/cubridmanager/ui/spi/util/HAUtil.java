@@ -342,8 +342,9 @@ public final class HAUtil {
             haDbStatusInfo.setStatusType(
                     serverInfo.isHAMode(dbName) ? DBStatusType.STOPPED_HA : DBStatusType.STOPPED);
         }
+
+        haDbStatusInfo.setHaHostStatusInfo(haHostStatusInfo);
         if (haHostStatusInfo != null) {
-            haDbStatusInfo.setHaHostStatusInfo(haHostStatusInfo);
             haHostStatusInfo.addHADatabaseStatus(haDbStatusInfo);
         }
         return haDbStatusInfo;
