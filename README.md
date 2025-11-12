@@ -1,7 +1,7 @@
 # CUBRID Admin
 [CUBRID Admin](https://github.com/CUBRID/cubrid-manager) is a version of CUBRID Manager that removes the CUBRID Query Editor feature. It no longer supports the Query feature. It has been replaced by [DBeaver](https://github.com/dbeaver/dbeaver).
 
-CUBRID Admin(CA) is a [CUBRID](https://github.com/CUBRID/cubrid) database management tool that provides CUBRID functions for database management and executing query in GUI environment. The management function of the CUBRID Admin can be easily performed by using the GUI.
+CUBRID Admin(CA) is a [CUBRID](https://github.com/CUBRID/cubrid) database management tool that provides CUBRID functions for database management in GUI environment. The management function of the CUBRID Admin can be easily performed by using the GUI.
 
 The management function of CUBRID Admin can only be used in the environment where the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server) running on the server on which the CUBRID DBMS is installed.
 
@@ -13,7 +13,7 @@ CUBRID Official Site: http://www.cubrid.org and http://www.cubrid.com
 
 ## DOWNLOADS and FILE REPOSITORIES
 
-CM can be found here:
+CA can be found here:
 
 - https://ftp.cubrid.org/CUBRID_Tools/CUBRID_Admin/
 

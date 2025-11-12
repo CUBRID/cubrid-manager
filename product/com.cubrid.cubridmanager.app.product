@@ -13,9 +13,7 @@
    <launcherArgs>
       <programArgsMac>-vm ../Eclipse/jre/Contents/Home/lib/libjli.dylib</programArgsMac>
       <vmArgs>-Xms400M
--Xmx800M
--XX:PermSize=64M
--XX:MaxPermSize=256M
+--Xmx=2048M
 -XX:+UnlockExperimentalVMOptions 
 -XX:+UseG1GC
 -XX:+IgnoreUnrecognizedVMOptions --add-modules=ALL-SYSTEM -Dosgi.requiredJavaVersion=21</vmArgs>
