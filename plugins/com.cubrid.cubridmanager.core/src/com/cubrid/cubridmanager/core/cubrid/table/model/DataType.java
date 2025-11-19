@@ -27,7 +27,7 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.model;
 
-import com.cubrid.common.core.reader.CSVReader;
+import com.cubrid.common.core.newreader.CSVReader;
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.DateUtil;
 import com.cubrid.common.core.util.LogUtil;

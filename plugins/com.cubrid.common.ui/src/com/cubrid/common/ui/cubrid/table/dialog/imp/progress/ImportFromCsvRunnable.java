@@ -29,7 +29,7 @@
  */
 package com.cubrid.common.ui.cubrid.table.dialog.imp.progress;
 
-import com.cubrid.common.core.reader.CSVReader;
+import com.cubrid.common.core.newreader.CSVReader;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.ui.cubrid.table.dialog.imp.ImportConfig;
 import com.cubrid.common.ui.cubrid.table.dialog.imp.event.ImportDataFailedEvent;

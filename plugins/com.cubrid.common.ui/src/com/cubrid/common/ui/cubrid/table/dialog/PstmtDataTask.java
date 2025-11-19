@@ -30,7 +30,7 @@
 package com.cubrid.common.ui.cubrid.table.dialog;
 
 import com.cubrid.common.core.newreader.TxtReader;
-import com.cubrid.common.core.reader.CSVReader;
+import com.cubrid.common.core.newreader.CSVReader;
 import com.cubrid.common.core.task.AbstractTask;
 import com.cubrid.common.core.task.AbstractUITask;
 import com.cubrid.common.core.util.LogUtil;

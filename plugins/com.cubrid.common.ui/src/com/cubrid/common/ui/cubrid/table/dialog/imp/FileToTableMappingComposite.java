@@ -92,7 +92,7 @@ import org.slf4j.Logger;
  */
 public class FileToTableMappingComposite extends Composite {
     private static final Logger LOGGER = LogUtil.getLogger(FileToTableMappingComposite.class);
-    public static final String NEW_ATTR_TYPE = "Varchar(4096)";
+    public static final String NEW_ATTR_TYPE = "STRING";
     private List<ISelectionChangedListener> listenerList =
             new ArrayList<ISelectionChangedListener>();
     private CubridDatabase database;

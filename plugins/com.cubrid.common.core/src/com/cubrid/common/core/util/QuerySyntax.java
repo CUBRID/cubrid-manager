@@ -2054,6 +2054,25 @@ public final class QuerySyntax {
             return "";
         }
 
+        String[] parts = text.split("\\.");
+
+        if (parts.length == 2) {
+            StringBuilder escapedText = new StringBuilder();
+            for (int i = 0; i < parts.length; i++) {
+                String part = parts[i];
+                boolean isValidate = checkIdentifier(part);
+                if (isValidate) {
+                    escapedText.append(part);
+                } else {
+                    escapedText.append("[" + part + "]");
+                }
+                if (i == 0) {
+                    escapedText.append(".");
+                }
+            }
+            return escapedText.toString();
+        }
+
         boolean isKeyword = QuerySyntax.isKeyword(text);
         if (!isKeyword) {
             /*For bug [TOOLS-2992]*/
