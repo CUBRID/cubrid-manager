@@ -2064,7 +2064,7 @@ public final class QuerySyntax {
                 if (isValidate) {
                     escapedText.append(part);
                 } else {
-                    escapedText.append("[" + part + "]");
+                    escapedText.append("[").append(part).append("]");
                 }
                 if (i == 0) {
                     escapedText.append(".");

@@ -47,7 +47,7 @@ public class CSVReader {
     }
 
     public List<String[]> readAll() throws IOException {
-        List<String[]> allElements = (List) new ArrayList<String>();
+        List<String[]> allElements = new ArrayList<>();
         while (this.hasNext) {
             String[] nextLineAsTokens = readNext();
             if (nextLineAsTokens != null) allElements.add(nextLineAsTokens);
