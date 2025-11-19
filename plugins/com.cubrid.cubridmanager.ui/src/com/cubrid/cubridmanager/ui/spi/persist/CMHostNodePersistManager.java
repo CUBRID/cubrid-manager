@@ -266,12 +266,14 @@ public final class CMHostNodePersistManager {
                 QueryOptions.load(optionPath, serverInfo);
             }
             servers.add(server);
-            ServerManager.getInstance()
-                    .addServer(
-                            serverInfo.getHostAddress(),
-                            serverInfo.getHostMonPort(),
-                            serverInfo.getUserName(),
-                            serverInfo);
+            if (serverInfo.getUserPassword() != null) {
+                ServerManager.getInstance()
+                        .addServer(
+                                serverInfo.getHostAddress(),
+                                serverInfo.getHostMonPort(),
+                                serverInfo.getUserName(),
+                                serverInfo);
+            }
         }
         return isHasLocalHost;
     }
