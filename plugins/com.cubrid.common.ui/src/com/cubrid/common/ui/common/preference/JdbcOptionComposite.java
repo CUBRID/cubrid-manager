@@ -292,26 +292,6 @@ public class JdbcOptionComposite extends Composite {
             buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         }
 
-        Hyperlink link = new Hyperlink(buttonComposite, SWT.None);
-        link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        link.setText(Messages.titleJdbcAdvancedOptionView);
-        link.addMouseListener(
-                new MouseListener() {
-                    public void mouseUp(MouseEvent e) {
-                        IWorkbenchBrowserSupport browserSupport =
-                                PlatformUI.getWorkbench().getBrowserSupport();
-                        try {
-                            IWebBrowser br = browserSupport.createBrowser(null);
-                            br.openURL(new URL(Messages.msgCubridJdbcInfoUrl));
-                        } catch (Exception ignored) {
-                        }
-                    }
-
-                    public void mouseDown(MouseEvent e) {}
-
-                    public void mouseDoubleClick(MouseEvent e) {}
-                });
-
         addButton = new Button(buttonComposite, SWT.PUSH);
         addButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
         addButton.setText(Messages.btnAdd);

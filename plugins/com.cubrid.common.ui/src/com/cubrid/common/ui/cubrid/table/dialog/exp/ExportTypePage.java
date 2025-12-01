@@ -45,9 +45,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -91,36 +88,27 @@ public class ExportTypePage extends ExportWizardPage {
     @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
-        container.setLayout(new FormLayout());
+        container.setLayout(new GridLayout(2, true));
+        container.setLayoutData(CommonUITool.createGridData(GridData.FILL_BOTH, 1, 1, -1, -1));
         setTitle(Messages.titleExportStep1);
         setDescription(Messages.exportWizardTypeDescription);
         setControl(container);
 
         Composite leftComposite = new Composite(container, SWT.NONE);
-        FormData leftData = new FormData();
-        leftData.top = new FormAttachment(0, 5);
-        leftData.bottom = new FormAttachment(100, 0);
-        leftData.left = new FormAttachment(0, 5);
-        leftData.right = new FormAttachment(50, 0);
-        GridLayout leftLayout = new GridLayout();
+        GridLayout leftLayout = new GridLayout(3, false);
         leftLayout.verticalSpacing = 0;
         leftComposite.setLayout(leftLayout);
-        leftComposite.setLayoutData(leftData);
+        leftComposite.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
 
         Composite rightComposite = new Composite(container, SWT.NONE);
-        FormData rightData = new FormData();
-        rightData.top = new FormAttachment(0, 5);
-        rightData.bottom = new FormAttachment(100, 0);
-        rightData.left = new FormAttachment(50, 0);
-        rightData.right = new FormAttachment(100, -5);
-        GridLayout rightLayout = new GridLayout();
+        GridLayout rightLayout = new GridLayout(3, false);
         rightLayout.verticalSpacing = 0;
         rightComposite.setLayout(rightLayout);
-        rightComposite.setLayoutData(rightData);
+        rightComposite.setLayoutData(CommonUITool.createGridData(GridData.VERTICAL_ALIGN_BEGINNING, 1, 1, -1, -1));
 
         fileButton = new Button(leftComposite, SWT.RADIO);
         fileButton.setText(Messages.exportWizardType1);
-        fileButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        fileButton.setLayoutData(CommonUITool.createGridData(3, 1, -1, -1));
         fileButton.addSelectionListener(
                 new SelectionListener() {
                     public void widgetDefaultSelected(SelectionEvent e) {
@@ -135,14 +123,15 @@ public class ExportTypePage extends ExportWizardPage {
                 });
 
         Group fileLabelGroup = new Group(leftComposite, SWT.None);
-        fileLabelGroup.setLayoutData(CommonUITool.createGridData(1, 1, 370, 100));
+        fileLabelGroup.setLayoutData(CommonUITool.createGridData(3, 1, 370, 100));
         fileLabelGroup.setLayout(new FillLayout());
 
         Label fileLabel = new Label(fileLabelGroup, SWT.WRAP);
         fileLabel.setText(Messages.exportWizardTypeDescription1);
+        fileLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
 
-        Label separator1Label = new Label(leftComposite, SWT.None);
-        separator1Label.setLayoutData(CommonUITool.createGridData(1, 1, 0, 20));
+        Label separatorLabel = new Label(leftComposite, SWT.None);
+        separatorLabel.setLayoutData(CommonUITool.createGridData(3, 1, 0, 15));
 
         historyButton = new Button(leftComposite, SWT.RADIO);
         historyButton.setText(Messages.exportWizardType3);
@@ -162,7 +151,7 @@ public class ExportTypePage extends ExportWizardPage {
                 });
 
         Group historyLabelGroup = new Group(leftComposite, SWT.None);
-        historyLabelGroup.setLayoutData(CommonUITool.createGridData(1, 1, 370, 100));
+        historyLabelGroup.setLayoutData(CommonUITool.createGridData(3, 1, 370, 100));
         historyLabelGroup.setLayout(new FillLayout());
 
         Label historyLabel = new Label(historyLabelGroup, SWT.WRAP);
@@ -171,7 +160,7 @@ public class ExportTypePage extends ExportWizardPage {
         Composite historyComposite = new Composite(leftComposite, SWT.None);
         historyComposite.setLayout(new GridLayout(3, false));
         historyComposite.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 3, 1, -1, -1));
 
         historyCombo = new Combo(historyComposite, SWT.READ_ONLY);
         historyCombo.setLayoutData(
@@ -275,7 +264,7 @@ public class ExportTypePage extends ExportWizardPage {
 
         loadDBButton = new Button(rightComposite, SWT.RADIO);
         loadDBButton.setText(Messages.exportWizardType2);
-        loadDBButton.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        loadDBButton.setLayoutData(CommonUITool.createGridData(3, 1, -1, -1));
         loadDBButton.addSelectionListener(
                 new SelectionListener() {
                     public void widgetDefaultSelected(SelectionEvent e) {
@@ -293,7 +282,7 @@ public class ExportTypePage extends ExportWizardPage {
                 });
 
         Group loadDBLabelGroup = new Group(rightComposite, SWT.None);
-        loadDBLabelGroup.setLayoutData(CommonUITool.createGridData(1, 1, 370, 100));
+        loadDBLabelGroup.setLayoutData(CommonUITool.createGridData(3, 1, 370, 100));
         loadDBLabelGroup.setLayout(new FillLayout());
 
         Label loadDBLabel = new Label(loadDBLabelGroup, SWT.WRAP);

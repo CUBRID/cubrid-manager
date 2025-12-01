@@ -197,7 +197,6 @@ public class ERwinImportDialog extends CMTitleAreaDialog {
         {
             GridData data = new GridData();
             data.horizontalSpan = 2;
-            data.widthHint = 210;
             subjectCombo.setLayoutData(data);
         }
 

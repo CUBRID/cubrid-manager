@@ -137,7 +137,7 @@ public class ExportSettingPage extends ExportWizardPage {
     private Button nullThreeButton;
     private Button otherButton;
     private Text otherText;
-    private Combo dbCharsetCombo;
+    private Text dbCharsetText;
     private Combo fileCharsetCombo;
     private List<ICubridNode> tablesOrViewLst;
     private String[] columnDelimeter = {",", "\t", "'"};
@@ -557,7 +557,7 @@ public class ExportSettingPage extends ExportWizardPage {
         parsingGroup.setText(Messages.exportWizardParsingOption);
         parsingGroup.setLayoutData(
                 CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-        GridLayout parsingGroupLayout = new GridLayout(4, false);
+        GridLayout parsingGroupLayout = new GridLayout(2, false);
         parsingGroupLayout.horizontalSpacing = 10;
         parsingGroup.setLayout(parsingGroupLayout);
 
@@ -576,25 +576,20 @@ public class ExportSettingPage extends ExportWizardPage {
         threadCountSpinner.setLayoutData(
                 CommonUITool.createGridData(GridData.HORIZONTAL_ALIGN_FILL, 1, 1, -1, -1));
 
-        Label emptyLabel = new Label(parsingGroup, SWT.None);
-        emptyLabel.setLayoutData(CommonUITool.createGridData(2, 1, -1, -1));
-        emptyLabel.setText("");
-
         Label dbCharsetLabel = new Label(parsingGroup, SWT.None);
         dbCharsetLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         dbCharsetLabel.setText(Messages.lblJDBCCharset);
 
-        dbCharsetCombo = new Combo(parsingGroup, SWT.BORDER);
-        dbCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
-        dbCharsetCombo.setItems(QueryOptions.getAllCharset(null));
-        dbCharsetCombo.setEnabled(false);
+        dbCharsetText = new Text(parsingGroup, SWT.BORDER);
+        dbCharsetText.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        dbCharsetText.setEnabled(false);
 
         Label fileCharsetLabel = new Label(parsingGroup, SWT.None);
         fileCharsetLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         fileCharsetLabel.setText(Messages.lblFileCharset);
 
         fileCharsetCombo = new Combo(parsingGroup, SWT.BORDER);
-        fileCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, -1, 21));
+        fileCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         fileCharsetCombo.setItems(QueryOptions.getAllCharset(null));
 
         Group dataOptionGroup = new Group(rightComposite, SWT.None);
@@ -798,17 +793,9 @@ public class ExportSettingPage extends ExportWizardPage {
                 exportLobButton.setSelection(exportConfig.isExportLob());
             }
             pathText.setText(exportConfig.getDataFileFolder());
+            dbCharsetText.setText(getDatabase().getDatabaseInfo().getCharSet());
             String[] charsets = QueryOptions.getAllCharset(null);
             int index = 0;
-            for (int i = 0; i < charsets.length; i++) {
-                String charset = charsets[i];
-                if (charset.equals(getDatabase().getDatabaseInfo().getCharSet())) {
-                    index = i;
-                    break;
-                }
-            }
-            dbCharsetCombo.select(index);
-            index = 0;
             for (int i = 0; i < charsets.length; i++) {
                 String charset = charsets[i];
                 if (charset.equals(exportConfig.getFileCharset())) {
@@ -868,8 +855,8 @@ public class ExportSettingPage extends ExportWizardPage {
 
             sqlButton.setSelection(true);
             nullOneButton.setSelection(true);
-            dbCharsetCombo.select(index);
             rowDelimiterCombo.setEnabled(false);
+            dbCharsetText.setText(getDatabase().getDatabaseInfo().getCharSet());
             fileCharsetCombo.select(index);
             rowDelimiterCombo.select(1);
             columnDelimiterCombo.select(0);

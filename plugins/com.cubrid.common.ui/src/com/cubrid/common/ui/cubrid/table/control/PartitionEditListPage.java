@@ -412,6 +412,7 @@ public class PartitionEditListPage extends WizardPage
             initValuesCombo();
             setPageComplete(validate());
             partitionNameText.setFocus();
+            getShell().setMinimumSize(600, 650);
         }
     }
 

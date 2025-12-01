@@ -776,7 +776,6 @@ public class TableEditorPart extends CubridEditorPart implements ITaskExecutorIn
             ownerCombo = new Combo(tableNameComp, SWT.READ_ONLY);
             {
                 GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
-                gd.widthHint = 100;
                 ownerCombo.setLayoutData(gd);
             }
             ownerCombo.setVisibleItemCount(10);
@@ -793,7 +792,6 @@ public class TableEditorPart extends CubridEditorPart implements ITaskExecutorIn
                 collationCombo = new Combo(tableNameComp, SWT.READ_ONLY);
                 {
                     GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
-                    gd.widthHint = 100;
                     collationCombo.setLayoutData(gd);
                 }
                 collationCombo.setVisibleItemCount(10);

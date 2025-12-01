@@ -109,7 +109,6 @@ public class CreateDatabaseAction extends SelectionAction {
         CMWizardDialog dialog =
                 new CMWizardDialog(
                         getShell(), new CreateDatabaseWizard(server, viewer, cubridServer));
-        dialog.setPageSize(580, 460);
         dialog.open();
     }
 }

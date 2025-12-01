@@ -79,6 +79,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * The Import Setting Page
@@ -97,7 +98,7 @@ public class ImportSettingSQLPage extends AbsImportSettingPage
     static final String PROP_NAME = "filePath";
     static final String PROP_TYPE = "fileType";
     static final String[] PROPS = {PROP_NAME, PROP_TYPE};
-    private Combo dbCharsetCombo;
+    private Text dbCharsetText;
     private Combo fileCharsetCombo;
     private Button delFileButton;
     private Spinner threadCountSpinner;
@@ -227,16 +228,16 @@ public class ImportSettingSQLPage extends AbsImportSettingPage
         enCodingOptionGroup.setText(Messages.grpEncodingOption);
         enCodingOptionGroup.setLayoutData(
                 CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-        enCodingOptionGroup.setLayout(new GridLayout(4, false));
+        enCodingOptionGroup.setLayout(new GridLayout(2, false));
 
         Label dbCharsetLabel = new Label(enCodingOptionGroup, SWT.None);
         dbCharsetLabel.setLayoutData(
                 CommonUITool.createGridData(GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 1, -1, -1));
         dbCharsetLabel.setText(Messages.lblDBCharset);
 
-        dbCharsetCombo = new Combo(enCodingOptionGroup, SWT.BORDER);
-        dbCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, 50, 21));
-        dbCharsetCombo.setEnabled(false);
+        dbCharsetText = new Text(enCodingOptionGroup, SWT.BORDER);
+        dbCharsetText.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        dbCharsetText.setEnabled(false);
 
         Label fileCharsetLabel = new Label(enCodingOptionGroup, SWT.None);
         fileCharsetLabel.setLayoutData(
@@ -244,7 +245,7 @@ public class ImportSettingSQLPage extends AbsImportSettingPage
         fileCharsetLabel.setText(Messages.lblFileCharset);
 
         fileCharsetCombo = new Combo(enCodingOptionGroup, SWT.BORDER);
-        fileCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, 50, 21));
+        fileCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         fileCharsetCombo.setItems(QueryOptions.getAllCharset(null));
         fileCharsetCombo.select(0);
         fileCharsetCombo.addSelectionListener(
@@ -445,7 +446,7 @@ public class ImportSettingSQLPage extends AbsImportSettingPage
         if (database.getDatabaseInfo().getCharSet() != null) {
             charset = database.getDatabaseInfo().getCharSet();
         }
-        dbCharsetCombo.setText(charset);
+        dbCharsetText.setText(charset);
         fileCharsetCombo.setText(importConfig.getFilesCharset());
         threadCountSpinner.setSelection(importConfig.getThreadCount());
         commitCountSpinner.setSelection(importConfig.getCommitLine());

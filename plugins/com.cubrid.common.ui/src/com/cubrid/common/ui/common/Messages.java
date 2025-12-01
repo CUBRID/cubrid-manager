@@ -203,7 +203,6 @@ public class Messages extends NLS {
     public static String msgConfirmSwitch;
     public static String msgCubridHelpSiteUrl;
     public static String msgCubridHomePageUrl;
-    public static String msgCubridJdbcInfoUrl;
     public static String msgCubridOnlineForumUrl;
     public static String msgCubridProjectSiteUrl;
     public static String msgCubridToolsNewFeatures;

@@ -131,7 +131,7 @@ public class SelectDbPage extends WizardPage implements ModifyListener, IPageCha
         dbNameLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         dbNameCombo = new Combo(dbInfoGroup, SWT.LEFT | SWT.BORDER | SWT.READ_ONLY);
         dbNameCombo.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
         dbNameCombo.addModifyListener(this);
 
         Label nickNameLable = new Label(dbInfoGroup, SWT.LEFT);

@@ -124,7 +124,7 @@ public class CreateLikeTableDialog extends CMTitleAreaDialog implements ModifyLi
 
         newTableOwnerCombo = new Combo(composite, SWT.LEFT | SWT.BORDER | SWT.READ_ONLY);
         newTableOwnerCombo.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 30, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
         newTableOwnerCombo.addSelectionListener(
                 new SelectionListener() {
 

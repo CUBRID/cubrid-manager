@@ -183,9 +183,9 @@ public class CreateSynonymDialog extends CMTitleAreaDialog {
 
         ownerCombo = new Combo(composite, SWT.LEFT | SWT.BORDER | SWT.READ_ONLY);
         ownerCombo.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 30, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
         nameText = new Text(composite, SWT.LEFT | SWT.BORDER);
-        nameText.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 3, 1, 30, -1));
+        nameText.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 3, 1, -1, -1));
 
         Label targetInfoLabel = new Label(composite, SWT.LEFT | SWT.WRAP);
         targetInfoLabel.setText(Messages.synonymTargetInfoLabel);
@@ -193,10 +193,10 @@ public class CreateSynonymDialog extends CMTitleAreaDialog {
 
         targetOwnerCombo = new Combo(composite, SWT.LEFT | SWT.BORDER | SWT.READ_ONLY);
         targetOwnerCombo.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 30, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
         targetNameText = new Text(composite, SWT.LEFT | SWT.BORDER);
         targetNameText.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 3, 1, 30, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 3, 1, -1, -1));
 
         Label commentInfoLabel = new Label(composite, SWT.LEFT | SWT.WRAP);
         commentInfoLabel.setText(Messages.synonymCommentLabel);

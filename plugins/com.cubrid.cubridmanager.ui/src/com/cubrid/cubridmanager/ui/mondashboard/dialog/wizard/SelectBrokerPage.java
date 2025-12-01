@@ -120,7 +120,7 @@ public class SelectBrokerPage extends WizardPage implements ModifyListener, IPag
         brokerNameLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         brokerNameCombo = new Combo(brokerInfoGroup, SWT.LEFT | SWT.BORDER | SWT.READ_ONLY);
         brokerNameCombo.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, 100, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
         brokerNameCombo.addModifyListener(this);
 
         Label nickNameLable = new Label(brokerInfoGroup, SWT.LEFT);

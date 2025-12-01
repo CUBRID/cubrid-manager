@@ -118,14 +118,14 @@ public class SelectDatabasePage extends WizardPage implements ModifyListener {
         masterDbNameLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         masterDbNameCombo = new Combo(masterDbInfoGroup, SWT.LEFT | SWT.BORDER | SWT.READ_ONLY);
         masterDbNameCombo.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, 100, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
 
         Label dbaPasswordLabel = new Label(masterDbInfoGroup, SWT.LEFT);
         dbaPasswordLabel.setText(Messages.lblDbaPassword);
         dbaPasswordLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         dbaPasswordText = new Text(masterDbInfoGroup, SWT.LEFT | SWT.BORDER | SWT.PASSWORD);
         dbaPasswordText.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, 100, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
 
         Group replServerPortGroup = new Group(parent, SWT.NONE);
         replServerPortGroup.setText(Messages.grpReplServer);
@@ -140,7 +140,7 @@ public class SelectDatabasePage extends WizardPage implements ModifyListener {
         serverPortLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         serverPortText = new Text(replServerPortGroup, SWT.LEFT | SWT.BORDER);
         serverPortText.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, 100, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
     }
 
     /** initialize some values */

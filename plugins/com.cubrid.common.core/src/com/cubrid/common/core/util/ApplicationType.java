@@ -29,7 +29,7 @@ package com.cubrid.common.core.util;
 
 public enum ApplicationType {
     NONE(null, null, null),
-    CUBRID_MANAGER("CUBRID Manager", "CUBRIDManager", "CM"),
+    CUBRID_MANAGER("CUBRID Admin", "CUBRIDAdmin", "CA"),
     CUBRID_QUERY_BROWSER("CUBRID Query Browser", "CUBRIDQuery", "CQB"),
     CUBRID_MIGRATION_TOOLKIT("CUBRID Migration Toolkit", "CUBRIDMigration", "CMT");
 

@@ -78,7 +78,7 @@ public class ImportSettingExcelPage extends AbsImportSettingPage
 
     private Button breakButton;
     private Button ignoreButton;
-    private Combo dbCharsetCombo;
+    private Text dbCharsetText;
     private Combo fileCharsetCombo;
 
     private Text lineText;
@@ -191,16 +191,16 @@ public class ImportSettingExcelPage extends AbsImportSettingPage
         enCodingOptionGroup.setText(Messages.grpEncodingOption);
         enCodingOptionGroup.setLayoutData(
                 CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-        enCodingOptionGroup.setLayout(new GridLayout(4, false));
+        enCodingOptionGroup.setLayout(new GridLayout(2, false));
 
         Label dbCharsetLabel = new Label(enCodingOptionGroup, SWT.None);
         dbCharsetLabel.setLayoutData(
                 CommonUITool.createGridData(GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 1, -1, -1));
         dbCharsetLabel.setText(Messages.lblDBCharset);
 
-        dbCharsetCombo = new Combo(enCodingOptionGroup, SWT.BORDER);
-        dbCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, 50, 21));
-        dbCharsetCombo.setEnabled(false);
+        dbCharsetText = new Text(enCodingOptionGroup, SWT.BORDER);
+        dbCharsetText.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        dbCharsetText.setEnabled(false);
 
         Label fileCharsetLabel = new Label(enCodingOptionGroup, SWT.None);
         fileCharsetLabel.setLayoutData(
@@ -208,7 +208,7 @@ public class ImportSettingExcelPage extends AbsImportSettingPage
         fileCharsetLabel.setText(Messages.lblFileCharset);
 
         fileCharsetCombo = new Combo(enCodingOptionGroup, SWT.BORDER);
-        fileCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, 50, 21));
+        fileCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         fileCharsetCombo.setItems(QueryOptions.getAllCharset(null));
         fileCharsetCombo.select(0);
         fileCharsetCombo.addSelectionListener(
@@ -327,7 +327,7 @@ public class ImportSettingExcelPage extends AbsImportSettingPage
         if (database.getDatabaseInfo().getCharSet() != null) {
             charset = database.getDatabaseInfo().getCharSet();
         }
-        dbCharsetCombo.setText(charset);
+        dbCharsetText.setText(charset);
         fileCharsetCombo.setText(importConfig.getFilesCharset());
         lineText.setText("0");
         threadCountSpinner.setSelection(importConfig.getThreadCount());
@@ -473,6 +473,6 @@ public class ImportSettingExcelPage extends AbsImportSettingPage
     @Override
     protected void afterShowCurrentPage(PageChangedEvent event) {
         super.afterShowCurrentPage(event);
-        getShell().setMinimumSize(880, 600);
+        getShell().setMinimumSize(880, 650);
     }
 }

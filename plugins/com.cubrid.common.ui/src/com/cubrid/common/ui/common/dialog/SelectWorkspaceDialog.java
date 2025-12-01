@@ -243,7 +243,7 @@ public class SelectWorkspaceDialog extends CMTitleAreaDialog {
                                     + File.separator
                                     + "Documents"
                                     + File.separator
-                                    + "CUBRIDManager");
+                                    + "CUBRIDAdmin");
             workspacePath = file.getAbsolutePath();
         } else {
             Location installLoc = Platform.getInstallLocation();

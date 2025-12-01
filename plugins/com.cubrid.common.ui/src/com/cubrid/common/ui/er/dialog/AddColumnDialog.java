@@ -156,7 +156,7 @@ public class AddColumnDialog extends CMTitleAreaDialog {
         labelType.setLayoutData(data2);
         dataTypeCombo = new Combo(composite, SWT.LEFT | SWT.READ_ONLY | SWT.BORDER);
         dataTypeCombo.setLayoutData(
-                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, 100, -1));
+                CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
         dataTypeCombo.setItems(this.listDataTypes());
         dataTypeCombo.setText("STRING");
         dataTypeValue = dataTypeCombo.getText();

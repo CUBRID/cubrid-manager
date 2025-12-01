@@ -296,30 +296,6 @@ public class GeneralInfoPage extends WizardPage implements ModifyListener {
                         valid();
                     }
                 });
-
-        Hyperlink link = new Hyperlink(charsetGroup, SWT.None);
-        GridData gdLink = new GridData(SWT.FILL, SWT.CENTER, true, false);
-        gdLink.horizontalSpan = 3;
-        link.setLayoutData(gdLink);
-        link.setText(Messages.msgLocaleManual);
-        link.addMouseListener(
-                new MouseAdapter() {
-                    public void mouseUp(MouseEvent e) {
-                        IWorkbenchBrowserSupport browserSupport =
-                                PlatformUI.getWorkbench().getBrowserSupport();
-                        try {
-                            IWebBrowser br = browserSupport.createBrowser(null);
-                            String url = Messages.msgLocaleManualUrl91;
-                            if (CompatibleUtil.isAfter930(server.getServerInfo())) {
-                                url = Messages.msgLocaleManualUrl93;
-                            } else if (CompatibleUtil.isAfter920(server.getServerInfo())) {
-                                url = Messages.msgLocaleManualUrl92;
-                            }
-                            br.openURL(new URL(url));
-                        } catch (Exception ignored) {
-                        }
-                    }
-                });
     }
 
     /**

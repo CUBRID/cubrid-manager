@@ -80,9 +80,6 @@ public class Messages extends NLS {
     public static String lblLocale;
     public static String msgLocaleNotice;
     public static String msgLocaleManual;
-    public static String msgLocaleManualUrl91;
-    public static String msgLocaleManualUrl92;
-    public static String msgLocaleManualUrl93;
     public static String createDBFailedMsg;
     // create database additional volume information page
     public static String titleWizardPageAdditional;

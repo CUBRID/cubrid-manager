@@ -116,7 +116,7 @@ public class ExportSettingForLoadDBPage extends ExportWizardPage {
     private Text dataPathText;
     private Button dataBrowseButton;
 
-    private Combo dbCharsetCombo;
+    private Text dbCharsetText;
     private Combo fileCharsetCombo;
     private boolean isFirstVisible = true;
 
@@ -476,17 +476,16 @@ public class ExportSettingForLoadDBPage extends ExportWizardPage {
         enCodingOptionGroup.setText(Messages.exportWizardDataOption);
         enCodingOptionGroup.setLayoutData(
                 CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
-        enCodingOptionGroup.setLayout(new GridLayout(4, false));
+        enCodingOptionGroup.setLayout(new GridLayout(2, false));
 
         Label dbCharsetLabel = new Label(enCodingOptionGroup, SWT.None);
         dbCharsetLabel.setLayoutData(
                 CommonUITool.createGridData(GridData.HORIZONTAL_ALIGN_BEGINNING, 1, 1, -1, -1));
         dbCharsetLabel.setText(Messages.lblJDBCCharset);
 
-        dbCharsetCombo = new Combo(enCodingOptionGroup, SWT.BORDER);
-        dbCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, 50, 21));
-        dbCharsetCombo.setItems(QueryOptions.getAllCharset(null));
-        dbCharsetCombo.setEnabled(false);
+        dbCharsetText = new Text(enCodingOptionGroup, SWT.BORDER);
+        dbCharsetText.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+        dbCharsetText.setEnabled(false);
 
         Label fileCharsetLabel = new Label(enCodingOptionGroup, SWT.None);
         fileCharsetLabel.setLayoutData(
@@ -494,7 +493,7 @@ public class ExportSettingForLoadDBPage extends ExportWizardPage {
         fileCharsetLabel.setText(Messages.lblFileCharset);
 
         fileCharsetCombo = new Combo(enCodingOptionGroup, SWT.BORDER);
-        fileCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, 50, 21));
+        fileCharsetCombo.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
         fileCharsetCombo.setItems(QueryOptions.getAllCharset(null));
         fileCharsetCombo.addModifyListener(
                 new ModifyListener() {
@@ -568,17 +567,9 @@ public class ExportSettingForLoadDBPage extends ExportWizardPage {
             startValueButton.setSelection(true);
         }
 
+        dbCharsetText.setText(getDatabase().getDatabaseInfo().getCharSet());
         String[] charsets = QueryOptions.getAllCharset(null);
         int index = 0;
-        for (int i = 0; i < charsets.length; i++) {
-            String charset = charsets[i];
-            if (charset.equals(getDatabase().getDatabaseInfo().getCharSet())) {
-                index = i;
-                break;
-            }
-        }
-        dbCharsetCombo.select(index);
-        index = 0;
         for (int i = 0; i < charsets.length; i++) {
             String charset = charsets[i];
             if (charset.equals(getExportConfig().getFileCharset())) {
